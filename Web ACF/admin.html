@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Admin — ACF Eduhub</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="assets/logo-acf/LOGO_ACF-removebg-preview.png" type="image/png">
+
+  <!-- Google Fonts & Stylesheets -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       SCREEN 1: LOGIN ADMIN
+       ========================================== -->
+  <section class="admin-login-screen" id="loginScreen">
+    <div class="login-card">
+      
+      <div class="login-header">
+        <img src="assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="login-brand-img">
+        <h1 class="login-title">Portal Admin</h1>
+        <p class="login-subtitle">Masuk untuk mengelola data kemitraan, relawan, dan publikasi kabar ACF Eduhub.</p>
+      </div>
+
+      <!-- Alert Error -->
+      <div class="login-alert" id="loginAlert" role="alert">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="loginAlertText">Username atau password salah!</span>
+      </div>
+
+      <form id="adminLoginForm" autocomplete="off">
+        <div class="form-group">
+          <label for="adminUsername" class="form-label">Username Admin</label>
+          <div class="input-icon-wrap">
+            <svg class="input-lead-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="text" id="adminUsername" class="form-control" placeholder="Masukkan username" required autofocus>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="adminPassword" class="form-label">Kata Sandi</label>
+          <div class="input-icon-wrap">
+            <svg class="input-lead-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <input type="password" id="adminPassword" class="form-control" placeholder="Masukkan kata sandi" required>
+            <button type="button" class="toggle-password-btn" id="btnTogglePassword" title="Tampilkan/Sembunyikan kata sandi" aria-label="Toggle password">
+              <svg id="eyeIcon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-admin-primary" id="btnLoginSubmit">
+          <span>Masuk ke Dashboard</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+
+      <div class="login-footer-info">
+        <div>Default Akses: <strong>admin</strong> / <strong>adminacf2026</strong></div>
+        <a href="index.html" class="login-back-link">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Kembali ke Website Utama
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SCREEN 2: DASHBOARD ADMIN
+       ========================================== -->
+  <div class="admin-dashboard-screen" id="dashboardScreen">
+    
+    <!-- Topbar Navigation with Dual Dashboard Switcher -->
+    <header class="admin-topbar">
+      
+      <div class="admin-brand-wrap">
+        <div class="admin-brand">
+          <img src="assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="admin-brand-logo">
+        </div>
+
+        <!-- Dashboard Switcher Navigation (Dashboard 1 vs Dashboard 2) -->
+        <nav class="main-dashboard-nav" aria-label="Pilihan Dashboard">
+          <button type="button" class="dash-nav-btn active" id="btnNavForms" data-target="viewDashboardForms">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Form Mitra & Relawan</span>
+          </button>
+          
+          <button type="button" class="dash-nav-btn" id="btnNavArticles" data-target="viewDashboardArticles">
+            <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            <span>Upload & Manajemen Kabar</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="admin-topbar-actions">
+        
+        <div class="admin-user-info">
+          <div class="user-avatar">A</div>
+          <div class="user-details">
+            <span class="user-name" id="displayAdminUser">Administrator</span>
+            <span class="user-role">Super Admin ACF</span>
+          </div>
+        </div>
+
+        <a href="index.html" target="_blank" class="btn-outline-action" title="Buka website publik">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          <span>Lihat Web</span>
+        </a>
+
+        <button type="button" class="btn-outline-action btn-logout" id="btnLogout" title="Keluar dari sesi admin">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          <span>Keluar</span>
+        </button>
+
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="admin-main-content">
+      
+      <!-- ============================================================
+           DASHBOARD 1: DATA FORMULIR (MITRA & RELAWAN)
+           ============================================================ -->
+      <section class="dashboard-view-section active" id="viewDashboardForms">
+        
+        <!-- Page Header & Action Controls -->
+        <div class="dashboard-header-row">
+          <div>
+            <h2 class="page-title">Dashboard Kemitraan & Relawan</h2>
+            <p class="page-subtitle">Pantau dan tindak lanjuti pendaftaran formulir kemitraan program & relawan Eduhub.</p>
+          </div>
+
+          <div class="header-action-buttons">
+            <button type="button" class="btn-outline-action btn-sync" id="btnSyncSpreadsheet" title="Tarik data terbaru dari Google Spreadsheet">
+              <svg viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 11-.57-8.38l5.67-5.67"/></svg>
+              <span>Sinkronkan Spreadsheet</span>
+            </button>
+
+            <button type="button" class="btn-outline-action" id="btnExportCSV" title="Unduh data tab aktif ke format CSV">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Metric Cards Grid -->
+        <div class="metric-grid">
+          
+          <!-- Total Mitra -->
+          <div class="metric-card metric-purple">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M6 21V11M10 21V11M14 21V11M18 21V11M3 7l9-4 9 4"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Mitra Program</span>
+              <span class="metric-value" id="countMitra">0</span>
+              <span class="metric-meta">Lembaga / Perusahaan / CSR</span>
+            </div>
+          </div>
+
+          <!-- Total Relawan -->
+          <div class="metric-card metric-gold">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Relawan Eduhub</span>
+              <span class="metric-value" id="countRelawan">0</span>
+              <span class="metric-meta">Volunteer & Pengajar</span>
+            </div>
+          </div>
+
+          <!-- Pendaftar Baru (Menunggu) -->
+          <div class="metric-card metric-blue">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Perlu Tindak Lanjut</span>
+              <span class="metric-value" id="countPending">0</span>
+              <span class="metric-meta">Status "Menunggu Respon"</span>
+            </div>
+          </div>
+
+          <!-- Total Respons -->
+          <div class="metric-card metric-green">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Total Keseluruhan</span>
+              <span class="metric-value" id="countTotal">0</span>
+              <span class="metric-meta">Semua Respons Masuk</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Main Data Table Container with Tabs -->
+        <div class="data-table-container">
+          
+          <!-- Tab Buttons Navigation -->
+          <div class="tabs-navigation">
+            <button type="button" class="tab-btn active" data-tab="tabMitra" id="tabBtnMitra">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M6 21V11M10 21V11M14 21V11M18 21V11M3 7l9-4 9 4"/></svg>
+              <span>Data Mitra Program</span>
+              <span class="tab-count-badge" id="badgeTabMitra">0</span>
+            </button>
+
+            <button type="button" class="tab-btn" data-tab="tabRelawan" id="tabBtnRelawan">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              <span>Data Relawan Eduhub</span>
+              <span class="tab-count-badge" id="badgeTabRelawan">0</span>
+            </button>
+
+            <button type="button" class="tab-btn" data-tab="tabPanduan" id="tabBtnPanduan">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>Panduan & Info Sheet</span>
+            </button>
+          </div>
+
+          <!-- PANEL 1: DATA MITRA PROGRAM -->
+          <div class="tab-content-panel active" id="tabMitra">
+            
+            <!-- Toolbar (Search & Filter) -->
+            <div class="table-toolbar">
+              <div class="search-box-wrap">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="searchMitra" class="search-input" placeholder="Cari instansi, PIC, email, WA...">
+              </div>
+
+              <div class="toolbar-filters">
+                <select id="filterStatusMitra" class="select-filter">
+                  <option value="all">Semua Status</option>
+                  <option value="Menunggu">Menunggu Respon</option>
+                  <option value="Sudah Dihubungi">Sudah Dihubungi</option>
+                  <option value="Diterima">Diterima / Deal</option>
+                  <option value="Arsip">Arsip</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Table Mitra -->
+            <div class="responsive-table-wrapper">
+              <table class="admin-table" id="tableMitra">
+                <thead>
+                  <tr>
+                    <th>Waktu Masuk</th>
+                    <th>Instansi & Kota</th>
+                    <th>Nama PIC & Jabatan</th>
+                    <th>Kontak (WA & Email)</th>
+                    <th>Fokus Program</th>
+                    <th>Bentuk Dukungan & Target</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyMitra">
+                  <!-- Diisi via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State Mitra -->
+            <div class="empty-table-state" id="emptyMitra" style="display: none;">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <div class="empty-table-title">Belum ada formulir kemitraan masuk</div>
+              <p style="font-size: 0.85rem;">Data instansi/perusahaan yang mengisi form <strong>Jadi Mitra Program</strong> di website akan langsung muncul di sini secara otomatis.</p>
+            </div>
+
+          </div>
+
+          <!-- PANEL 2: DATA RELAWAN EDUHUB -->
+          <div class="tab-content-panel" id="tabRelawan">
+            
+            <!-- Toolbar (Search & Filter) -->
+            <div class="table-toolbar">
+              <div class="search-box-wrap">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="searchRelawan" class="search-input" placeholder="Cari relawan, domisili, email, WA...">
+              </div>
+
+              <div class="toolbar-filters">
+                <select id="filterStatusRelawan" class="select-filter">
+                  <option value="all">Semua Status</option>
+                  <option value="Menunggu">Menunggu Respon</option>
+                  <option value="Sudah Dihubungi">Sudah Dihubungi</option>
+                  <option value="Diterima">Diterima</option>
+                  <option value="Arsip">Arsip</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Table Relawan -->
+            <div class="responsive-table-wrapper">
+              <table class="admin-table" id="tableRelawan">
+                <thead>
+                  <tr>
+                    <th>Waktu Masuk</th>
+                    <th>Nama Relawan</th>
+                    <th>Domisili & Profesi</th>
+                    <th>Kontak (WA & Email)</th>
+                    <th>Peran yang Diminati</th>
+                    <th>Komitmen Waktu</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyRelawan">
+                  <!-- Diisi via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State Relawan -->
+            <div class="empty-table-state" id="emptyRelawan" style="display: none;">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              <div class="empty-table-title">Belum ada formulir relawan masuk</div>
+              <p style="font-size: 0.85rem;">Data pendaftar yang mengisi form <strong>Jadi Relawan</strong> di website akan langsung muncul di sini secara otomatis.</p>
+            </div>
+
+          </div>
+
+          <!-- PANEL 3: PANDUAN & INTEGRASI -->
+          <div class="tab-content-panel" id="tabPanduan" style="padding: 32px 28px;">
+            <div style="max-width: 860px; line-height: 1.7;">
+              <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--admin-navy); margin-bottom: 12px;">Panduan Integrasi Google Spreadsheet & Dashboard</h3>
+              <p style="color: var(--admin-slate); font-size: 0.92rem; margin-bottom: 20px;">
+                Formulir kemitraan dan relawan terhubung langsung dengan Google Apps Script Web App. Data yang diisi oleh calon mitra atau relawan otomatis masuk ke spreadsheet Anda secara terpisah pada sheet <strong>Mitra Program</strong> dan <strong>Relawan Eduhub</strong>.
+              </p>
+
+              <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--admin-navy); margin-bottom: 8px;">🔗 URL Web App Google Apps Script Terpasang:</h4>
+                <code style="display: block; background: #0F172A; color: #38BDF8; padding: 12px 16px; border-radius: 8px; font-size: 0.82rem; word-break: break-all; margin-bottom: 10px;">
+                  https://script.google.com/macros/s/AKfycbyBPKjNYHI1M3NifBOQJnH2Rjt_HUzxyZroYxLb2iPt7XMp72leWUjVtDACrqlxfadT/exec
+                </code>
+                <p style="font-size: 0.82rem; color: #64748B;">
+                  Spreadsheet ID: <code>1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU</code>
+                </p>
+              </div>
+
+              <h4 style="font-size: 1rem; font-weight: 700; color: var(--admin-navy); margin-bottom: 10px;">💡 Fitur Unggulan Dashboard Ini:</h4>
+              <ul style="padding-left: 20px; font-size: 0.9rem; color: var(--admin-slate); margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
+                <li><strong>Pemisahan Tab Jelas:</strong> Memisahkan calon Mitra Instansi/CSR dengan Relawan Individu secara otomatis.</li>
+                <li><strong>Klik Cepat WhatsApp:</strong> Klik tombol <em>Chat WhatsApp</em> pada rincian data untuk langsung chat tanpa simpan nomor.</li>
+                <li><strong>Manajemen Status:</strong> Mengubah status pendaftar (<em>Menunggu, Sudah Dihubungi, Diterima, Arsip</em>).</li>
+                <li><strong>Export CSV:</strong> Klik tombol <em>Export CSV</em> di kanan atas untuk mengunduh berkas laporan excel kapan saja.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           DASHBOARD 2: MANAJEMEN & UPLOAD KABAR / ARTIKEL
+           ============================================================ -->
+      <section class="dashboard-view-section" id="viewDashboardArticles">
+        
+        <!-- Page Header & Action Controls -->
+        <div class="dashboard-header-row">
+          <div>
+            <h2 class="page-title">Manajemen & Publikasi Kabar</h2>
+            <p class="page-subtitle">Upload artikel baru, edit liputan kegiatan, dan kelola publikasi berita ACF Eduhub.</p>
+          </div>
+
+          <div class="header-action-buttons">
+            <a href="kabar.html" target="_blank" class="btn-outline-action" title="Lihat halaman kabar publik">
+              <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+              <span>Lihat Halaman Kabar</span>
+            </a>
+
+            <button type="button" class="btn-outline-action" id="btnManageCategories" title="Kelola & Hapus Kategori Berita" style="border-color: #CBD5E1; color: #1E293B;">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              <span>🏷️ Kelola Kategori</span>
+            </button>
+
+            <button type="button" class="btn-outline-action" id="btnOpenWpSyncModal" style="border-color: #CBD5E1; color: #1E293B;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12c0 5.515 4.486 10 10 10s10-4.485 10-10c0-5.514-4.486-10-10-10zm-1.02 15.65l-3.32-9.15h1.74l2.42 7.06 2.16-7.06h1.71l-3.28 9.15h-1.43z"/></svg>
+              <span>🌐 Impor dari WordPress</span>
+            </button>
+
+            <button type="button" class="btn-create-article" id="btnOpenCreateArticleModal">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              <span>+ Tulis Artikel (WordPress Editor)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Article KPI Metrics Grid -->
+        <div class="metric-grid">
+          
+          <div class="metric-card metric-purple">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Artikel Terpublikasi</span>
+              <span class="metric-value" id="countArticlesPublished">0</span>
+              <span class="metric-meta">Tampil di Halaman Kabar</span>
+            </div>
+          </div>
+
+          <div class="metric-card metric-gold" id="cardArticleCategories" style="cursor: pointer;" title="Klik untuk mengelola & menghapus kategori">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Kategori Kabar ⚙️</span>
+              <span class="metric-value" id="countArticleCategories">5</span>
+              <span class="metric-meta">Klik untuk kelola & hapus &rarr;</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Article List Table Container -->
+        <div class="data-table-container">
+          
+          <!-- Toolbar (Search & Filter) -->
+          <div class="table-toolbar">
+            <div class="search-box-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="searchArticle" class="search-input" placeholder="Cari judul artikel, topik, penulis...">
+            </div>
+
+            <div class="toolbar-filters" style="display: flex; gap: 8px; align-items: center;">
+              <select id="filterCategoryArticle" class="select-filter">
+                <option value="all">Semua Kategori</option>
+                <option value="kabar-sekolah-juara">Kabar Sekolah Juara</option>
+                <option value="artikel">Artikel Pendidikan</option>
+                <option value="liputan">Liputan Lapangan</option>
+                <option value="vokasi">Program Vokasi</option>
+                <option value="opini">Kolaborasi & Opini</option>
+              </select>
+
+              <button type="button" class="btn-outline-action" id="btnToolbarManageCategories" title="Kelola & Hapus Kategori" style="padding: 7px 12px; font-size: 0.82rem; border-color: #CBD5E1; color: #1E293B;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                <span>Kelola Kategori</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Articles -->
+          <div class="responsive-table-wrapper">
+            <table class="admin-table" id="tableArticles">
+              <thead>
+                <tr>
+                  <th>Artikel & Judul</th>
+                  <th>Kategori</th>
+                  <th>Penulis / Redaksi</th>
+                  <th>Tanggal Publikasi</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyArticles">
+                <!-- Diisi via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State Articles -->
+          <div class="empty-table-state" id="emptyArticles" style="display: none;">
+            <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            <div class="empty-table-title">Belum ada artikel yang cocok</div>
+            <p style="font-size: 0.85rem;">Klik tombol <strong>+ Tulis Artikel (WordPress Editor)</strong> untuk mempublikasikan artikel pertama Anda.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ==========================================
+       MODAL: WORDPRESS STUDIO EDITOR & UPLOAD
+       ========================================== -->
+  <div class="admin-modal-backdrop" id="articleModal">
+    <div class="admin-modal-box wp-studio-modal-box">
+      
+      <!-- Studio Header with Tabs -->
+      <div class="modal-header wp-studio-header">
+        <div class="wp-studio-nav">
+          <button type="button" class="wp-mode-tab active" id="tabModeEditor" data-mode="editor">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
+            <span>✍️ WordPress Studio Editor</span>
+          </button>
+          <button type="button" class="wp-mode-tab" id="tabModeWpSync" data-mode="wpsync">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>🌐 Tarik dari WordPress (REST API)</span>
+          </button>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnArticleModalClose" aria-label="Tutup">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- VIEW 1: WORDPRESS STUDIO 2-COLUMN EDITOR -->
+      <div id="wpStudioEditorView" class="wp-view-pane active">
+        <form id="articleForm" autocomplete="off">
+          <input type="hidden" id="articleEditId" value="">
+          <input type="hidden" id="articleStatusInput" value="Terbit">
+
+          <div class="wp-editor-workspace">
+            
+            <!-- LEFT COLUMN: Gutenberg Canvas (Editor) -->
+            <div class="wp-editor-canvas-col">
+              
+              <!-- Post Title -->
+              <div class="wp-title-wrapper">
+                <input type="text" id="articleTitle" class="wp-input-title" placeholder="Tambahkan Judul Artikel..." required>
+              </div>
+
+              <!-- WYSIWYG Formatting Toolbar -->
+              <div class="wp-rich-toolbar">
+                <div class="wp-tool-group">
+                  <select id="wpBlockFormat" class="wp-select-format" title="Format Blok">
+                    <option value="p">Paragraf Standar</option>
+                    <option value="h2">Heading 2 (Sub Judul Besar)</option>
+                    <option value="h3">Heading 3 (Sub Judul Sedang)</option>
+                    <option value="blockquote">Kutipan (Quote)</option>
+                  </select>
+                </div>
+
+                <div class="wp-toolbar-divider"></div>
+
+                <div class="wp-tool-group">
+                  <button type="button" class="wp-tool-btn" data-cmd="bold" title="Tebal (Ctrl+B)"><strong>B</strong></button>
+                  <button type="button" class="wp-tool-btn" data-cmd="italic" title="Miring (Ctrl+I)"><em>I</em></button>
+                  <button type="button" class="wp-tool-btn" data-cmd="underline" title="Garis Bawah (Ctrl+U)"><u>U</u></button>
+                  <button type="button" class="wp-tool-btn" data-cmd="strikeThrough" title="Coret (Strikethrough)"><s>S</s></button>
+                </div>
+
+                <div class="wp-toolbar-divider"></div>
+
+                <div class="wp-tool-group">
+                  <button type="button" class="wp-tool-btn" data-cmd="insertUnorderedList" title="Poin Bullet List">• List</button>
+                  <button type="button" class="wp-tool-btn" data-cmd="insertOrderedList" title="Angka Numbered List">1. List</button>
+                  <button type="button" class="wp-tool-btn" id="btnWpInsertLink" title="Sisipkan Link URL">🔗 Link</button>
+                  <button type="button" class="wp-tool-btn" id="btnWpInsertImage" title="Sisipkan Foto di Tulisan">🖼️ Foto</button>
+                </div>
+
+                <div class="wp-toolbar-divider"></div>
+
+                <div class="wp-tool-group">
+                  <button type="button" class="wp-tool-btn" data-cmd="removeFormat" title="Hapus Pemformatan">🧹 Bersihkan</button>
+                </div>
+              </div>
+
+              <!-- ContentEditable Canvas Editor -->
+              <div class="wp-content-canvas-wrap">
+                <div id="articleVisualEditor" class="wp-visual-editor" contenteditable="true" spellcheck="false" data-placeholder="Ketik atau paste isi artikel Anda di sini... Mendukung paragraf, sub-judul, kutipan, dan foto."></div>
+                <textarea id="articleContent" style="display: none;"></textarea>
+              </div>
+
+              <!-- Word Count & Editor Stats Footer -->
+              <div class="wp-editor-footer-stats">
+                <span id="wpStatsCount">0 Kata • 0 Karakter</span>
+                <span style="color: #64748B;">Format HTML Otomatis Aktif</span>
+              </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Document Settings Sidebar -->
+            <div class="wp-editor-sidebar-col">
+              
+              <!-- Sidebar Section 1: Publish & Status -->
+              <div class="wp-sidebar-box">
+                <div class="wp-box-title">
+                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  <span>Publikasi</span>
+                </div>
+                <div class="wp-box-body">
+                  <div class="wp-field-row">
+                    <label class="wp-label">Status Post</label>
+                    <select id="articleStatusSelect" class="wp-select">
+                      <option value="Terbit">Terbit (Live)</option>
+                      <option value="Draf">Draf (Disimpan)</option>
+                    </select>
+                  </div>
+
+                  <div class="wp-field-row">
+                    <label class="wp-label">Penulis / Redaksi</label>
+                    <input type="text" id="articleAuthor" class="wp-input" value="Tim Redaksi ACF" placeholder="Nama Penulis..." required>
+                  </div>
+
+                  <div class="wp-field-row">
+                    <label class="wp-label">Tanggal Publikasi</label>
+                    <input type="text" id="articleDateInput" class="wp-input" placeholder="Otomatis Hari Ini">
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="wp-publish-actions">
+                    <button type="button" class="btn-wp-draft" id="btnSaveDraft">
+                      <span>Simpan Draf</span>
+                    </button>
+                    <button type="submit" class="btn-wp-publish" id="btnSaveArticle">
+                      <span id="btnSaveArticleText">Publikasikan</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sidebar Section 2: Featured Image (Gambar Utama) -->
+              <div class="wp-sidebar-box">
+                <div class="wp-box-title">
+                  <svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span>Gambar Unggulan (Featured Image)</span>
+                </div>
+                <div class="wp-box-body">
+                  
+                  <!-- Local File Upload Dropzone -->
+                  <div class="wp-dropzone" id="wpDropzone">
+                    <input type="file" id="wpFileInput" accept="image/*" style="display: none;">
+                    <div class="wp-dropzone-content" id="wpDropzoneContent">
+                      <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                      <div style="font-weight: 600; font-size: 0.84rem; color: #1E293B;">Upload Foto dari Komputer</div>
+                      <div style="font-size: 0.74rem; color: #64748B;">Klik untuk memilih file foto (JPG/PNG/WEBP)</div>
+                    </div>
+                  </div>
+
+                  <!-- URL Input Alternative -->
+                  <div style="margin-top: 10px;">
+                    <label class="wp-label" style="font-size: 0.76rem;">Atau Masukkan URL Foto:</label>
+                    <input type="url" id="articleCover" class="wp-input" placeholder="https://images.unsplash.com/photo-..." required>
+                  </div>
+
+                  <!-- Preset Pills -->
+                  <div class="quick-image-pills" style="margin-top: 8px;">
+                    <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80">Kelas Guru</button>
+                    <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&q=80">Siswa Juara</button>
+                    <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80">Vokasi</button>
+                    <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80">Relawan</button>
+                  </div>
+
+                  <!-- Live Image Preview -->
+                  <div class="wp-preview-thumb-box" id="coverPreviewBox" style="margin-top: 10px;">
+                    <img id="coverPreviewImg" src="" alt="Pratinjau Sampul">
+                    <div class="cover-preview-placeholder" id="coverPlaceholder">
+                      <span>Pratinjau foto sampul akan muncul di sini</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Sidebar Section 3: Kategori & Tag -->
+              <div class="wp-sidebar-box">
+                <div class="wp-box-title">
+                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                  <span>Kategori Berita</span>
+                </div>
+                <div class="wp-box-body">
+                  <div style="display: flex; gap: 8px;">
+                    <select id="articleCategory" class="wp-select" style="flex: 1;" required>
+                      <!-- Loaded dynamically via JS -->
+                      <option value="kabar-sekolah-juara">Kabar Sekolah Juara</option>
+                      <option value="artikel">Artikel Pendidikan</option>
+                      <option value="liputan">Liputan Lapangan</option>
+                      <option value="vokasi">Program Vokasi</option>
+                      <option value="opini">Kolaborasi & Opini</option>
+                    </select>
+                    <button type="button" class="btn-outline-action" id="btnToggleNewCategory" title="Tambah Kategori Baru" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap; border-color: #CBD5E1; color: #475569;">
+                      + Baru
+                    </button>
+                    <button type="button" class="btn-outline-action" id="btnEditorManageCategories" title="Kelola & Hapus Kategori" style="padding: 6px 10px; font-size: 0.8rem; white-space: nowrap; border-color: #CBD5E1; color: #475569;">
+                      Kelola
+                    </button>
+                  </div>
+                  
+                  <!-- Form Tambah Kategori Kustom -->
+                  <div id="newCategoryInputWrap" style="display: none; margin-top: 10px; padding: 10px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
+                    <label class="wp-label" style="font-size: 0.76rem; margin-bottom: 4px;">Nama Kategori Baru:</label>
+                    <div style="display: flex; gap: 6px;">
+                      <input type="text" id="newCategoryName" class="wp-input" placeholder="Contoh: Prestasi Siswa, Beasiswa..." style="font-size: 0.82rem; padding: 6px 10px;">
+                      <button type="button" class="btn-wp-publish" id="btnSaveNewCategory" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap; width: auto; min-width: unset;">
+                        Simpan
+                      </button>
+                      <button type="button" class="btn-outline-action" id="btnCancelNewCategory" style="padding: 6px 10px; font-size: 0.8rem;">
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sidebar Section 4: Ringkasan / Excerpt -->
+              <div class="wp-sidebar-box">
+                <div class="wp-box-title">
+                  <svg viewBox="0 0 24 24" width="16" height="16"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                  <span>Kutipan Ringkas (Excerpt)</span>
+                </div>
+                <div class="wp-box-body">
+                  <textarea id="articleExcerpt" class="wp-textarea" rows="3" placeholder="Tulis ringkasan 1-2 kalimat untuk kartu berita di halaman Kabar..." required></textarea>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- VIEW 2: WORDPRESS REST API IMPORTER -->
+      <div id="wpStudioSyncView" class="wp-view-pane">
+        <div class="wp-sync-container">
+          <div class="wp-sync-intro">
+            <div class="wp-sync-icon-wrap">
+              <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12c0 5.515 4.486 10 10 10s10-4.485 10-10c0-5.514-4.486-10-10-10zm-1.02 15.65l-3.32-9.15h1.74l2.42 7.06 2.16-7.06h1.71l-3.28 9.15h-1.43z"/></svg>
+            </div>
+            <div>
+              <h4 style="font-size: 1.1rem; font-weight: 700; color: #0F172A; margin-bottom: 4px;">Integrasi WordPress REST API</h4>
+              <p style="color: #64748B; font-size: 0.88rem;">
+                Tarik otomatis artikel dan berita dari website WordPress Anda (contoh: <code>https://acf.or.id/wp-json/wp/v2/posts</code>) untuk langsung disinkronkan ke halaman Kabar.
+              </p>
+            </div>
+          </div>
+
+          <div class="wp-sync-form-card">
+            <div style="margin-bottom: 16px;">
+              <label class="wp-label" for="wpApiEndpointInput">URL Artikel / Blog WordPress REST API:</label>
+              <div style="display: flex; gap: 10px; margin-top: 6px;">
+                <input type="text" id="wpApiEndpointInput" class="wp-input" placeholder="Contoh: https://gitautamiblog.wordpress.com/2024/01/25/tugas-5/ atau link blog" value="https://gitautamiblog.wordpress.com/">
+                <button type="button" class="btn-create-article" id="btnFetchWpApi" style="white-space: nowrap; padding: 10px 20px;">
+                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  <span>Tarik Artikel WordPress</span>
+                </button>
+              </div>
+              <div style="font-size: 0.78rem; color: #64748B; margin-top: 6px; line-height: 1.5;">
+                💡 <em>Tips: Masukkan link <strong>artikel spesifik</strong> (contoh: <code>gitautamiblog.wordpress.com/2024/01/25/tugas-5/</code>) untuk menarik 1 artikel saja, atau link beranda blog untuk melihat seluruh daftar postingan.</em>
+              </div>
+            </div>
+
+            <!-- Kategori Tujuan Impor WordPress -->
+            <div style="padding-top: 14px; border-top: 1px solid #E2E8F0;">
+              <label class="wp-label" for="wpImportCategory" style="margin-bottom: 6px; font-weight: 600; display: block;">
+                Kategori Berita untuk Hasil Impor:
+              </label>
+              <div style="display: flex; gap: 8px; align-items: center; max-width: 580px;">
+                <select id="wpImportCategory" class="wp-select" style="flex: 1;">
+                  <!-- Loaded dynamically via JS -->
+                  <option value="artikel">Artikel Pendidikan</option>
+                  <option value="liputan">Liputan Lapangan</option>
+                  <option value="vokasi">Program Vokasi</option>
+                  <option value="opini">Kolaborasi & Opini</option>
+                </select>
+                <button type="button" class="btn-outline-action" id="btnToggleNewWpCategory" title="Tambah Kategori Baru" style="padding: 7px 14px; font-size: 0.82rem; white-space: nowrap; border-color: #CBD5E1; color: #475569; font-weight: 600;">
+                  + Tambah Kategori Baru
+                </button>
+              </div>
+
+              <!-- Form Tambah Kategori Kustom di Tab WP -->
+              <div id="newWpCategoryInputWrap" style="display: none; margin-top: 10px; padding: 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; max-width: 580px;">
+                <label class="wp-label" style="font-size: 0.76rem; margin-bottom: 4px;">Nama Kategori Baru:</label>
+                <div style="display: flex; gap: 6px;">
+                  <input type="text" id="newWpCategoryName" class="wp-input" placeholder="Contoh: Liputan Khusus, Opini Guru, Berita Prestasi..." style="font-size: 0.82rem; padding: 6px 10px;">
+                  <button type="button" class="btn-wp-publish" id="btnSaveNewWpCategory" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap; width: auto; min-width: unset;">
+                    Simpan
+                  </button>
+                  <button type="button" class="btn-outline-action" id="btnCancelNewWpCategory" style="padding: 6px 10px; font-size: 0.8rem;">
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WordPress Fetch Preview List -->
+          <div id="wpFetchResultsBox" style="margin-top: 20px; display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h5 style="font-weight: 700; color: #1E293B; font-size: 0.95rem;">Artikel Ditemukan dari WordPress (<span id="wpFetchCount">0</span>):</h5>
+              <button type="button" class="btn-outline-action" id="btnImportAllWp" style="font-size: 0.82rem; padding: 6px 14px;">
+                📥 Impor Semua ke Halaman Kabar
+              </button>
+            </div>
+            <div id="wpFetchList" class="wp-fetch-list"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: KELOLA & HAPUS KATEGORI KABAR
+       ========================================== -->
+  <div class="admin-modal-backdrop" id="categoryManagerModal">
+    <div class="admin-modal-box category-manager-modal-box">
+      
+      <div class="modal-header" style="padding: 20px 24px; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--radius-full); background: var(--admin-gold-soft); color: var(--admin-gold-dark); font-size: 0.76rem; font-weight: 700; margin-bottom: 6px;">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            <span>Manajemen Kategori</span>
+          </div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--admin-navy); margin: 0;">Kelola & Hapus Kategori Kabar</h3>
+          <p style="font-size: 0.84rem; color: var(--admin-text-muted); margin-top: 2px;">Tambah kategori baru atau hapus kategori artikel yang tidak lagi digunakan.</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnCategoryModalClose" aria-label="Tutup modal">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body-content" style="padding: 24px;">
+        <!-- Form Tambah Kategori -->
+        <div class="cat-add-card">
+          <h4 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 8px; color: var(--admin-navy);">+ Tambah Kategori Baru</h4>
+          <form id="formAddCategoryModal" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type="text" id="inputNewCatLabel" class="wp-input" placeholder="Masukkan nama kategori (contoh: Prestasi, Beasiswa...)" style="flex: 1; min-width: 220px;" required>
+            <button type="submit" class="btn-create-article" style="padding: 10px 18px; white-space: nowrap;">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Tambah Kategori</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Daftar Kategori Aktif -->
+        <div style="margin-top: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="font-size: 0.92rem; font-weight: 700; color: var(--admin-navy);">Daftar Kategori Aktif (<span id="catModalTotalCount">0</span>)</h4>
+            <span style="font-size: 0.78rem; color: var(--admin-text-muted);">Klik tombol hapus pada kategori yang ingin dihilangkan</span>
+          </div>
+
+          <div class="category-list-grid" id="categoryListContainer">
+            <!-- Diisi via JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="justify-content: flex-end;">
+        <button type="button" class="btn-outline-action" id="btnCategoryModalCloseFooter">Tutup</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 2: DETAIL DATA MITRA / RELAWAN
+       ========================================== -->
+  <div class="admin-modal-backdrop" id="detailModal">
+    <div class="admin-modal-box">
+      
+      <div class="modal-header">
+        <div style="display: flex; align-items: center;">
+          <h3 class="modal-header-title" id="modalTitle">Rincian Lengkap Pendaftar</h3>
+          <span class="modal-header-tag" id="modalTypeBadge">Mitra</span>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnModalClose" aria-label="Tutup modal">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body" id="modalBody">
+        <!-- Konten detail dinamis dari JavaScript -->
+      </div>
+
+      <div class="modal-footer">
+        <div class="direct-actions-wrap" id="modalActions">
+          <!-- Tombol WA & Email otomatis terpasang via JS -->
+        </div>
+        <button type="button" class="btn-outline-action" id="btnModalCloseFooter">Tutup</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="admin-toast-container" id="toastContainer"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/admin.js"></script>
+</body>
+</html>

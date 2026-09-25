@@ -1,0 +1,259 @@
+/* =============================================
+   ACF EDUHUB — Kerjasama Styles
+   Jadi Mitra Program & Jadi Relawan
+   ============================================= */
+
+.kerjasama-header-banner {
+  padding: 135px 0 65px;
+  background: linear-gradient(135deg, #7D2280 0%, #9B389E 50%, #6E1B71 100%);
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid rgba(245, 166, 35, 0.3);
+}
+
+.kerjasama-header-banner .section-label {
+  color: #FDE68A;
+  background: rgba(245, 166, 35, 0.2);
+  border: 1px solid rgba(245, 166, 35, 0.4);
+  padding: 5px 16px;
+  border-radius: 9999px;
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+}
+
+.kerjasama-header-banner .section-label::before {
+  display: none;
+}
+
+.kerjasama-header-banner h1 {
+  color: #FFFFFF !important;
+}
+
+.kerjasama-header-banner p {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.kerjasama-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 36px;
+  margin-top: 30px;
+}
+
+.kerjasama-card-box {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 22px;
+  padding: 0;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  position: relative;
+}
+
+.kerjasama-card-box:hover {
+  transform: translateY(-6px);
+  border-color: rgba(125, 34, 128, 0.4);
+  box-shadow: 0 20px 45px rgba(125, 34, 128, 0.12);
+}
+
+/* Image Container Inside Card */
+.kerjasama-card-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #F1F5F9;
+}
+
+.kerjasama-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+}
+
+.kerjasama-card-box:hover .kerjasama-card-img {
+  transform: scale(1.05);
+}
+
+.kerjasama-img-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(125, 34, 128, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.kerjasama-img-badge.gold {
+  background: rgba(217, 119, 6, 0.9);
+  color: #FFFFFF;
+}
+
+/* Card Content Area */
+.kerjasama-card-content {
+  padding: 30px 32px 10px;
+  flex: 1;
+}
+
+.kerjasama-card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: rgba(125, 34, 128, 0.09);
+  color: var(--primary-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  border: 1px solid rgba(125, 34, 128, 0.15);
+}
+
+.kerjasama-card-icon.gold {
+  background: rgba(245, 166, 35, 0.12);
+  color: #D97706;
+  border-color: rgba(245, 166, 35, 0.3);
+}
+
+.kerjasama-card-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+.kerjasama-card-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.kerjasama-card-desc {
+  font-size: 0.95rem;
+  color: var(--text-body);
+  line-height: 1.65;
+  margin-bottom: 22px;
+}
+
+.kerjasama-benefit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.kerjasama-benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--navy);
+  line-height: 1.5;
+}
+
+.benefit-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--primary-red);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+#relawan .benefit-dot {
+  background: #D97706;
+}
+
+.btn-kerjasama-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 32px 32px;
+  padding: 14px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  background: linear-gradient(135deg, #7D2280 0%, #9333EA 100%);
+  color: #FFFFFF;
+  box-shadow: 0 6px 18px rgba(125, 34, 128, 0.25);
+  transition: all 0.25s ease;
+}
+
+.btn-kerjasama-action:hover {
+  background: linear-gradient(135deg, #6B1D6E 0%, #7E22CE 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(125, 34, 128, 0.35);
+}
+
+.btn-kerjasama-action.gold-btn {
+  background: linear-gradient(135deg, #7D2280 0%, #8A2BE2 50%, #D97706 100%);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.25);
+}
+
+.btn-kerjasama-action.gold-btn:hover {
+  background: linear-gradient(135deg, #6B1D6E 0%, #7D2280 70%, #B45309 100%);
+  box-shadow: 0 10px 24px rgba(217, 119, 6, 0.35);
+}
+
+.btn-kerjasama-action svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  stroke-width: 2.3;
+  fill: none;
+  transition: transform 0.2s ease;
+}
+
+.btn-kerjasama-action:hover svg {
+  transform: translateX(4px);
+}
+
+@media (max-width: 860px) {
+  .kerjasama-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .kerjasama-header-banner {
+    padding: 110px 0 45px;
+  }
+  .kerjasama-card-img-wrap {
+    height: 180px;
+  }
+  .kerjasama-card-content {
+    padding: 24px 20px 8px;
+  }
+  .kerjasama-card-title {
+    font-size: 1.25rem;
+  }
+  .btn-kerjasama-action {
+    margin: 0 20px 24px;
+    padding: 13px 18px;
+    font-size: 0.92rem;
+  }
+}

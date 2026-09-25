@@ -1,0 +1,431 @@
+/* =======================================================
+   ACF EDUHUB — HALAMAN DONASI (PALET UNGU & KUNING/GOLD)
+   Palet Warna: Royal Purple (#7D2280), Golden Spark (#F5A623 / #FBBF24), Deep Violet (#160321)
+   ======================================================= */
+
+:root {
+  --donasi-purple-deep: #160321;
+  --donasi-purple-dark: #2A0845;
+  --donasi-purple-primary: #7D2280;
+  --donasi-purple-light: #9333EA;
+  --donasi-purple-soft: rgba(125, 34, 128, 0.08);
+  --donasi-purple-glow: rgba(147, 51, 234, 0.35);
+  
+  --donasi-gold-primary: #F5A623;
+  --donasi-gold-hover: #D97706;
+  --donasi-gold-light: #FBBF24;
+  --donasi-gold-soft: rgba(245, 166, 35, 0.12);
+  --donasi-gold-glow: rgba(245, 166, 35, 0.4);
+
+  --donasi-card-bg: #FFFFFF;
+  --donasi-border: #E2E8F0;
+  --donasi-text-dark: #0F172A;
+  --donasi-text-body: #475569;
+  --donasi-text-muted: #64748B;
+}
+
+/* -------------------------------------------------------
+   1. HERO BANNER DONASI (Gradasi Ungu & Emas Elegan)
+   ------------------------------------------------------- */
+.donasi-hero {
+  position: relative;
+  background: linear-gradient(135deg, #13021D 0%, #2E0749 35%, #4C0E60 70%, #1A0327 100%);
+  color: #FFFFFF;
+  padding: 145px 0 65px;
+  text-align: center;
+  overflow: hidden;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #7D2280 0%, #F5A623 50%, #7D2280 100%) 1;
+}
+
+/* Ambient Glow Orbs */
+.donasi-hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(85px);
+  pointer-events: none;
+}
+
+.donasi-hero-glow.glow-1 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.32) 0%, transparent 70%);
+  top: -80px;
+  right: 12%;
+  animation: floatOrb 9s ease-in-out infinite alternate;
+}
+
+.donasi-hero-glow.glow-2 {
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.42) 0%, transparent 70%);
+  bottom: -90px;
+  left: 10%;
+  animation: floatOrb 11s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(0.95); opacity: 0.55; }
+  100% { transform: translate(25px, 20px) scale(1.1); opacity: 0.85; }
+}
+
+.donasi-hero-content-center {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.donasi-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 166, 35, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(245, 166, 35, 0.45);
+  padding: 8px 22px;
+  border-radius: 9999px;
+  color: #FBBF24;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+.donasi-hero-title {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.22;
+  margin-bottom: 18px;
+  color: #FFFFFF;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+}
+
+.donasi-hero-title span {
+  background: linear-gradient(135deg, #FFF1C5 0%, #FBBF24 45%, #F5A623 85%, #FFD54F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.donasi-hero-desc {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #F1F5F9;
+  margin-bottom: 0;
+  max-width: 680px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* -------------------------------------------------------
+   2. MITRA CROWDFUNDING SECTION (Nuansa Ungu & Kuning)
+   ------------------------------------------------------- */
+.donasi-channels-section {
+  padding: 75px 0 100px;
+  background: #F8FAFC;
+  position: relative;
+}
+
+.channel-group-block {
+  margin-bottom: 0;
+}
+
+.channel-group-header {
+  margin-bottom: 44px;
+}
+
+.channel-group-header.centered {
+  text-align: center;
+}
+
+.channel-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  background: #FAF5FF;
+  border: 1.5px solid rgba(125, 34, 128, 0.25);
+  color: #7D2280;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 14px;
+}
+
+.channel-title {
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 12px;
+}
+
+.channel-subtitle {
+  font-size: 1.05rem;
+  color: #64748B;
+  line-height: 1.65;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* Crowdfunding Cards Grid */
+.mitra-channels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 32px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.mitra-channel-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 36px 32px;
+  border: 2px solid #E2E8F0;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top accent bar: Ungu & Kuning gradient */
+.mitra-channel-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #7D2280 0%, #9333EA 40%, #F5A623 80%, #FBBF24 100%);
+}
+
+.mitra-channel-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(125, 34, 128, 0.45);
+  box-shadow: 0 22px 48px rgba(125, 34, 128, 0.12), 0 0 0 1px rgba(245, 166, 35, 0.35);
+}
+
+.mitra-card-body {
+  margin-bottom: 28px;
+}
+
+.mitra-card-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+/* Avatar bertema Ungu & Kuning */
+.mitra-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: #FFFFFF;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(125, 34, 128, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.mitra-avatar.sh {
+  background: linear-gradient(135deg, #7D2280 0%, #9333EA 50%, #F5A623 100%);
+}
+
+.mitra-avatar.as {
+  background: linear-gradient(135deg, #2A0845 0%, #7D2280 50%, #FBBF24 100%);
+}
+
+.mitra-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.mitra-name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 3px;
+  letter-spacing: -0.2px;
+}
+
+.mitra-link-text {
+  font-size: 0.86rem;
+  color: #7D2280;
+  font-weight: 700;
+}
+
+/* Verified Badge bertema Kuning / Gold & Ungu */
+.mitra-verified-tag {
+  margin-left: auto;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: #FFFDF5;
+  color: #D97706;
+  border: 1.5px solid rgba(245, 166, 35, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(245, 166, 35, 0.12);
+}
+
+.mitra-verified-tag svg {
+  stroke: #D97706;
+}
+
+.mitra-card-desc {
+  font-size: 0.96rem;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Tombol Aksi bertema Ungu & Kuning */
+.btn-channel-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  color: #FFFFFF;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 22px rgba(125, 34, 128, 0.22);
+  letter-spacing: 0.2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-channel-action svg {
+  transition: transform 0.25s ease;
+}
+
+.btn-channel-action:hover svg {
+  transform: translateX(4px) translateY(-3px);
+}
+
+/* Sharing Happiness Button */
+.btn-channel-action.sh-btn {
+  background: linear-gradient(135deg, #7D2280 0%, #9333EA 50%, #7D2280 100%);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+}
+
+.btn-channel-action.sh-btn:hover {
+  background: linear-gradient(135deg, #9333EA 0%, #7D2280 70%, #58126E 100%);
+  color: #FDE68A;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(125, 34, 128, 0.38), 0 0 16px rgba(245, 166, 35, 0.3);
+}
+
+/* Amal Sholeh Button */
+.btn-channel-action.as-btn {
+  background: linear-gradient(135deg, #6B1D6E 0%, #7D2280 50%, #8A2BE2 100%);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+}
+
+.btn-channel-action.as-btn:hover {
+  background: linear-gradient(135deg, #7D2280 0%, #6B1D6E 70%, #4A0E4E 100%);
+  color: #FDE68A;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(125, 34, 128, 0.38), 0 0 16px rgba(245, 166, 35, 0.3);
+}
+
+/* -------------------------------------------------------
+   3. RESPONSIVE BREAKPOINTS (Mobile & Tablet)
+   ------------------------------------------------------- */
+@media (max-width: 768px) {
+  .donasi-hero {
+    padding: 125px 16px 55px;
+  }
+  .donasi-channels-section {
+    padding: 55px 0 75px;
+  }
+}
+
+@media (max-width: 640px) {
+  .donasi-hero {
+    padding: 105px 14px 45px;
+  }
+  .donasi-hero-title {
+    font-size: clamp(1.8rem, 6vw, 2.25rem);
+    margin-bottom: 12px;
+  }
+  .donasi-hero-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .donasi-hero-stats-row {
+    gap: 10px;
+  }
+  .hero-stat-pill {
+    padding: 10px 14px;
+    flex: 1 1 100%;
+  }
+  .stat-pill-num {
+    font-size: 1.05rem;
+  }
+  .stat-pill-label {
+    font-size: 0.74rem;
+  }
+
+  .channel-title {
+    font-size: 1.45rem;
+  }
+  .channel-subtitle {
+    font-size: 0.92rem;
+  }
+  .mitra-channels-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .mitra-channel-card {
+    padding: 26px 20px;
+    border-radius: 18px;
+  }
+  .mitra-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 1.15rem;
+    border-radius: 13px;
+  }
+  .mitra-name {
+    font-size: 1.2rem;
+  }
+  .mitra-card-desc {
+    font-size: 0.9rem;
+    line-height: 1.58;
+  }
+  .btn-channel-action {
+    padding: 14px 20px;
+    font-size: 0.94rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .mitra-card-top {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .mitra-verified-tag {
+    margin-left: 0;
+  }
+}

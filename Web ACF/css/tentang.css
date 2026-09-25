@@ -1,0 +1,638 @@
+/* =============================================
+   ACF EDUHUB — Tentang Kami (Kisah Kami & Visi Misi) Styles
+   ============================================= */
+
+/* Page Hero */
+.page-hero {
+  position: relative;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  padding: 140px 0 60px;
+  background: linear-gradient(135deg, #7D2280 0%, #9B389E 50%, #6E1B71 100%);
+  color: #FFFFFF;
+  overflow: hidden;
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 85% 20%, rgba(245, 166, 35, 0.2) 0%, transparent 55%),
+              radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.page-hero-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 16px;
+}
+
+.page-hero-breadcrumb a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.page-hero-breadcrumb a:hover {
+  color: #FFD166;
+}
+
+.page-hero-title {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+
+.page-hero-subtitle {
+  font-size: 1.12rem;
+  color: rgba(255, 255, 255, 0.94);
+  max-width: 680px;
+  line-height: 1.7;
+}
+
+/* Visi Misi Specific */
+.visi-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.visi-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(125, 34, 128, 0.1);
+  color: var(--acf-red);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.misi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 40px;
+}
+
+.misi-card {
+  background: #FFFFFF;
+  border: 1px solid var(--grey-200);
+  border-radius: 16px;
+  padding: 32px 28px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.misi-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--acf-red);
+}
+
+.misi-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(125, 34, 128, 0.08);
+  color: var(--acf-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.misi-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.misi-number {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #F1F5F9;
+}
+
+/* Values Grid */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 40px;
+}
+
+.value-card {
+  background: #FFFFFF;
+  border: 1px solid var(--grey-200);
+  border-radius: 16px;
+  padding: 32px 28px;
+  transition: all 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.value-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(245, 166, 35, 0.12);
+  color: var(--acf-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.value-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* =============================================
+   Milestone Horizontal Stepper (Compact & Elegant)
+   ============================================= */
+.milestone-section-wrap {
+  padding: 60px 0;
+  background: #FAFCFE;
+  border-top: 1px solid #F1F5F9;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.milestone-horizontal-track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  position: relative;
+  margin-top: 24px;
+}
+
+/* Connecting track line across nodes on desktop */
+.milestone-horizontal-track::before {
+  content: '';
+  position: absolute;
+  top: 48px;
+  left: 12%;
+  right: 12%;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(125, 34, 128, 0.25) 0%, rgba(125, 34, 128, 0.6) 70%, rgba(245, 166, 35, 0.8) 100%);
+  z-index: 1;
+}
+
+.milestone-step {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+
+.milestone-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.milestone-pill-year {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--acf-purple);
+  background: rgba(125, 34, 128, 0.08);
+  border: 1px solid rgba(125, 34, 128, 0.18);
+  padding: 3px 12px;
+  border-radius: 9999px;
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
+  transition: all 0.25s ease;
+}
+
+.milestone-pill-year.gold {
+  color: #B45309;
+  background: rgba(245, 166, 35, 0.14);
+  border-color: rgba(245, 166, 35, 0.35);
+}
+
+.milestone-circle-node {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 3px solid var(--acf-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px rgba(125, 34, 128, 0.15);
+  transition: all 0.25s ease;
+}
+
+.milestone-circle-node.gold-node {
+  border-color: var(--acf-gold);
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.25);
+}
+
+.milestone-inner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--acf-purple);
+}
+
+.gold-node .milestone-inner-dot {
+  background: var(--acf-gold);
+}
+
+.milestone-content-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 18px 16px;
+  height: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.milestone-content-card.highlight {
+  border-color: rgba(245, 166, 35, 0.4);
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF8 100%);
+}
+
+.milestone-step:hover .milestone-content-card {
+  transform: translateY(-4px);
+  border-color: rgba(125, 34, 128, 0.3);
+  box-shadow: 0 8px 20px rgba(125, 34, 128, 0.08);
+}
+
+.milestone-step:hover .milestone-circle-node {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 5px rgba(125, 34, 128, 0.2);
+}
+
+.milestone-step-title {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.milestone-step-desc {
+  font-size: 0.83rem;
+  color: var(--text-body);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Responsive Mobile Layout */
+@media (max-width: 860px) {
+  .milestone-horizontal-track {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding-left: 20px;
+  }
+
+  .milestone-horizontal-track::before {
+    top: 15px;
+    bottom: 15px;
+    left: 29px;
+    right: auto;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, var(--acf-purple) 0%, var(--acf-gold) 100%);
+  }
+
+  .milestone-step {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .milestone-indicator {
+    flex-direction: column-reverse;
+    align-items: center;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .milestone-pill-year {
+    margin-bottom: 0;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+  }
+
+  .milestone-content-card {
+    flex-grow: 1;
+    padding: 14px 16px;
+  }
+}
+
+/* Team Section Styles */
+.team-group-block {
+  margin-top: 40px;
+}
+
+.team-group-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--acf-red);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.team-row-dewan {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  margin-bottom: 50px;
+}
+
+.team-row-manajemen {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.team-member-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.team-avatar-circle {
+  width: 175px;
+  height: 175px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 18px;
+  background: linear-gradient(135deg, #782079 0%, #B86782 50%, #EAA26D 100%);
+  box-shadow: 0 10px 25px rgba(120, 32, 121, 0.18);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.team-avatar-circle:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 14px 32px rgba(120, 32, 121, 0.28);
+}
+
+.team-avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.team-name {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 6px;
+  line-height: 1.35;
+  max-width: 260px;
+}
+
+.team-role {
+  font-size: 0.9rem;
+  color: #4B5563;
+  font-weight: 400;
+  line-height: 1.45;
+  max-width: 250px;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .visi-grid {
+    grid-template-columns: 1fr;
+  }
+  .misi-grid, .values-grid {
+    grid-template-columns: 1fr;
+  }
+  .team-row-pembina {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .team-row-manajemen {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-hero {
+    padding: 105px 0 45px;
+    min-height: auto;
+  }
+  .page-hero-title {
+    font-size: 1.8rem;
+  }
+  .page-hero-subtitle {
+    font-size: 0.95rem;
+  }
+  .team-row-pembina {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .team-row-manajemen {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .team-avatar-circle {
+    width: 145px;
+    height: 145px;
+  }
+}
+
+/* Compact Stats Grid (Dampak Nyata) */
+.compact-stats-section {
+  padding: 48px 0;
+  background: #FAFCFE;
+  border-top: 1px solid #F1F5F9;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.compact-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.compact-stat-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s ease;
+}
+
+.compact-stat-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(125, 34, 128, 0.3);
+  box-shadow: 0 8px 18px rgba(125, 34, 128, 0.08);
+}
+
+.compact-stat-num {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--acf-purple);
+  line-height: 1.1;
+}
+
+.compact-stat-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: 6px;
+}
+
+@media (max-width: 768px) {
+  .compact-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .compact-stat-card {
+    padding: 14px 10px;
+  }
+  .compact-stat-num {
+    font-size: 1.6rem;
+  }
+  .compact-stat-label {
+    font-size: 0.8rem;
+  }
+}
+
+/* Apresiasi Cards Style (Overlapping Portrait Frame as in Sketch) */
+.apresiasi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 75px;
+}
+
+.apresiasi-card {
+  background: #FFFFFF;
+  border: 1px solid var(--grey-200);
+  border-radius: 20px;
+  padding: 0 24px 34px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s ease;
+}
+
+.apresiasi-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(125, 34, 128, 0.12);
+  border-color: rgba(125, 34, 128, 0.35);
+}
+
+.apresiasi-photo-frame {
+  width: 215px;
+  max-width: 85%;
+  height: 245px;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: -65px;
+  margin-bottom: 22px;
+  position: relative;
+  background: #F8FAFC;
+  border: 5px solid #FFFFFF;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14), 0 3px 10px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.apresiasi-card:hover .apresiasi-photo-frame {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 16px 36px rgba(125, 34, 128, 0.28);
+}
+
+.apresiasi-badge-year {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(125, 34, 128, 0.92);
+  backdrop-filter: blur(4px);
+  color: #FFFFFF;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 2;
+}
+
+.apresiasi-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.apresiasi-card:hover .apresiasi-photo-img {
+  transform: scale(1.08);
+}
+
+.apresiasi-card-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 10px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.apresiasi-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-body);
+  line-height: 1.65;
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 991px) {
+  .apresiasi-grid {
+    grid-template-columns: 1fr;
+    gap: 80px;
+    margin-top: 75px;
+  }
+  .apresiasi-photo-frame {
+    width: 225px;
+    height: 255px;
+  }
+}
+

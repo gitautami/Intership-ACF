@@ -1536,8 +1536,16 @@
   z-index: 2;
 }
 
-.home-kabar-tag.artikel {
+.home-kabar-tag.artikel,
+.home-kabar-tag.kabar-sekolah-daya-setara,
+.home-kabar-tag.sekolah-daya-setara {
   background: rgba(125, 34, 128, 0.92);
+  color: #FFFFFF;
+}
+
+.home-kabar-tag.kabar-sekolah-juara,
+.home-kabar-tag.sekolah-juara {
+  background: rgba(220, 38, 38, 0.92);
   color: #FFFFFF;
 }
 
@@ -1548,6 +1556,11 @@
 
 .home-kabar-tag.vokasi {
   background: rgba(30, 42, 58, 0.92);
+  color: #FFFFFF;
+}
+
+.home-kabar-tag.opini {
+  background: rgba(2, 132, 199, 0.92);
   color: #FFFFFF;
 }
 

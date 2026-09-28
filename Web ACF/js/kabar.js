@@ -684,4 +684,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial load
   loadAndRenderArticles();
+
+  // Check URL query parameters for direct article opening (from Homepage cards)
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetId = urlParams.get('id') || urlParams.get('article');
+    if (targetId) {
+      const art = currentArticles.find(a => a.id === targetId);
+      if (art) {
+        setTimeout(() => {
+          openArticleDetail(art);
+        }, 150);
+      }
+    }
+  } catch (e) {
+    console.warn('Error reading URL params:', e);
+  }
 });
+

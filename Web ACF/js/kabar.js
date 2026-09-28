@@ -20,6 +20,40 @@ document.addEventListener('DOMContentLoaded', () => {
   // Default initial articles
   const DEFAULT_ARTICLES = [
     {
+      id: 'ART-SDS06',
+      title: 'Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan: Selamat kepada Lulusan Sekolah Daya Setara 2025/2026',
+      category: 'kabar-sekolah-daya-setara',
+      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      author: 'cerianak',
+      date: 'Aug 7, 2026',
+      comments: '0 comments',
+      cover: 'assets/kabar-sekolahdayasetara/25.png',
+      excerpt: 'Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C...',
+      content: `<p>Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C.</p>
+<p>Bagi Sekolah Daya Setara, hari kelulusan bukan sekadar seremoni akhir tahun ajaran. Ia adalah penanda bahwa pendidikan yang setara dan terbuka bagi siapa saja, tanpa memandang latar belakang atau titik awal masing-masing, benar-benar bisa membawa seseorang sampai ke garis akhir yang selama ini mungkin terasa jauh.</p>
+<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/26.png" alt="Pelepasan Lulusan Sekolah Daya Setara" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<h3 style="font-size: 1.2rem; font-weight: 700; color: #1E293B; margin: 28px 0 12px 0;">Bukan Akhir, Melainkan Awal yang Baru</h3>
+<p>Hari kelulusan sering dimaknai sebagai penutup sebuah babak. Namun bagi para lulusan Sekolah Daya Setara, hari ini lebih tepat dilihat sebagai titik awal untuk melangkah lebih jauh — membawa serta ilmu, pengalaman, dan semangat yang telah dibangun selama masa belajar, untuk kemudian memberi manfaat bagi keluarga, masyarakat, dan bangsa.</p>
+<p>Perjalanan menuju hari ini tentu tidak selalu mudah. Pendidikan kesetaraan sering ditempuh oleh mereka yang harus membagi waktu antara belajar dan tanggung jawab lain dalam hidupnya. Karena itu, setiap kelulusan di jalur ini adalah bukti nyata bahwa kesempatan untuk meraih masa depan yang lebih baik terbuka bagi siapa saja yang mau terus berjuang dan belajar.</p>
+<h3 style="font-size: 1.2rem; font-weight: 700; color: #1E293B; margin: 28px 0 12px 0;">Selamat kepada Para Lulusan</h3>
+<p>Sekolah Daya Setara dengan bangga mengucapkan selamat kepada tujuh peserta didik yang telah menyelesaikan pendidikannya pada Tahun Ajaran 2025/2026:</p>
+<ul style="line-height: 1.8; margin-bottom: 18px;">
+  <li><strong>Nizar Maulana Yusuf</strong> (Paket C)</li>
+  <li><strong>Hamdan Hadiatna</strong> (Paket C)</li>
+  <li><strong>Fitria Agustina Putri Hermansyah</strong> (Paket B)</li>
+  <li><strong>Muhamad Arya Dira Putera Suteja</strong> (Paket C)</li>
+  <li><strong>Muhammad Arafah Fadillah</strong> (Paket C)</li>
+  <li><strong>April Liani</strong> (Paket C)</li>
+  <li><strong>Muhamad Akbar</strong> (Paket C)</li>
+</ul>
+<p>Kami bangga menjadi bagian dari perjalanan kalian. Semoga ilmu yang telah diperoleh menjadi bekal untuk meraih cita-cita, membuka lebih banyak peluang, serta memberikan manfaat bagi keluarga, masyarakat, dan lingkungan sekitar.</p>
+<h3 style="font-size: 1.2rem; font-weight: 700; color: #1E293B; margin: 28px 0 12px 0;">Teruslah Melangkah</h3>
+<p>Kelulusan ini menjadi pengingat bahwa masa depan yang cerah selalu dimulai dari keberanian untuk terus belajar, kapan pun dan dari titik mana pun seseorang memulai. Teruslah bermimpi, belajar, dan berkarya — karena setiap pencapaian, sekecil apa pun awalnya, adalah bukti bahwa kesempatan itu nyata bagi siapa saja yang mau berjuang.</p>
+<p>Selamat dan sukses untuk seluruh lulusan Sekolah Daya Setara Tahun Ajaran 2025/2026.</p>
+<p style="color: #64748B; font-weight: 700; margin-top: 28px; font-style: italic;">Sekolah Daya Setara — Setara dalam Langkah, Berdaya dalam Karya.</p>`,
+      status: 'Terbit'
+    },
+    {
       id: 'ART-SDS05',
       title: 'Tujuh Kisah, Satu Semangat yang Sama: Perjalanan Lulusan Sekolah Daya Setara 2025/2026',
       category: 'kabar-sekolah-daya-setara',
@@ -440,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const existingIdx = parsed.findIndex(a => a.id === defArt.id);
             if (existingIdx === -1) {
               parsed.unshift(defArt);
-            } else if (defArt.id === 'ART-SDS05') {
+            } else if (defArt.id === 'ART-SDS05' || defArt.id === 'ART-SDS06') {
               parsed[existingIdx] = { ...parsed[existingIdx], ...defArt };
             }
           });

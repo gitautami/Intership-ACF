@@ -573,9 +573,149 @@ document.addEventListener('DOMContentLoaded', () => {
     applyFilters();
   }
 
+  let currentActiveArticle = null;
+  let toastTimer = null;
+
+  function showShareToast(message) {
+    const toast = document.getElementById('kabarShareToast');
+    const toastText = document.getElementById('kabarShareToastText');
+    if (!toast) return;
+    if (toastText && message) {
+      toastText.textContent = message;
+    }
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  function getArticleShareUrl(art) {
+    try {
+      const url = new URL(window.location.href);
+      if (art && art.id) {
+        url.searchParams.set('id', art.id);
+      }
+      return url.toString();
+    } catch (e) {
+      const base = window.location.href.split('?')[0];
+      return art && art.id ? `${base}?id=${encodeURIComponent(art.id)}` : window.location.href;
+    }
+  }
+
+  function copyTextToClipboard(text, onSuccess) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopyText(text, onSuccess));
+    } else {
+      fallbackCopyText(text, onSuccess);
+    }
+  }
+
+  function fallbackCopyText(text, onSuccess) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.top = '-9999px';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      const successful = document.execCommand('copy');
+      if (successful && onSuccess) onSuccess();
+    } catch (err) {
+      console.error('Fallback copy failed: ', err);
+    }
+    document.body.removeChild(textArea);
+  }
+
+  function initShareButtons() {
+    const btnShareWA = document.getElementById('btnShareWA');
+    const btnShareIG = document.getElementById('btnShareIG');
+    const btnShareThreads = document.getElementById('btnShareThreads');
+    const btnShareCopy = document.getElementById('btnShareCopy');
+
+    // 1. WhatsApp Share
+    if (btnShareWA) {
+      btnShareWA.addEventListener('click', () => {
+        const title = currentActiveArticle ? currentActiveArticle.title : 'Kabar Edukasi ACF';
+        const url = getArticleShareUrl(currentActiveArticle);
+        const waText = encodeURIComponent(`*${title}*\n\nBaca selengkapnya di:\n${url}`);
+        window.open(`https://api.whatsapp.com/send?text=${waText}`, '_blank');
+      });
+    }
+
+    // 2. Instagram Share
+    if (btnShareIG) {
+      btnShareIG.addEventListener('click', async () => {
+        const title = currentActiveArticle ? currentActiveArticle.title : 'Kabar Edukasi ACF';
+        const url = getArticleShareUrl(currentActiveArticle);
+        
+        // If native Web Share API is available (especially on mobile devices where Instagram is installed)
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: title,
+              text: `${title} - ACF Eduhub`,
+              url: url
+            });
+            return;
+          } catch (err) {
+            // User cancelled or share failed, fallback to copy + open IG
+          }
+        }
+        
+        // Desktop / Fallback: Copy link and open Instagram web
+        copyTextToClipboard(url, () => {
+          showShareToast('Link disalin! Membuka Instagram...');
+          setTimeout(() => {
+            window.open('https://www.instagram.com/', '_blank');
+          }, 600);
+        });
+      });
+    }
+
+    // 3. Threads Share
+    if (btnShareThreads) {
+      btnShareThreads.addEventListener('click', () => {
+        const title = currentActiveArticle ? currentActiveArticle.title : 'Kabar Edukasi ACF';
+        const url = getArticleShareUrl(currentActiveArticle);
+        const threadText = encodeURIComponent(`${title}\n\n${url}`);
+        window.open(`https://www.threads.net/intent/post?text=${threadText}`, '_blank');
+      });
+    }
+
+    // 4. Salin Link
+    if (btnShareCopy) {
+      btnShareCopy.addEventListener('click', () => {
+        const url = getArticleShareUrl(currentActiveArticle);
+        copyTextToClipboard(url, () => {
+          showShareToast('Link artikel berhasil disalin!');
+          
+          btnShareCopy.classList.add('copied');
+          btnShareCopy.setAttribute('title', 'Tersalin!');
+          const iconCopy = btnShareCopy.querySelector('.icon-copy');
+          const iconCopied = btnShareCopy.querySelector('.icon-copied');
+          
+          if (iconCopy) iconCopy.style.display = 'none';
+          if (iconCopied) iconCopied.style.display = 'inline-block';
+
+          setTimeout(() => {
+            btnShareCopy.classList.remove('copied');
+            btnShareCopy.setAttribute('title', 'Salin Link Artikel');
+            if (iconCopy) iconCopy.style.display = 'inline-block';
+            if (iconCopied) iconCopied.style.display = 'none';
+          }, 2500);
+        });
+      });
+    }
+  }
+
   // 5. Open Article Detail Modal (Matches Gambar 2 Layout)
   function openArticleDetail(art) {
     if (!articleModal) return;
+
+    currentActiveArticle = art;
 
     const modalCover = document.getElementById('modalArticleCover');
     const modalTitle = document.getElementById('modalArticleTitle');
@@ -598,6 +738,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (modalContent) {
       modalContent.innerHTML = art.content || `<p>${escapeHTML(art.excerpt || '')}</p>`;
+    }
+
+    // Reset share button copy state
+    const btnShareCopy = document.getElementById('btnShareCopy');
+    if (btnShareCopy) {
+      btnShareCopy.classList.remove('copied');
+      btnShareCopy.setAttribute('title', 'Salin Link Artikel');
+      const iconCopy = btnShareCopy.querySelector('.icon-copy');
+      const iconCopied = btnShareCopy.querySelector('.icon-copied');
+      if (iconCopy) iconCopy.style.display = 'inline-block';
+      if (iconCopied) iconCopied.style.display = 'none';
     }
 
     articleModal.classList.add('active');
@@ -689,6 +840,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial load
   loadAndRenderArticles();
+  initShareButtons();
 
   // Check URL query parameters for direct article opening (from Homepage cards)
   try {

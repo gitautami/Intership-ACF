@@ -25,6 +25,31 @@
   // Initial Sample Data for Articles (Kabar)
   const INITIAL_ARTICLES_DATA = [
     {
+      id: 'ART-SDS05',
+      title: 'Tujuh Kisah, Satu Semangat yang Sama: Perjalanan Lulusan Sekolah Daya Setara 2025/2026',
+      category: 'kabar-sekolah-daya-setara',
+      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      author: 'cerianak',
+      date: 'Aug 7, 2026',
+      cover: 'assets/kabar-sekolahdayasetara/27 (2).png',
+      excerpt: 'Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C...',
+      content: `<p>Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C.</p>
+<p>Di balik setiap ijazah yang diraih, ada jalan berliku yang berbeda-beda. Beberapa harus berhenti sekolah karena keadaan ekonomi, beberapa lainnya memilih bekerja lebih dulu sebelum kembali ke bangku belajar, dan tak sedikit yang sempat kehilangan arah sebelum akhirnya menemukan kembali alasan untuk terus belajar. Berikut adalah tujuh kisah dari mereka yang telah membuktikan bahwa pendidikan tetap bisa diraih, kapan pun seseorang siap untuk kembali.</p>
+<p><strong>Nizar Maulana Yusuf — Paket C, PKBM Rumah Quran</strong><br>Saat masih duduk di bangku SMA, Nizar harus berhenti sekolah karena kondisi ekonomi keluarganya mengharuskan ia turut mencari penghasilan. Ketika keadaan mulai memungkinkan, ia memutuskan melanjutkan pendidikan lewat Paket C agar memiliki bekal yang lebih kuat untuk meraih peluang kerja maupun studi lanjutan.</p>
+<p><strong>Hamdan Hadiatna — Paket C, PKBM Lembang</strong><br>Hamdan sempat menghentikan pendidikannya karena memilih bekerja demi membantu memenuhi kebutuhan keluarga. Kini, sambil bekerja sebagai petugas kebersihan di sebuah sekolah, ia membuktikan bahwa kesibukan bekerja bukan penghalang untuk tetap menyelesaikan pendidikan.</p>
+<p><strong>Fitria Agustina Putri Hermansyah — Paket B, PKBM Ngamprah</strong><br>Fitria sempat berhenti sekolah setelah keluarganya berpindah tempat tinggal, yang membuatnya kesulitan melanjutkan pendidikan formal. Melalui PKBM, ia mendapat kembali kesempatan untuk belajar hingga akhirnya menuntaskan Paket B.</p>
+<p><strong>Muhamad Arya Dira Putera Suteja — Paket C, PKBM Ngamprah</strong><br>Arya harus menunda pendidikannya karena memilih bekerja sejak usia muda. Sebagai pegawai laundry, ia membagi waktunya antara pekerjaan dan belajar, hingga akhirnya berhasil menyelesaikan Paket C.</p>
+<p><strong>Muhammad Arafah Fadillah — Paket C, PKBM Lembang</strong><br>Arafah pernah kehilangan semangat belajar setelah mengalami sejumlah perubahan dalam kondisi keluarganya. Dukungan orang-orang di sekitarnya membantunya bangkit kembali dan melanjutkan pendidikan lewat PKBM.</p>
+<p><strong>April Liani — Paket C, PKBM Sukabumi</strong><br>April sempat berhenti sekolah karena harus mendampingi keluarganya dalam situasi yang sulit. Begitu ada kesempatan, ia memilih kembali belajar agar dapat membuka lebih banyak pilihan untuk masa depannya.</p>
+<p><strong>Muhamad Akbar — Paket C, PKBM Lembang</strong><br>Akbar pernah menganggap sekolah bukan prioritas karena lebih fokus mencari pengalaman kerja. Seiring waktu, ia menyadari bahwa pendidikan tetap penting sebagai bekal pengembangan diri, sehingga memilih menuntaskan Paket C melalui PKBM.</p>
+<h3 style="font-size: 1.2rem; font-weight: 700; color: #1E293B; margin: 28px 0 12px 0;">Satu Titik Awal yang Berbeda, Satu Garis Akhir yang Sama</h3>
+<p>Ketujuh kisah ini menunjukkan bahwa jalan menuju pendidikan tidak selalu lurus. Ada yang harus berhenti karena ekonomi, ada yang menunda karena bekerja, dan ada yang sempat kehilangan arah sebelum menemukannya kembali. Namun semuanya bertemu di titik yang sama: keberanian untuk kembali belajar, dari mana pun mereka memulai.</p>
+<p>Sekolah Daya Setara bangga menjadi bagian dari perjalanan ini. Semoga ilmu yang telah diperoleh menjadi bekal untuk meraih cita-cita, membuka lebih banyak peluang, serta memberi manfaat bagi keluarga, masyarakat, dan lingkungan sekitar.</p>
+<p>Selamat dan sukses untuk seluruh lulusan Sekolah Daya Setara Tahun Ajaran 2025/2026. Teruslah melangkah dengan penuh keyakinan, karena masa depan yang cerah selalu dimulai dari keberanian untuk terus belajar.</p>
+<p style="color: #64748B; font-weight: 700; margin-top: 28px; font-style: italic;">Sekolah Daya Setara — Setara dalam Langkah, Berdaya dalam Karya.</p>`,
+      status: 'Terbit'
+    },
+    {
       id: 'ART-3001',
       title: 'Transformasi Kompetensi Guru Era Digital Melalui Guruverse.ID',
       category: 'artikel',

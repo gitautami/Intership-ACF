@@ -17,16 +17,13 @@ function initHeroSlider() {
   const dots = slider.querySelectorAll('.slider-dot');
   const prevBtn = document.getElementById('sliderPrevBtn');
   const nextBtn = document.getElementById('sliderNextBtn');
-  const progressFill = document.getElementById('sliderProgressFill');
 
   if (slides.length === 0) return;
 
   let currentSlide = 0;
   const totalSlides = slides.length;
-  const slideDuration = 5000; // 5 seconds per slide with smooth auto transition
+  const slideDuration = 4500; // 4.5 seconds per slide
   let slideInterval = null;
-  let progressAnimation = null;
-  let startTime = null;
 
   function goToSlide(index) {
     // Wrap around
@@ -57,9 +54,6 @@ function initHeroSlider() {
         dot.setAttribute('aria-selected', 'false');
       }
     });
-
-    // Restart progress bar
-    resetProgress();
   }
 
   function nextSlide() {
@@ -70,20 +64,8 @@ function initHeroSlider() {
     goToSlide(currentSlide - 1);
   }
 
-  function resetProgress() {
-    if (progressFill) {
-      progressFill.style.transition = 'none';
-      progressFill.style.width = '0%';
-      setTimeout(() => {
-        progressFill.style.transition = `width ${slideDuration}ms linear`;
-        progressFill.style.width = '100%';
-      }, 50);
-    }
-  }
-
   function startAutoplay() {
     stopAutoplay();
-    resetProgress();
     slideInterval = setInterval(() => {
       nextSlide();
     }, slideDuration);
@@ -94,24 +76,20 @@ function initHeroSlider() {
       clearInterval(slideInterval);
       slideInterval = null;
     }
-    if (progressFill) {
-      progressFill.style.transition = 'none';
-      progressFill.style.width = '0%';
-    }
   }
 
-  // Event Listeners
+  // Event Listeners for manual interaction
   if (nextBtn) {
     nextBtn.addEventListener('click', () => {
       nextSlide();
-      startAutoplay();
+      startAutoplay(); // Reset timer so it continues auto-sliding smoothly
     });
   }
 
   if (prevBtn) {
     prevBtn.addEventListener('click', () => {
       prevSlide();
-      startAutoplay();
+      startAutoplay(); // Reset timer
     });
   }
 
@@ -120,18 +98,9 @@ function initHeroSlider() {
       const slideIndex = parseInt(e.currentTarget.dataset.slide, 10);
       if (!isNaN(slideIndex)) {
         goToSlide(slideIndex);
-        startAutoplay();
+        startAutoplay(); // Reset timer
       }
     });
-  });
-
-  // Pause autoplay on mouse enter, resume on mouse leave
-  slider.addEventListener('mouseenter', () => {
-    stopAutoplay();
-  });
-
-  slider.addEventListener('mouseleave', () => {
-    startAutoplay();
   });
 
   // Touch Swipe Support for Mobile
@@ -150,18 +119,16 @@ function initHeroSlider() {
   function handleSwipe() {
     const swipeThreshold = 50;
     if (touchEndX < touchStartX - swipeThreshold) {
-      // Swiped Left -> Next
       nextSlide();
       startAutoplay();
     }
     if (touchEndX > touchStartX + swipeThreshold) {
-      // Swiped Right -> Prev
       prevSlide();
       startAutoplay();
     }
   }
 
-  // Initialize Hero Slider
+  // Initialize and start continuous auto sliding immediately
   goToSlide(0);
   startAutoplay();
 }

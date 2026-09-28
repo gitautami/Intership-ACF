@@ -897,7 +897,7 @@
   pointer-events: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: all 0.25s ease;
-  font-family: var(--font-primary, 'Plus Jakarta Sans', sans-serif);
+  font-family: var(--font-primary, 'Poppins', sans-serif);
 }
 
 .floating-whatsapp-tooltip::after {

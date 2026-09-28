@@ -25,6 +25,25 @@
   // Initial Sample Data for Articles (Kabar)
   const INITIAL_ARTICLES_DATA = [
     {
+      id: 'ART-SDS07',
+      title: 'Menyalakan Kembali Api Harapan: Kisah Pejuang PKBM Ceria Taklukkan ANBK 2025',
+      category: 'kabar-sekolah-daya-setara',
+      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      author: 'cerianak',
+      date: 'Aug 14, 2025',
+      cover: 'assets/kabar-sekolahdayasetara/2.png',
+      excerpt: 'Bandung – Di sudut keheningan, sering terdengar keraguan yang membisik, “Kesempatanmu sudah lewat.” Sebuah kalimat yang mampu memadamkan semangat dan mengubur mimpi. Namun, di tengah riuhnya kota Bandung...',
+      content: `<p><strong>Bandung</strong> – Di sudut keheningan, sering terdengar keraguan yang membisik, <em>“Kesempatanmu sudah lewat.”</em> Sebuah kalimat yang mampu memadamkan semangat dan mengubur mimpi. Namun, di tengah riuhnya kota Bandung, ada sebuah cerita yang membuktikan sebaliknya. Sebuah kisah tentang keberanian untuk mencoba, tentang kepercayaan diri yang kembali menyala.</p>
+<p>Pada tanggal 9 dan 10 Agustus 2025 yang bersejarah, udara di PKBM Bina Cipta, Ujungberung, terasa berbeda. Bukan sekadar udara biasa, melainkan udara yang dipenuhi ketegangan, harapan, dan tekad baja. Sebanyak 16 pejuang dari program Paket C PKBM Ceria Ngamprah dan Pusat melangkah masuk, bukan sebagai siswa biasa, tetapi sebagai gladiator di arena pembuktian diri: Asesmen Nasional Berbasis Komputer (ANBK).</p>
+<p>Bagi mereka, layar komputer di hadapan bukanlah sekadar menampilkan soal-soal literasi dan numerasi. Layar itu adalah cermin dari perjuangan mereka. Setiap kata yang mereka baca adalah gema dari semangat belajar yang pernah terputus. Setiap angka yang mereka hitung adalah simbol dari langkah-langkah yang kembali mereka ayunkan menuju masa depan. Ini bukanlah sekadar ujian. Ini adalah deklarasi. Deklarasi bahwa belajar tidak mengenal usia, dan semangat tidak memiliki batas waktu.</p>
+<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/1.png" alt="Peserta ANBK PKBM Ceria 2025" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p>Perjalanan ini adalah tentang menantang takdir. Tentang membuktikan kepada diri sendiri dan dunia bahwa menyerah hanyalah sebuah jeda, bukan akhir dari segalanya. Di wajah mereka, tergambar fokus dan kesungguhan—sebuah potret keberanian yang menggetarkan. Mereka membuktikan bahwa esensi pendidikan bukanlah tentang seberapa cepat kita berlari, melainkan tentang keberanian untuk terus melangkah, bahkan setelah terjatuh.</p>
+<p>Keikutsertaan 16 warga belajar ini dalam ANBK telah menjadi lebih dari sekadar pemenuhan syarat akademis. Ia telah menjadi api yang menyulut kembali harapan, tidak hanya bagi mereka, tetapi bagi kita semua. Mereka adalah bukti hidup bahwa setiap langkah, sekecil apa pun, adalah bekal berharga untuk masa depan yang lebih cerah.</p>
+<p>Kisah mereka adalah jantung dari PKBM Ceria. Sebuah semangat belajar tanpa batas, di mana setiap individu diberi ruang untuk tumbuh, berjuang, dan pada akhirnya, menang. Perjuangan mereka hari ini adalah mercusuar bagi mereka yang mungkin masih ragu di luar sana.</p>
+<p style="color: #64748B; font-weight: 700; margin-top: 24px; font-style: italic;">Karena di PKBM Ceria, kami tidak hanya membuka buku, kami membuka kembali kesempatan dan menyalakan kembali mimpi.</p>`,
+      status: 'Terbit'
+    },
+    {
       id: 'ART-SDS06',
       title: 'Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan: Selamat kepada Lulusan Sekolah Daya Setara 2025/2026',
       category: 'kabar-sekolah-daya-setara',

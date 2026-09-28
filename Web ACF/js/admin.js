@@ -2061,19 +2061,57 @@
       });
     });
 
-    // Heading / Block Format Selector
+    // Heading / Block / Paragraph Format Selector
     if (wpBlockFormat) {
       wpBlockFormat.addEventListener('change', (e) => {
-        const tag = e.target.value;
-        if (tag === 'p') {
+        const val = e.target.value;
+        if (!articleVisualEditor) return;
+        articleVisualEditor.focus();
+        
+        try {
+          document.execCommand('defaultParagraphSeparator', false, 'p');
+        } catch(err) {}
+
+        if (val === 'p') {
           document.execCommand('formatBlock', false, '<p>');
-        } else if (tag === 'h2' || tag === 'h3') {
-          document.execCommand('formatBlock', false, `<${tag}>`);
-        } else if (tag === 'blockquote') {
+        } else if (val === 'multi-p') {
+          // Check if text is selected
+          const selection = window.getSelection();
+          if (selection && selection.toString().trim().length > 0) {
+            const rawText = selection.toString();
+            const paragraphs = rawText.split(/\r?\n+/).filter(line => line.trim().length > 0);
+            if (paragraphs.length > 1) {
+              const html = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
+              document.execCommand('insertHTML', false, html);
+            } else {
+              document.execCommand('formatBlock', false, '<p>');
+              document.execCommand('insertHTML', false, '<p><br></p>');
+            }
+          } else {
+            // Insert fresh new paragraph block
+            document.execCommand('insertHTML', false, '<p><br></p>');
+          }
+        } else if (val === 'lead-p') {
+          const selection = window.getSelection();
+          const selectedText = (selection && selection.toString().trim()) || 'Tuliskan paragraf pembuka atau ringkasan penting di sini...';
+          document.execCommand('insertHTML', false, `<p class="article-lead">${selectedText}</p><p><br></p>`);
+        } else if (val === 'h2' || val === 'h3' || val === 'h4') {
+          document.execCommand('formatBlock', false, `<${val}>`);
+        } else if (val === 'blockquote') {
           document.execCommand('formatBlock', false, '<blockquote>');
+        } else if (val === 'callout') {
+          document.execCommand('insertHTML', false, '<div class="wp-callout-box"><p><strong>Catatan Penting:</strong> Tuliskan poin penting atau catatan sorotan di sini...</p></div><p><br></p>');
+        } else if (val === 'hr') {
+          document.execCommand('insertHorizontalRule', false, null);
+          document.execCommand('insertHTML', false, '<p><br></p>');
         }
-        if (articleVisualEditor) articleVisualEditor.focus();
+
+        articleVisualEditor.focus();
         updateWpStats();
+        // Reset select back to standard paragraph for next action
+        setTimeout(() => {
+          if (wpBlockFormat) wpBlockFormat.value = 'p';
+        }, 100);
       });
     }
 

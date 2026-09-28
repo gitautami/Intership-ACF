@@ -328,6 +328,18 @@
   margin-bottom: 18px;
 }
 
+.kabar-detail-prose p.article-lead {
+  font-size: 1.12rem;
+  font-weight: 500;
+  color: #1E293B;
+  line-height: 1.85;
+  border-left: 4px solid #7D2280;
+  padding: 8px 18px;
+  background: rgba(125, 34, 128, 0.05);
+  border-radius: 0 8px 8px 0;
+  margin: 20px 0;
+}
+
 .kabar-detail-prose h2 {
   font-size: 1.35rem;
   font-weight: 700;
@@ -342,15 +354,42 @@
   margin: 18px 0 8px;
 }
 
+.kabar-detail-prose h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 14px 0 6px;
+}
+
 .kabar-detail-prose blockquote {
-  border-left: 4px solid #CA5A38;
+  border-left: 4px solid #7D2280;
   padding: 12px 20px;
   margin: 20px 0;
-  background: #FFF7ED;
+  background: #FAF5FF;
   border-radius: 0 10px 10px 0;
-  color: #9A3412;
+  color: #4C1D95;
   font-style: italic;
   font-size: 1.05rem;
+}
+
+.kabar-detail-prose .wp-callout-box {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-left: 4px solid #16A34A;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin: 20px 0;
+  color: #166534;
+}
+
+.kabar-detail-prose .wp-callout-box p {
+  margin-bottom: 0;
+}
+
+.kabar-detail-prose hr {
+  border: none;
+  border-top: 1.5px dashed #CBD5E1;
+  margin: 24px 0;
 }
 
 .kabar-detail-prose ul, .kabar-detail-prose ol {

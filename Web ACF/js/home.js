@@ -342,7 +342,7 @@ function initHomeKabar() {
       id: 'ART-SDS07',
       title: 'Menyalakan Kembali Api Harapan: Kisah Pejuang PKBM Ceria Taklukkan ANBK 2025',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Kabar Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 14, 2025',
       cover: 'assets/kabar-sekolahdayasetara/2.png',
@@ -353,7 +353,7 @@ function initHomeKabar() {
       id: 'ART-SDS06',
       title: 'Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan: Selamat kepada Lulusan Sekolah Daya Setara 2025/2026',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Kabar Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
       cover: 'assets/kabar-sekolahdayasetara/25.png',
@@ -364,7 +364,7 @@ function initHomeKabar() {
       id: 'ART-SDS05',
       title: 'Tujuh Kisah, Satu Semangat yang Sama: Perjalanan Lulusan Sekolah Daya Setara 2025/2026',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Kabar Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
       cover: 'assets/kabar-sekolahdayasetara/27 (2).png',
@@ -375,7 +375,7 @@ function initHomeKabar() {
       id: 'ART-SDS04',
       title: 'PKBM Ceria di Lembang Resmi di-Launching',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Kabar Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'acforid',
       date: 'Sep 12, 2024',
       cover: 'assets/kabar-sekolahdayasetara/Foto-Artikel-September-03.jpg',
@@ -389,10 +389,10 @@ function initHomeKabar() {
     switch (art.category) {
       case 'kabar-sekolah-daya-setara':
       case 'sekolah-daya-setara':
-        return 'Kabar Sekolah Daya Setara';
+        return 'Artikel Sekolah Daya Setara';
       case 'kabar-sekolah-juara':
       case 'sekolah-juara':
-        return 'Kabar Sekolah Juara';
+        return 'Artikel Sekolah Juara';
       case 'liputan':
         return 'Liputan Lapangan';
       case 'vokasi':

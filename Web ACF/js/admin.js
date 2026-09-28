@@ -28,7 +28,7 @@
       id: 'ART-SDS07',
       title: 'Menyalakan Kembali Api Harapan: Kisah Pejuang PKBM Ceria Taklukkan ANBK 2025',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 14, 2025',
       cover: 'assets/kabar-sekolahdayasetara/2.png',
@@ -47,7 +47,7 @@
       id: 'ART-SDS06',
       title: 'Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan: Selamat kepada Lulusan Sekolah Daya Setara 2025/2026',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
       cover: 'assets/kabar-sekolahdayasetara/25.png',
@@ -80,7 +80,7 @@
       id: 'ART-SDS05',
       title: 'Tujuh Kisah, Satu Semangat yang Sama: Perjalanan Lulusan Sekolah Daya Setara 2025/2026',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
       cover: 'assets/kabar-sekolahdayasetara/27 (2).png',
@@ -141,8 +141,8 @@
 
   // Default Categories List
   const DEFAULT_CATEGORIES = [
-    { slug: 'kabar-sekolah-daya-setara', label: 'Kabar Sekolah Daya Setara' },
-    { slug: 'kabar-sekolah-juara', label: 'Kabar Sekolah Juara' },
+    { slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' },
+    { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' },
     { slug: 'artikel', label: 'Artikel Pendidikan' },
     { slug: 'liputan', label: 'Liputan Lapangan' },
     { slug: 'vokasi', label: 'Program Vokasi' },
@@ -410,11 +410,15 @@
       if (stored) {
         let parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Migrate old 'sekolah-juara'
+          // Migrate old categories & update labels
           parsed = parsed.map(c => {
-            if (c.slug === 'sekolah-juara') {
+            if (c.slug === 'sekolah-daya-setara' || c.slug === 'kabar-sekolah-daya-setara') {
+              c.slug = 'kabar-sekolah-daya-setara';
+              c.label = 'Artikel Sekolah Daya Setara';
+            }
+            if (c.slug === 'sekolah-juara' || c.slug === 'kabar-sekolah-juara') {
               c.slug = 'kabar-sekolah-juara';
-              c.label = 'Kabar Sekolah Juara';
+              c.label = 'Artikel Sekolah Juara';
             }
             return c;
           });

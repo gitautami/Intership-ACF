@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('kabarSearchInput');
   const articleModal = document.getElementById('kabarDetailModal');
   const btnCloseModal = document.getElementById('btnKabarModalClose');  const DEFAULT_CATEGORIES = [
-    { slug: 'kabar-sekolah-daya-setara', label: 'Kabar Sekolah Daya Setara' },
-    { slug: 'kabar-sekolah-juara', label: 'Kabar Sekolah Juara' },
+    { slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' },
+    { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' },
     { slug: 'artikel', label: 'Artikel Pendidikan' },
     { slug: 'liputan', label: 'Liputan Lapangan' },
     { slug: 'vokasi', label: 'Program Vokasi' },
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SDS07',
       title: 'Menyalakan Kembali Api Harapan: Kisah Pejuang PKBM Ceria Taklukkan ANBK 2025',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 14, 2025',
       comments: '0 comments',
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SDS06',
       title: 'Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan: Selamat kepada Lulusan Sekolah Daya Setara 2025/2026',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
       comments: '0 comments',
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SDS05',
       title: 'Tujuh Kisah, Satu Semangat yang Sama: Perjalanan Lulusan Sekolah Daya Setara 2025/2026',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
       comments: '0 comments',
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SDS04',
       title: 'PKBM Ceria di Lembang Resmi di-Launching',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Artikel, Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'acforid',
       date: 'Sep 12, 2024',
       comments: '0 comments',
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SDS03',
       title: 'Neng Komara, Anak Petani yang Raih Medali Emas di Festival Islami Nasional 2025',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Kabar Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'May 23, 2025',
       comments: '0 comments',
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SDS02',
       title: 'PKBM Ceria Jayapura Diresmikan, Hadirkan Akses Pendidikan Non-Formal bagi Warga Papua',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Kabar Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Jun 17, 2025',
       comments: '0 comments',
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SDS01',
       title: 'Semangat Belajar di Usia Senja',
       category: 'kabar-sekolah-daya-setara',
-      categoryLabel: 'Kabar Sekolah Daya Setara',
+      categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'acforid',
       date: 'Aug 26, 2024',
       comments: '0 comments',
@@ -384,11 +384,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (savedCats) {
         let parsed = JSON.parse(savedCats);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Migrate old 'sekolah-juara'
+          // Migrate old categories & update labels
           parsed = parsed.map(c => {
-            if (c.slug === 'sekolah-juara') {
+            if (c.slug === 'sekolah-daya-setara' || c.slug === 'kabar-sekolah-daya-setara') {
+              c.slug = 'kabar-sekolah-daya-setara';
+              c.label = 'Artikel Sekolah Daya Setara';
+            }
+            if (c.slug === 'sekolah-juara' || c.slug === 'kabar-sekolah-juara') {
               c.slug = 'kabar-sekolah-juara';
-              c.label = 'Kabar Sekolah Juara';
+              c.label = 'Artikel Sekolah Juara';
             }
             return c;
           });
@@ -473,9 +477,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.category === 'sekolah-juara') {
               item.category = 'kabar-sekolah-juara';
             }
-            if (item.id === 'ART-SDS01') {
+            if (item.category === 'kabar-sekolah-daya-setara' || item.category === 'sekolah-daya-setara') {
               item.category = 'kabar-sekolah-daya-setara';
-              item.categoryLabel = 'Kabar Sekolah Daya Setara';
+              item.categoryLabel = 'Artikel Sekolah Daya Setara';
             }
             if (item.id === 'ART-SJ01') {
               item.cover = 'assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';
@@ -621,7 +625,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const found = currentCategories.find(c => c.slug === cat);
     if (found) return found.label;
     switch (cat) {
-      case 'kabar-sekolah-juara': return 'Kabar Sekolah Juara';
+      case 'kabar-sekolah-daya-setara': return 'Artikel Sekolah Daya Setara';
+      case 'kabar-sekolah-juara': return 'Artikel Sekolah Juara';
       case 'liputan': return 'Liputan Lapangan';
       case 'vokasi': return 'Program Vokasi';
       case 'opini': return 'Kolaborasi & Opini';

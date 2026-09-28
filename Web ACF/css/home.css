@@ -1538,13 +1538,15 @@
 
 .home-kabar-tag.artikel,
 .home-kabar-tag.kabar-sekolah-daya-setara,
-.home-kabar-tag.sekolah-daya-setara {
+.home-kabar-tag.sekolah-daya-setara,
+.home-kabar-tag.artikel-sekolah-daya-setara {
   background: rgba(125, 34, 128, 0.92);
   color: #FFFFFF;
 }
 
 .home-kabar-tag.kabar-sekolah-juara,
-.home-kabar-tag.sekolah-juara {
+.home-kabar-tag.sekolah-juara,
+.home-kabar-tag.artikel-sekolah-juara {
   background: rgba(220, 38, 38, 0.92);
   color: #FFFFFF;
 }

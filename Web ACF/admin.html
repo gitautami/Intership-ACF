@@ -732,14 +732,14 @@
             <div style="margin-bottom: 16px;">
               <label class="wp-label" for="wpApiEndpointInput">URL Artikel / Blog WordPress REST API:</label>
               <div style="display: flex; gap: 10px; margin-top: 6px;">
-                <input type="text" id="wpApiEndpointInput" class="wp-input" placeholder="Contoh: https://gitautamiblog.wordpress.com/2024/01/25/tugas-5/ atau link blog" value="https://gitautamiblog.wordpress.com/">
+                <input type="text" id="wpApiEndpointInput" class="wp-input" placeholder="Contoh: https://acf.or.id/ atau https://gitautamiblog.wordpress.com/" value="https://acf.or.id/">
                 <button type="button" class="btn-create-article" id="btnFetchWpApi" style="white-space: nowrap; padding: 10px 20px;">
                   <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                   <span>Tarik Artikel WordPress</span>
                 </button>
               </div>
               <div style="font-size: 0.78rem; color: #64748B; margin-top: 6px; line-height: 1.5;">
-                💡 <em>Tips: Masukkan link <strong>artikel spesifik</strong> (contoh: <code>gitautamiblog.wordpress.com/2024/01/25/tugas-5/</code>) untuk menarik 1 artikel saja, atau link beranda blog untuk melihat seluruh daftar postingan.</em>
+                💡 <em>Tips: Masukkan link <strong>acf.or.id</strong> atau website WordPress lainnya untuk menarik <strong>semua artikel & seluruh kategori</strong> secara otomatis.</em>
               </div>
             </div>
 
@@ -751,6 +751,9 @@
               <div style="display: flex; gap: 8px; align-items: center; max-width: 580px;">
                 <select id="wpImportCategory" class="wp-select" style="flex: 1;">
                   <!-- Loaded dynamically via JS -->
+                  <option value="__auto__">✨ Sesuai Kategori Asli WordPress (Otomatis)</option>
+                  <option value="kabar-sekolah-daya-setara">Artikel Sekolah Daya Setara</option>
+                  <option value="kabar-sekolah-juara">Artikel Sekolah Juara</option>
                   <option value="artikel">Artikel Pendidikan</option>
                   <option value="liputan">Liputan Lapangan</option>
                   <option value="vokasi">Program Vokasi</option>

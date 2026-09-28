@@ -331,45 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <p>Alhamdulillah, kegiatan Market Day berjalan dengan baik. Menambah semangat para wirausahawan cilik kelas 1 SD Juara Batam karena antusiasnya kakak dan abang kelas yang membeli jualan mereka.</p>
 <p style="color: #64748B; font-weight: 600; margin-top: 24px;">#SDJuaraBatam<br>#BeritaSDJuaraBatam</p>`,
       status: 'Terbit'
-    },
-    {
-      id: 'ART-3001',
-      title: 'Transformasi Kompetensi Guru Era Digital Melalui Guruverse.ID',
-      category: 'artikel',
-      categoryLabel: 'Artikel Pendidikan',
-      author: 'Tim Redaksi ACF',
-      date: '23 Sep 2026',
-      comments: '0 comments',
-      cover: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80',
-      excerpt: 'Eksplorasi metode micro-learning praktis yang memudahkan guru daerah 3T mengakses materi kurikulum mutakhir secara mandiri.',
-      content: '<h2>Peluang Akselerasi Pendidikan 3T</h2><p>Perkembangan teknologi menuntut akselerasi kompetensi para pendidik di seluruh penjuru Indonesia. Melalui platform <strong>Guruverse.ID</strong>, ACF Eduhub menghadirkan kurikulum micro-learning yang ringkas dan aplikatif bagi guru-guru di daerah terdepan, terluar, dan tertinggal (3T).</p><blockquote>"Pendidikan yang berkualitas dimulai dari guru-guru yang terberdayakan dengan materi yang relevan."</blockquote><p>Program ini membekali ratusan guru dengan keterampilan pedagogi modern serta pemanfaatan media digital praktis yang dapat langsung diterapkan di ruang kelas sehari-hari.</p>',
-      status: 'Terbit'
-    },
-    {
-      id: 'ART-3002',
-      title: 'Siswa Sekolah Juara Boyong 5 Medali Olimpiade Sains Nasional',
-      category: 'liputan',
-      categoryLabel: 'Liputan Lapangan',
-      author: 'Warta Lapangan',
-      date: '21 Sep 2026',
-      comments: '0 comments',
-      cover: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&q=80',
-      excerpt: 'Dedikasi belajar siswa prasejahtera membuktikan bahwa potensi anak bangsa tak terbatas oleh latar belakang ekonomi keluarga.',
-      content: '<h2>Prestasi Membanggakan Putra-Putri Bangsa</h2><p>Prestasi membanggakan kembali ditorehkan oleh siswa binaan Sekolah Juara. Lima perwakilan siswa berhasil meraih medali pada ajang Olimpiade Sains Nasional (OSN) tingkat provinsi.</p><p>Keberhasilan ini membuktikan bahwa dengan bimbingan intensif, fasilitas laboratorium yang memadai, dan kesempatan yang setara, anak-anak dari latar belakang prasejahtera mampu bersaing dan mengukir prestasi gemilang di kancah nasional.</p>',
-      status: 'Terbit'
-    },
-    {
-      id: 'ART-3003',
-      title: 'Sekolah Daya Setara Luncurkan Kelas Keterampilan Kriya Digital',
-      category: 'vokasi',
-      categoryLabel: 'Program Vokasi',
-      author: 'Berita Mitra',
-      date: '18 Sep 2026',
-      comments: '0 comments',
-      cover: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80',
-      excerpt: 'Membekali peserta didik paket C dengan keterampilan desain grafis, sablon konveksi, dan e-commerce siap kerja.',
-      content: '<h2>Membangun Kemandirian Ekonomi Pemuda</h2><p>Dalam rangka memperluas kesiapan kerja pemuda putus sekolah, Sekolah Daya Setara meresmikan pembukaan workshop vokasi kriya digital.</p><p>Fasilitas ini memadukan pelatihan desain grafis terapan, cetak sablon tekstil, hingga strategi pemasaran di marketplace, mempersiapkan para lulusan paket C untuk mandiri secara ekonomi dan membuka usaha baru di lingkungannya.</p>',
-      status: 'Terbit'
     }
   ];
 
@@ -469,6 +430,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (saved) {
         let parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
+          // Filter out legacy dummy articles
+          parsed = parsed.filter(item => item.id !== 'ART-3001' && item.id !== 'ART-3002' && item.id !== 'ART-3003');
+
           // Auto-migrate and fix any old incorrect cover paths & categories
           parsed = parsed.map(item => {
             if (item.cover && item.cover.includes('artikel-sekolahjuara')) {

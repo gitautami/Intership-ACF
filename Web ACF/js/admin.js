@@ -100,42 +100,6 @@
 <p>Selamat dan sukses untuk seluruh lulusan Sekolah Daya Setara Tahun Ajaran 2025/2026. Teruslah melangkah dengan penuh keyakinan, karena masa depan yang cerah selalu dimulai dari keberanian untuk terus belajar.</p>
 <p style="color: #64748B; font-weight: 700; margin-top: 28px; font-style: italic;">Sekolah Daya Setara — Setara dalam Langkah, Berdaya dalam Karya.</p>`,
       status: 'Terbit'
-    },
-    {
-      id: 'ART-3001',
-      title: 'Transformasi Kompetensi Guru Era Digital Melalui Guruverse.ID',
-      category: 'artikel',
-      categoryLabel: 'Artikel Pendidikan',
-      author: 'Tim Redaksi ACF',
-      date: '23 Sep 2026',
-      cover: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80',
-      excerpt: 'Eksplorasi metode micro-learning praktis yang memudahkan guru daerah 3T mengakses materi kurikulum mutakhir secara mandiri.',
-      content: 'Perkembangan teknologi menuntut akselerasi kompetensi para pendidik di seluruh penjuru Indonesia. Melalui platform Guruverse.ID, ACF Eduhub menghadirkan kurikulum micro-learning yang ringkas dan aplikatif bagi guru-guru di daerah terdepan, terluar, dan tertinggal (3T). Program ini membekali ratusan guru dengan keterampilan pedagogi modern serta pemanfaatan media digital.',
-      status: 'Terbit'
-    },
-    {
-      id: 'ART-3002',
-      title: 'Siswa Sekolah Juara Boyong 5 Medali Olimpiade Sains Nasional',
-      category: 'liputan',
-      categoryLabel: 'Liputan Lapangan',
-      author: 'Warta Lapangan',
-      date: '21 Sep 2026',
-      cover: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&q=80',
-      excerpt: 'Dedikasi belajar siswa prasejahtera membuktikan bahwa potensi anak bangsa tak terbatas oleh latar belakang ekonomi keluarga.',
-      content: 'Prestasi membanggakan kembali ditorehkan oleh siswa Sekolah Juara. Lima perwakilan siswa binaan berhasil meraih medali pada ajang Olimpiade Sains Nasional (OSN) tingkat provinsi. Keberhasilan ini membuktikan bahwa dengan bimbingan intensif dan kesempatan yang setara, anak-anak dari latar belakang prasejahtera mampu bersaing dan mengukir prestasi gemilang.',
-      status: 'Terbit'
-    },
-    {
-      id: 'ART-3003',
-      title: 'Sekolah Daya Setara Luncurkan Kelas Keterampilan Kriya Digital',
-      category: 'vokasi',
-      categoryLabel: 'Program Vokasi',
-      author: 'Berita Mitra',
-      date: '18 Sep 2026',
-      cover: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80',
-      excerpt: 'Membekali peserta didik paket C dengan keterampilan desain grafis, sablon konveksi, dan e-commerce siap kerja.',
-      content: 'Dalam rangka memperluas kesiapan kerja pemuda putus sekolah, Sekolah Daya Setara meresmikan pembukaan workshop vokasi kriya digital. Fasilitas ini memadukan pelatihan desain grafis terapan, cetak sablon tekstil, hingga strategi pemasaran di marketplace, mempersiapkan para lulusan paket C untuk mandiri secara ekonomi.',
-      status: 'Terbit'
     }
   ];
 
@@ -471,15 +435,17 @@
 
     if (wpImportCategory) {
       const currentWpVal = selectedSlug || wpImportCategory.value;
-      wpImportCategory.innerHTML = '';
+      wpImportCategory.innerHTML = '<option value="__auto__">✨ Sesuai Kategori Asli WordPress (Otomatis)</option>';
       dataCategories.forEach(cat => {
         const opt = document.createElement('option');
         opt.value = cat.slug;
         opt.textContent = cat.label;
         wpImportCategory.appendChild(opt);
       });
-      if (currentWpVal && dataCategories.some(c => c.slug === currentWpVal)) {
+      if (currentWpVal && (currentWpVal === '__auto__' || dataCategories.some(c => c.slug === currentWpVal))) {
         wpImportCategory.value = currentWpVal;
+      } else {
+        wpImportCategory.value = '__auto__';
       }
     }
 
@@ -658,7 +624,7 @@
       if (storedArticles) {
         dataArticles = JSON.parse(storedArticles);
         if (Array.isArray(dataArticles)) {
-          dataArticles = dataArticles.map(art => {
+          dataArticles = dataArticles.filter(art => art.id !== 'ART-3001' && art.id !== 'ART-3002' && art.id !== 'ART-3003').map(art => {
             if (art.category === 'kabar-sekolah-juara' || art.category === 'sekolah-juara' || (art.id && art.id.startsWith('ART-SJ'))) {
               art.category = 'kabar-sekolah-juara';
               art.categoryLabel = 'Artikel Sekolah Juara';
@@ -1143,10 +1109,18 @@
     reader.readAsDataURL(file);
   }
 
+  // --- Helper: Decode HTML Entities in text from WordPress ---
+  function decodeHtmlEntities(str) {
+    if (!str) return '';
+    const txt = document.createElement('textarea');
+    txt.innerHTML = str;
+    return txt.value;
+  }
+
   // --- Helper: Auto-resolve WordPress URL/Endpoint ---
   function resolveWordPressEndpoint(inputUrl) {
-    let clean = inputUrl.trim();
-    if (!clean) return '';
+    let clean = (inputUrl || '').trim();
+    if (!clean) return { postsUrl: '', categoriesUrl: '', isSinglePost: false, hostname: '' };
     if (!/^https?:\/\//i.test(clean)) {
       clean = 'https://' + clean;
     }
@@ -1159,7 +1133,7 @@
 
       // Cek apakah URL mengarah ke postingan spesifik (misal: /2024/01/25/tugas-5 atau /tugas-5)
       let postSlug = '';
-      if (pathSegments.length > 0 && !pathname.includes('wp-json') && !pathname.includes('wp-admin')) {
+      if (pathSegments.length > 0 && !pathname.includes('wp-json') && !pathname.includes('wp-admin') && !pathname.includes('/category/')) {
         const lastSeg = pathSegments[pathSegments.length - 1];
         // Jika segmen terakhir bukan murni angka (bukan tahun/bulan/nomor halaman)
         if (!/^\d+$/.test(lastSeg)) {
@@ -1170,27 +1144,65 @@
       // 1. Format WordPress.com
       if (hostname.endsWith('.wordpress.com')) {
         if (clean.includes('/wp/v2/sites/')) {
-          return clean;
+          return {
+            postsUrl: clean,
+            categoriesUrl: `https://public-api.wordpress.com/wp/v2/sites/${hostname}/categories?per_page=100`,
+            isSinglePost: false,
+            hostname
+          };
         }
         if (postSlug) {
-          return `https://public-api.wordpress.com/wp/v2/sites/${hostname}/posts?slug=${encodeURIComponent(postSlug)}`;
+          return {
+            postsUrl: `https://public-api.wordpress.com/wp/v2/sites/${hostname}/posts?slug=${encodeURIComponent(postSlug)}&_embed=true`,
+            categoriesUrl: `https://public-api.wordpress.com/wp/v2/sites/${hostname}/categories?per_page=100`,
+            isSinglePost: true,
+            hostname
+          };
         }
-        return `https://public-api.wordpress.com/wp/v2/sites/${hostname}/posts?per_page=10`;
+        return {
+          postsUrl: `https://public-api.wordpress.com/wp/v2/sites/${hostname}/posts?per_page=100&_embed=true`,
+          categoriesUrl: `https://public-api.wordpress.com/wp/v2/sites/${hostname}/categories?per_page=100`,
+          isSinglePost: false,
+          hostname
+        };
       }
 
       // 2. Format Self-hosted WordPress
-      if (clean.includes('/wp-json/')) {
-        return clean;
+      const basePath = `${urlObj.protocol}//${urlObj.host}`;
+      if (clean.includes('/wp-json/wp/v2/posts')) {
+        let basePostsUrl = clean;
+        if (!basePostsUrl.includes('per_page=')) {
+          basePostsUrl += (basePostsUrl.includes('?') ? '&' : '?') + 'per_page=100';
+        }
+        if (!basePostsUrl.includes('_embed')) {
+          basePostsUrl += '&_embed=true';
+        }
+        return {
+          postsUrl: basePostsUrl,
+          categoriesUrl: `${basePath}/wp-json/wp/v2/categories?per_page=100`,
+          isSinglePost: clean.includes('slug='),
+          hostname
+        };
       }
 
-      const basePath = `${urlObj.protocol}//${urlObj.host}`;
       if (postSlug) {
-        return `${basePath}/wp-json/wp/v2/posts?slug=${encodeURIComponent(postSlug)}`;
+        return {
+          postsUrl: `${basePath}/wp-json/wp/v2/posts?slug=${encodeURIComponent(postSlug)}&_embed=true`,
+          categoriesUrl: `${basePath}/wp-json/wp/v2/categories?per_page=100`,
+          isSinglePost: true,
+          hostname
+        };
       }
-      return `${basePath}/wp-json/wp/v2/posts?per_page=10`;
+
+      return {
+        postsUrl: `${basePath}/wp-json/wp/v2/posts?per_page=100&_embed=true`,
+        categoriesUrl: `${basePath}/wp-json/wp/v2/categories?per_page=100`,
+        isSinglePost: false,
+        hostname
+      };
 
     } catch (e) {
-      return clean;
+      return { postsUrl: clean, categoriesUrl: '', isSinglePost: false, hostname: '' };
     }
   }
 
@@ -1202,7 +1214,7 @@
       return;
     }
 
-    const endpoint = resolveWordPressEndpoint(rawInput);
+    const { postsUrl, categoriesUrl, isSinglePost, hostname } = resolveWordPressEndpoint(rawInput);
 
     if (!btnFetchWpApi) return;
     const originalText = btnFetchWpApi.innerHTML;
@@ -1210,14 +1222,56 @@
     btnFetchWpApi.innerHTML = `<span>Menghubungi WordPress...</span>`;
 
     try {
-      showToast('Menghubungkan ke WordPress...', 'info');
-      let res = await fetch(endpoint);
-      
-      // Fallback jika direct wp-json gagal pada custom domain yang memakai WP.com
-      if (!res.ok && !endpoint.includes('public-api.wordpress.com')) {
+      showToast('Menghubungkan ke WordPress & membaca seluruh kategori...', 'info');
+
+      // 1. Fetch Categories concurrently to populate dataCategories & category lookup map
+      const categoryMap = {}; // { [id]: { id, name, slug } }
+
+      if (categoriesUrl) {
         try {
-          const urlObj = new URL(endpoint);
-          const wpComUrl = `https://public-api.wordpress.com/wp/v2/sites/${urlObj.hostname}/posts?per_page=10`;
+          let catRes = await fetch(categoriesUrl);
+          if (!catRes.ok && hostname && !categoriesUrl.includes('public-api.wordpress.com')) {
+            // Fallback for WP.com sites on custom domains
+            try {
+              const fallbackCatUrl = `https://public-api.wordpress.com/wp/v2/sites/${hostname}/categories?per_page=100`;
+              const fbCat = await fetch(fallbackCatUrl);
+              if (fbCat.ok) catRes = fbCat;
+            } catch (_) {}
+          }
+          if (catRes && catRes.ok) {
+            const rawCats = await catRes.json();
+            if (Array.isArray(rawCats)) {
+              rawCats.forEach(c => {
+                const cleanName = decodeHtmlEntities(c.name || '').trim();
+                let catSlug = (c.slug || '').trim();
+                if (!cleanName || catSlug === 'uncategorized') return;
+                
+                if (catSlug === 'sekolah-daya-setara' || catSlug === 'kabar-sekolah-daya-setara') {
+                  catSlug = 'kabar-sekolah-daya-setara';
+                } else if (catSlug === 'sekolah-juara' || catSlug === 'kabar-sekolah-juara') {
+                  catSlug = 'kabar-sekolah-juara';
+                }
+                
+                const reg = registerCategory(cleanName, catSlug);
+                categoryMap[c.id] = { id: c.id, name: reg ? reg.label : cleanName, slug: reg ? reg.slug : catSlug };
+              });
+            }
+          }
+        } catch (catErr) {
+          console.warn('WP Categories fetch error (fallback to embedded terms):', catErr);
+        }
+      }
+
+      // 2. Fetch Posts (Page 1)
+      let initialUrl = postsUrl.includes('page=') ? postsUrl : `${postsUrl}&page=1`;
+      let res = await fetch(initialUrl);
+
+      // Fallback jika direct wp-json gagal pada custom domain yang memakai WP.com
+      if (!res.ok && hostname && !postsUrl.includes('public-api.wordpress.com')) {
+        try {
+          const wpComUrl = isSinglePost
+            ? `https://public-api.wordpress.com/wp/v2/sites/${hostname}/posts?slug=${encodeURIComponent(postsUrl.split('slug=')[1] || '')}&_embed=true`
+            : `https://public-api.wordpress.com/wp/v2/sites/${hostname}/posts?per_page=100&_embed=true&page=1`;
           const fallbackRes = await fetch(wpComUrl);
           if (fallbackRes.ok) {
             res = fallbackRes;
@@ -1227,17 +1281,114 @@
 
       if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
 
-      const posts = await res.json();
-      if (!Array.isArray(posts) || posts.length === 0) {
+      // Read total pages & total posts from WordPress HTTP headers
+      const totalPagesHeader = res.headers.get('x-wp-totalpages') || res.headers.get('X-WP-TotalPages');
+      const totalPostsHeader = res.headers.get('x-wp-total') || res.headers.get('X-WP-Total');
+      const totalPages = parseInt(totalPagesHeader, 10) || 1;
+      const totalPosts = parseInt(totalPostsHeader, 10) || 0;
+
+      let page1Posts = await res.json();
+      if (!Array.isArray(page1Posts)) {
+        page1Posts = page1Posts ? [page1Posts] : [];
+      }
+
+      if (page1Posts.length === 0) {
         showToast('Tidak ada artikel ditemukan dari link WordPress tersebut.', 'info');
         btnFetchWpApi.disabled = false;
         btnFetchWpApi.innerHTML = originalText;
         return;
       }
 
-      currentWpFetchedPosts = posts;
-      renderWpFetchedList(posts);
-      showToast(`Berhasil menemukan ${posts.length} artikel dari WordPress!`, 'success');
+      let allPosts = [...page1Posts];
+
+      // 3. Fetch subsequent pages if totalPages > 1 and not single post
+      if (totalPages > 1 && !isSinglePost) {
+        const maxPagesToFetch = Math.min(totalPages, 20); // safe limit up to 2,000 articles
+        showToast(`Memuat halaman 1/${totalPages} (${totalPosts || allPosts.length} total artikel)...`, 'info');
+
+        for (let p = 2; p <= maxPagesToFetch; p++) {
+          try {
+            btnFetchWpApi.innerHTML = `<span>Memuat Hal ${p}/${totalPages}...</span>`;
+            const nextPageUrl = postsUrl.replace(/&page=\d+/, '') + `&page=${p}`;
+            const nextRes = await fetch(nextPageUrl);
+            if (nextRes.ok) {
+              const morePosts = await nextRes.json();
+              if (Array.isArray(morePosts) && morePosts.length > 0) {
+                allPosts.push(...morePosts);
+              } else {
+                break;
+              }
+            } else {
+              break;
+            }
+          } catch (pageErr) {
+            console.warn(`Failed fetching WP page ${p}:`, pageErr);
+            break;
+          }
+        }
+      }
+
+      // 4. Extract embedded terms and map authentic category to each post
+      allPosts.forEach(p => {
+        // Look for embedded category terms
+        const termsArr = p._embedded && p._embedded['wp:term'] ? p._embedded['wp:term'] : [];
+        const catTerms = Array.isArray(termsArr) && termsArr.length > 0 ? (termsArr[0] || []) : [];
+
+        let postCategorySlug = '';
+        let postCategoryLabel = '';
+
+        if (Array.isArray(catTerms) && catTerms.length > 0) {
+          // Register all discovered terms in embedded data
+          catTerms.forEach(t => {
+            const cleanTName = decodeHtmlEntities(t.name || '').trim();
+            let tSlug = (t.slug || '').trim();
+            if (!cleanTName || tSlug === 'uncategorized') return;
+            if (tSlug === 'sekolah-daya-setara' || tSlug === 'kabar-sekolah-daya-setara') {
+              tSlug = 'kabar-sekolah-daya-setara';
+            } else if (tSlug === 'sekolah-juara' || tSlug === 'kabar-sekolah-juara') {
+              tSlug = 'kabar-sekolah-juara';
+            }
+            const reg = registerCategory(cleanTName, tSlug);
+            categoryMap[t.id] = { id: t.id, name: reg ? reg.label : cleanTName, slug: reg ? reg.slug : tSlug };
+          });
+
+          // Pick the best category (prefer non-uncategorized and non-generic 'artikel' if more specific exists)
+          const validTerms = catTerms.filter(t => t.slug !== 'uncategorized');
+          const specificTerm = validTerms.find(t => t.slug !== 'artikel' && t.slug !== 'uncategorized') || validTerms[0];
+          if (specificTerm) {
+            const foundInMap = categoryMap[specificTerm.id];
+            postCategorySlug = foundInMap ? foundInMap.slug : specificTerm.slug;
+            postCategoryLabel = foundInMap ? foundInMap.name : decodeHtmlEntities(specificTerm.name);
+          }
+        }
+
+        // If not found in embedded terms, check p.categories array via categoryMap
+        if (!postCategorySlug && Array.isArray(p.categories) && p.categories.length > 0) {
+          for (const catId of p.categories) {
+            if (categoryMap[catId]) {
+              postCategorySlug = categoryMap[catId].slug;
+              postCategoryLabel = categoryMap[catId].name;
+              if (postCategorySlug !== 'artikel' && postCategorySlug !== 'uncategorized') break;
+            }
+          }
+        }
+
+        // Fallback default
+        if (!postCategorySlug || postCategorySlug === 'uncategorized') {
+          postCategorySlug = 'artikel';
+          postCategoryLabel = 'Artikel Pendidikan';
+        }
+
+        p._wpDetectedCategorySlug = postCategorySlug;
+        p._wpDetectedCategoryLabel = postCategoryLabel;
+      });
+
+      // Update dropdowns with all newly registered categories
+      renderCategorySelects('__auto__');
+
+      currentWpFetchedPosts = allPosts;
+      renderWpFetchedList(allPosts);
+      showToast(`Berhasil menemukan SEMUA (${allPosts.length}) artikel & seluruh kategori dari WordPress!`, 'success');
     } catch (err) {
       console.error('WP Fetch error:', err);
       showToast('Gagal menghubungi WordPress. Pastikan alamat URL benar & blog bersifat publik.', 'info');
@@ -1253,11 +1404,11 @@
     wpFetchResultsBox.style.display = 'block';
     wpFetchList.innerHTML = '';
 
-    const defaultCat = wpImportCategory?.value || 'artikel';
+    const globalSelectedCat = wpImportCategory?.value || '__auto__';
 
     posts.forEach((p, idx) => {
-      const cleanTitle = (p.title?.rendered || 'Tanpa Judul').replace(/<[^>]*>?/gm, '');
-      const cleanExcerpt = (p.excerpt?.rendered || '').replace(/<[^>]*>?/gm, '').slice(0, 120) + '...';
+      const cleanTitle = decodeHtmlEntities(p.title?.rendered || 'Tanpa Judul').replace(/<[^>]*>?/gm, '').trim();
+      const cleanExcerpt = decodeHtmlEntities(p.excerpt?.rendered || '').replace(/<[^>]*>?/gm, '').slice(0, 120) + '...';
       const rawDate = p.date ? new Date(p.date) : new Date();
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
       const dateStr = `${rawDate.getDate()} ${months[rawDate.getMonth()]} ${rawDate.getFullYear()}`;
@@ -1266,8 +1417,13 @@
 
       const isAlreadyInKabar = dataArticles.some(a => (a.title || '').trim().toLowerCase() === cleanTitle.trim().toLowerCase());
 
+      // Tentukan kategori terpilih: Jika user memilih kategori spesifik di top selector, ikuti top selector; jika __auto__, gunakan p._wpDetectedCategorySlug
+      const activeCatSlug = (globalSelectedCat && globalSelectedCat !== '__auto__') 
+        ? globalSelectedCat 
+        : (p._wpDetectedCategorySlug || 'artikel');
+
       const optionsHTML = dataCategories.map(cat => 
-        `<option value="${cat.slug}" ${cat.slug === defaultCat ? 'selected' : ''}>${escapeHTML(cat.label)}</option>`
+        `<option value="${cat.slug}" ${cat.slug === activeCatSlug ? 'selected' : ''}>${escapeHTML(cat.label)}</option>`
       ).join('');
 
       const itemDiv = document.createElement('div');
@@ -1279,12 +1435,13 @@
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
               <span style="font-weight: 700; color: #0F172A; font-size: 0.9rem;">${escapeHTML(cleanTitle)}</span>
               ${isAlreadyInKabar ? '<span style="background: #E0F2FE; color: #0369A1; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; font-weight: 600;">✓ Sudah Ada di Kabar</span>' : ''}
+              ${p._wpDetectedCategoryLabel ? `<span style="background: #F1F5F9; color: #475569; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; font-weight: 600;">🏷️ ${escapeHTML(p._wpDetectedCategoryLabel)}</span>` : ''}
             </div>
             <div style="font-size: 0.78rem; color: #64748B;">${dateStr} • ${escapeHTML(cleanExcerpt)}</div>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <select class="wp-select wp-item-cat-select" data-wp-idx="${idx}" style="font-size: 0.8rem; padding: 6px 10px; width: 170px; background: #FFF;">
+          <select class="wp-select wp-item-cat-select" data-wp-idx="${idx}" style="font-size: 0.8rem; padding: 6px 10px; width: 180px; background: #FFF;">
             ${optionsHTML}
           </select>
           <button type="button" class="btn-create-article btn-import-single-wp" data-wp-idx="${idx}" style="padding: 7px 14px; font-size: 0.8rem; white-space: nowrap; ${isAlreadyInKabar ? 'background: #0284C7;' : ''}">
@@ -1298,17 +1455,20 @@
 
   function importSingleWordPressPost(postObj, customSlug = '', customLabel = '') {
     if (!postObj) return;
-    const cleanTitle = (postObj.title?.rendered || 'Artikel WordPress').replace(/<[^>]*>?/gm, '');
-    const cleanExcerpt = (postObj.excerpt?.rendered || '').replace(/<[^>]*>?/gm, '').slice(0, 160);
+    const cleanTitle = decodeHtmlEntities(postObj.title?.rendered || 'Artikel WordPress').replace(/<[^>]*>?/gm, '').trim();
+    const cleanExcerpt = decodeHtmlEntities(postObj.excerpt?.rendered || '').replace(/<[^>]*>?/gm, '').slice(0, 160).trim();
     const contentHTML = postObj.content?.rendered || postObj.excerpt?.rendered || cleanExcerpt;
     const rawDate = postObj.date ? new Date(postObj.date) : new Date();
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     const dateStr = `${rawDate.getDate()} ${months[rawDate.getMonth()]} ${rawDate.getFullYear()}`;
-    const cover = postObj.jetpack_featured_media_url || 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80';
+    const cover = postObj.jetpack_featured_media_url || (postObj._embedded && postObj._embedded['wp:featuredmedia'] && postObj._embedded['wp:featuredmedia'][0]?.source_url) || 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80';
 
-    const catSlug = customSlug || wpImportCategory?.value || 'artikel';
+    let catSlug = customSlug;
+    if (!catSlug || catSlug === '__auto__') {
+      catSlug = postObj._wpDetectedCategorySlug || (wpImportCategory?.value !== '__auto__' ? wpImportCategory?.value : 'artikel') || 'artikel';
+    }
     const foundCat = dataCategories.find(c => c.slug === catSlug);
-    const catLabel = customLabel || (foundCat ? foundCat.label : 'Artikel Pendidikan');
+    const catLabel = customLabel || (foundCat ? foundCat.label : (postObj._wpDetectedCategoryLabel || 'Artikel Pendidikan'));
 
     // Cek apakah artikel dengan judul sama sudah ada agar tidak terjadi duplikasi ganda
     const existingIndex = dataArticles.findIndex(a => (a.title || '').trim().toLowerCase() === cleanTitle.trim().toLowerCase());
@@ -1330,11 +1490,11 @@
     } else {
       // Tambah artikel baru
       const newArt = {
-        id: 'ART-' + Date.now().toString().slice(-4),
+        id: 'ART-' + Date.now().toString().slice(-4) + Math.floor(Math.random() * 90 + 10),
         title: cleanTitle,
         category: catSlug,
         categoryLabel: catLabel,
-        author: 'WordPress Feed',
+        author: (postObj._embedded && postObj._embedded.author && postObj._embedded.author[0]?.name) || 'Tim Redaksi WordPress',
         date: dateStr,
         cover,
         excerpt: cleanExcerpt,
@@ -1352,21 +1512,18 @@
 
   function importAllWordPressPosts() {
     if (!currentWpFetchedPosts.length) return;
-    const chosenSlug = wpImportCategory?.value || 'artikel';
-    const foundCat = dataCategories.find(c => c.slug === chosenSlug);
-    const chosenLabel = foundCat ? foundCat.label : 'Artikel Pendidikan';
 
     currentWpFetchedPosts.forEach((p, idx) => {
       const itemEl = wpFetchList?.querySelectorAll('.wp-fetch-item')[idx];
       const perCatSel = itemEl?.querySelector('.wp-item-cat-select');
-      const itemSlug = perCatSel ? perCatSel.value : chosenSlug;
+      const itemSlug = perCatSel ? perCatSel.value : (p._wpDetectedCategorySlug || 'artikel');
       const itemFound = dataCategories.find(c => c.slug === itemSlug);
-      const itemLabel = itemFound ? itemFound.label : chosenLabel;
+      const itemLabel = itemFound ? itemFound.label : (p._wpDetectedCategoryLabel || 'Artikel Pendidikan');
 
       importSingleWordPressPost(p, itemSlug, itemLabel);
     });
 
-    showToast(`Semua (${currentWpFetchedPosts.length}) artikel WordPress berhasil disinkronkan!`, 'success');
+    showToast(`Semua (${currentWpFetchedPosts.length}) artikel WordPress berhasil disinkronkan ke Kabar!`, 'success');
     closeArticleModal();
   }
 
@@ -2030,7 +2187,14 @@
       wpImportCategory.addEventListener('change', () => {
         const val = wpImportCategory.value;
         document.querySelectorAll('.wp-item-cat-select:not(:disabled)').forEach(sel => {
-          sel.value = val;
+          if (val === '__auto__') {
+            const idx = parseInt(sel.getAttribute('data-wp-idx'), 10);
+            if (!isNaN(idx) && currentWpFetchedPosts[idx] && currentWpFetchedPosts[idx]._wpDetectedCategorySlug) {
+              sel.value = currentWpFetchedPosts[idx]._wpDetectedCategorySlug;
+            }
+          } else {
+            sel.value = val;
+          }
         });
       });
     }

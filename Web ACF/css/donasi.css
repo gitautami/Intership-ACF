@@ -122,11 +122,261 @@
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
+/* =============================================
+   2. QRIS Donation Section (Direct Scan & Pay)
+   ============================================= */
+.donasi-qris-section {
+  padding: 60px 0 30px;
+  background: #FFFFFF;
+  position: relative;
+}
+
+.qris-card-wrapper {
+  background: linear-gradient(135deg, #FAF5FF 0%, #FFFFFF 50%, #FFFBEB 100%);
+  border: 2px solid #E9D5FF;
+  border-radius: 28px;
+  padding: 40px 44px;
+  box-shadow: 0 20px 48px rgba(125, 34, 128, 0.08);
+  position: relative;
+  overflow: hidden;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+.qris-card-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #7D2280 0%, #9333EA 35%, #F5A623 70%, #FBBF24 100%);
+}
+
+.qris-card-grid {
+  display: grid;
+  grid-template-columns: 440px 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+/* Sisi Kiri: Frame QRIS (Diperbesar) */
+.qris-visual-col {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.qris-frame-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 22px;
+  border: 1.5px solid #E2E8F0;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.qris-frame-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 48px rgba(125, 34, 128, 0.18);
+}
+
+.qris-frame-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.qris-national-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748B;
+  letter-spacing: 0.5px;
+}
+
+.qris-img-wrap {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid #F1F5F9;
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qris-main-img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+  object-fit: contain;
+}
+
+.qris-frame-footer {
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.qris-merchant-info {
+  text-align: left;
+}
+
+.merchant-label {
+  display: block;
+  font-size: 0.68rem;
+  color: #94A3B8;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.merchant-name {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.btn-qris-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #FAF5FF;
+  border: 1px solid #D8B4FE;
+  color: #7D2280;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.btn-qris-download:hover {
+  background: #7D2280;
+  color: #FFFFFF;
+  border-color: #7D2280;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(125, 34, 128, 0.25);
+}
+
+/* Sisi Kanan: Panduan & Info (Dibuat Lebih Ringkas & Kecil) */
+.qris-info-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.qris-badge-top {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 4px 12px;
+  background: #FAF5FF;
+  border: 1px solid rgba(125, 34, 128, 0.25);
+  color: #7D2280;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 8px;
+}
+
+.qris-section-title {
+  font-size: clamp(1.2rem, 1.7vw, 1.48rem);
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.qris-section-desc {
+  font-size: 0.85rem;
+  color: #64748B;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.qris-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.qris-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #FFFFFF;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #EDE9FE;
+  box-shadow: 0 2px 6px rgba(125, 34, 128, 0.03);
+}
+
+.step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7D2280 0%, #F5A623 100%);
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(125, 34, 128, 0.2);
+}
+
+.step-content h5 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 2px 0;
+}
+
+.step-content p {
+  font-size: 0.78rem;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .qris-card-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .qris-card-wrapper {
+    padding: 28px 18px;
+  }
+  .qris-frame-card {
+    max-width: 100%;
+  }
+}
+
 /* -------------------------------------------------------
-   2. MITRA CROWDFUNDING SECTION (Nuansa Ungu & Kuning)
+   3. MITRA CROWDFUNDING SECTION (Nuansa Ungu & Kuning)
    ------------------------------------------------------- */
 .donasi-channels-section {
-  padding: 75px 0 100px;
+  padding: 50px 0 100px;
   background: #F8FAFC;
   position: relative;
 }

@@ -628,6 +628,59 @@
     showToast(`Kategori "${cleanLabel}" berhasil ditambahkan!`, 'success');
   }
 
+  function parseArticleDate(dateStr) {
+    if (!dateStr) return new Date(0);
+    if (dateStr instanceof Date) return dateStr;
+
+    const str = String(dateStr).trim();
+    const idMonths = {
+      'jan': 'Jan', 'januari': 'Jan',
+      'feb': 'Feb', 'februari': 'Feb',
+      'mar': 'Mar', 'maret': 'Mar',
+      'apr': 'Apr', 'april': 'Apr',
+      'mei': 'May', 'may': 'May',
+      'jun': 'Jun', 'juni': 'Jun',
+      'jul': 'Jul', 'juli': 'Jul',
+      'agu': 'Aug', 'agustus': 'Aug', 'aug': 'Aug',
+      'sep': 'Sep', 'september': 'Sep',
+      'okt': 'Oct', 'oktober': 'Oct', 'oct': 'Oct',
+      'nov': 'Nov', 'november': 'Nov',
+      'des': 'Dec', 'desember': 'Dec', 'dec': 'Dec'
+    };
+
+    let normalizedStr = str;
+    for (const [idm, enm] of Object.entries(idMonths)) {
+      const regex = new RegExp(`\\b${idm}\\b`, 'gi');
+      if (regex.test(normalizedStr)) {
+        normalizedStr = normalizedStr.replace(regex, enm);
+        break;
+      }
+    }
+
+    const parsed = new Date(normalizedStr);
+    if (!isNaN(parsed.getTime())) {
+      return parsed;
+    }
+
+    const dmyMatch = str.match(/(\d{1,2})[\s\-\/\.]+(\w+)[\s\-\/\.]+(\d{4})/);
+    if (dmyMatch) {
+      const day = dmyMatch[1];
+      const mon = dmyMatch[2].toLowerCase();
+      const yr = dmyMatch[3];
+      const enMon = idMonths[mon] || 'Jan';
+      const fallbackParsed = new Date(`${enMon} ${day}, ${yr}`);
+      if (!isNaN(fallbackParsed.getTime())) return fallbackParsed;
+    }
+
+    const ymdMatch = str.match(/(\d{4})[\s\-\/\.]+(\d{1,2})[\s\-\/\.]+(\d{1,2})/);
+    if (ymdMatch) {
+      const fallbackYmd = new Date(`${ymdMatch[1]}-${ymdMatch[2]}-${ymdMatch[3]}`);
+      if (!isNaN(fallbackYmd.getTime())) return fallbackYmd;
+    }
+
+    return new Date(0);
+  }
+
   function loadAllData() {
     try {
       loadCategories();
@@ -668,10 +721,11 @@
             }
             return art;
           });
+          dataArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
           saveArticlesData();
         }
       } else {
-        dataArticles = INITIAL_ARTICLES_DATA;
+        dataArticles = [...INITIAL_ARTICLES_DATA].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
         saveArticlesData();
       }
 
@@ -688,7 +742,7 @@
       console.error('Error loading data:', err);
       dataMitra = [];
       dataRelawan = [];
-      dataArticles = INITIAL_ARTICLES_DATA;
+      dataArticles = [...INITIAL_ARTICLES_DATA].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
     }
   }
 
@@ -701,6 +755,7 @@
   }
 
   function saveArticlesData() {
+    dataArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
     localStorage.setItem('acf_articles_data', JSON.stringify(dataArticles));
   }
 
@@ -901,13 +956,15 @@
       return matchQuery && matchCat;
     });
 
+    const sortedArticles = [...filtered].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+
     tbodyArticles.innerHTML = '';
 
-    if (filtered.length === 0) {
+    if (sortedArticles.length === 0) {
       if (emptyArticles) emptyArticles.style.display = 'block';
     } else {
       if (emptyArticles) emptyArticles.style.display = 'none';
-      filtered.forEach((art) => {
+      sortedArticles.forEach((art) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>

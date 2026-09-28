@@ -446,6 +446,59 @@ document.addEventListener('DOMContentLoaded', () => {
     applyFilters();
   }
 
+  function parseArticleDate(dateStr) {
+    if (!dateStr) return new Date(0);
+    if (dateStr instanceof Date) return dateStr;
+
+    const str = String(dateStr).trim();
+    const idMonths = {
+      'jan': 'Jan', 'januari': 'Jan',
+      'feb': 'Feb', 'februari': 'Feb',
+      'mar': 'Mar', 'maret': 'Mar',
+      'apr': 'Apr', 'april': 'Apr',
+      'mei': 'May', 'may': 'May',
+      'jun': 'Jun', 'juni': 'Jun',
+      'jul': 'Jul', 'juli': 'Jul',
+      'agu': 'Aug', 'agustus': 'Aug', 'aug': 'Aug',
+      'sep': 'Sep', 'september': 'Sep',
+      'okt': 'Oct', 'oktober': 'Oct', 'oct': 'Oct',
+      'nov': 'Nov', 'november': 'Nov',
+      'des': 'Dec', 'desember': 'Dec', 'dec': 'Dec'
+    };
+
+    let normalizedStr = str;
+    for (const [idm, enm] of Object.entries(idMonths)) {
+      const regex = new RegExp(`\\b${idm}\\b`, 'gi');
+      if (regex.test(normalizedStr)) {
+        normalizedStr = normalizedStr.replace(regex, enm);
+        break;
+      }
+    }
+
+    const parsed = new Date(normalizedStr);
+    if (!isNaN(parsed.getTime())) {
+      return parsed;
+    }
+
+    const dmyMatch = str.match(/(\d{1,2})[\s\-\/\.]+(\w+)[\s\-\/\.]+(\d{4})/);
+    if (dmyMatch) {
+      const day = dmyMatch[1];
+      const mon = dmyMatch[2].toLowerCase();
+      const yr = dmyMatch[3];
+      const enMon = idMonths[mon] || 'Jan';
+      const fallbackParsed = new Date(`${enMon} ${day}, ${yr}`);
+      if (!isNaN(fallbackParsed.getTime())) return fallbackParsed;
+    }
+
+    const ymdMatch = str.match(/(\d{4})[\s\-\/\.]+(\d{1,2})[\s\-\/\.]+(\d{1,2})/);
+    if (ymdMatch) {
+      const fallbackYmd = new Date(`${ymdMatch[1]}-${ymdMatch[2]}-${ymdMatch[3]}`);
+      if (!isNaN(fallbackYmd.getTime())) return fallbackYmd;
+    }
+
+    return new Date(0);
+  }
+
   // 3. Load and Render Articles
   function loadAndRenderArticles() {
     try {
@@ -487,24 +540,28 @@ document.addEventListener('DOMContentLoaded', () => {
           DEFAULT_ARTICLES.forEach(defArt => {
             const existingIdx = parsed.findIndex(a => a.id === defArt.id);
             if (existingIdx === -1) {
-              parsed.unshift(defArt);
+              parsed.push(defArt);
             } else if (defArt.id.startsWith('ART-SJ') || defArt.id.startsWith('ART-SDS')) {
               parsed[existingIdx] = { ...parsed[existingIdx], ...defArt, categoryLabel: defArt.categoryLabel };
             }
           });
+
+          // Urutkan artikel: tahun/tanggal terbaru di paling atas, tahun paling lama di paling bawah (Descending)
+          parsed.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+
           currentArticles = parsed;
           localStorage.setItem('acf_articles_data', JSON.stringify(currentArticles));
         } else {
-          currentArticles = DEFAULT_ARTICLES;
-          localStorage.setItem('acf_articles_data', JSON.stringify(DEFAULT_ARTICLES));
+          currentArticles = [...DEFAULT_ARTICLES].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+          localStorage.setItem('acf_articles_data', JSON.stringify(currentArticles));
         }
       } else {
-        currentArticles = DEFAULT_ARTICLES;
-        localStorage.setItem('acf_articles_data', JSON.stringify(DEFAULT_ARTICLES));
+        currentArticles = [...DEFAULT_ARTICLES].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+        localStorage.setItem('acf_articles_data', JSON.stringify(currentArticles));
       }
     } catch (e) {
       console.warn('Error reading articles storage:', e);
-      currentArticles = DEFAULT_ARTICLES;
+      currentArticles = [...DEFAULT_ARTICLES].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
     }
 
     loadCategories();
@@ -515,8 +572,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderGrid() {
     if (!articlesGrid) return;
 
-    // Filter only published articles (not Drafts)
-    const published = currentArticles.filter(art => (art.status || 'Terbit') !== 'Draf');
+    // Filter only published articles (not Drafts) and ensure newest on top, oldest at bottom
+    const published = currentArticles
+      .filter(art => (art.status || 'Terbit') !== 'Draf')
+      .sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
 
     articlesGrid.innerHTML = '';
 

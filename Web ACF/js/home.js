@@ -385,14 +385,14 @@ function initHomeKabar() {
   ];
 
   function getCategoryLabel(art) {
+    if (art.category === 'kabar-sekolah-juara' || art.category === 'sekolah-juara' || (art.id && art.id.startsWith('ART-SJ'))) {
+      return 'Artikel Sekolah Juara';
+    }
+    if (art.category === 'kabar-sekolah-daya-setara' || art.category === 'sekolah-daya-setara' || (art.id && art.id.startsWith('ART-SDS'))) {
+      return 'Artikel Sekolah Daya Setara';
+    }
     if (art.categoryLabel) return art.categoryLabel;
     switch (art.category) {
-      case 'kabar-sekolah-daya-setara':
-      case 'sekolah-daya-setara':
-        return 'Artikel Sekolah Daya Setara';
-      case 'kabar-sekolah-juara':
-      case 'sekolah-juara':
-        return 'Artikel Sekolah Juara';
       case 'liputan':
         return 'Liputan Lapangan';
       case 'vokasi':

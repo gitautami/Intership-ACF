@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SJ08',
       title: 'Penyuluhan Pencegahan dan Pemberantasan Penyalahgunaan Narkoba: Membangun Generasi Cerdas, Sehat, dan Berprestasi',
       category: 'kabar-sekolah-juara',
-      categoryLabel: 'Artikel, Artikel Pendidikan, Berita SD Juara Tangerang, Berita Sekolah',
+      categoryLabel: 'Artikel Sekolah Juara',
       author: 'cerianak',
       date: 'Jul 3, 2026',
       comments: '0 comments',
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SJ07',
       title: 'Bukan Sekadar Tulisan: Menggali Kekuatan Buku Esai sebagai Media Refleksi',
       category: 'kabar-sekolah-juara',
-      categoryLabel: 'Artikel, Artikel Pendidikan, Berita SD Juara Tangerang, Berita Sekolah',
+      categoryLabel: 'Artikel Sekolah Juara',
       author: 'cerianak',
       date: 'Jun 10, 2026',
       comments: '0 comments',
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SJ06',
       title: 'Haflah Tahfidz Qur’an SD Persa Juara Medan',
       category: 'kabar-sekolah-juara',
-      categoryLabel: 'Artikel, Berita SD Juara Medan, Berita Sekolah',
+      categoryLabel: 'Artikel Sekolah Juara',
       author: 'cerianak',
       date: 'Jul 3, 2026',
       comments: '0 comments',
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SJ05',
       title: 'Aksi Solidaritas SDS Persa Setahun Serangan Israel ke Palestina',
       category: 'kabar-sekolah-juara',
-      categoryLabel: 'Berita SD Juara Medan, Berita Sekolah',
+      categoryLabel: 'Artikel Sekolah Juara',
       author: 'acforid',
       date: 'Oct 10, 2024',
       comments: '0 comments',
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SJ04',
       title: 'Upacara Peringatan HUT Ke-79 RI di SD Juara Persa Medan Berlangsung Khidmat',
       category: 'kabar-sekolah-juara',
-      categoryLabel: 'Berita SD Juara Medan, Berita Sekolah',
+      categoryLabel: 'Artikel Sekolah Juara',
       author: 'acforid',
       date: 'Aug 19, 2024',
       comments: '0 comments',
@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SJ03',
       title: 'Tasyakuran Tahsin Metode Tilawati: Apresiasi atas Perjalanan Belajar Al-Qur’an Siswa SD Juara Cilegon',
       category: 'kabar-sekolah-juara',
-      categoryLabel: 'Artikel, Berita SD Juara Cilegon, Berita Sekolah',
+      categoryLabel: 'Artikel Sekolah Juara',
       author: 'cerianak',
       date: 'Jun 18, 2026',
       comments: '0 comments',
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SJ02',
       title: 'Pembiasaan Pagi di SD Juara Cilegon',
       category: 'kabar-sekolah-juara',
-      categoryLabel: 'Artikel, Berita SD Juara Cilegon, Berita Sekolah',
+      categoryLabel: 'Artikel Sekolah Juara',
       author: 'cerianak',
       date: 'May 23, 2025',
       comments: '0 comments',
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'ART-SJ01',
       title: 'Market Day Siswa-siswi kelas 1 SD Juara Batam',
       category: 'kabar-sekolah-juara',
-      categoryLabel: 'Berita SD Juara Batam',
+      categoryLabel: 'Artikel Sekolah Juara',
       author: 'acforid',
       date: 'Jul 1, 2024',
       comments: '0 comments',
@@ -474,21 +474,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.cover && item.cover.includes('artikel-sekolahjuara')) {
               item.cover = item.cover.replace('artikel-sekolahjuara', 'kabar-sekolahjuara');
             }
-            if (item.category === 'sekolah-juara') {
+            if (item.category === 'kabar-sekolah-juara' || item.category === 'sekolah-juara' || (item.id && item.id.startsWith('ART-SJ'))) {
               item.category = 'kabar-sekolah-juara';
+              item.categoryLabel = 'Artikel Sekolah Juara';
             }
-            if (item.category === 'kabar-sekolah-daya-setara' || item.category === 'sekolah-daya-setara') {
+            if (item.category === 'kabar-sekolah-daya-setara' || item.category === 'sekolah-daya-setara' || (item.id && item.id.startsWith('ART-SDS'))) {
               item.category = 'kabar-sekolah-daya-setara';
               item.categoryLabel = 'Artikel Sekolah Daya Setara';
             }
             if (item.id === 'ART-SJ01') {
               item.cover = 'assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';
               item.category = 'kabar-sekolah-juara';
+              item.categoryLabel = 'Artikel Sekolah Juara';
             }
             if (item.id === 'ART-SJ04') {
               item.author = 'acforid';
               item.date = 'Aug 19, 2024';
-              item.categoryLabel = 'Berita SD Juara Medan, Berita Sekolah';
+              item.categoryLabel = 'Artikel Sekolah Juara';
             }
             return item;
           });
@@ -498,8 +500,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const existingIdx = parsed.findIndex(a => a.id === defArt.id);
             if (existingIdx === -1) {
               parsed.unshift(defArt);
-            } else if (defArt.id === 'ART-SDS05' || defArt.id === 'ART-SDS06' || defArt.id === 'ART-SDS07') {
-              parsed[existingIdx] = { ...parsed[existingIdx], ...defArt };
+            } else if (defArt.id.startsWith('ART-SJ') || defArt.id.startsWith('ART-SDS')) {
+              parsed[existingIdx] = { ...parsed[existingIdx], ...defArt, categoryLabel: defArt.categoryLabel };
             }
           });
           currentArticles = parsed;
@@ -732,7 +734,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalMeta) {
       const author = art.author || 'acforid';
       const date = art.date || 'Jul 1, 2024';
-      const catLabel = art.categoryLabel || getCatLabel(art.category) || 'Berita SD Juara Batam';
+      let catLabel = art.categoryLabel;
+      if (art.category === 'kabar-sekolah-juara' || (art.id && art.id.startsWith('ART-SJ'))) {
+        catLabel = 'Artikel Sekolah Juara';
+      } else if (art.category === 'kabar-sekolah-daya-setara' || (art.id && art.id.startsWith('ART-SDS'))) {
+        catLabel = 'Artikel Sekolah Daya Setara';
+      } else if (!catLabel) {
+        catLabel = getCatLabel(art.category) || 'Artikel Pendidikan';
+      }
       const comments = art.comments || '0 comments';
       modalMeta.textContent = `by ${author} | ${date} | ${catLabel} | ${comments}`;
     }

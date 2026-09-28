@@ -657,6 +657,20 @@
       const storedArticles = localStorage.getItem('acf_articles_data');
       if (storedArticles) {
         dataArticles = JSON.parse(storedArticles);
+        if (Array.isArray(dataArticles)) {
+          dataArticles = dataArticles.map(art => {
+            if (art.category === 'kabar-sekolah-juara' || art.category === 'sekolah-juara' || (art.id && art.id.startsWith('ART-SJ'))) {
+              art.category = 'kabar-sekolah-juara';
+              art.categoryLabel = 'Artikel Sekolah Juara';
+            }
+            if (art.category === 'kabar-sekolah-daya-setara' || art.category === 'sekolah-daya-setara' || (art.id && art.id.startsWith('ART-SDS'))) {
+              art.category = 'kabar-sekolah-daya-setara';
+              art.categoryLabel = 'Artikel Sekolah Daya Setara';
+            }
+            return art;
+          });
+          saveArticlesData();
+        }
       } else {
         dataArticles = INITIAL_ARTICLES_DATA;
         saveArticlesData();

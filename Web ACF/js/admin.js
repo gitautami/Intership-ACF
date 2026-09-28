@@ -368,25 +368,49 @@
     return false;
   }
 
+  function isSchoolCategory(slug = '', label = '') {
+    const s = String(slug || '').toLowerCase();
+    const l = String(label || '').toLowerCase();
+    if (s === 'kabar-sekolah-juara' || s === 'kabar-sekolah-daya-setara') return false;
+    return (
+      s.includes('sd-juara') ||
+      s.includes('sekolah-juara') ||
+      s.includes('daya-setara') ||
+      s.includes('dayasetara') ||
+      s.includes('berita-sd') ||
+      s.includes('prestasi-sd') ||
+      s.includes('berita-sekolah') ||
+      s.includes('prestasi-sekolah') ||
+      l.includes('sd juara') ||
+      l.includes('sekolah juara') ||
+      l.includes('daya setara') ||
+      l.includes('berita sd') ||
+      l.includes('prestasi sd') ||
+      l === 'berita sekolah' ||
+      l === 'prestasi sekolah' ||
+      l === 'sekolah'
+    );
+  }
+
   function loadCategories() {
     try {
       const stored = localStorage.getItem('acf_custom_categories');
       if (stored) {
         let parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Migrate old categories & update labels
-          parsed = parsed.map(c => {
-            if (c.slug === 'sekolah-daya-setara' || c.slug === 'kabar-sekolah-daya-setara') {
-              c.slug = 'kabar-sekolah-daya-setara';
-              c.label = 'Artikel Sekolah Daya Setara';
-            }
-            if (c.slug === 'sekolah-juara' || c.slug === 'kabar-sekolah-juara') {
-              c.slug = 'kabar-sekolah-juara';
-              c.label = 'Artikel Sekolah Juara';
-            }
-            return c;
-          });
+          // Filter out redundant per-school categories & normalize
+          parsed = parsed.filter(c => !isSchoolCategory(c.slug, c.label));
+          
+          // Ensure default school categories exist
+          if (!parsed.some(c => c.slug === 'kabar-sekolah-daya-setara')) {
+            parsed.unshift({ slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' });
+          }
+          if (!parsed.some(c => c.slug === 'kabar-sekolah-juara')) {
+            parsed.splice(1, 0, { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' });
+          }
+
           dataCategories = parsed;
+          saveCategories();
         } else {
           dataCategories = [...DEFAULT_CATEGORIES];
           saveCategories();
@@ -408,6 +432,15 @@
     const cleanLabel = (label || '').trim();
     if (!cleanLabel) return null;
     const slug = customSlug || cleanLabel.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    
+    // Jangan izinkan membuat pecahan kategori per-sekolah / SD Juara
+    if (isSchoolCategory(slug, cleanLabel)) {
+      if (slug.includes('daya-setara') || cleanLabel.toLowerCase().includes('daya setara')) {
+        return dataCategories.find(c => c.slug === 'kabar-sekolah-daya-setara') || { slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' };
+      }
+      return dataCategories.find(c => c.slug === 'kabar-sekolah-juara') || { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' };
+    }
+
     let existing = dataCategories.find(c => c.slug === slug || c.label.toLowerCase() === cleanLabel.toLowerCase());
     if (!existing) {
       existing = { slug, label: cleanLabel };
@@ -1246,10 +1279,13 @@
                 let catSlug = (c.slug || '').trim();
                 if (!cleanName || catSlug === 'uncategorized') return;
                 
-                if (catSlug === 'sekolah-daya-setara' || catSlug === 'kabar-sekolah-daya-setara') {
-                  catSlug = 'kabar-sekolah-daya-setara';
-                } else if (catSlug === 'sekolah-juara' || catSlug === 'kabar-sekolah-juara') {
-                  catSlug = 'kabar-sekolah-juara';
+                if (isSchoolCategory(catSlug, cleanName)) {
+                  if (catSlug.includes('daya-setara') || cleanName.toLowerCase().includes('daya setara')) {
+                    categoryMap[c.id] = { id: c.id, name: 'Artikel Sekolah Daya Setara', slug: 'kabar-sekolah-daya-setara' };
+                  } else {
+                    categoryMap[c.id] = { id: c.id, name: 'Artikel Sekolah Juara', slug: 'kabar-sekolah-juara' };
+                  }
+                  return;
                 }
                 
                 const reg = registerCategory(cleanName, catSlug);
@@ -1343,10 +1379,13 @@
             const cleanTName = decodeHtmlEntities(t.name || '').trim();
             let tSlug = (t.slug || '').trim();
             if (!cleanTName || tSlug === 'uncategorized') return;
-            if (tSlug === 'sekolah-daya-setara' || tSlug === 'kabar-sekolah-daya-setara') {
-              tSlug = 'kabar-sekolah-daya-setara';
-            } else if (tSlug === 'sekolah-juara' || tSlug === 'kabar-sekolah-juara') {
-              tSlug = 'kabar-sekolah-juara';
+            if (isSchoolCategory(tSlug, cleanTName)) {
+              if (tSlug.includes('daya-setara') || cleanTName.toLowerCase().includes('daya setara')) {
+                categoryMap[t.id] = { id: t.id, name: 'Artikel Sekolah Daya Setara', slug: 'kabar-sekolah-daya-setara' };
+              } else {
+                categoryMap[t.id] = { id: t.id, name: 'Artikel Sekolah Juara', slug: 'kabar-sekolah-juara' };
+              }
+              return;
             }
             const reg = registerCategory(cleanTName, tSlug);
             categoryMap[t.id] = { id: t.id, name: reg ? reg.label : cleanTName, slug: reg ? reg.slug : tSlug };

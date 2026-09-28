@@ -338,6 +338,30 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentCategories = [];
   let activeCategorySlug = 'all';
 
+  function isSchoolCategory(slug = '', label = '') {
+    const s = String(slug || '').toLowerCase();
+    const l = String(label || '').toLowerCase();
+    if (s === 'kabar-sekolah-juara' || s === 'kabar-sekolah-daya-setara') return false;
+    return (
+      s.includes('sd-juara') ||
+      s.includes('sekolah-juara') ||
+      s.includes('daya-setara') ||
+      s.includes('dayasetara') ||
+      s.includes('berita-sd') ||
+      s.includes('prestasi-sd') ||
+      s.includes('berita-sekolah') ||
+      s.includes('prestasi-sekolah') ||
+      l.includes('sd juara') ||
+      l.includes('sekolah juara') ||
+      l.includes('daya setara') ||
+      l.includes('berita sd') ||
+      l.includes('prestasi sd') ||
+      l === 'berita sekolah' ||
+      l === 'prestasi sekolah' ||
+      l === 'sekolah'
+    );
+  }
+
   // 1. Load Categories
   function loadCategories() {
     try {
@@ -345,19 +369,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (savedCats) {
         let parsed = JSON.parse(savedCats);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Migrate old categories & update labels
-          parsed = parsed.map(c => {
-            if (c.slug === 'sekolah-daya-setara' || c.slug === 'kabar-sekolah-daya-setara') {
-              c.slug = 'kabar-sekolah-daya-setara';
-              c.label = 'Artikel Sekolah Daya Setara';
-            }
-            if (c.slug === 'sekolah-juara' || c.slug === 'kabar-sekolah-juara') {
-              c.slug = 'kabar-sekolah-juara';
-              c.label = 'Artikel Sekolah Juara';
-            }
-            return c;
-          });
-          // Ensure new default categories like 'kabar-sekolah-daya-setara' exist
+          // Filter out redundant per-school categories & normalize
+          parsed = parsed.filter(c => !isSchoolCategory(c.slug, c.label));
+
+          // Ensure default school categories exist
+          if (!parsed.some(c => c.slug === 'kabar-sekolah-daya-setara')) {
+            parsed.unshift({ slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' });
+          }
+          if (!parsed.some(c => c.slug === 'kabar-sekolah-juara')) {
+            parsed.splice(1, 0, { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' });
+          }
+
+          // Ensure all default categories exist
           DEFAULT_CATEGORIES.forEach(defCat => {
             if (!parsed.some(c => c.slug === defCat.slug)) {
               parsed.push(defCat);
@@ -433,18 +456,19 @@ document.addEventListener('DOMContentLoaded', () => {
           // Filter out legacy dummy articles
           parsed = parsed.filter(item => item.id !== 'ART-3001' && item.id !== 'ART-3002' && item.id !== 'ART-3003');
 
-          // Auto-migrate and fix any old incorrect cover paths & categories
+          // Auto-migrate and fix any old incorrect cover paths & consolidate school categories
           parsed = parsed.map(item => {
             if (item.cover && item.cover.includes('artikel-sekolahjuara')) {
               item.cover = item.cover.replace('artikel-sekolahjuara', 'kabar-sekolahjuara');
             }
-            if (item.category === 'kabar-sekolah-juara' || item.category === 'sekolah-juara' || (item.id && item.id.startsWith('ART-SJ'))) {
-              item.category = 'kabar-sekolah-juara';
-              item.categoryLabel = 'Artikel Sekolah Juara';
-            }
-            if (item.category === 'kabar-sekolah-daya-setara' || item.category === 'sekolah-daya-setara' || (item.id && item.id.startsWith('ART-SDS'))) {
-              item.category = 'kabar-sekolah-daya-setara';
-              item.categoryLabel = 'Artikel Sekolah Daya Setara';
+            if (isSchoolCategory(item.category, item.categoryLabel) || item.category === 'kabar-sekolah-juara' || item.category === 'sekolah-juara' || (item.id && item.id.startsWith('ART-SJ'))) {
+              if (item.category.includes('daya-setara') || (item.categoryLabel && item.categoryLabel.toLowerCase().includes('daya setara')) || (item.id && item.id.startsWith('ART-SDS'))) {
+                item.category = 'kabar-sekolah-daya-setara';
+                item.categoryLabel = 'Artikel Sekolah Daya Setara';
+              } else {
+                item.category = 'kabar-sekolah-juara';
+                item.categoryLabel = 'Artikel Sekolah Juara';
+              }
             }
             if (item.id === 'ART-SJ01') {
               item.cover = 'assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';

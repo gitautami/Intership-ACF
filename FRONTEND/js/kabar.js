@@ -363,38 +363,41 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 1. Load Categories
-  function loadCategories() {
+  async function loadCategories() {
     try {
-      const savedCats = localStorage.getItem('acf_custom_categories');
-      if (savedCats) {
-        let parsed = JSON.parse(savedCats);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Filter out redundant per-school categories & normalize
-          parsed = parsed.filter(c => !isSchoolCategory(c.slug, c.label));
+      let categories = [];
+      if (window.ACF_API && window.ACF_API.categories) {
+        categories = await window.ACF_API.categories.getAll();
+      }
 
-          // Ensure default school categories exist
-          if (!parsed.some(c => c.slug === 'kabar-sekolah-daya-setara')) {
-            parsed.unshift({ slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' });
-          }
-          if (!parsed.some(c => c.slug === 'kabar-sekolah-juara')) {
-            parsed.splice(1, 0, { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' });
-          }
-
-          // Ensure all default categories exist
-          DEFAULT_CATEGORIES.forEach(defCat => {
-            if (!parsed.some(c => c.slug === defCat.slug)) {
-              parsed.push(defCat);
-            }
-          });
-          currentCategories = parsed;
-          localStorage.setItem('acf_custom_categories', JSON.stringify(currentCategories));
-        } else {
-          currentCategories = [...DEFAULT_CATEGORIES];
-          localStorage.setItem('acf_custom_categories', JSON.stringify(currentCategories));
+      if (!Array.isArray(categories) || categories.length === 0) {
+        const savedCats = localStorage.getItem('acf_custom_categories');
+        if (savedCats) {
+          categories = JSON.parse(savedCats);
         }
+      }
+
+      if (Array.isArray(categories) && categories.length > 0) {
+        // Filter out redundant per-school categories & normalize
+        let parsed = categories.filter(c => !isSchoolCategory(c.slug, c.label));
+
+        // Ensure default school categories exist
+        if (!parsed.some(c => c.slug === 'kabar-sekolah-daya-setara')) {
+          parsed.unshift({ slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' });
+        }
+        if (!parsed.some(c => c.slug === 'kabar-sekolah-juara')) {
+          parsed.splice(1, 0, { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' });
+        }
+
+        // Ensure all default categories exist
+        DEFAULT_CATEGORIES.forEach(defCat => {
+          if (!parsed.some(c => c.slug === defCat.slug)) {
+            parsed.push(defCat);
+          }
+        });
+        currentCategories = parsed;
       } else {
         currentCategories = [...DEFAULT_CATEGORIES];
-        localStorage.setItem('acf_custom_categories', JSON.stringify(currentCategories));
       }
     } catch (e) {
       currentCategories = [...DEFAULT_CATEGORIES];
@@ -499,73 +502,92 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Date(0);
   }
 
-  // 3. Load and Render Articles
-  function loadAndRenderArticles() {
+  // 3. Load and Render Articles from MySQL Backend / Fallback
+  async function loadAndRenderArticles() {
     try {
-      const saved = localStorage.getItem('acf_articles_data');
-      if (saved) {
-        let parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Filter out legacy dummy articles
-          parsed = parsed.filter(item => item.id !== 'ART-3001' && item.id !== 'ART-3002' && item.id !== 'ART-3003');
+      let articles = [];
+      if (window.ACF_API && window.ACF_API.articles) {
+        articles = await window.ACF_API.articles.getAll({ status: 'all' });
+      }
 
-          // Auto-migrate and fix any old incorrect cover paths & consolidate school categories
-          parsed = parsed.map(item => {
-            if (item.cover && item.cover.includes('artikel-sekolahjuara')) {
-              item.cover = item.cover.replace('artikel-sekolahjuara', 'kabar-sekolahjuara');
-            }
-            if (isSchoolCategory(item.category, item.categoryLabel) || item.category === 'kabar-sekolah-juara' || item.category === 'sekolah-juara' || (item.id && item.id.startsWith('ART-SJ'))) {
-              if (item.category.includes('daya-setara') || (item.categoryLabel && item.categoryLabel.toLowerCase().includes('daya setara')) || (item.id && item.id.startsWith('ART-SDS'))) {
-                item.category = 'kabar-sekolah-daya-setara';
-                item.categoryLabel = 'Artikel Sekolah Daya Setara';
-              } else {
-                item.category = 'kabar-sekolah-juara';
-                item.categoryLabel = 'Artikel Sekolah Juara';
-              }
-            }
-            if (item.id === 'ART-SJ01') {
-              item.cover = 'assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';
+      if (!Array.isArray(articles) || articles.length === 0) {
+        const saved = localStorage.getItem('acf_articles_data');
+        if (saved) {
+          articles = JSON.parse(saved);
+        }
+      }
+
+      if (Array.isArray(articles) && articles.length > 0) {
+        // Filter out legacy dummy articles
+        let parsed = articles.filter(item => item.id !== 'ART-3001' && item.id !== 'ART-3002' && item.id !== 'ART-3003');
+
+        // Auto-migrate and fix any old incorrect cover paths & consolidate school categories
+        parsed = parsed.map(item => {
+          if (item.cover && item.cover.includes('artikel-sekolahjuara')) {
+            item.cover = item.cover.replace('artikel-sekolahjuara', 'kabar-sekolahjuara');
+          }
+          if (isSchoolCategory(item.category, item.categoryLabel) || item.category === 'kabar-sekolah-juara' || item.category === 'sekolah-juara' || (item.id && item.id.startsWith('ART-SJ'))) {
+            if (item.category.includes('daya-setara') || (item.categoryLabel && item.categoryLabel.toLowerCase().includes('daya setara')) || (item.id && item.id.startsWith('ART-SDS'))) {
+              item.category = 'kabar-sekolah-daya-setara';
+              item.categoryLabel = 'Artikel Sekolah Daya Setara';
+            } else {
               item.category = 'kabar-sekolah-juara';
               item.categoryLabel = 'Artikel Sekolah Juara';
             }
-            if (item.id === 'ART-SJ04') {
-              item.author = 'acforid';
-              item.date = 'Aug 19, 2024';
-              item.categoryLabel = 'Artikel Sekolah Juara';
-            }
-            return item;
-          });
+          }
+          if (item.id === 'ART-SJ01') {
+            item.cover = 'assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';
+            item.category = 'kabar-sekolah-juara';
+            item.categoryLabel = 'Artikel Sekolah Juara';
+          }
+          if (item.id === 'ART-SJ04') {
+            item.author = 'acforid';
+            item.date = 'Aug 19, 2024';
+            item.categoryLabel = 'Artikel Sekolah Juara';
+          }
+          return item;
+        });
 
-          // Ensure default articles exist
-          DEFAULT_ARTICLES.forEach(defArt => {
-            const existingIdx = parsed.findIndex(a => a.id === defArt.id);
-            if (existingIdx === -1) {
-              parsed.push(defArt);
-            } else if (defArt.id.startsWith('ART-SJ') || defArt.id.startsWith('ART-SDS')) {
-              parsed[existingIdx] = { ...parsed[existingIdx], ...defArt, categoryLabel: defArt.categoryLabel };
-            }
-          });
+        // Ensure default articles exist
+        DEFAULT_ARTICLES.forEach(defArt => {
+          const existingIdx = parsed.findIndex(a => a.id === defArt.id);
+          if (existingIdx === -1) {
+            parsed.push(defArt);
+          } else if (defArt.id.startsWith('ART-SJ') || defArt.id.startsWith('ART-SDS')) {
+            parsed[existingIdx] = { ...parsed[existingIdx], ...defArt, categoryLabel: defArt.categoryLabel };
+          }
+        });
 
-          // Urutkan artikel: tahun/tanggal terbaru di paling atas, tahun paling lama di paling bawah (Descending)
-          parsed.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+        // Urutkan artikel: tahun/tanggal terbaru di paling atas, tahun paling lama di paling bawah (Descending)
+        parsed.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
 
-          currentArticles = parsed;
-          localStorage.setItem('acf_articles_data', JSON.stringify(currentArticles));
-        } else {
-          currentArticles = [...DEFAULT_ARTICLES].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
-          localStorage.setItem('acf_articles_data', JSON.stringify(currentArticles));
-        }
+        currentArticles = parsed;
       } else {
         currentArticles = [...DEFAULT_ARTICLES].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
-        localStorage.setItem('acf_articles_data', JSON.stringify(currentArticles));
       }
     } catch (e) {
-      console.warn('Error reading articles storage:', e);
+      console.warn('Error reading articles:', e);
       currentArticles = [...DEFAULT_ARTICLES].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
     }
 
-    loadCategories();
+    await loadCategories();
     renderGrid();
+
+    // Check URL query parameters for direct article opening
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetId = urlParams.get('id') || urlParams.get('article');
+      if (targetId) {
+        const art = currentArticles.find(a => a.id === targetId);
+        if (art) {
+          setTimeout(() => {
+            openArticleDetail(art);
+          }, 150);
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading URL params:', e);
+    }
   }
 
   // 4. Render Cards into Grid

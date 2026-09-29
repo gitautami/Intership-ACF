@@ -295,13 +295,28 @@
     renderAll();
   }
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     const user = (adminUsername ? adminUsername.value : '').trim();
     const pass = (adminPassword ? adminPassword.value : '').trim();
+
+    try {
+      if (window.ACF_API && window.ACF_API.auth) {
+        const res = await window.ACF_API.auth.login(user, pass);
+        if (res && res.success) {
+          sessionStorage.setItem('acf_admin_session', 'active');
+          if (loginAlert) loginAlert.classList.remove('show');
+          showToast('Selamat datang, ' + (res.data?.user?.full_name || 'Administrator') + '!', 'success');
+          showDashboard();
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('API login error, trying fallback:', err);
+    }
 
     if (user === ADMIN_CREDENTIALS.username && pass === ADMIN_CREDENTIALS.password) {
       sessionStorage.setItem('acf_admin_session', 'active');
@@ -318,8 +333,13 @@
     }
   }
 
-  function handleLogout() {
+  async function handleLogout() {
     if (confirm('Apakah Anda yakin ingin keluar dari Portal Admin?')) {
+      try {
+        if (window.ACF_API && window.ACF_API.auth) {
+          await window.ACF_API.auth.logout();
+        }
+      } catch (_) {}
       sessionStorage.removeItem('acf_admin_session');
       adminUsername.value = '';
       adminPassword.value = '';
@@ -392,33 +412,33 @@
     );
   }
 
-  function loadCategories() {
+  async function loadCategories() {
     try {
-      const stored = localStorage.getItem('acf_custom_categories');
-      if (stored) {
-        let parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Filter out redundant per-school categories & normalize
-          parsed = parsed.filter(c => !isSchoolCategory(c.slug, c.label));
-          
-          // Ensure default school categories exist
-          if (!parsed.some(c => c.slug === 'kabar-sekolah-daya-setara')) {
-            parsed.unshift({ slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' });
-          }
-          if (!parsed.some(c => c.slug === 'kabar-sekolah-juara')) {
-            parsed.splice(1, 0, { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' });
-          }
+      if (window.ACF_API && window.ACF_API.categories) {
+        const cats = await window.ACF_API.categories.getAll();
+        if (Array.isArray(cats) && cats.length > 0) {
+          dataCategories = cats.filter(c => !isSchoolCategory(c.slug, c.label));
+        }
+      }
 
-          dataCategories = parsed;
-          saveCategories();
+      if (!dataCategories || dataCategories.length === 0) {
+        const stored = localStorage.getItem('acf_custom_categories');
+        if (stored) {
+          let parsed = JSON.parse(stored);
+          dataCategories = Array.isArray(parsed) && parsed.length > 0 ? parsed.filter(c => !isSchoolCategory(c.slug, c.label)) : [...DEFAULT_CATEGORIES];
         } else {
           dataCategories = [...DEFAULT_CATEGORIES];
-          saveCategories();
         }
-      } else {
-        dataCategories = [...DEFAULT_CATEGORIES];
-        saveCategories();
       }
+
+      if (!dataCategories.some(c => c.slug === 'kabar-sekolah-daya-setara')) {
+        dataCategories.unshift({ slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' });
+      }
+      if (!dataCategories.some(c => c.slug === 'kabar-sekolah-juara')) {
+        dataCategories.splice(1, 0, { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' });
+      }
+
+      saveCategories();
     } catch (e) {
       dataCategories = [...DEFAULT_CATEGORIES];
     }
@@ -446,8 +466,13 @@
       existing = { slug, label: cleanLabel };
       dataCategories.push(existing);
       saveCategories();
+      if (window.ACF_API && window.ACF_API.categories) {
+        window.ACF_API.categories.create(cleanLabel, slug).catch(() => {});
+      }
     }
     renderCategorySelects(existing.slug);
+    return existing;
+  }
     return existing;
   }
 
@@ -593,9 +618,12 @@
       saveArticlesData();
     }
 
-    // Hapus dari dataCategories
+    // Hapus dari dataCategories & MySQL Backend
     dataCategories = dataCategories.filter(c => c.slug !== slug);
     saveCategories();
+    if (window.ACF_API && window.ACF_API.categories) {
+      window.ACF_API.categories.delete(slug).catch(() => {});
+    }
 
     // Re-render antarmuka
     renderCategorySelects();
@@ -621,6 +649,9 @@
 
     dataCategories.push({ slug, label: cleanLabel });
     saveCategories();
+    if (window.ACF_API && window.ACF_API.categories) {
+      window.ACF_API.categories.create(cleanLabel, slug).catch(() => {});
+    }
     renderCategorySelects(slug);
     renderCategoryManagerList();
     updateMetricCards();
@@ -681,51 +712,67 @@
     return new Date(0);
   }
 
-  function loadAllData() {
+  async function loadAllData() {
     try {
-      loadCategories();
+      await loadCategories();
 
-      // Mitra - Hanya menampilkan data dari pengisian formulir
-      const storedMitra = localStorage.getItem('acf_admin_data_mitra');
-      if (storedMitra) {
-        const parsed = JSON.parse(storedMitra);
-        dataMitra = Array.isArray(parsed) ? parsed.filter(item => !isMockItem(item)) : [];
+      // Mitra - Ambil dari MySQL Backend API / Fallback Storage
+      if (window.ACF_API && window.ACF_API.mitra) {
+        const fetchedMitra = await window.ACF_API.mitra.getAll();
+        dataMitra = Array.isArray(fetchedMitra) ? fetchedMitra.filter(item => !isMockItem(item)) : [];
       } else {
-        dataMitra = [];
+        const storedMitra = localStorage.getItem('acf_admin_data_mitra');
+        if (storedMitra) {
+          const parsed = JSON.parse(storedMitra);
+          dataMitra = Array.isArray(parsed) ? parsed.filter(item => !isMockItem(item)) : [];
+        } else {
+          dataMitra = [];
+        }
       }
       saveDataMitra();
 
-      // Relawan - Hanya menampilkan data dari pengisian formulir
-      const storedRelawan = localStorage.getItem('acf_admin_data_relawan');
-      if (storedRelawan) {
-        const parsed = JSON.parse(storedRelawan);
-        dataRelawan = Array.isArray(parsed) ? parsed.filter(item => !isMockItem(item)) : [];
+      // Relawan - Ambil dari MySQL Backend API / Fallback Storage
+      if (window.ACF_API && window.ACF_API.relawan) {
+        const fetchedRelawan = await window.ACF_API.relawan.getAll();
+        dataRelawan = Array.isArray(fetchedRelawan) ? fetchedRelawan.filter(item => !isMockItem(item)) : [];
       } else {
-        dataRelawan = [];
+        const storedRelawan = localStorage.getItem('acf_admin_data_relawan');
+        if (storedRelawan) {
+          const parsed = JSON.parse(storedRelawan);
+          dataRelawan = Array.isArray(parsed) ? parsed.filter(item => !isMockItem(item)) : [];
+        } else {
+          dataRelawan = [];
+        }
       }
       saveDataRelawan();
 
-      // Articles
-      const storedArticles = localStorage.getItem('acf_articles_data');
-      if (storedArticles) {
-        dataArticles = JSON.parse(storedArticles);
-        if (Array.isArray(dataArticles)) {
-          dataArticles = dataArticles.filter(art => art.id !== 'ART-3001' && art.id !== 'ART-3002' && art.id !== 'ART-3003').map(art => {
-            if (art.category === 'kabar-sekolah-juara' || art.category === 'sekolah-juara' || (art.id && art.id.startsWith('ART-SJ'))) {
-              art.category = 'kabar-sekolah-juara';
-              art.categoryLabel = 'Artikel Sekolah Juara';
-            }
-            if (art.category === 'kabar-sekolah-daya-setara' || art.category === 'sekolah-daya-setara' || (art.id && art.id.startsWith('ART-SDS'))) {
-              art.category = 'kabar-sekolah-daya-setara';
-              art.categoryLabel = 'Artikel Sekolah Daya Setara';
-            }
-            return art;
-          });
-          dataArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
-          saveArticlesData();
+      // Articles - Ambil dari MySQL Backend API / Fallback Storage
+      if (window.ACF_API && window.ACF_API.articles) {
+        const fetchedArticles = await window.ACF_API.articles.getAll({ status: 'all' });
+        if (Array.isArray(fetchedArticles) && fetchedArticles.length > 0) {
+          dataArticles = fetchedArticles;
+        } else {
+          const storedArticles = localStorage.getItem('acf_articles_data');
+          dataArticles = storedArticles ? JSON.parse(storedArticles) : [...INITIAL_ARTICLES_DATA];
         }
       } else {
-        dataArticles = [...INITIAL_ARTICLES_DATA].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+        const storedArticles = localStorage.getItem('acf_articles_data');
+        dataArticles = storedArticles ? JSON.parse(storedArticles) : [...INITIAL_ARTICLES_DATA];
+      }
+
+      if (Array.isArray(dataArticles)) {
+        dataArticles = dataArticles.filter(art => art.id !== 'ART-3001' && art.id !== 'ART-3002' && art.id !== 'ART-3003').map(art => {
+          if (art.category === 'kabar-sekolah-juara' || art.category === 'sekolah-juara' || (art.id && art.id.startsWith('ART-SJ'))) {
+            art.category = 'kabar-sekolah-juara';
+            art.categoryLabel = 'Artikel Sekolah Juara';
+          }
+          if (art.category === 'kabar-sekolah-daya-setara' || art.category === 'sekolah-daya-setara' || (art.id && art.id.startsWith('ART-SDS'))) {
+            art.category = 'kabar-sekolah-daya-setara';
+            art.categoryLabel = 'Artikel Sekolah Daya Setara';
+          }
+          return art;
+        });
+        dataArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
         saveArticlesData();
       }
 
@@ -737,12 +784,14 @@
       });
 
       renderCategorySelects();
+      renderAll();
 
     } catch (err) {
       console.error('Error loading data:', err);
       dataMitra = [];
       dataRelawan = [];
       dataArticles = [...INITIAL_ARTICLES_DATA].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+      renderAll();
     }
   }
 
@@ -1104,7 +1153,7 @@
     if (articleContent) articleContent.value = articleVisualEditor.innerHTML;
   }
 
-  function handleArticleSubmit(e) {
+  async function handleArticleSubmit(e) {
     if (e) e.preventDefault();
 
     const title = articleTitle?.value.trim() || '';
@@ -1127,39 +1176,44 @@
     const now = new Date();
     const dateStr = articleDateInput?.value.trim() || `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
+    const payload = {
+      title,
+      category,
+      categoryLabel,
+      author,
+      date: dateStr,
+      cover,
+      excerpt,
+      content,
+      status
+    };
+
     if (editId) {
       // Update existing
       const idx = dataArticles.findIndex(a => a.id === editId);
       if (idx !== -1) {
-        dataArticles[idx] = {
-          ...dataArticles[idx],
-          title,
-          category,
-          categoryLabel,
-          author,
-          date: dateStr,
-          cover,
-          excerpt,
-          content,
-          status
-        };
-        showToast('Artikel berhasil diperbarui!', 'success');
+        dataArticles[idx] = { ...dataArticles[idx], ...payload };
       }
+      if (window.ACF_API && window.ACF_API.articles) {
+        try {
+          await window.ACF_API.articles.update(editId, payload);
+        } catch (err) {
+          console.warn('API update error, saved to local cache:', err);
+        }
+      }
+      showToast('Artikel berhasil diperbarui!', 'success');
     } else {
       // Create new
-      const newArticle = {
-        id: 'ART-' + Date.now().toString().slice(-4),
-        title,
-        category,
-        categoryLabel,
-        author,
-        date: dateStr,
-        cover,
-        excerpt,
-        content,
-        status
-      };
-      dataArticles.unshift(newArticle);
+      let createdId = 'ART-' + Date.now().toString().slice(-4);
+      if (window.ACF_API && window.ACF_API.articles) {
+        try {
+          const res = await window.ACF_API.articles.create(payload);
+          if (res && res.id) createdId = res.id;
+        } catch (err) {
+          console.warn('API create error, saved to local cache:', err);
+        }
+      }
+      dataArticles.unshift({ id: createdId, ...payload });
       showToast(status === 'Draf' ? 'Artikel disimpan sebagai Draf!' : 'Artikel baru berhasil dipublikasikan!', 'success');
     }
 
@@ -1169,24 +1223,48 @@
     closeArticleModal();
   }
 
-  function deleteArticle(id) {
+  async function deleteArticle(id) {
     const art = dataArticles.find(a => a.id === id);
     if (!art) return;
 
     if (confirm(`Apakah Anda yakin ingin menghapus artikel "${art.title}"?`)) {
       dataArticles = dataArticles.filter(a => a.id !== id);
       saveArticlesData();
+      if (window.ACF_API && window.ACF_API.articles) {
+        try {
+          await window.ACF_API.articles.delete(id);
+        } catch (err) {
+          console.warn('API delete error:', err);
+        }
+      }
       renderTableArticles();
       updateMetricCards();
       showToast('Artikel telah dihapus.', 'info');
     }
   }
 
-  // --- Local File Image Reader ---
-  function handleLocalImageUpload(file) {
+  // --- Local File Image Reader & Server Uploader ---
+  async function handleLocalImageUpload(file) {
     if (!file || !file.type.startsWith('image/')) {
       showToast('Harap pilih file gambar (JPG, PNG, WEBP).', 'info');
       return;
+    }
+
+    showToast('Mengunggah foto sampul...', 'info');
+
+    // Coba upload ke Server Backend
+    if (window.ACF_API && window.ACF_API.articles) {
+      try {
+        const uploadRes = await window.ACF_API.articles.uploadImage(file);
+        if (uploadRes && uploadRes.url) {
+          if (articleCover) articleCover.value = uploadRes.url;
+          updateCoverPreview(uploadRes.url);
+          showToast('Foto sampul berhasil diunggah ke server!', 'success');
+          return;
+        }
+      } catch (uploadErr) {
+        console.warn('Upload ke backend gagal, beralih ke preview lokal:', uploadErr);
+      }
     }
 
     const reader = new FileReader();
@@ -1770,11 +1848,20 @@
 
     // Attach Status Click Handlers
     modalBody.querySelectorAll('.btn-status-choice').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         const newStatus = btn.getAttribute('data-status');
         item.status = newStatus;
-        if (type === 'mitra') saveDataMitra();
-        else saveDataRelawan();
+        if (type === 'mitra') {
+          saveDataMitra();
+          if (window.ACF_API && window.ACF_API.mitra) {
+            window.ACF_API.mitra.updateStatus(item.id, newStatus).catch(() => {});
+          }
+        } else {
+          saveDataRelawan();
+          if (window.ACF_API && window.ACF_API.relawan) {
+            window.ACF_API.relawan.updateStatus(item.id, newStatus).catch(() => {});
+          }
+        }
         renderAll();
         modalBody.querySelectorAll('.btn-status-choice').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -1804,15 +1891,21 @@
 
     const btnDelete = document.getElementById('btnDeleteFormEntry');
     if (btnDelete) {
-      btnDelete.addEventListener('click', () => {
+      btnDelete.addEventListener('click', async () => {
         const targetName = type === 'mitra' ? (item.namaInstansi || 'data mitra') : (item.namaLengkap || 'data relawan');
         if (confirm(`Hapus data ${targetName} dari dashboard?`)) {
           if (type === 'mitra') {
             dataMitra = dataMitra.filter(m => m.id !== item.id);
             saveDataMitra();
+            if (window.ACF_API && window.ACF_API.mitra) {
+              window.ACF_API.mitra.delete(item.id).catch(() => {});
+            }
           } else {
             dataRelawan = dataRelawan.filter(r => r.id !== item.id);
             saveDataRelawan();
+            if (window.ACF_API && window.ACF_API.relawan) {
+              window.ACF_API.relawan.delete(item.id).catch(() => {});
+            }
           }
           renderAll();
           closeDetailModal();

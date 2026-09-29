@@ -1,5 +1,6 @@
 /**
  * ACF EDUHUB — DONATION CHANNELS INTERACTION SCRIPT
+ * Connected to MySQL Backend (donations_prayers) via ACF_API
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -62,9 +63,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Doa Form Submission
+  // 4. Load Live Prayers from Backend API
+  async function loadPrayers() {
+    if (!prayersList) return;
+    try {
+      if (window.ACF_API && window.ACF_API.prayers) {
+        const prayers = await window.ACF_API.prayers.getAll(15);
+        if (Array.isArray(prayers) && prayers.length > 0) {
+          prayersList.innerHTML = '';
+          prayers.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'prayer-card';
+            card.innerHTML = `
+              <div class="prayer-header">
+                <span class="prayer-name">${escapeHTML(p.name || 'Hamba Allah')}</span>
+                <span class="prayer-time">${escapeHTML(p.timeDisplay || 'Baru saja')}</span>
+              </div>
+              <p class="prayer-text">"${escapeHTML(p.prayerText || '')}"</p>
+            `;
+            prayersList.appendChild(card);
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Gagal memuat doa donatur dari API:', err);
+    }
+  }
+
+  function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  loadPrayers();
+
+  // 5. Doa Form Submission
   if (doaForm && prayersList) {
-    doaForm.addEventListener('submit', (e) => {
+    doaForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const prayerText = donatorPrayerInput ? donatorPrayerInput.value.trim() : '';
@@ -74,8 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      let isAnon = anonCheckbox && anonCheckbox.checked;
       let name = donatorNameInput ? donatorNameInput.value.trim() : '';
-      if (anonCheckbox && anonCheckbox.checked) {
+      if (isAnon) {
         name = 'Hamba Allah';
       } else if (!name) {
         name = 'Orang Baik';
@@ -87,13 +128,26 @@ document.addEventListener('DOMContentLoaded', () => {
       newPrayerCard.style.animation = 'fadeInUp 0.4s ease forwards';
       newPrayerCard.innerHTML = `
         <div class="prayer-header">
-          <span class="prayer-name">${name}</span>
+          <span class="prayer-name">${escapeHTML(name)}</span>
           <span class="prayer-time">Baru saja</span>
         </div>
-        <p class="prayer-text">"${prayerText}"</p>
+        <p class="prayer-text">"${escapeHTML(prayerText)}"</p>
       `;
 
       prayersList.insertBefore(newPrayerCard, prayersList.firstChild);
+
+      // Submit to MySQL API Backend
+      try {
+        if (window.ACF_API && window.ACF_API.prayers) {
+          await window.ACF_API.prayers.create({
+            name,
+            isAnonymous: isAnon,
+            prayerText
+          });
+        }
+      } catch (err) {
+        console.warn('Gagal menyimpan doa ke backend:', err);
+      }
 
       // Reset form
       doaForm.reset();

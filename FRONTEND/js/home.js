@@ -381,28 +381,34 @@ function initHomeKabar() {
       .replace(/'/g, '&#039;');
   }
 
-  function renderHomeKabar() {
+  async function renderHomeKabar() {
     let articles = [];
     try {
-      const saved = localStorage.getItem('acf_articles_data');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          articles = parsed;
-        } else {
-          articles = DEFAULT_ARTICLES;
+      if (window.ACF_API && window.ACF_API.articles) {
+        const fetched = await window.ACF_API.articles.getAll({ status: 'Terbit', limit: 3 });
+        if (Array.isArray(fetched) && fetched.length > 0) {
+          articles = fetched;
         }
-      } else {
-        articles = DEFAULT_ARTICLES;
+      }
+      
+      if (articles.length === 0) {
+        const saved = localStorage.getItem('acf_articles_data');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            articles = parsed.filter(a => (a.status || 'Terbit') !== 'Draf').slice(0, 3);
+          } else {
+            articles = DEFAULT_ARTICLES.slice(0, 3);
+          }
+        } else {
+          articles = DEFAULT_ARTICLES.slice(0, 3);
+        }
       }
     } catch (e) {
-      articles = DEFAULT_ARTICLES;
+      articles = DEFAULT_ARTICLES.slice(0, 3);
     }
 
-    // Filter only published articles
-    const published = articles.filter(a => (a.status || 'Terbit') !== 'Draf');
-    const latestArticles = published.slice(0, 3);
-
+    const latestArticles = articles.slice(0, 3);
     if (latestArticles.length === 0) return;
 
     container.innerHTML = '';

@@ -14,22 +14,31 @@
     }
 
     const loc = window.location;
-    // When running on localhost (XAMPP / Laragon / PHP server)
+
+    // Jika dibuka lewat Live Server (port 5500, 5501, 3000, 5173, dsb) atau file://
+    if ((loc.port && loc.port !== '80' && loc.port !== '443') || loc.protocol === 'file:') {
+      return 'http://localhost/Intership-ACF/BACKEND/api';
+    }
+
+    // Jika berjalan di Laragon virtual host (*.test atau *.local)
+    if (loc.hostname.endsWith('.test') || loc.hostname.endsWith('.local')) {
+      return `${loc.origin}/BACKEND/api`;
+    }
+
+    // Jika berjalan di localhost port 80 / standard (XAMPP / Laragon)
     if (loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') {
       const pathname = loc.pathname;
-      // Jika berada di subfolder repository (misal: /Intership-ACF/FRONTEND/...)
       const match = pathname.match(/^(.*?\/(?:Intership-ACF|intership-acf|acf))\//i);
       if (match) {
         return `${loc.origin}${match[1]}/BACKEND/api`;
       }
-      // Atau jika root folder langsung
       if (pathname.includes('/FRONTEND/')) {
         return `${loc.origin}${pathname.split('/FRONTEND/')[0]}/BACKEND/api`;
       }
-      return `${loc.origin}/BACKEND/api`;
+      return `${loc.origin}/Intership-ACF/BACKEND/api`;
     }
 
-    // Default relative path from FRONTEND/html/ or FRONTEND/
+    // Default fallback relative path
     return '../../BACKEND/api';
   }
 

@@ -5,7 +5,7 @@
 
 /* Navigation CSS Variables */
 :root {
-  --nav-height: 82px;
+  --nav-height: 90px;
   --nav-bg: rgba(255, 255, 255, 0.96);
   --nav-bg-scrolled: rgba(255, 255, 255, 0.98);
   --nav-border: rgba(226, 232, 240, 0.8);
@@ -61,7 +61,7 @@
 .main-navbar.scrolled {
   background: var(--nav-bg-scrolled);
   box-shadow: var(--shadow-nav);
-  height: 72px;
+  height: 76px;
 }
 
 .nav-container {
@@ -86,22 +86,22 @@
 }
 
 .brand-logo-img {
-  height: 85px;
+  height: 108px;
   width: auto;
-  max-width: 250px;
+  max-width: 300px;
   object-fit: contain;
   display: block;
   image-rendering: -webkit-optimize-contrast;
-  filter: contrast(1.08) brightness(1.02) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
+  filter: contrast(1.1) brightness(1.02) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), height 0.25s ease;
 }
 
 .main-navbar.scrolled .brand-logo-img {
-  height: 60px;
+  height: 74px;
 }
 
 .brand-link:hover .brand-logo-img {
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 
 .brand-icon {
@@ -731,7 +731,7 @@
 
 @media (max-width: 768px) {
   :root {
-    --nav-height: 74px;
+    --nav-height: 80px;
     --sidebar-width: 320px;
   }
 
@@ -741,11 +741,12 @@
   }
 
   .brand-logo-img {
-    height: 58px;
+    height: 78px;
+    max-width: 240px;
   }
 
   .main-navbar.scrolled .brand-logo-img {
-    height: 50px;
+    height: 62px;
   }
 
   .nav-actions {
@@ -765,7 +766,7 @@
 
 @media (max-width: 480px) {
   :root {
-    --nav-height: 68px;
+    --nav-height: 74px;
   }
 
   .nav-container {
@@ -774,12 +775,12 @@
   }
 
   .brand-logo-img {
-    height: 50px;
-    max-width: 170px;
+    height: 68px;
+    max-width: 210px;
   }
 
   .main-navbar.scrolled .brand-logo-img {
-    height: 44px;
+    height: 54px;
   }
 
   .nav-actions {
@@ -817,14 +818,14 @@
   }
 
   .sidebar-logo-img {
-    height: 48px;
+    height: 58px;
   }
 }
 
 @media (max-width: 360px) {
   .brand-logo-img {
-    height: 44px;
-    max-width: 140px;
+    height: 56px;
+    max-width: 170px;
   }
 
   .btn-donasi span {

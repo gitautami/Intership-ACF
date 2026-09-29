@@ -636,3 +636,297 @@
   }
 }
 
+/* =============================================
+   Model Kami (3 Jalur Sinergi) Section Styles
+   ============================================= */
+.model-synergy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 48px;
+}
+
+.model-synergy-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 34px 28px 28px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.model-synergy-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--card-accent, var(--acf-purple));
+  transition: height 0.3s ease;
+}
+
+.model-synergy-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.model-synergy-card:hover::before {
+  height: 7px;
+}
+
+/* Formal card variant */
+.model-synergy-card.card-formal {
+  --card-accent: linear-gradient(90deg, #7D2280 0%, #A8246E 100%);
+}
+.model-synergy-card.card-formal:hover {
+  border-color: rgba(125, 34, 128, 0.3);
+  box-shadow: 0 20px 40px -10px rgba(125, 34, 128, 0.15);
+}
+
+/* Vokasi card variant */
+.model-synergy-card.card-vokasi {
+  --card-accent: linear-gradient(90deg, #F5A623 0%, #D97706 100%);
+}
+.model-synergy-card.card-vokasi:hover {
+  border-color: rgba(245, 166, 35, 0.4);
+  box-shadow: 0 20px 40px -10px rgba(245, 166, 35, 0.18);
+}
+
+/* Digital card variant */
+.model-synergy-card.card-digital {
+  --card-accent: linear-gradient(90deg, #6366F1 0%, #8B5CF6 100%);
+}
+.model-synergy-card.card-digital:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.18);
+}
+
+.model-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.model-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.model-synergy-card:hover .model-icon-box {
+  transform: scale(1.08) rotate(3deg);
+}
+
+.card-formal .model-icon-box {
+  background: rgba(125, 34, 128, 0.08);
+  color: #7D2280;
+  border: 1px solid rgba(125, 34, 128, 0.16);
+}
+
+.card-vokasi .model-icon-box {
+  background: rgba(245, 166, 35, 0.12);
+  color: #D97706;
+  border: 1px solid rgba(245, 166, 35, 0.25);
+}
+
+.card-digital .model-icon-box {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4F46E5;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.model-icon-box svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.model-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+}
+
+.card-formal .model-pill-badge {
+  background: rgba(125, 34, 128, 0.08);
+  color: #7D2280;
+  border: 1px solid rgba(125, 34, 128, 0.16);
+}
+
+.card-vokasi .model-pill-badge {
+  background: rgba(245, 166, 35, 0.12);
+  color: #B45309;
+  border: 1px solid rgba(245, 166, 35, 0.25);
+}
+
+.card-digital .model-pill-badge {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4F46E5;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.model-card-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 10px;
+  line-height: 1.35;
+}
+
+.model-card-desc {
+  font-size: 0.91rem;
+  color: var(--text-body);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+.model-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.model-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.model-check-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-formal .model-check-circle {
+  background: rgba(125, 34, 128, 0.12);
+  color: #7D2280;
+}
+
+.card-vokasi .model-check-circle {
+  background: rgba(245, 166, 35, 0.18);
+  color: #D97706;
+}
+
+.card-digital .model-check-circle {
+  background: rgba(99, 102, 241, 0.14);
+  color: #4F46E5;
+}
+
+.model-check-circle svg {
+  width: 11px;
+  height: 11px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.model-card-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid #F1F5F9;
+}
+
+.model-card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.card-formal .model-card-btn {
+  background: rgba(125, 34, 128, 0.05);
+  color: #7D2280;
+  border: 1px solid rgba(125, 34, 128, 0.15);
+}
+.card-formal .model-card-btn:hover {
+  background: #7D2280;
+  color: #FFFFFF;
+  border-color: #7D2280;
+  box-shadow: 0 4px 14px rgba(125, 34, 128, 0.25);
+}
+
+.card-vokasi .model-card-btn {
+  background: rgba(245, 166, 35, 0.08);
+  color: #B45309;
+  border: 1px solid rgba(245, 166, 35, 0.22);
+}
+.card-vokasi .model-card-btn:hover {
+  background: #D97706;
+  color: #FFFFFF;
+  border-color: #D97706;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
+}
+
+.card-digital .model-card-btn {
+  background: rgba(99, 102, 241, 0.07);
+  color: #4F46E5;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+.card-digital .model-card-btn:hover {
+  background: #4F46E5;
+  color: #FFFFFF;
+  border-color: #4F46E5;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+}
+
+.model-card-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s ease;
+}
+
+.model-card-btn:hover svg {
+  transform: translateX(4px);
+}
+
+@media (max-width: 991px) {
+  .model-synergy-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+

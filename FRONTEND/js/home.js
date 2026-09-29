@@ -312,7 +312,7 @@ function initHomeKabar() {
       categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 14, 2025',
-      cover: 'assets/kabar-sekolahdayasetara/2.png',
+      cover: '../assets/kabar-sekolahdayasetara/2.png',
       excerpt: 'Bandung – Di sudut keheningan, sering terdengar keraguan yang membisik, “Kesempatanmu sudah lewat.” Sebuah kalimat yang mampu memadamkan semangat dan mengubur mimpi. Namun, di tengah riuhnya kota Bandung...',
       status: 'Terbit'
     },
@@ -323,7 +323,7 @@ function initHomeKabar() {
       categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
-      cover: 'assets/kabar-sekolahdayasetara/25.png',
+      cover: '../assets/kabar-sekolahdayasetara/25.png',
       excerpt: 'Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C...',
       status: 'Terbit'
     },
@@ -334,7 +334,7 @@ function initHomeKabar() {
       categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
-      cover: 'assets/kabar-sekolahdayasetara/27 (2).png',
+      cover: '../assets/kabar-sekolahdayasetara/27 (2).png',
       excerpt: 'Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C...',
       status: 'Terbit'
     },
@@ -345,7 +345,7 @@ function initHomeKabar() {
       categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'acforid',
       date: 'Sep 12, 2024',
-      cover: 'assets/kabar-sekolahdayasetara/Foto-Artikel-September-03.jpg',
+      cover: '../assets/kabar-sekolahdayasetara/Foto-Artikel-September-03.jpg',
       excerpt: 'Bandung Barat, 7 September 2024 – Rumah Zakat dan ACF (Anak Ceria Foundation) berkolaborasi dengan Pemerintah Kabupaten Bandung Barat meresmikan Pusat Kegiatan Belajar Masyarakat (PKBM)...',
       status: 'Terbit'
     }
@@ -417,7 +417,7 @@ function initHomeKabar() {
       const articleEl = document.createElement('article');
       articleEl.className = 'home-kabar-card reveal visible';
 
-      const coverSrc = art.cover || 'assets/logo-acf/LOGO_ACF-removebg-preview.png';
+      const coverSrc = art.cover || '../assets/logo-acf/LOGO_ACF-removebg-preview.png';
       const catClass = (art.category || 'artikel').toLowerCase().replace(/\s+/g, '-');
       const catLabel = getCategoryLabel(art);
       const articleUrl = `kabar.html?id=${encodeURIComponent(art.id || '')}`;

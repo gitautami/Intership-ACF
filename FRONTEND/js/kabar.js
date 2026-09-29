@@ -27,12 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'Aug 14, 2025',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahdayasetara/2.png',
+      cover: '../assets/kabar-sekolahdayasetara/2.png',
       excerpt: 'Bandung – Di sudut keheningan, sering terdengar keraguan yang membisik, “Kesempatanmu sudah lewat.” Sebuah kalimat yang mampu memadamkan semangat dan mengubur mimpi. Namun, di tengah riuhnya kota Bandung...',
       content: `<p><strong>Bandung</strong> – Di sudut keheningan, sering terdengar keraguan yang membisik, <em>“Kesempatanmu sudah lewat.”</em> Sebuah kalimat yang mampu memadamkan semangat dan mengubur mimpi. Namun, di tengah riuhnya kota Bandung, ada sebuah cerita yang membuktikan sebaliknya. Sebuah kisah tentang keberanian untuk mencoba, tentang kepercayaan diri yang kembali menyala.</p>
 <p>Pada tanggal 9 dan 10 Agustus 2025 yang bersejarah, udara di PKBM Bina Cipta, Ujungberung, terasa berbeda. Bukan sekadar udara biasa, melainkan udara yang dipenuhi ketegangan, harapan, dan tekad baja. Sebanyak 16 pejuang dari program Paket C PKBM Ceria Ngamprah dan Pusat melangkah masuk, bukan sebagai siswa biasa, tetapi sebagai gladiator di arena pembuktian diri: Asesmen Nasional Berbasis Komputer (ANBK).</p>
 <p>Bagi mereka, layar komputer di hadapan bukanlah sekadar menampilkan soal-soal literasi dan numerasi. Layar itu adalah cermin dari perjuangan mereka. Setiap kata yang mereka baca adalah gema dari semangat belajar yang pernah terputus. Setiap angka yang mereka hitung adalah simbol dari langkah-langkah yang kembali mereka ayunkan menuju masa depan. Ini bukanlah sekadar ujian. Ini adalah deklarasi. Deklarasi bahwa belajar tidak mengenal usia, dan semangat tidak memiliki batas waktu.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/1.png" alt="Peserta ANBK PKBM Ceria 2025" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahdayasetara/1.png" alt="Peserta ANBK PKBM Ceria 2025" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Perjalanan ini adalah tentang menantang takdir. Tentang membuktikan kepada diri sendiri dan dunia bahwa menyerah hanyalah sebuah jeda, bukan akhir dari segalanya. Di wajah mereka, tergambar fokus dan kesungguhan—sebuah potret keberanian yang menggetarkan. Mereka membuktikan bahwa esensi pendidikan bukanlah tentang seberapa cepat kita berlari, melainkan tentang keberanian untuk terus melangkah, bahkan setelah terjatuh.</p>
 <p>Keikutsertaan 16 warga belajar ini dalam ANBK telah menjadi lebih dari sekadar pemenuhan syarat akademis. Ia telah menjadi api yang menyulut kembali harapan, tidak hanya bagi mereka, tetapi bagi kita semua. Mereka adalah bukti hidup bahwa setiap langkah, sekecil apa pun, adalah bekal berharga untuk masa depan yang lebih cerah.</p>
 <p>Kisah mereka adalah jantung dari PKBM Ceria. Sebuah semangat belajar tanpa batas, di mana setiap individu diberi ruang untuk tumbuh, berjuang, dan pada akhirnya, menang. Perjuangan mereka hari ini adalah mercusuar bagi mereka yang mungkin masih ragu di luar sana.</p>
@@ -47,11 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'Aug 7, 2026',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahdayasetara/25.png',
+      cover: '../assets/kabar-sekolahdayasetara/25.png',
       excerpt: 'Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C...',
       content: `<p>Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C.</p>
 <p>Bagi Sekolah Daya Setara, hari kelulusan bukan sekadar seremoni akhir tahun ajaran. Ia adalah penanda bahwa pendidikan yang setara dan terbuka bagi siapa saja, tanpa memandang latar belakang atau titik awal masing-masing, benar-benar bisa membawa seseorang sampai ke garis akhir yang selama ini mungkin terasa jauh.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/26.png" alt="Pelepasan Lulusan Sekolah Daya Setara" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahdayasetara/26.png" alt="Pelepasan Lulusan Sekolah Daya Setara" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <h3 style="font-size: 1.2rem; font-weight: 700; color: #1E293B; margin: 28px 0 12px 0;">Bukan Akhir, Melainkan Awal yang Baru</h3>
 <p>Hari kelulusan sering dimaknai sebagai penutup sebuah babak. Namun bagi para lulusan Sekolah Daya Setara, hari ini lebih tepat dilihat sebagai titik awal untuk melangkah lebih jauh — membawa serta ilmu, pengalaman, dan semangat yang telah dibangun selama masa belajar, untuk kemudian memberi manfaat bagi keluarga, masyarakat, dan bangsa.</p>
 <p>Perjalanan menuju hari ini tentu tidak selalu mudah. Pendidikan kesetaraan sering ditempuh oleh mereka yang harus membagi waktu antara belajar dan tanggung jawab lain dalam hidupnya. Karena itu, setiap kelulusan di jalur ini adalah bukti nyata bahwa kesempatan untuk meraih masa depan yang lebih baik terbuka bagi siapa saja yang mau terus berjuang dan belajar.</p>
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'Aug 7, 2026',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahdayasetara/27 (2).png',
+      cover: '../assets/kabar-sekolahdayasetara/27 (2).png',
       excerpt: 'Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C...',
       content: `<p>Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C.</p>
 <p>Di balik setiap ijazah yang diraih, ada jalan berliku yang berbeda-beda. Beberapa harus berhenti sekolah karena keadaan ekonomi, beberapa lainnya memilih bekerja lebih dulu sebelum kembali ke bangku belajar, dan tak sedikit yang sempat kehilangan arah sebelum akhirnya menemukan kembali alasan untuk terus belajar. Berikut adalah tujuh kisah dari mereka yang telah membuktikan bahwa pendidikan tetap bisa diraih, kapan pun seseorang siap untuk kembali.</p>
@@ -107,18 +107,18 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'acforid',
       date: 'Sep 12, 2024',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahdayasetara/Foto-Artikel-September-03.jpg',
+      cover: '../assets/kabar-sekolahdayasetara/Foto-Artikel-September-03.jpg',
       excerpt: 'Bandung Barat, 7 September 2024 – Rumah Zakat dan ACF (Anak Ceria Foundation) berkolaborasi dengan Pemerintah Kabupaten Bandung Barat meresmikan Pusat Kegiatan Belajar Masyarakat (PKBM)...',
       content: `<p><strong>Bandung Barat, 7 September 2024</strong> – <a href="https://www.rumahzakat.org/" target="_blank" rel="noopener noreferrer" style="color: #0284c7; text-decoration: underline;">Rumah Zakat</a> dan <a href="https://acf.or.id/" target="_blank" rel="noopener noreferrer" style="color: #0284c7; text-decoration: underline;">ACF (Anak Ceria Foundation)</a> berkolaborasi dengan Pemerintah Kabupaten Bandung Barat meresmikan Pusat Kegiatan Belajar Masyarakat (PKBM) di Desa Mekarwangi, Lembang. Acara ini dihadiri oleh perwakilan Dinas Pendidikan Kabupaten Bandung Barat, Ibu Neneng Lisnawati, M.Pd.</p>
 <p>PKBM ini menyediakan program pendidikan kesetaraan gratis bagi masyarakat kurang mampu, termasuk Paket A, B, dan C, yang ditujukan untuk mereka yang tidak bisa mengakses pendidikan formal, seperti pekerja, ibu rumah tangga, dan anak putus sekolah.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/Foto-Artikel-September-04.jpg" alt="Peresmian PKBM Ceria di Lembang" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahdayasetara/Foto-Artikel-September-04.jpg" alt="Peresmian PKBM Ceria di Lembang" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Dalam sambutannya, Ibu Neneng Lisnawati, M.Pd., Penilik Dinas Pendidikan Kabupaten Bandung Barat, menyampaikan, <em>“Kami sangat mendukung upaya Rumah Zakat dan ACF dalam menyediakan akses pendidikan bagi masyarakat. PKBM ini merupakan wujud nyata bahwa setiap warga memiliki hak yang sama untuk belajar dan meningkatkan kualitas hidupnya.”</em></p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/Foto-Artikel-September-06.jpg" alt="Sambutan dan Penyerahan Bingkisan PKBM Ceria Lembang" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahdayasetara/Foto-Artikel-September-06.jpg" alt="Sambutan dan Penyerahan Bingkisan PKBM Ceria Lembang" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Ibu Murni Alit Baginda, Direktur Program Rumah Zakat, menambahkan, <em>“Kami berharap PKBM ini dapat menjadi jembatan bagi masyarakat yang selama ini sulit mengakses pendidikan formal, sehingga mereka dapat meningkatkan keterampilan dan pengetahuan yang relevan.”</em></p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/Foto-Artikel-September-05.jpg" alt="Suasana Kegiatan PKBM Ceria Lembang" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahdayasetara/Foto-Artikel-September-05.jpg" alt="Suasana Kegiatan PKBM Ceria Lembang" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p style="margin: 24px 0; font-size: 1.15rem; font-weight: 700; line-height: 1.5;"><span style="color: #64748B;">Baca Juga : </span><a href="javascript:void(0);" onclick="window.openArticleModalById && window.openArticleModalById('ART-SDS01', 'Semangat Belajar di Usia Senja')" style="color: #DC2626; text-decoration: underline; cursor: pointer;">Semangat Belajar di Usia Senja</a></p>
 <p>Pendidikan kesetaraan dinilai penting dalam meningkatkan kualitas sumber daya manusia dan mendukung peningkatan Indeks Pembangunan Manusia (IPM). Program ini juga sejalan dengan komitmen Indonesia terhadap SDGs, khususnya dalam menjamin pendidikan inklusif dan merata bagi semua kalangan.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/Foto-Artikel-September-07.jpg" alt="Antusiasme Warga dan Peserta PKBM Ceria Lembang" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahdayasetara/Foto-Artikel-September-07.jpg" alt="Antusiasme Warga dan Peserta PKBM Ceria Lembang" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Acara ini disambut dengan antusias oleh warga setempat, dengan penampilan lagu-lagu dari peserta PKBM. Tokoh masyarakat berharap program ini dapat terus berlanjut dan bermanfaat bagi warga Desa Mekarwangi.</p>`,
       status: 'Terbit'
     },
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'May 23, 2025',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahdayasetara/1.jpg',
+      cover: '../assets/kabar-sekolahdayasetara/1.jpg',
       excerpt: 'Lembang, [14 Maret 2025] – Neng Komara, seorang anak petani kecil dari Desa Mekarwangi, Lembang, telah meraih medali emas di Festival Islami Nasional 2025 kategori bahasa Indonesia...',
       content: `<p><strong>Lembang, [14 Maret 2025]</strong> – Neng Komara, seorang anak petani kecil dari Desa Mekarwangi, Lembang, telah meraih medali emas di Festival Islami Nasional 2025 kategori bahasa Indonesia. Prestasi ini membuktikan bahwa Neng Komara dapat bersaing di tingkat nasional dan menjadi inspirasi bagi banyak orang.</p>
 <p>Neng Komara, yang lahir pada tanggal 22 Mei 2004, merupakan anak dari pasangan Aep Acun dan Ai Komala. Meskipun putus sekolah di kelas 10 SMA Mekarwangi, ia tidak menyerah dan melanjutkan pendidikannya di PKBM Ceria melalui program kesetaraan.</p>
@@ -147,11 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'Jun 17, 2025',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahdayasetara/photo_1_2025-06-17_16-13-06.jpg',
+      cover: '../assets/kabar-sekolahdayasetara/photo_1_2025-06-17_16-13-06.jpg',
       excerpt: 'Jayapura, 3 Mei 2025 – Upaya memperluas akses pendidikan non-formal di Papua kini mendapat penguatan melalui peresmian PKBM Ceria Jayapura pada Sabtu, 3 Mei 2025...',
       content: `<p><strong>Jayapura, 3 Mei 2025</strong> – Upaya memperluas akses pendidikan non-formal di Papua kini mendapat penguatan melalui peresmian PKBM Ceria Jayapura pada Sabtu, 3 Mei 2025. Acara peresmian ini dilakukan oleh Bapak Ivan Supangat, Direktur ACF EduHub, didampingi oleh Bapak Damino, Kepala Sekolah SD Juara Jayapura.</p>
 <p>PKBM Ceria Jayapura merupakan program pendidikan kesetaraan yang diinisiasi sebagai ruang belajar alternatif bagi masyarakat yang belum sempat menyelesaikan pendidikan formal. Kegiatan ini disupport penuh oleh Rumah Zakat, sebagai bagian dari komitmennya dalam mendukung pendidikan yang inklusif dan berkelanjutan di Indonesia, khususnya di wilayah timur.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/photo_2_2025-06-17_16-13-06-1024x640.jpg" alt="Peresmian PKBM Ceria Jayapura" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahdayasetara/photo_2_2025-06-17_16-13-06-1024x640.jpg" alt="Peresmian PKBM Ceria Jayapura" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Acara peresmian dihadiri oleh berbagai tokoh dan mitra strategis yang memiliki kepedulian besar terhadap pendidikan di Papua. Hadir dalam kegiatan tersebut Ketua BGP Papua Ibu Fatkhurohmah, Ketua Prodi PGMI IAIN Fattahul Muluk Papua Bapak Didik Efendi, Pengawas Gugus IX Ibu Siti Sunah Zami, serta Branch Manager Rumah Zakat Jayapura, Bapak Yusup Siranda. Berbagai pihak yang turut menghadiri acara ini juga mendukung penuh kegiatan PKBM ini sebagai bagian dari ekosistem pendidikan yang lebih luas, yang mampu merangkul semua kalangan, termasuk anak putus sekolah dan masyarakat dewasa yang ingin melanjutkan pendidikan.</p>
 <p style="margin: 24px 0; font-size: 1.15rem; font-weight: 700; line-height: 1.5;"><span style="color: #64748B;">Baca Juga : </span><a href="javascript:void(0);" onclick="window.openArticleModalById && window.openArticleModalById('ART-SDS03', 'Neng Komara')" style="color: #DC2626; text-decoration: underline; cursor: pointer;">Neng Komara, Anak Petani yang Raih Medali Emas di Festival Islami Nasional 2025</a></p>
 <p>PKBM Ceria Jayapura akan menyelenggarakan program pendidikan kesetaraan Paket A, B, dan C, serta pelatihan keterampilan berbasis kebutuhan lokal. Kehadirannya diharapkan menjadi solusi konkret dalam membangun masyarakat pembelajar di tanah Papua.</p>`,
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'acforid',
       date: 'Aug 26, 2024',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahdayasetara/Foto-Artikel-Agustus-09.jpg',
+      cover: '../assets/kabar-sekolahdayasetara/Foto-Artikel-Agustus-09.jpg',
       excerpt: 'Kisah Pak Uun Sutisna, Buruh Tani yang Tekun Mengikuti Pelatihan Komputer di PKBM Ceria Bandung Barat. Oleh : Arif Rahman S. A. Lembang, 10 Agustus 2024...',
       content: `<h3 style="font-size: 1.25rem; font-weight: 700; color: #1E293B; margin-bottom: 12px; line-height: 1.4;">Kisah Pak Uun Sutisna, Buruh Tani yang Tekun Mengikuti Pelatihan Komputer di PKBM Ceria Bandung Barat</h3>
 <p style="font-weight: 600; color: #475569; margin-bottom: 16px;">Oleh : Arif Rahman S. A.</p>
@@ -186,15 +186,15 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'Jul 3, 2026',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahjuara/15.png',
+      cover: '../assets/kabar-sekolahjuara/15.png',
       excerpt: 'Tangerang – SD Juara Al Hakim menyelenggarakan kegiatan Penyuluhan Pencegahan dan Pemberantasan Penyalahgunaan Narkoba (P4GN) yang menghadirkan narasumber dari Satresnarkoba Polres Metro Tangerang Kota...',
       content: `<p><strong>Tangerang</strong> – SD Juara Al Hakim menyelenggarakan kegiatan Penyuluhan Pencegahan dan Pemberantasan Penyalahgunaan Narkoba (P4GN) yang menghadirkan narasumber dari Satresnarkoba Polres Metro Tangerang Kota, AKP Philipus Sudarmanto, S.H., M.H., selaku Kanit 3 Satresnarkoba. (Kamis, 10 Juni 2026).</p>
 <p>Kegiatan ini bertujuan memberikan edukasi kepada peserta didik mengenai bahaya penyalahgunaan narkotika, dampaknya terhadap kesehatan, serta pentingnya membangun kesadaran sejak dini untuk menjauhi segala bentuk penyalahgunaan zat adiktif.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahjuara/16.png" alt="Penyuluhan Bahaya Narkoba oleh AKP Philipus Sudarmanto" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahjuara/16.png" alt="Penyuluhan Bahaya Narkoba oleh AKP Philipus Sudarmanto" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Dalam pemaparannya, AKP Philipus Sudarmanto menjelaskan berbagai jenis narkoba yang kerap beredar di masyarakat, di antaranya ganja, sabu-sabu, ekstasi, dan heroin. Beliau juga menerangkan karakteristik masing-masing jenis narkoba beserta cara penyalahgunaannya yang dapat menimbulkan kerusakan fisik, mental, hingga mengancam masa depan penggunanya.</p>
 <p>Bukan hanya itu, beliau juga menjelaskan gejala ketergantungan narkoba, seperti tubuh yang terasa nyeri, otot menjadi kaku, hingga sakit kepala yang sangat hebat. Kondisi tersebut menunjukkan betapa besar dampak negatif narkoba terhadap kesehatan dan kualitas hidup seseorang.</p>
 <p>Lebih dalam dari itu, narasumber menekankan pentingnya menghindari berbagai perilaku yang sering menjadi pintu masuk menuju penyalahgunaan narkoba dan tindakan kriminal, seperti merokok, penggunaan vape, mengonsumsi minuman keras, melakukan bullying, gemar berkelahi yang berpotensi mengarah pada tawuran, serta perilaku pelecehan seksual. Peserta didik juga diingatkan untuk tidak membiasakan begadang karena dapat menurunkan kesehatan fisik maupun konsentrasi belajar.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahjuara/17.png" alt="Gerakan Cap Tangan Say No to Drugs SD Juara Al Hakim" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahjuara/17.png" alt="Gerakan Cap Tangan Say No to Drugs SD Juara Al Hakim" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Di akhir penyuluhan, AKP Philipus Sudarmanto berpesan untuk setiap murid menjaga pergaulan, mengisi waktu dengan kegiatan yang positif, serta menjadikan belajar sebagai tugas dan tanggung jawab utama untuk mencapai kesuksesan di masa depan.</p>
 <p>Kegiatan diakhiri dengan tanya jawab untuk mengikat pemahaman murid. Sebagai bentuk komitmen bersama dalam mewujudkan lingkungan sekolah yang aman dan bebas dari penyalahgunaan narkoba, seluruh peserta didik mengikuti Gerakan Cap Tangan “Say No to Drugs”. Dipandu oleh MC, setiap peserta didik mencelupkan telapak tangannya ke dalam pewarna yang telah disediakan, kemudian menempelkan cap tangan pada selembar kain putih. Kegiatan ini menjadi simbol tekad dan komitmen seluruh warga sekolah untuk mengatakan “Tidak pada Narkoba” serta mendukung terwujudnya SD Juara Al Hakim sebagai Sekolah Bebas Narkoba.</p>
 <p style="color: #64748B; font-weight: 600; margin-top: 24px;">Kontributor: Dian Islamiati Harahap</p>`,
@@ -208,13 +208,13 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'Jun 10, 2026',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahjuara/11.png',
+      cover: '../assets/kabar-sekolahjuara/11.png',
       excerpt: 'Oleh: Aditya Jessika Susanti Said, S.Pd., Gr. Tangerang, Jumat 27 Maret 2026 Hari Guru Nasional selalu menjadi momen yang sarat makna bagi dunia pendidikan di Indonesia...',
       content: `<p><strong>Oleh: Aditya Jessika Susanti Said, S.Pd., Gr.</strong></p>
 <p><strong>Tangerang, Jumat 27 Maret 2026</strong> — Hari Guru Nasional selalu menjadi momen yang sarat makna bagi dunia pendidikan di Indonesia. Di tengah berbagai perayaan dan ucapan terima kasih yang mengalir, seorang guru bernama Ibu Susan memilih cara yang berbeda untuk merayakannya melalui tulisan. Ia menuangkan pengalaman, kegelisahan, sekaligus harapannya dalam sebuah buku esai yang menggugah.</p>
 <p>Buku tersebut lahir dari perjalanan panjangnya sebagai pendidik. Dalam setiap lembarannya, Ibu Susan tidak hanya menuliskan kisah-kisah inspiratif, tetapi juga keluh kesah yang selama ini sering terpendam. Ia bercerita tentang tantangan yang dihadapi guru di era modern, mulai dari tuntutan administratif yang tinggi hingga perubahan karakter peserta didik yang semakin kompleks.</p>
 <p>Namun di balik semua itu, Ibu Susan tetap menegaskan satu hal penting: guru adalah pilar utama pendidikan. Tanpa peran guru yang kuat, proses pembentukan generasi masa depan tidak akan berjalan dengan optimal. Melalui esainya, ia ingin mengingatkan bahwa profesi guru bukan sekadar pekerjaan, melainkan panggilan jiwa yang membutuhkan dedikasi, kesabaran, dan ketulusan.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahjuara/10.png" alt="Buku Esai Refleksi Guru - Mencatat Indonesia" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahjuara/10.png" alt="Buku Esai Refleksi Guru - Mencatat Indonesia" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Momentum Hari Guru Nasional, menurutnya, seharusnya tidak dimaknai secara dangkal. Ia menyoroti bagaimana peringatan ini sering kali hanya berhenti pada seremoni, seperti upacara dan pemberian ucapan terima kasih di media sosial. Padahal, ada makna yang jauh lebih dalam yang perlu direnungkan bersama.</p>
 <p>Dalam salah satu bagian bukunya, Ibu Susan menuliskan kutipan yang menjadi inti dari pesannya:</p>
 <blockquote>“Peringatan hari guru seharusnya tidak berhenti pada seremonial dan ucapan terima kasih belaka, melainkan menjadi momentum refleksi.”</blockquote>
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'Jul 3, 2026',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahjuara/18.png',
+      cover: '../assets/kabar-sekolahjuara/18.png',
       excerpt: 'Senin, 15 Juni 2026 sebanyak 61 orang siswa siswi SD Persa Juara Medan diwisuda Quran pada acara Haflah Tahfidz Quran di gedung BGGTK Sumut...',
       content: `<p>Senin, 15 Juni 2026 sebanyak 61 orang siswa siswi SD Persa Juara Medan diwisuda Quran pada acara Haflah Tahfidz Quran di gedung BGGTK Sumut.</p>
 <p>Acara ini di buka dengan kata sambutan oleh Ibu Sri Budiarti S.S sebagai kepala sekolah SD Persa Juara Medan memberikan penguatan tentang Al Quran. Selanjutnya penampilan parade juz 30 dan 29 tasmi’ akbar yang di bacakan setiap siswa siswi masing masing satu atau dua ayat.</p>
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'acforid',
       date: 'Oct 10, 2024',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahjuara/Foto-Artikel-Oktober-09.jpg',
+      cover: '../assets/kabar-sekolahjuara/Foto-Artikel-Oktober-09.jpg',
       excerpt: 'Setahun sudah serangan Israel ke Palestina terjadi sejak 7 Oktober 2023. Selama 365 hari rakyat Palestina khususnya di Jalur Gaza dan Rafa menghadapi serangan rudal...',
       content: `<p>Setahun sudah serangan Israel ke Palestina terjadi sejak 7 Oktober 2023. Selama 365 hari rakyat Palestina khususnya di Jalur Gaza dan Rafa menghadapi serangan rudal, pemboman dan suara tembakan. Namun jika dilihat dari Sejarah konflik Israel dan Palestina sudah berlangsung selama puluhan bahkan ratusan tahun.</p>
 <p>Tidak terhitung lagi berapa orang yang telah gugur sebagai Syuhada. Hidup dalam keadaan terluka bahkan cacat. Berapa juta jiwa yang kehilangan rumah. Hidup kelaparan dan kedinginan. Hidup di tenda pengungsian, tanpa air bersih dan listrik.</p>
@@ -265,15 +265,15 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'acforid',
       date: 'Aug 19, 2024',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahjuara/Foto-Artikel-Agustus-06.jpg',
+      cover: '../assets/kabar-sekolahjuara/Foto-Artikel-Agustus-06.jpg',
       excerpt: 'Oleh : Eni Marianti Sabtu (17/8/2024), bertempat di lapangan upacara Komplek SDS Persa “Sekolah Juara Medan” Upacara Peringatan HUT Ke-79 RI berlangsung khidmat...',
       content: `<p><strong>Oleh : Eni Marianti</strong></p>
 <p>Sabtu (17/8/2024), bertempat di lapangan upacara Komplek SDS Persa “Sekolah Juara Medan” Upacara Peringatan HUT Ke-79 RI berlangsung khidmat. Tim Paskibras dan Petugas Upacara seluruhnya berasal dari kelas VI. Selama sepekan lebih tim paskibras berlatih tidak peduli oleh teriknya matahari atau rintik hujan, mereka sangat bersemangat untuk menjadi petugas pembawa bendera.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahjuara/Foto-Artikel-Agustus-07.jpg" alt="Petugas Upacara SD Juara Persa Medan" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahjuara/Foto-Artikel-Agustus-07.jpg" alt="Petugas Upacara SD Juara Persa Medan" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Di bawah komando Ananda Muhammad Yusuf Al Faruq Nasution sebagai pemimpin upacara, tim pengibar bendera sekolah dan petugas upacara sukses mengemban tugasnya melaksanakan pengibaran bendera. Suasana hujan deras sebelum upacara tidak menyurutkan langkah siswa untuk hadir ke sekolah mengikuti upacara bendera. Karena perjuangan kami belum ada apa-apanya dibandingkan dengan pengorbanan para pahlawan yang memperjuangkan kemerdekaan Negara Republik Indonesia.</p>
 <p>Ibu Eni Marianti sebagai Pembina Upacara yang mewakili Kepala Sekolah membacakan Kata Sambutan Menteri Pendidikan, Kebudayaan, Riset dan Teknologi. Dalam kata sambutannya Bapak Nadiem Anwar Makarim mengajak kita untuk terus mengisi Kemerdekaan Indonesia dan melanjutkan perjuangan untuk memajukan Pendidikan dan kebudayaan Indonesia.</p>
 <p>Semoga Pendidikan Indonesia semakin maju menyongsong Indonesia Emas 2045. Dirgahayu Republik Indonesia ke-79. Merdeka…!</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahjuara/Foto-Artikel-Agustus-08.jpg" alt="Dokumentasi HUT Ke-79 RI SD Juara Medan" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahjuara/Foto-Artikel-Agustus-08.jpg" alt="Dokumentasi HUT Ke-79 RI SD Juara Medan" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p style="color: #64748B; font-weight: 600; margin-top: 24px;">#SekolahJuara #SDJuaraMedan #SDSPersaMedan</p>`,
       status: 'Terbit'
     },
@@ -285,12 +285,12 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'Jun 18, 2026',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahjuara/12.png',
+      cover: '../assets/kabar-sekolahjuara/12.png',
       excerpt: 'Cilegon, 18 Juni 2026 SD Juara Cilegon menyelenggarakan kegiatan Tasyakuran Tahsin Metode Tilawati sebagai bentuk rasa syukur dan apresiasi atas pencapaian para siswa yang telah menyelesaikan pembelajaran Tilawati...',
       content: `<p><strong>Cilegon, 18 Juni 2026</strong></p>
 <p>SD Juara Cilegon menyelenggarakan kegiatan Tasyakuran Tahsin Metode Tilawati sebagai bentuk rasa syukur dan apresiasi atas pencapaian para siswa yang telah menyelesaikan pembelajaran Tilawati mulai dari jilid 1 hingga jilid 6. Kegiatan ini menjadi momen istimewa untuk memberikan penghargaan atas kesungguhan, kedisiplinan, dan semangat siswa dalam mempelajari serta memperbaiki bacaan Al-Qur’an.</p>
 <p>Sebagai bagian dari rangkaian acara, dilaksanakan uji publik untuk mengukur kemampuan bacaan peserta tasyakuran. Uji publik tersebut dilakukan secara langsung oleh Kepala Cabang Tilawati Provinsi Banten sehingga menjadi pengalaman berharga sekaligus bentuk evaluasi dan penguatan kualitas pembelajaran Al-Qur’an yang telah dijalani siswa.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahjuara/13.png" alt="Uji Publik & Penyerahan Sertifikat Tahsin" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahjuara/13.png" alt="Uji Publik & Penyerahan Sertifikat Tahsin" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Sebagai bentuk penghargaan atas pencapaian tersebut, seluruh peserta tasyakuran menerima sertifikat penghargaan yang diserahkan langsung oleh Kepala Sekolah SD Juara Cilegon. Penyerahan sertifikat ini menjadi simbol apresiasi atas proses belajar yang telah dilalui serta motivasi untuk terus melanjutkan interaksi yang baik dengan Al-Qur’an.</p>
 <p>Kegiatan ini bertujuan untuk menumbuhkan rasa syukur, meningkatkan semangat belajar Al-Qur’an, serta membangun kepercayaan diri siswa dalam membaca Al-Qur’an dengan baik dan benar sesuai metode Tilawati.</p>
 <p>Harapannya, melalui kegiatan ini para siswa semakin mencintai Al-Qur’an, menjaga kualitas bacaan yang telah dipelajari, dan terus melanjutkan pembelajaran menuju tahapan yang lebih baik, serta menjadi generasi yang berakhlak mulia dan dekat dengan nilai-nilai Al-Qur’an.</p>`,
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'cerianak',
       date: 'May 23, 2025',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahjuara/2.jpg',
+      cover: '../assets/kabar-sekolahjuara/2.jpg',
       excerpt: 'Cilegon, 09 Mei 2025 Membaca dzikir Al matsurat dan shalat Dhuha merupakan kegiatan rutin yang dilaksanakan di SD Juara Cilegon sebelum kegiatan belajar mengajar di mulai...',
       content: `<p><strong>Cilegon, 09 Mei 2025</strong></p>
 <p>Membaca dzikir Al matsurat dan shalat Dhuha merupakan kegiatan rutin yang dilaksanakan di SD Juara Cilegon sebelum kegiatan belajar mengajar di mulai. Pembiasaan pagi ini secara rutin dilaksanakan setiap hari yaitu dari hari Senin – hari Jum’at, diawali dengan berwudhu, membaca Al matsurat dilanjutkan dengan sholat dhuha 2 rokaat bagi siswa kelas rendah dan 4 rokaat bagi siswa kelas atas.</p>
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'acforid',
       date: 'Jul 1, 2024',
       comments: '0 comments',
-      cover: 'assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg',
+      cover: '../assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg',
       excerpt: 'Batam, 22 Juni 2024 Oleh : Pandhu Alfajri Hai Sobat Ceria! Salah satu program rutin setiap pekan di...',
       content: `<p><strong>Batam, 22 Juni 2024</strong><br><strong>Oleh : Pandhu Alfajri</strong></p>
 <p>Hai Sobat Ceria!<br>Salah satu program rutin setiap pekan di SD Juara Batam adalah progran Market Day. Pada Juma’t kali ini siswa-siswi kelas 1 mendapat kesempatan mengikuti program market day.</p>
@@ -536,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
           if (item.id === 'ART-SJ01') {
-            item.cover = 'assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';
+            item.cover = '../assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';
             item.category = 'kabar-sekolah-juara';
             item.categoryLabel = 'Artikel Sekolah Juara';
           }
@@ -618,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.setAttribute('data-category', art.category || 'artikel');
       card.setAttribute('data-id', art.id || idx);
 
-      const coverSrc = art.cover || 'assets/logo-acf/LOGO_ACF-removebg-preview.png';
+      const coverSrc = art.cover || '../assets/logo-acf/LOGO_ACF-removebg-preview.png';
 
       card.innerHTML = `
         <div class="kabar-img-wrapper" style="cursor: pointer;">
@@ -794,7 +794,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalContent = document.getElementById('modalArticleContent');
 
     if (modalCover) {
-      modalCover.src = art.cover || 'assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';
+      modalCover.src = art.cover || '../assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';
       modalCover.alt = art.title || 'Foto Artikel';
     }
     if (modalTitle) {

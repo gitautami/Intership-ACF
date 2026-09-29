@@ -31,12 +31,12 @@
       categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 14, 2025',
-      cover: 'assets/kabar-sekolahdayasetara/2.png',
+      cover: '../assets/kabar-sekolahdayasetara/2.png',
       excerpt: 'Bandung – Di sudut keheningan, sering terdengar keraguan yang membisik, “Kesempatanmu sudah lewat.” Sebuah kalimat yang mampu memadamkan semangat dan mengubur mimpi. Namun, di tengah riuhnya kota Bandung...',
       content: `<p><strong>Bandung</strong> – Di sudut keheningan, sering terdengar keraguan yang membisik, <em>“Kesempatanmu sudah lewat.”</em> Sebuah kalimat yang mampu memadamkan semangat dan mengubur mimpi. Namun, di tengah riuhnya kota Bandung, ada sebuah cerita yang membuktikan sebaliknya. Sebuah kisah tentang keberanian untuk mencoba, tentang kepercayaan diri yang kembali menyala.</p>
 <p>Pada tanggal 9 dan 10 Agustus 2025 yang bersejarah, udara di PKBM Bina Cipta, Ujungberung, terasa berbeda. Bukan sekadar udara biasa, melainkan udara yang dipenuhi ketegangan, harapan, dan tekad baja. Sebanyak 16 pejuang dari program Paket C PKBM Ceria Ngamprah dan Pusat melangkah masuk, bukan sebagai siswa biasa, tetapi sebagai gladiator di arena pembuktian diri: Asesmen Nasional Berbasis Komputer (ANBK).</p>
 <p>Bagi mereka, layar komputer di hadapan bukanlah sekadar menampilkan soal-soal literasi dan numerasi. Layar itu adalah cermin dari perjuangan mereka. Setiap kata yang mereka baca adalah gema dari semangat belajar yang pernah terputus. Setiap angka yang mereka hitung adalah simbol dari langkah-langkah yang kembali mereka ayunkan menuju masa depan. Ini bukanlah sekadar ujian. Ini adalah deklarasi. Deklarasi bahwa belajar tidak mengenal usia, dan semangat tidak memiliki batas waktu.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/1.png" alt="Peserta ANBK PKBM Ceria 2025" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahdayasetara/1.png" alt="Peserta ANBK PKBM Ceria 2025" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <p>Perjalanan ini adalah tentang menantang takdir. Tentang membuktikan kepada diri sendiri dan dunia bahwa menyerah hanyalah sebuah jeda, bukan akhir dari segalanya. Di wajah mereka, tergambar fokus dan kesungguhan—sebuah potret keberanian yang menggetarkan. Mereka membuktikan bahwa esensi pendidikan bukanlah tentang seberapa cepat kita berlari, melainkan tentang keberanian untuk terus melangkah, bahkan setelah terjatuh.</p>
 <p>Keikutsertaan 16 warga belajar ini dalam ANBK telah menjadi lebih dari sekadar pemenuhan syarat akademis. Ia telah menjadi api yang menyulut kembali harapan, tidak hanya bagi mereka, tetapi bagi kita semua. Mereka adalah bukti hidup bahwa setiap langkah, sekecil apa pun, adalah bekal berharga untuk masa depan yang lebih cerah.</p>
 <p>Kisah mereka adalah jantung dari PKBM Ceria. Sebuah semangat belajar tanpa batas, di mana setiap individu diberi ruang untuk tumbuh, berjuang, dan pada akhirnya, menang. Perjuangan mereka hari ini adalah mercusuar bagi mereka yang mungkin masih ragu di luar sana.</p>
@@ -50,11 +50,11 @@
       categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
-      cover: 'assets/kabar-sekolahdayasetara/25.png',
+      cover: '../assets/kabar-sekolahdayasetara/25.png',
       excerpt: 'Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C...',
       content: `<p>Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C.</p>
 <p>Bagi Sekolah Daya Setara, hari kelulusan bukan sekadar seremoni akhir tahun ajaran. Ia adalah penanda bahwa pendidikan yang setara dan terbuka bagi siapa saja, tanpa memandang latar belakang atau titik awal masing-masing, benar-benar bisa membawa seseorang sampai ke garis akhir yang selama ini mungkin terasa jauh.</p>
-<p style="text-align: center; margin: 24px 0;"><img src="assets/kabar-sekolahdayasetara/26.png" alt="Pelepasan Lulusan Sekolah Daya Setara" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
+<p style="text-align: center; margin: 24px 0;"><img src="../assets/kabar-sekolahdayasetara/26.png" alt="Pelepasan Lulusan Sekolah Daya Setara" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></p>
 <h3 style="font-size: 1.2rem; font-weight: 700; color: #1E293B; margin: 28px 0 12px 0;">Bukan Akhir, Melainkan Awal yang Baru</h3>
 <p>Hari kelulusan sering dimaknai sebagai penutup sebuah babak. Namun bagi para lulusan Sekolah Daya Setara, hari ini lebih tepat dilihat sebagai titik awal untuk melangkah lebih jauh — membawa serta ilmu, pengalaman, dan semangat yang telah dibangun selama masa belajar, untuk kemudian memberi manfaat bagi keluarga, masyarakat, dan bangsa.</p>
 <p>Perjalanan menuju hari ini tentu tidak selalu mudah. Pendidikan kesetaraan sering ditempuh oleh mereka yang harus membagi waktu antara belajar dan tanggung jawab lain dalam hidupnya. Karena itu, setiap kelulusan di jalur ini adalah bukti nyata bahwa kesempatan untuk meraih masa depan yang lebih baik terbuka bagi siapa saja yang mau terus berjuang dan belajar.</p>
@@ -83,7 +83,7 @@
       categoryLabel: 'Artikel Sekolah Daya Setara',
       author: 'cerianak',
       date: 'Aug 7, 2026',
-      cover: 'assets/kabar-sekolahdayasetara/27 (2).png',
+      cover: '../assets/kabar-sekolahdayasetara/27 (2).png',
       excerpt: 'Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C...',
       content: `<p>Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang: pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C.</p>
 <p>Di balik setiap ijazah yang diraih, ada jalan berliku yang berbeda-beda. Beberapa harus berhenti sekolah karena keadaan ekonomi, beberapa lainnya memilih bekerja lebih dulu sebelum kembali ke bangku belajar, dan tak sedikit yang sempat kehilangan arah sebelum akhirnya menemukan kembali alasan untuk terus belajar. Berikut adalah tujuh kisah dari mereka yang telah membuktikan bahwa pendidikan tetap bisa diraih, kapan pun seseorang siap untuk kembali.</p>
@@ -1018,7 +1018,7 @@
         tr.innerHTML = `
           <td>
             <div class="article-thumbnail-cell">
-              <img src="${escapeHTML(art.cover || 'assets/logo-acf/LOGO_ACF-removebg-preview.png')}" alt="Cover" class="article-thumb-img" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=200&q=80'">
+              <img src="${escapeHTML(art.cover || '../assets/logo-acf/LOGO_ACF-removebg-preview.png')}" alt="Cover" class="article-thumb-img" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=200&q=80'">
               <div>
                 <div class="cell-primary" style="font-size: 0.92rem; max-width: 380px;">${escapeHTML(art.title || '-')}</div>
                 <div class="cell-sub" style="max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHTML(art.excerpt || '-')}</div>

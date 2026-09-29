@@ -68,6 +68,43 @@
   align-items: center;
 }
 
+/* Sejarah Singkat Showcase Grid */
+.sejarah-grid {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.sejarah-img-box {
+  width: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 16px 44px rgba(125, 34, 128, 0.14), 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 3px solid #FFFFFF;
+  background: #F8FAFC;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.sejarah-img-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 52px rgba(125, 34, 128, 0.2), 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.sejarah-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+@media (max-width: 960px) {
+  .sejarah-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
 .visi-badge {
   display: inline-flex;
   align-items: center;

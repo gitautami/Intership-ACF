@@ -495,10 +495,7 @@
           const res = await apiFetch(`prayers.php?limit=${limit}`, { method: 'GET' });
           return res.success ? res.data : [];
         } catch (err) {
-          return [
-            { id: 1, name: 'Ahmad Fauzi', prayerText: 'Semoga anak-anak pejuang PKBM dan Sekolah Juara selalu diberikan kemudahan dan kelancaran dalam menuntut ilmu.', timeDisplay: 'Baru saja' },
-            { id: 2, name: 'Hamba Allah', prayerText: 'Bismillah, semoga berkah untuk kemajuan pendidikan anak Indonesia.', timeDisplay: '5 menit yang lalu' }
-          ];
+          return [];
         }
       },
 

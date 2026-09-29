@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS `relawan` (
 
 -- ------------------------------------------------------------------------------
 -- 6. TABEL: donations_prayers (Doa & Harapan dari Halaman Donasi)
+-- Catatan: Tabel dibiarkan bersih (kosong) dan akan terisi saat ada donasi/doa masuk
 -- ------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `donations_prayers` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -192,9 +193,3 @@ CREATE TABLE IF NOT EXISTS `donations_prayers` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Sample Initial Prayers
-INSERT INTO `donations_prayers` (`donator_name`, `is_anonymous`, `prayer_text`, `program_target`) VALUES
-('Ahmad Fauzi', 0, 'Semoga anak-anak pejuang PKBM dan Sekolah Juara selalu diberikan kemudahan dan kelancaran dalam menuntut ilmu.', 'Sekolah Juara'),
-('Hamba Allah', 1, 'Bismillah, semoga berkah untuk kemajuan pendidikan anak Indonesia.', 'Umum'),
-('Siti Rahmawati', 0, 'Semoga ACF semakin meluas manfaatnya ke seluruh penjuru pelosok nusantara. Aamiin.', 'Sekolah Daya Setara')
-ON DUPLICATE KEY UPDATE `prayer_text` = VALUES(`prayer_text`);

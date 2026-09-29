@@ -473,8 +473,6 @@
     renderCategorySelects(existing.slug);
     return existing;
   }
-    return existing;
-  }
 
   function renderCategorySelects(selectedSlug = '') {
     if (articleCategory) {
@@ -1649,6 +1647,7 @@
     
     if (existingIndex !== -1) {
       // Perbarui artikel yang sudah ada
+      const existingId = dataArticles[existingIndex].id;
       dataArticles[existingIndex] = {
         ...dataArticles[existingIndex],
         title: cleanTitle,
@@ -1660,6 +1659,9 @@
         date: dateStr,
         status: 'Terbit'
       };
+      if (window.ACF_API && window.ACF_API.articles) {
+        window.ACF_API.articles.update(existingId, dataArticles[existingIndex]).catch(err => console.warn('Gagal sync update WP ke MySQL:', err));
+      }
       showToast(`Artikel "${cleanTitle.slice(0, 30)}..." berhasil diperbarui di Kabar!`, 'success');
     } else {
       // Tambah artikel baru
@@ -1676,6 +1678,11 @@
         status: 'Terbit'
       };
       dataArticles.unshift(newArt);
+      if (window.ACF_API && window.ACF_API.articles) {
+        window.ACF_API.articles.create(newArt).then(res => {
+          if (res && res.id) newArt.id = res.id;
+        }).catch(err => console.warn('Gagal sync insert WP ke MySQL:', err));
+      }
       showToast(`"${cleanTitle.slice(0, 30)}..." berhasil diimpor sebagai "${catLabel}"!`, 'success');
     }
 

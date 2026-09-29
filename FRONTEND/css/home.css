@@ -327,14 +327,23 @@
   overflow: hidden;
   box-shadow: 0 10px 26px rgba(125, 34, 128, 0.12);
   border: 2px solid rgba(255, 255, 255, 0.9);
-  height: 260px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  aspect-ratio: 624 / 690;
+  height: auto;
   background: #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ringkasan-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
+  display: block;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -367,7 +376,8 @@
     gap: 28px;
   }
   .ringkasan-img-wrap {
-    height: 240px;
+    max-width: 360px;
+    height: auto;
   }
 }
 
@@ -383,7 +393,8 @@
     font-size: 0.9rem;
   }
   .ringkasan-img-wrap {
-    height: 200px;
+    max-width: 290px;
+    height: auto;
   }
 }
 
@@ -847,17 +858,20 @@
 .donasi-media-thumb {
   position: relative;
   width: 100%;
-  height: 205px;
+  height: auto;
+  aspect-ratio: 4 / 3;
   border-radius: 18px;
   overflow: hidden;
   border: 2px solid rgba(245, 166, 35, 0.35);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+  background: #16061B;
 }
 
 .donasi-media-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   display: block;
   transition: transform 0.45s ease;
 }
@@ -1150,7 +1164,10 @@
     margin-left: 0;
   }
   .donasi-media-thumb {
-    height: 200px;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    max-width: 440px;
+    margin: 0 auto;
   }
   .donasi-banner-action {
     width: 100%;

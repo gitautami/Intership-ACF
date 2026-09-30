@@ -85,32 +85,33 @@
 
 .programs-subgrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 26px;
   margin-top: 24px;
 }
 
 .program-detail-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 18px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: stretch;
+  max-width: 600px;
 }
 
 .program-detail-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(125, 34, 128, 0.3);
-  box-shadow: 0 12px 28px rgba(125, 34, 128, 0.12);
+  transform: translateY(-5px);
+  border-color: rgba(125, 34, 128, 0.35);
+  box-shadow: 0 14px 32px rgba(125, 34, 128, 0.12);
 }
 
 .program-card-img-wrap {
-  width: 220px;
-  min-width: 220px;
+  width: 100%;
+  height: 220px;
   position: relative;
   overflow: hidden;
   background: #F1F5F9;
@@ -119,13 +120,14 @@
 .program-card-img {
   width: 100%;
   height: 100%;
-  min-height: 190px;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  object-position: center 25%;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
 }
 
 .program-detail-card:hover .program-card-img {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .program-card-content {
@@ -136,28 +138,74 @@
   justify-content: space-between;
 }
 
-.program-detail-card h4 {
-  font-size: 1.18rem;
-  font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 10px;
-  line-height: 1.4;
-}
-
-.program-detail-card p {
-  font-size: 0.92rem;
-  color: #475569;
-  line-height: 1.65;
-  margin-bottom: 16px;
-}
-
-.program-card-metrics {
+.program-card-header-meta {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 14px;
+}
+
+.program-divisi-tag {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(125, 34, 128, 0.08);
+  color: #7D2280;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(125, 34, 128, 0.16);
+  letter-spacing: 0.2px;
+}
+
+.program-detail-card h4 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 12px;
+  line-height: 1.35;
+}
+
+.program-quote-box {
+  border-left: 3.5px solid #F5A623;
+  padding: 10px 14px;
+  margin: 0 0 16px;
+  background: rgba(245, 166, 35, 0.06);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  font-size: 0.92rem;
+  color: #334155;
+  line-height: 1.65;
+}
+
+.program-meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.program-meta-row {
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.55;
+}
+
+.program-meta-row strong {
+  color: #7D2280;
+  font-weight: 700;
+}
+
+
+.program-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
+  margin-top: 18px;
   padding-top: 14px;
   border-top: 1px solid #F1F5F9;
-  margin-top: auto;
 }
 
 .program-metric-item {
@@ -181,6 +229,38 @@
   background: #F59E0B; /* Bullet Kuning */
 }
 
+.btn-jadi-mitra-program {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, #7D2280 0%, #A02688 45%, #F59E0B 100%);
+  color: #FFFFFF !important;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(125, 34, 128, 0.22);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-left: auto;
+}
+
+.btn-jadi-mitra-program:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(125, 34, 128, 0.35);
+  filter: brightness(1.08);
+}
+
+.btn-jadi-mitra-program .arrow-icon {
+  font-size: 0.95rem;
+  transition: transform 0.25s ease;
+  line-height: 1;
+}
+
+.btn-jadi-mitra-program:hover .arrow-icon {
+  transform: translateX(4px);
+}
+
 @media (max-width: 768px) {
   .programs-subgrid {
     grid-template-columns: 1fr;
@@ -192,7 +272,7 @@
   .program-card-img-wrap {
     width: 100%;
     min-width: 100%;
-    height: 180px;
+    height: 220px;
   }
   .program-card-content {
     padding: 20px 18px;

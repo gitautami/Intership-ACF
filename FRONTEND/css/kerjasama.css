@@ -69,7 +69,7 @@
 .kerjasama-card-img-wrap {
   position: relative;
   width: 100%;
-  height: 220px;
+  height: 280px;
   overflow: hidden;
   background: #F1F5F9;
 }
@@ -78,7 +78,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center 25%;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   display: block;
 }
@@ -243,7 +243,7 @@
     padding: 110px 0 45px;
   }
   .kerjasama-card-img-wrap {
-    height: 180px;
+    height: 220px;
   }
   .kerjasama-card-content {
     padding: 24px 20px 8px;

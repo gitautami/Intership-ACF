@@ -570,8 +570,8 @@
 /* Apresiasi Cards Style (Overlapping Portrait Frame as in Sketch) */
 .apresiasi-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
   margin-top: 75px;
 }
 
@@ -579,7 +579,7 @@
   background: #FFFFFF;
   border: 1px solid var(--grey-200);
   border-radius: 20px;
-  padding: 0 24px 34px;
+  padding: 0 20px 30px;
   text-align: center;
   position: relative;
   display: flex;
@@ -596,13 +596,13 @@
 }
 
 .apresiasi-photo-frame {
-  width: 215px;
-  max-width: 85%;
-  height: 245px;
+  width: 100%;
+  max-width: 215px;
+  height: 235px;
   border-radius: 16px;
   overflow: hidden;
   margin-top: -65px;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   position: relative;
   background: #F8FAFC;
   border: 5px solid #FFFFFF;
@@ -645,7 +645,7 @@
 }
 
 .apresiasi-card-title {
-  font-size: 1.18rem;
+  font-size: 1.12rem;
   font-weight: 800;
   color: var(--navy);
   margin-bottom: 10px;
@@ -654,22 +654,30 @@
 }
 
 .apresiasi-card-desc {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: var(--text-body);
-  line-height: 1.65;
+  line-height: 1.6;
   margin: 0;
   text-align: center;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1199px) {
   .apresiasi-grid {
-    grid-template-columns: 1fr;
-    gap: 80px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 80px 24px;
     margin-top: 75px;
   }
   .apresiasi-photo-frame {
-    width: 225px;
-    height: 255px;
+    max-width: 225px;
+    height: 245px;
+  }
+}
+
+@media (max-width: 640px) {
+  .apresiasi-grid {
+    grid-template-columns: 1fr;
+    gap: 75px;
+    margin-top: 75px;
   }
 }
 

@@ -359,6 +359,32 @@
   line-height: 1.4;
 }
 
+.qris-wa-confirm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #25D366;
+  color: #FFFFFF !important;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  text-decoration: none;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.28);
+  transition: all 0.25s ease;
+}
+
+.qris-wa-confirm-btn:hover {
+  background: #1EBE5D;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+}
+
+.qris-wa-confirm-btn svg {
+  flex-shrink: 0;
+}
+
 @media (max-width: 900px) {
   .qris-card-grid {
     grid-template-columns: 1fr;

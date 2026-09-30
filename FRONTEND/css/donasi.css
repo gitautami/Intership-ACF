@@ -598,16 +598,16 @@
 /* Crowdfunding Cards Grid */
 .mitra-channels-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 32px;
-  max-width: 960px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .mitra-channel-card {
   background: #FFFFFF;
   border-radius: 24px;
-  padding: 36px 32px;
+  padding: 32px 28px;
   border: 2px solid #E2E8F0;
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
   display: flex;
@@ -618,66 +618,70 @@
   overflow: hidden;
 }
 
-/* Top accent bar: Ungu & Kuning gradient */
+/* Clean top accent: Solid ACF purple */
 .mitra-channel-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, #7D2280 0%, #9333EA 40%, #F5A623 80%, #FBBF24 100%);
+  height: 4px;
+  background: #7D2280;
 }
 
 .mitra-channel-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(125, 34, 128, 0.45);
-  box-shadow: 0 22px 48px rgba(125, 34, 128, 0.12), 0 0 0 1px rgba(245, 166, 35, 0.35);
+  transform: translateY(-6px);
+  border-color: #CBD5E1;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
 }
 
 .mitra-card-body {
-  margin-bottom: 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
 }
 
 .mitra-card-top {
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 18px;
   position: relative;
 }
 
-/* Avatar bertema Ungu & Kuning */
+/* Avatar: Clean & Minimalist */
 .mitra-avatar {
-  width: 58px;
-  height: 58px;
-  border-radius: 16px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 1.3rem;
-  color: #FFFFFF;
+  font-size: 1.15rem;
+  color: #7D2280;
+  background: #F3E8FF;
+  border: 1px solid #E9D5FF;
   flex-shrink: 0;
-  box-shadow: 0 8px 20px rgba(125, 34, 128, 0.25);
-  border: 2px solid rgba(255, 255, 255, 0.8);
 }
 
-.mitra-avatar.sh {
-  background: linear-gradient(135deg, #7D2280 0%, #9333EA 50%, #F5A623 100%);
-}
-
-.mitra-avatar.as {
-  background: linear-gradient(135deg, #2A0845 0%, #7D2280 50%, #FBBF24 100%);
+.mitra-avatar.sh,
+.mitra-avatar.as,
+.mitra-avatar.kb {
+  background: #F3E8FF;
+  color: #7D2280;
 }
 
 .mitra-title-group {
   display: flex;
   flex-direction: column;
+  margin-bottom: 14px;
 }
 
 .mitra-name {
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 800;
   color: #0F172A;
   margin: 0 0 3px;
@@ -686,89 +690,91 @@
 
 .mitra-link-text {
   font-size: 0.86rem;
-  color: #7D2280;
-  font-weight: 700;
+  color: #64748B;
+  font-weight: 500;
 }
 
-/* Verified Badge bertema Kuning / Gold & Ungu */
+/* Verified Badge: Tenang & Terpercaya (Emerald Green) */
 .mitra-verified-tag {
-  margin-left: auto;
-  font-size: 0.76rem;
-  font-weight: 800;
-  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 12px;
   border-radius: 9999px;
-  background: #FFFDF5;
-  color: #D97706;
-  border: 1.5px solid rgba(245, 166, 35, 0.4);
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  box-shadow: 0 2px 8px rgba(245, 166, 35, 0.12);
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .mitra-verified-tag svg {
-  stroke: #D97706;
+  stroke: #047857;
+  flex-shrink: 0;
 }
 
 .mitra-card-desc {
-  font-size: 0.96rem;
+  font-size: 0.93rem;
   color: #475569;
-  line-height: 1.65;
+  line-height: 1.6;
   margin: 0;
+  flex: 1;
 }
 
-/* Tombol Aksi bertema Ungu & Kuning */
+/* Tombol Aksi: Bersih, Elegan & Seragam */
 .btn-channel-action {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 16px 24px;
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 800;
+  min-height: 54px;
+  height: 54px;
+  padding: 8px 18px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.3;
   text-decoration: none;
-  color: #FFFFFF;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 22px rgba(125, 34, 128, 0.22);
-  letter-spacing: 0.2px;
+  color: #FFFFFF !important;
+  background: #7D2280;
+  text-align: center;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(125, 34, 128, 0.2);
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .btn-channel-action svg {
+  flex-shrink: 0;
   transition: transform 0.25s ease;
+}
+
+.btn-channel-action:hover {
+  background: #641566;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(125, 34, 128, 0.3);
 }
 
 .btn-channel-action:hover svg {
   transform: translateX(4px) translateY(-3px);
 }
 
-/* Sharing Happiness Button */
-.btn-channel-action.sh-btn {
-  background: linear-gradient(135deg, #7D2280 0%, #9333EA 50%, #7D2280 100%);
-  border: 1px solid rgba(245, 166, 35, 0.35);
+.btn-channel-action.sh-btn,
+.btn-channel-action.as-btn,
+.btn-channel-action.kb-btn {
+  background: #7D2280;
+  border: none;
 }
 
-.btn-channel-action.sh-btn:hover {
-  background: linear-gradient(135deg, #9333EA 0%, #7D2280 70%, #58126E 100%);
-  color: #FDE68A;
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(125, 34, 128, 0.38), 0 0 16px rgba(245, 166, 35, 0.3);
-}
-
-/* Amal Sholeh Button */
-.btn-channel-action.as-btn {
-  background: linear-gradient(135deg, #6B1D6E 0%, #7D2280 50%, #8A2BE2 100%);
-  border: 1px solid rgba(245, 166, 35, 0.35);
-}
-
-.btn-channel-action.as-btn:hover {
-  background: linear-gradient(135deg, #7D2280 0%, #6B1D6E 70%, #4A0E4E 100%);
-  color: #FDE68A;
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(125, 34, 128, 0.38), 0 0 16px rgba(245, 166, 35, 0.3);
+.btn-channel-action.sh-btn:hover,
+.btn-channel-action.as-btn:hover,
+.btn-channel-action.kb-btn:hover {
+  background: #641566;
+  color: #FFFFFF !important;
 }
 
 /* -------------------------------------------------------

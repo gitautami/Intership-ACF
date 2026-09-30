@@ -57,7 +57,11 @@
       defaultHeaders['Content-Type'] = 'application/json';
     }
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1800);
+
     const config = {
+      signal: options.signal || controller.signal,
       ...options,
       headers: {
         ...defaultHeaders,
@@ -67,12 +71,14 @@
 
     try {
       const response = await fetch(url, config);
+      clearTimeout(timeoutId);
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || `HTTP Error ${response.status}`);
       }
       return data;
     } catch (err) {
+      clearTimeout(timeoutId);
       console.warn(`[ACF API Warning] Endpoint '${endpoint}' error:`, err.message);
       throw err;
     }

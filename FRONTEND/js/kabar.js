@@ -8,7 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const categoriesContainer = document.getElementById('kabarCategoriesContainer');
   const searchInput = document.getElementById('kabarSearchInput');
   const articleModal = document.getElementById('kabarDetailModal');
-  const btnCloseModal = document.getElementById('btnKabarModalClose');  const DEFAULT_CATEGORIES = [
+  const btnCloseModal = document.getElementById('btnKabarModalClose');
+
+  let currentArticles = [];
+  let currentCategories = [];
+  let activeCategorySlug = 'all';
+
+  const DEFAULT_CATEGORIES = [
     { slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' },
     { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' },
     { slug: 'artikel', label: 'Artikel Pendidikan' },
@@ -331,12 +337,60 @@ document.addEventListener('DOMContentLoaded', () => {
 <p>Alhamdulillah, kegiatan Market Day berjalan dengan baik. Menambah semangat para wirausahawan cilik kelas 1 SD Juara Batam karena antusiasnya kakak dan abang kelas yang membeli jualan mereka.</p>
 <p style="color: #64748B; font-weight: 600; margin-top: 24px;">#SDJuaraBatam<br>#BeritaSDJuaraBatam</p>`,
       status: 'Terbit'
+    },
+    {
+      id: 'ART-GEN01',
+      title: 'Transformasi Digital dan Penguatan Literasi Siswa di Pelosok Negeri',
+      category: 'artikel',
+      categoryLabel: 'Artikel Pendidikan',
+      author: 'cerianak',
+      date: 'Sep 12, 2026',
+      comments: '0 comments',
+      cover: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80',
+      excerpt: 'Pendidikan berbasis teknologi kian menjadi kebutuhan esensial. Melalui pendekatan holistik dan pendampingan terpadu, anak-anak di daerah pelosok kini memiliki akses pengetahuan yang lebih luas...',
+      content: `<p>Pendidikan berbasis teknologi kian menjadi kebutuhan esensial. Melalui pendekatan holistik dan pendampingan terpadu, anak-anak di daerah pelosok kini memiliki akses pengetahuan yang lebih luas dan setara dengan wilayah perkotaan.</p><p>Program transformasi ini difokuskan pada penguatan literasi digital, penyediaan perangkat pembelajaran interaktif, serta peningkatan kapasitas guru dalam memanfaatkan media ajar modern.</p><p style="color: #64748B; font-weight: 700; margin-top: 24px;">#LiterasiDigital #PendidikanIndonesia #ACFEduhub</p>`,
+      status: 'Terbit'
+    },
+    {
+      id: 'ART-GEN02',
+      title: 'Jejak Langkah Relawan ACF: Menembus Batas Mengantarkan Buku ke Pelosok',
+      category: 'liputan',
+      categoryLabel: 'Liputan Lapangan',
+      author: 'acforid',
+      date: 'Aug 28, 2026',
+      comments: '0 comments',
+      cover: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&q=80',
+      excerpt: 'Perjalanan menyusuri perbukitan dan sungai bukan halangan bagi para relawan pendidikan ACF Eduhub dalam mengantarkan ribuan buku bacaan berkualitas ke desa binaan...',
+      content: `<p>Perjalanan menyusuri perbukitan dan sungai bukan halangan bagi para relawan pendidikan ACF Eduhub dalam mengantarkan ribuan buku bacaan berkualitas ke desa binaan.</p><p>Antusiasme anak-anak menyambut kedatangan perpustakaan keliling menjadi energi tak terbatas bagi tim di lapangan untuk terus mengabdi.</p><p style="color: #64748B; font-weight: 700; margin-top: 24px;">#LiputanLapangan #RelawanPendidikan #ACFEduhub</p>`,
+      status: 'Terbit'
+    },
+    {
+      id: 'ART-GEN03',
+      title: 'Membangun Kemandirian Warga Belajar Melalui Pelatihan Keterampilan Vokasi',
+      category: 'vokasi',
+      categoryLabel: 'Program Vokasi',
+      author: 'cerianak',
+      date: 'Jul 15, 2026',
+      comments: '0 comments',
+      cover: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&q=80',
+      excerpt: 'Pendidikan vokasi menjadi jembatan strategis bagi peserta didik kesetaraan untuk memiliki keahlian praktis siap kerja dan berwirausaha secara mandiri...',
+      content: `<p>Pendidikan vokasi menjadi jembatan strategis bagi peserta didik kesetaraan untuk memiliki keahlian praktis siap kerja dan berwirausaha secara mandiri.</p><p>Melalui workshop desain grafis, tata boga, dan digital marketing, para peserta didorong untuk mengembangkan potensi diri dan meningkatkan taraf hidup keluarga.</p><p style="color: #64748B; font-weight: 700; margin-top: 24px;">#VokasiBisa #KemandirianEkonomi #ACFEduhub</p>`,
+      status: 'Terbit'
+    },
+    {
+      id: 'ART-GEN04',
+      title: 'Sinergi Multipihak Menjawab Tantangan Pemerataan Akses Pendidikan Indonesia',
+      category: 'opini',
+      categoryLabel: 'Kolaborasi & Opini',
+      author: 'acforid',
+      date: 'Jun 25, 2026',
+      comments: '0 comments',
+      cover: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80',
+      excerpt: 'Tantangan sektor pendidikan tidak dapat diselesaikan oleh satu pihak saja. Diperlukan kolaborasi pentahelix antara pemerintah, dunia usaha, akademisi, komunitas, dan media...',
+      content: `<p>Tantangan sektor pendidikan tidak dapat diselesaikan oleh satu pihak saja. Diperlukan kolaborasi pentahelix antara pemerintah, dunia usaha, akademisi, komunitas, dan media untuk menciptakan ekosistem belajar yang berdaya saing global.</p><p>ACF Eduhub terus membuka pintu kemitraan seluas-luasnya guna mewujudkan keadilan sosial di bidang pendidikan bagi seluruh anak bangsa.</p><p style="color: #64748B; font-weight: 700; margin-top: 24px;">#KolaborasiPendidikan #OpiniPendidikan #ACFEduhub</p>`,
+      status: 'Terbit'
     }
   ];
-
-  let currentArticles = [];
-  let currentCategories = [];
-  let activeCategorySlug = 'all';
 
   function isSchoolCategory(slug = '', label = '') {
     const s = String(slug || '').toLowerCase();
@@ -362,91 +416,208 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  // 1. Load Categories
-  async function loadCategories() {
-    try {
-      let categories = [];
-      if (window.ACF_API && window.ACF_API.categories) {
-        categories = await window.ACF_API.categories.getAll();
-      }
-
-      if (!Array.isArray(categories) || categories.length === 0) {
-        const savedCats = localStorage.getItem('acf_custom_categories');
-        if (savedCats) {
-          categories = JSON.parse(savedCats);
-        }
-      }
-
-      if (Array.isArray(categories) && categories.length > 0) {
-        // Filter out redundant per-school categories & normalize
-        let parsed = categories.filter(c => !isSchoolCategory(c.slug, c.label));
-
-        // Ensure default school categories exist
-        if (!parsed.some(c => c.slug === 'kabar-sekolah-daya-setara')) {
-          parsed.unshift({ slug: 'kabar-sekolah-daya-setara', label: 'Artikel Sekolah Daya Setara' });
-        }
-        if (!parsed.some(c => c.slug === 'kabar-sekolah-juara')) {
-          parsed.splice(1, 0, { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' });
-        }
-
-        // Ensure all default categories exist
-        DEFAULT_CATEGORIES.forEach(defCat => {
-          if (!parsed.some(c => c.slug === defCat.slug)) {
-            parsed.push(defCat);
-          }
-        });
-        currentCategories = parsed;
-      } else {
-        currentCategories = [...DEFAULT_CATEGORIES];
-      }
-    } catch (e) {
-      currentCategories = [...DEFAULT_CATEGORIES];
-    }
-
-    renderCategoryChips();
+  // Helper to normalize article titles for duplicate detection
+  function normalizeTitle(t) {
+    return String(t || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[\u2018\u2019\u201C\u201D"']/g, '')
+      .replace(/\s+/g, ' ');
   }
 
-  // 2. Render Category Filter Chips
+  // Helper to remove any duplicate articles by ID or Title
+  function deduplicateArticles(list) {
+    if (!Array.isArray(list)) return [];
+    const seenIds = new Set();
+    const seenTitles = new Set();
+    const result = [];
+
+    list.forEach(item => {
+      if (!item) return;
+      const id = String(item.id || '').trim();
+      const normTitle = normalizeTitle(item.title);
+
+      if (id === 'ART-3001' || id === 'ART-3002' || id === 'ART-3003') return;
+
+      if (id && seenIds.has(id)) return;
+      if (normTitle && seenTitles.has(normTitle)) return;
+
+      if (id) seenIds.add(id);
+      if (normTitle) seenTitles.add(normTitle);
+      result.push(item);
+    });
+
+    return result;
+  }
+
+  // 1. Synchronous Local Data Initialization
+  function initLocalData() {
+    try {
+      const saved = localStorage.getItem('acf_articles_data');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          currentArticles = deduplicateArticles(parsed);
+          try {
+            localStorage.setItem('acf_articles_data', JSON.stringify(currentArticles));
+          } catch (e) {}
+        }
+      }
+    } catch (e) {}
+
+    if (!currentArticles || currentArticles.length === 0) {
+      currentArticles = deduplicateArticles([...DEFAULT_ARTICLES]);
+    }
+
+    currentArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+
+    try {
+      const savedCats = localStorage.getItem('acf_custom_categories');
+      if (savedCats) {
+        const parsedCats = JSON.parse(savedCats);
+        if (Array.isArray(parsedCats) && parsedCats.length > 0) {
+          currentCategories = parsedCats;
+        }
+      }
+    } catch (e) {}
+
+    if (!currentCategories || currentCategories.length === 0) {
+      currentCategories = [...DEFAULT_CATEGORIES];
+    }
+  }
+
+  // 2. Helper to match card category against active filter
+  function isCategoryMatch(cardCat = '', cardLabel = '', filterSlug = 'all') {
+    if (!filterSlug || filterSlug === 'all') return true;
+
+    const c = String(cardCat || '').toLowerCase().trim();
+    const l = String(cardLabel || '').toLowerCase().trim();
+    const f = String(filterSlug || '').toLowerCase().trim();
+
+    if (c === f) return true;
+
+    // Sekolah Daya Setara
+    if (f === 'kabar-sekolah-daya-setara' || f === 'artikel-sekolah-daya-setara' || f === 'sekolah-daya-setara') {
+      return c.includes('daya-setara') || c.includes('dayasetara') || l.includes('daya setara');
+    }
+
+    // Sekolah Juara
+    if (f === 'kabar-sekolah-juara' || f === 'artikel-sekolah-juara' || f === 'sekolah-juara') {
+      return c.includes('juara') || l.includes('juara');
+    }
+
+    // Artikel Pendidikan
+    if (f === 'artikel' || f === 'artikel-pendidikan') {
+      return c === 'artikel' || c === 'artikel-pendidikan' || l.includes('artikel pendidikan') || l === 'artikel';
+    }
+
+    // Liputan Lapangan
+    if (f === 'liputan' || f === 'liputan-lapangan') {
+      return c === 'liputan' || c === 'liputan-lapangan' || l.includes('liputan');
+    }
+
+    // Program Vokasi
+    if (f === 'vokasi' || f === 'program-vokasi') {
+      return c === 'vokasi' || c === 'program-vokasi' || l.includes('vokasi');
+    }
+
+    // Kolaborasi & Opini
+    if (f === 'opini' || f === 'kolaborasi-opini' || f === 'kolaborasi-dan-opini') {
+      return c === 'opini' || c.includes('opini') || c.includes('kolaborasi') || l.includes('opini') || l.includes('kolaborasi');
+    }
+
+    return c === f || c.includes(f) || f.includes(c) || l.includes(f);
+  }
+
+  // 3. Render Category Filter Chips (Preserves existing DOM to prevent dropping clicks)
+  let visibleLimit = 12;
+
   function renderCategoryChips() {
     if (!categoriesContainer) return;
 
-    categoriesContainer.innerHTML = '';
+    // Attach click listeners to existing HTML buttons
+    const existingButtons = categoriesContainer.querySelectorAll('.kabar-filter-btn');
+    const existingSlugs = new Set();
+    existingButtons.forEach(btn => {
+      const slug = btn.getAttribute('data-category');
+      if (slug) existingSlugs.add(slug);
 
-    // "Semua Kategori" Pill
-    const allBtn = document.createElement('button');
-    allBtn.className = `kabar-filter-btn ${activeCategorySlug === 'all' ? 'active' : ''}`;
-    allBtn.setAttribute('data-category', 'all');
-    allBtn.style.cssText = 'padding: 8px 18px; border-radius: 9999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; font-size: 0.88rem;';
-    allBtn.textContent = 'Semua Kategori';
-    allBtn.addEventListener('click', () => {
-      setFilterCategory('all');
+      btn.onclick = (e) => {
+        e.preventDefault();
+        setFilterCategory(slug || 'all');
+      };
     });
-    categoriesContainer.appendChild(allBtn);
 
-    // Custom & Dynamic Categories Pills
+    // If there are custom categories from backend/admin not yet in DOM, append them
     currentCategories.forEach(cat => {
-      const btn = document.createElement('button');
-      btn.className = `kabar-filter-btn ${activeCategorySlug === cat.slug ? 'active' : ''}`;
-      btn.setAttribute('data-category', cat.slug);
-      btn.style.cssText = 'padding: 8px 18px; border-radius: 9999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; font-size: 0.88rem;';
-      btn.textContent = cat.label;
-      btn.addEventListener('click', () => {
-        setFilterCategory(cat.slug);
-      });
-      categoriesContainer.appendChild(btn);
+      if (!existingSlugs.has(cat.slug)) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `kabar-filter-btn ${activeCategorySlug === cat.slug ? 'active' : ''}`;
+        btn.setAttribute('data-category', cat.slug);
+        btn.textContent = cat.label;
+        btn.onclick = (e) => {
+          e.preventDefault();
+          setFilterCategory(cat.slug);
+        };
+        categoriesContainer.appendChild(btn);
+        existingSlugs.add(cat.slug);
+      }
     });
-  }
 
-  function setFilterCategory(slug) {
-    activeCategorySlug = slug;
-    document.querySelectorAll('.kabar-filter-btn').forEach(btn => {
-      if (btn.getAttribute('data-category') === slug) {
+    // Update active highlight on all buttons
+    categoriesContainer.querySelectorAll('.kabar-filter-btn').forEach(btn => {
+      const cat = btn.getAttribute('data-category') || 'all';
+      if (cat === activeCategorySlug) {
         btn.classList.add('active');
       } else {
         btn.classList.remove('active');
       }
     });
-    applyFilters();
+  }
+
+  function setFilterCategory(slug) {
+    activeCategorySlug = slug || 'all';
+    visibleLimit = 12;
+
+    document.querySelectorAll('.kabar-filter-btn').forEach(btn => {
+      const btnCat = btn.getAttribute('data-category') || 'all';
+      if (btnCat === activeCategorySlug) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    renderGrid();
+  }
+
+  // Expose globally so inline onclick on HTML buttons works instantly
+  window.setKabarCategory = setFilterCategory;
+
+  // Event delegation on category container as additional safety layer
+  if (categoriesContainer) {
+    categoriesContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.kabar-filter-btn');
+      if (!btn) return;
+      e.preventDefault();
+      const cat = btn.getAttribute('data-category') || 'all';
+      setFilterCategory(cat);
+    });
+  }
+
+  // Event delegation on articles grid for card clicks
+  if (articlesGrid) {
+    articlesGrid.addEventListener('click', (e) => {
+      const card = e.target.closest('.kabar-card');
+      if (!card) return;
+      e.preventDefault();
+      const artId = card.getAttribute('data-id');
+      const art = currentArticles.find(a => String(a.id) === String(artId));
+      if (art) {
+        openArticleDetail(art);
+      }
+    });
   }
 
   function parseArticleDate(dateStr) {
@@ -502,95 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Date(0);
   }
 
-  // 3. Load and Render Articles from MySQL Backend / Fallback
-  async function loadAndRenderArticles() {
-    try {
-      let articles = [];
-      if (window.ACF_API && window.ACF_API.articles) {
-        articles = await window.ACF_API.articles.getAll({ status: 'all' });
-      }
-
-      if (!Array.isArray(articles) || articles.length === 0) {
-        const saved = localStorage.getItem('acf_articles_data');
-        if (saved) {
-          articles = JSON.parse(saved);
-        }
-      }
-
-      if (Array.isArray(articles) && articles.length > 0) {
-        // Filter out legacy dummy articles
-        let parsed = articles.filter(item => item.id !== 'ART-3001' && item.id !== 'ART-3002' && item.id !== 'ART-3003');
-
-        // Auto-migrate and fix any old incorrect cover paths & consolidate school categories
-        parsed = parsed.map(item => {
-          if (item.cover && item.cover.includes('artikel-sekolahjuara')) {
-            item.cover = item.cover.replace('artikel-sekolahjuara', 'kabar-sekolahjuara');
-          }
-          if (isSchoolCategory(item.category, item.categoryLabel) || item.category === 'kabar-sekolah-juara' || item.category === 'sekolah-juara' || (item.id && item.id.startsWith('ART-SJ'))) {
-            if (item.category.includes('daya-setara') || (item.categoryLabel && item.categoryLabel.toLowerCase().includes('daya setara')) || (item.id && item.id.startsWith('ART-SDS'))) {
-              item.category = 'kabar-sekolah-daya-setara';
-              item.categoryLabel = 'Artikel Sekolah Daya Setara';
-            } else {
-              item.category = 'kabar-sekolah-juara';
-              item.categoryLabel = 'Artikel Sekolah Juara';
-            }
-          }
-          if (item.id === 'ART-SJ01') {
-            item.cover = '../assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg';
-            item.category = 'kabar-sekolah-juara';
-            item.categoryLabel = 'Artikel Sekolah Juara';
-          }
-          if (item.id === 'ART-SJ04') {
-            item.author = 'acforid';
-            item.date = 'Aug 19, 2024';
-            item.categoryLabel = 'Artikel Sekolah Juara';
-          }
-          return item;
-        });
-
-        // Ensure default articles exist
-        DEFAULT_ARTICLES.forEach(defArt => {
-          const existingIdx = parsed.findIndex(a => a.id === defArt.id);
-          if (existingIdx === -1) {
-            parsed.push(defArt);
-          } else if (defArt.id.startsWith('ART-SJ') || defArt.id.startsWith('ART-SDS')) {
-            parsed[existingIdx] = { ...parsed[existingIdx], ...defArt, categoryLabel: defArt.categoryLabel };
-          }
-        });
-
-        // Urutkan artikel: tahun/tanggal terbaru di paling atas, tahun paling lama di paling bawah (Descending)
-        parsed.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
-
-        currentArticles = parsed;
-      } else {
-        currentArticles = [...DEFAULT_ARTICLES].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
-      }
-    } catch (e) {
-      console.warn('Error reading articles:', e);
-      currentArticles = [...DEFAULT_ARTICLES].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
-    }
-
-    await loadCategories();
-    renderGrid();
-
-    // Check URL query parameters for direct article opening
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const targetId = urlParams.get('id') || urlParams.get('article');
-      if (targetId) {
-        const art = currentArticles.find(a => a.id === targetId);
-        if (art) {
-          setTimeout(() => {
-            openArticleDetail(art);
-          }, 150);
-        }
-      }
-    } catch (e) {
-      console.warn('Error reading URL params:', e);
-    }
-  }
-
-  // 4. Render Cards into Grid
+  // 4. Render Cards into Grid with Performance Optimization & Lazy Loading
   function renderGrid() {
     if (!articlesGrid) return;
 
@@ -599,30 +682,46 @@ document.addEventListener('DOMContentLoaded', () => {
       .filter(art => (art.status || 'Terbit') !== 'Draf')
       .sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
 
+    // Match against activeCategorySlug and search query
+    const query = (searchInput?.value || '').toLowerCase().trim();
+    const filtered = published.filter(art => {
+      const matchCat = isCategoryMatch(art.category, art.categoryLabel, activeCategorySlug);
+      const title = (art.title || '').toLowerCase();
+      const excerpt = (art.excerpt || '').toLowerCase();
+      const matchQuery = !query || title.includes(query) || excerpt.includes(query);
+      return matchCat && matchQuery;
+    });
+
     articlesGrid.innerHTML = '';
 
-    if (published.length === 0) {
+    if (filtered.length === 0) {
       articlesGrid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #64748B;">
           <svg viewBox="0 0 24 24" width="48" height="48" stroke="#CBD5E1" fill="none" stroke-width="1.5" style="margin-bottom: 12px;"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-          <h3 style="font-size: 1.15rem; color: #1E293B; margin-bottom: 6px; font-weight: 700;">Belum Ada Kabar yang Diterbitkan</h3>
-          <p style="font-size: 0.9rem;">Artikel dan berita terbaru akan segera hadir di sini.</p>
+          <h3 style="font-size: 1.15rem; color: #1E293B; margin-bottom: 6px; font-weight: 700;">Belum Ada Kabar dalam Kategori Ini</h3>
+          <p style="font-size: 0.9rem; margin-bottom: 18px;">Belum ada artikel yang diterbitkan untuk kriteria ini.</p>
+          <button type="button" onclick="window.setKabarCategory && window.setKabarCategory('all')" style="padding: 9px 22px; border-radius: 9999px; background: #7D2280; color: #FFFFFF; font-weight: 700; border: none; cursor: pointer; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(125, 34, 128, 0.25);">Lihat Semua Kategori</button>
         </div>
       `;
       return;
     }
 
-    published.forEach((art, idx) => {
+    // When showing 'all' without query, show up to visibleLimit; otherwise show all matching
+    const countToShow = (activeCategorySlug === 'all' && !query) ? visibleLimit : filtered.length;
+    const itemsToShow = filtered.slice(0, countToShow);
+
+    itemsToShow.forEach((art, idx) => {
       const card = document.createElement('article');
       card.className = 'kabar-card visible';
       card.setAttribute('data-category', art.category || 'artikel');
+      card.setAttribute('data-category-label', art.categoryLabel || '');
       card.setAttribute('data-id', art.id || idx);
 
       const coverSrc = art.cover || '../assets/logo-acf/LOGO_ACF-removebg-preview.png';
 
       card.innerHTML = `
         <div class="kabar-img-wrapper" style="cursor: pointer;">
-          <img src="${escapeHTML(coverSrc)}" alt="${escapeHTML(art.title || 'Kabar ACF')}" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80'">
+          <img src="${escapeHTML(coverSrc)}" alt="${escapeHTML(art.title || 'Kabar ACF')}" loading="lazy" decoding="async" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80'">
         </div>
         <div class="kabar-body">
           <div>
@@ -633,15 +732,88 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      // Click to open reading modal
-      card.addEventListener('click', () => {
-        openArticleDetail(art);
-      });
-
       articlesGrid.appendChild(card);
     });
 
-    applyFilters();
+    // If there are more articles to show in 'all' view, display Load More button
+    if (activeCategorySlug === 'all' && !query && filtered.length > visibleLimit) {
+      const loadMoreWrap = document.createElement('div');
+      loadMoreWrap.className = 'kabar-load-more-wrap';
+      loadMoreWrap.innerHTML = `
+        <button type="button" class="btn-kabar-load-more" id="btnKabarLoadMore">
+          <span>Tampilkan Lebih Banyak (${filtered.length - visibleLimit} kabar lagi)</span>
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+        </button>
+      `;
+      articlesGrid.appendChild(loadMoreWrap);
+
+      const btnMore = loadMoreWrap.querySelector('#btnKabarLoadMore');
+      if (btnMore) {
+        btnMore.addEventListener('click', () => {
+          visibleLimit += 12;
+          renderGrid();
+        });
+      }
+    }
+  }
+
+  // 5. Non-Blocking Background Sync from Backend (Never flashes or wipes DOM unnecessarily)
+  async function syncBackendData() {
+    try {
+      if (window.ACF_API && window.ACF_API.articles) {
+        const articles = await window.ACF_API.articles.getAll({ status: 'all' });
+        if (Array.isArray(articles) && articles.length > 0) {
+          let parsed = articles.filter(item => item.id !== 'ART-3001' && item.id !== 'ART-3002' && item.id !== 'ART-3003');
+          if (parsed.length > 0) {
+            DEFAULT_ARTICLES.forEach(defArt => {
+              const defTitle = normalizeTitle(defArt.title);
+              // Avoid duplicates: check both ID and normalized Title
+              const exists = parsed.some(a => String(a.id) === String(defArt.id) || normalizeTitle(a.title) === defTitle);
+              if (!exists) {
+                parsed.push(defArt);
+              }
+            });
+            parsed = deduplicateArticles(parsed);
+            parsed.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+
+            // Clean localStorage cache as well so it stays strictly unique
+            try {
+              localStorage.setItem('acf_articles_data', JSON.stringify(parsed));
+            } catch (e) {}
+
+            const oldIds = currentArticles.map(c => c.id).join(',');
+            const newIds = parsed.map(c => c.id).join(',');
+            if (oldIds !== newIds) {
+              currentArticles = parsed;
+              renderGrid();
+            }
+          }
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (window.ACF_API && window.ACF_API.categories) {
+        const categories = await window.ACF_API.categories.getAll();
+        if (Array.isArray(categories) && categories.length > 0) {
+          let parsedCats = categories.filter(c => !isSchoolCategory(c.slug, c.label));
+          DEFAULT_CATEGORIES.forEach(defCat => {
+            if (!parsedCats.some(c => c.slug === defCat.slug)) {
+              parsedCats.push(defCat);
+            }
+          });
+          currentCategories = parsedCats;
+          renderCategoryChips();
+        }
+      }
+    } catch (e) {}
+  }
+
+  function loadAndRenderArticles() {
+    initLocalData();
+    renderCategoryChips();
+    renderGrid();
+    syncBackendData();
   }
 
   let currentActiveArticle = null;
@@ -721,7 +893,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btnShareIG.addEventListener('click', async () => {
         const title = currentActiveArticle ? currentActiveArticle.title : 'Kabar Edukasi ACF';
         const url = getArticleShareUrl(currentActiveArticle);
-        
+
         // If native Web Share API is available (especially on mobile devices where Instagram is installed)
         if (navigator.share) {
           try {
@@ -735,7 +907,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // User cancelled or share failed, fallback to copy + open IG
           }
         }
-        
+
         // Desktop / Fallback: Copy link and open Instagram web
         copyTextToClipboard(url, () => {
           showShareToast('Link disalin! Membuka Instagram...');
@@ -762,12 +934,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = getArticleShareUrl(currentActiveArticle);
         copyTextToClipboard(url, () => {
           showShareToast('Link artikel berhasil disalin!');
-          
+
           btnShareCopy.classList.add('copied');
           btnShareCopy.setAttribute('title', 'Tersalin!');
           const iconCopy = btnShareCopy.querySelector('.icon-copy');
           const iconCopied = btnShareCopy.querySelector('.icon-copied');
-          
+
           if (iconCopy) iconCopy.style.display = 'none';
           if (iconCopied) iconCopied.style.display = 'inline-block';
 
@@ -875,23 +1047,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 6. Filter & Search logic
   function applyFilters() {
-    const query = (searchInput?.value || '').toLowerCase().trim();
-
-    const cards = document.querySelectorAll('.kabar-card');
-    cards.forEach(card => {
-      const cardCat = card.getAttribute('data-category');
-      const title = card.querySelector('.kabar-title')?.textContent.toLowerCase() || '';
-      const excerpt = card.querySelector('.kabar-excerpt')?.textContent.toLowerCase() || '';
-      
-      const matchCat = activeCategorySlug === 'all' || cardCat === activeCategorySlug;
-      const matchQuery = !query || title.includes(query) || excerpt.includes(query);
-
-      if (matchCat && matchQuery) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
-    });
+    visibleLimit = 12;
+    renderGrid();
   }
 
   // Search input filter
@@ -907,7 +1064,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Global helper to open article modal by ID or title search (for "Baca Juga" links)
-  window.openArticleModalById = function(id, titleSearch = '') {
+  window.openArticleModalById = function (id, titleSearch = '') {
     const art = currentArticles.find(a => a.id === id || (titleSearch && (a.title || '').toLowerCase().includes(titleSearch.toLowerCase())));
     if (art) {
       openArticleDetail(art);

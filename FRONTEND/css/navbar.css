@@ -9,35 +9,35 @@
   --nav-bg: rgba(255, 255, 255, 0.96);
   --nav-bg-scrolled: rgba(255, 255, 255, 0.98);
   --nav-border: rgba(226, 232, 240, 0.8);
-  
+
   --sidebar-width: 360px;
   --sidebar-bg: #FFFFFF;
   --sidebar-overlay: rgba(15, 23, 42, 0.55);
-  
+
   --primary-purple: #7D2280;
   --primary-purple-hover: #631766;
   --primary-purple-soft: rgba(125, 34, 128, 0.08);
   --primary-gold: #F5A623;
   --primary-gold-hover: #D97706;
   --primary-gold-soft: rgba(245, 166, 35, 0.12);
-  
+
   --primary-red: #7D2280;
   --primary-red-hover: #631766;
   --primary-red-soft: rgba(125, 34, 128, 0.08);
-  
+
   --nav-text-dark: #1E293B;
   --nav-text-body: #475569;
   --nav-text-muted: #94A3B8;
-  
+
   --shadow-nav: 0 4px 20px rgba(0, 0, 0, 0.05);
   --shadow-dropdown: 0 16px 36px -8px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(0, 0, 0, 0.04);
   --shadow-drawer: -8px 0 32px rgba(15, 23, 42, 0.15);
   --shadow-btn: 0 4px 14px rgba(125, 34, 128, 0.28);
-  
+
   --radius-dropdown: 14px;
   --radius-card: 10px;
   --radius-pill: 9999px;
-  
+
   --transition-nav: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -211,9 +211,10 @@
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0.3s ease;
-  transition-delay: 0.2s; /* Memberikan buffer waktu saat mouse melintas agar tidak langsung hilang */
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.3s ease;
+  transition-delay: 0.2s;
+  /* Memberikan buffer waktu saat mouse melintas agar tidak langsung hilang */
   z-index: 100;
 }
 
@@ -501,6 +502,7 @@
 .sidebar-body::-webkit-scrollbar {
   width: 4px;
 }
+
 .sidebar-body::-webkit-scrollbar-thumb {
   background: #E2E8F0;
   border-radius: 4px;
@@ -925,10 +927,9 @@
     width: 52px;
     height: 52px;
   }
+
   .floating-whatsapp-btn svg {
     width: 28px;
     height: 28px;
   }
 }
-
-

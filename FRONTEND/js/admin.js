@@ -759,7 +759,21 @@
       }
 
       if (Array.isArray(dataArticles)) {
-        dataArticles = dataArticles.filter(art => art.id !== 'ART-3001' && art.id !== 'ART-3002' && art.id !== 'ART-3003').map(art => {
+        const normalizeTitle = (t) => String(t || '').trim().toLowerCase().replace(/[\u2018\u2019\u201C\u201D"']/g, '').replace(/\s+/g, ' ');
+        const seenIds = new Set();
+        const seenTitles = new Set();
+        const cleanList = [];
+
+        dataArticles.forEach(art => {
+          if (!art) return;
+          const id = String(art.id || '').trim();
+          const t = normalizeTitle(art.title);
+          if (id === 'ART-3001' || id === 'ART-3002' || id === 'ART-3003') return;
+          if (id && seenIds.has(id)) return;
+          if (t && seenTitles.has(t)) return;
+          if (id) seenIds.add(id);
+          if (t) seenTitles.add(t);
+
           if (art.category === 'kabar-sekolah-juara' || art.category === 'sekolah-juara' || (art.id && art.id.startsWith('ART-SJ'))) {
             art.category = 'kabar-sekolah-juara';
             art.categoryLabel = 'Artikel Sekolah Juara';
@@ -768,8 +782,10 @@
             art.category = 'kabar-sekolah-daya-setara';
             art.categoryLabel = 'Artikel Sekolah Daya Setara';
           }
-          return art;
+          cleanList.push(art);
         });
+
+        dataArticles = cleanList;
         dataArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
         saveArticlesData();
       }

@@ -9,7 +9,7 @@
   <!-- CSS Stylesheets (Separated per module) -->
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/navbar.css">
-  <link rel="stylesheet" href="../css/kabar.css">
+  <link rel="stylesheet" href="../css/kabar.css?v=20260930_3">
 </head>
 <body>
 
@@ -287,12 +287,13 @@
         <!-- Filter & Search Controls -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 32px;">
           <div id="kabarCategoriesContainer" style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="kabar-filter-btn active" data-category="all" style="padding: 8px 18px; border-radius: 9999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; font-size: 0.88rem;">Semua Kategori</button>
-            <button class="kabar-filter-btn" data-category="kabar-sekolah-daya-setara" style="padding: 8px 18px; border-radius: 9999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; font-size: 0.88rem;">Artikel Sekolah Daya Setara</button>
-            <button class="kabar-filter-btn" data-category="kabar-sekolah-juara" style="padding: 8px 18px; border-radius: 9999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; font-size: 0.88rem;">Artikel Sekolah Juara</button>
-            <button class="kabar-filter-btn" data-category="artikel" style="padding: 8px 18px; border-radius: 9999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; font-size: 0.88rem;">Artikel Pendidikan</button>
-            <button class="kabar-filter-btn" data-category="liputan" style="padding: 8px 18px; border-radius: 9999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; font-size: 0.88rem;">Liputan Lapangan</button>
-            <button class="kabar-filter-btn" data-category="vokasi" style="padding: 8px 18px; border-radius: 9999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; font-size: 0.88rem;">Program Vokasi</button>
+            <button type="button" class="kabar-filter-btn active" data-category="all" onclick="window.setKabarCategory && window.setKabarCategory('all')">Semua Kategori</button>
+            <button type="button" class="kabar-filter-btn" data-category="kabar-sekolah-daya-setara" onclick="window.setKabarCategory && window.setKabarCategory('kabar-sekolah-daya-setara')">Artikel Sekolah Daya Setara</button>
+            <button type="button" class="kabar-filter-btn" data-category="kabar-sekolah-juara" onclick="window.setKabarCategory && window.setKabarCategory('kabar-sekolah-juara')">Artikel Sekolah Juara</button>
+            <button type="button" class="kabar-filter-btn" data-category="artikel" onclick="window.setKabarCategory && window.setKabarCategory('artikel')">Artikel Pendidikan</button>
+            <button type="button" class="kabar-filter-btn" data-category="liputan" onclick="window.setKabarCategory && window.setKabarCategory('liputan')">Liputan Lapangan</button>
+            <button type="button" class="kabar-filter-btn" data-category="vokasi" onclick="window.setKabarCategory && window.setKabarCategory('vokasi')">Program Vokasi</button>
+            <button type="button" class="kabar-filter-btn" data-category="opini" onclick="window.setKabarCategory && window.setKabarCategory('opini')">Kolaborasi & Opini</button>
           </div>
 
           <div style="position: relative; min-width: 260px;">
@@ -307,202 +308,7 @@
     <section class="section">
       <div class="container">
         <div class="kabar-articles-grid">
-          
-          <article class="kabar-card visible" data-category="kabar-sekolah-daya-setara" data-id="ART-SDS07">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahdayasetara/2.png" alt="Menyalakan Kembali Api Harapan: Kisah Pejuang PKBM Ceria Taklukkan ANBK 2025">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Menyalakan Kembali Api Harapan: Kisah Pejuang PKBM Ceria Taklukkan ANBK 2025</h3>
-                <p class="kabar-excerpt">Bandung – Di sudut keheningan, sering terdengar keraguan yang membisik, “Kesempatanmu sudah lewat.” Sebuah kalimat yang mampu memadamkan semangat dan mengubur mimpi. Namun, di tengah riuhnya kota Bandung...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-daya-setara" data-id="ART-SDS06">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahdayasetara/25.png" alt="Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan: Selamat kepada Lulusan Sekolah Daya Setara 2025/2026">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan: Selamat kepada Lulusan Sekolah Daya Setara 2025/2026</h3>
-                <p class="kabar-excerpt">Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-daya-setara" data-id="ART-SDS05">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahdayasetara/27 (2).png" alt="Tujuh Kisah, Satu Semangat yang Sama: Perjalanan Lulusan Sekolah Daya Setara 2025/2026">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Tujuh Kisah, Satu Semangat yang Sama: Perjalanan Lulusan Sekolah Daya Setara 2025/2026</h3>
-                <p class="kabar-excerpt">Sebuah langkah kecil hari ini akan menjadi lompatan besar di masa depan. Kalimat itu terasa pas untuk menggambarkan momen yang dirayakan Sekolah Daya Setara pada 19 Juli 2026 di PKBM Daya Setara Lembang...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-daya-setara" data-id="ART-SDS04">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahdayasetara/Foto-Artikel-September-03.jpg" alt="PKBM Ceria di Lembang Resmi di-Launching">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">PKBM Ceria di Lembang Resmi di-Launching</h3>
-                <p class="kabar-excerpt">Bandung Barat, 7 September 2024 – Rumah Zakat dan ACF (Anak Ceria Foundation) berkolaborasi dengan Pemerintah Kabupaten Bandung Barat meresmikan Pusat Kegiatan Belajar Masyarakat (PKBM)...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-daya-setara" data-id="ART-SDS03">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahdayasetara/1.jpg" alt="Neng Komara, Anak Petani yang Raih Medali Emas di Festival Islami Nasional 2025">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Neng Komara, Anak Petani yang Raih Medali Emas di Festival Islami Nasional 2025</h3>
-                <p class="kabar-excerpt">Lembang, [14 Maret 2025] – Neng Komara, seorang anak petani kecil dari Desa Mekarwangi, Lembang, telah meraih medali emas di Festival Islami Nasional 2025 kategori bahasa Indonesia...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-daya-setara" data-id="ART-SDS02">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahdayasetara/photo_1_2025-06-17_16-13-06.jpg" alt="PKBM Ceria Jayapura Diresmikan, Hadirkan Akses Pendidikan Non-Formal bagi Warga Papua">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">PKBM Ceria Jayapura Diresmikan, Hadirkan Akses Pendidikan Non-Formal bagi Warga Papua</h3>
-                <p class="kabar-excerpt">Jayapura, 3 Mei 2025 – Upaya memperluas akses pendidikan non-formal di Papua kini mendapat penguatan melalui peresmian PKBM Ceria Jayapura pada Sabtu, 3 Mei 2025...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-daya-setara" data-id="ART-SDS01">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahdayasetara/Foto-Artikel-Agustus-09.jpg" alt="Semangat Belajar di Usia Senja">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Semangat Belajar di Usia Senja</h3>
-                <p class="kabar-excerpt">Kisah Pak Uun Sutisna, Buruh Tani yang Tekun Mengikuti Pelatihan Komputer di PKBM Ceria Bandung Barat. Oleh : Arif Rahman S. A. Lembang, 10 Agustus 2024...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-juara" data-id="ART-SJ08">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahjuara/15.png" alt="Penyuluhan Pencegahan dan Pemberantasan Penyalahgunaan Narkoba: Membangun Generasi Cerdas, Sehat, dan Berprestasi">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Penyuluhan Pencegahan dan Pemberantasan Penyalahgunaan Narkoba: Membangun Generasi Cerdas, Sehat, dan Berprestasi</h3>
-                <p class="kabar-excerpt">Tangerang – SD Juara Al Hakim menyelenggarakan kegiatan Penyuluhan Pencegahan dan Pemberantasan Penyalahgunaan Narkoba (P4GN) yang menghadirkan narasumber dari Satresnarkoba Polres Metro Tangerang Kota...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-juara" data-id="ART-SJ07">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahjuara/11.png" alt="Bukan Sekadar Tulisan: Menggali Kekuatan Buku Esai sebagai Media Refleksi">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Bukan Sekadar Tulisan: Menggali Kekuatan Buku Esai sebagai Media Refleksi</h3>
-                <p class="kabar-excerpt">Oleh: Aditya Jessika Susanti Said, S.Pd., Gr. Tangerang, Jumat 27 Maret 2026 Hari Guru Nasional selalu menjadi momen yang sarat makna bagi dunia pendidikan di Indonesia...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-juara" data-id="ART-SJ06">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahjuara/18.png" alt="Haflah Tahfidz Qur’an SD Persa Juara Medan">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Haflah Tahfidz Qur’an SD Persa Juara Medan</h3>
-                <p class="kabar-excerpt">Senin, 15 Juni 2026 sebanyak 61 orang siswa siswi SD Persa Juara Medan diwisuda Quran pada acara Haflah Tahfidz Quran di gedung BGGTK Sumut...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-juara" data-id="ART-SJ05">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahjuara/Foto-Artikel-Oktober-09.jpg" alt="Aksi Solidaritas SDS Persa Setahun Serangan Israel ke Palestina">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Aksi Solidaritas SDS Persa Setahun Serangan Israel ke Palestina</h3>
-                <p class="kabar-excerpt">Setahun sudah serangan Israel ke Palestina terjadi sejak 7 Oktober 2023. Selama 365 hari rakyat Palestina khususnya di Jalur Gaza dan Rafa menghadapi serangan rudal...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-juara" data-id="ART-SJ04">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahjuara/Foto-Artikel-Agustus-06.jpg" alt="Upacara Peringatan HUT Ke-79 RI di SD Juara Persa Medan Berlangsung Khidmat">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Upacara Peringatan HUT Ke-79 RI di SD Juara Persa Medan Berlangsung Khidmat</h3>
-                <p class="kabar-excerpt">Oleh : Eni Marianti Sabtu (17/8/2024), bertempat di lapangan upacara Komplek SDS Persa “Sekolah Juara Medan” Upacara Peringatan HUT Ke-79 RI berlangsung khidmat...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-juara" data-id="ART-SJ03">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahjuara/12.png" alt="Tasyakuran Tahsin Metode Tilawati: Apresiasi atas Perjalanan Belajar Al-Qur’an Siswa SD Juara Cilegon">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Tasyakuran Tahsin Metode Tilawati: Apresiasi atas Perjalanan Belajar Al-Qur’an Siswa SD Juara Cilegon</h3>
-                <p class="kabar-excerpt">Cilegon, 18 Juni 2026 SD Juara Cilegon menyelenggarakan kegiatan Tasyakuran Tahsin Metode Tilawati sebagai bentuk rasa syukur dan apresiasi atas pencapaian para siswa yang telah menyelesaikan pembelajaran Tilawati...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-juara" data-id="ART-SJ02">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahjuara/2.jpg" alt="Pembiasaan Pagi di SD Juara Cilegon">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Pembiasaan Pagi di SD Juara Cilegon</h3>
-                <p class="kabar-excerpt">Cilegon, 09 Mei 2025 Membaca dzikir Al matsurat dan shalat Dhuha merupakan kegiatan rutin yang dilaksanakan di SD Juara Cilegon sebelum kegiatan belajar mengajar di mulai...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="kabar-card visible" data-category="kabar-sekolah-juara" data-id="ART-SJ01">
-            <div class="kabar-img-wrapper" style="cursor: pointer;">
-              <img src="../assets/kabar-sekolahjuara/photo_2024-06-22_07-33-31-1080x675.jpg" alt="Market Day Siswa-siswi kelas 1 SD Juara Batam">
-            </div>
-            <div class="kabar-body">
-              <div>
-                <h3 class="kabar-title" style="cursor: pointer;">Market Day Siswa-siswi kelas 1 SD Juara Batam</h3>
-                <p class="kabar-excerpt">Batam, 22 Juni 2024 Oleh : Pandhu Alfajri Hai Sobat Ceria! Salah satu program rutin setiap pekan di...</p>
-                <a class="kabar-read-more" href="javascript:void(0);">read more</a>
-              </div>
-            </div>
-          </article>
-
+          <!-- Dynamically rendered by kabar.js -->
         </div>
       </div>
     </section>
@@ -657,6 +463,6 @@
   <script src="../js/navbar.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/api.js"></script>
-  <script src="../js/kabar.js"></script>
+  <script src="../js/kabar.js?v=20260930_3"></script>
 </body>
 </html>

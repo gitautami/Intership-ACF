@@ -276,7 +276,7 @@
   box-shadow: 0 4px 12px rgba(125, 34, 128, 0.25);
 }
 
-/* Sisi Kanan: Panduan & Info (Dibuat Lebih Ringkas & Kecil) */
+/* Sisi Kanan: Panduan & Info (Dibuat Lebih Ringkas & Rapi) */
 .qris-info-col {
   display: flex;
   flex-direction: column;
@@ -285,81 +285,229 @@
 .qris-badge-top {
   display: inline-block;
   align-self: flex-start;
-  padding: 4px 12px;
+  padding: 3px 10px;
   background: #FAF5FF;
   border: 1px solid rgba(125, 34, 128, 0.25);
   color: #7D2280;
   border-radius: 9999px;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .qris-section-title {
-  font-size: clamp(1.2rem, 1.7vw, 1.48rem);
+  font-size: clamp(1.15rem, 1.6vw, 1.38rem);
   font-weight: 800;
   color: #0F172A;
-  line-height: 1.3;
-  margin-bottom: 8px;
+  line-height: 1.25;
+  margin-bottom: 6px;
 }
 
 .qris-section-desc {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #64748B;
-  line-height: 1.5;
-  margin-bottom: 16px;
+  line-height: 1.45;
+  margin-bottom: 12px;
 }
 
 .qris-steps-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 0;
 }
 
 .qris-step-item {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
   background: #FFFFFF;
-  padding: 10px 14px;
-  border-radius: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
   border: 1px solid #EDE9FE;
-  box-shadow: 0 2px 6px rgba(125, 34, 128, 0.03);
+  box-shadow: 0 1px 4px rgba(125, 34, 128, 0.03);
 }
 
 .step-num {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: linear-gradient(135deg, #7D2280 0%, #F5A623 100%);
   color: #FFFFFF;
   font-weight: 800;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 3px 8px rgba(125, 34, 128, 0.2);
+  box-shadow: 0 2px 6px rgba(125, 34, 128, 0.2);
 }
 
 .step-content h5 {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #0F172A;
-  margin: 0 0 2px 0;
+  margin: 0 0 1px 0;
 }
 
 .step-content p {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: #64748B;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
-.qris-wa-confirm-btn {
+
+/* Donasi Bank Manual Card */
+.donasi-bank-manual-block {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #CBD5E1;
+}
+
+.bank-manual-header {
+  margin-bottom: 8px;
+}
+
+.bank-manual-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #7D2280;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.bank-manual-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  transition: all 0.25s ease;
+}
+
+.bank-manual-card:hover {
+  border-color: #7D2280;
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(125, 34, 128, 0.08);
+}
+
+.bank-badge-code {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #00A39E; /* Warna khas BSI Teal */
+  color: #FFFFFF;
+  font-size: 0.88rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+  box-shadow: 0 3px 8px rgba(0, 163, 158, 0.25);
+}
+
+.bank-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bank-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+.bank-institution {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.bank-holder-name {
+  font-size: 0.74rem;
+  color: #64748B;
+}
+
+.bank-holder-name strong {
+  color: #334155;
+}
+
+.bank-rekening-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.bank-acc-digits {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #7D2280;
+  letter-spacing: 1px;
+}
+
+.btn-copy-rekening {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FAF5FF;
+  border: 1px solid #D8B4FE;
+  color: #7D2280;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copy-rekening:hover {
+  background: #7D2280;
+  color: #FFFFFF;
+  border-color: #7D2280;
+}
+
+.donasi-confirm-wa-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: 10px;
+}
+
+.donasi-confirm-hint {
+  font-size: 0.76rem;
+  color: #166534;
+  line-height: 1.4;
+  margin: 0 0 8px 0;
+}
+
+.donasi-confirm-hint strong {
+  color: #14532D;
+}
+
+.donasi-confirm-wa-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.btn-wa-confirm-global {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -367,21 +515,20 @@
   color: #FFFFFF !important;
   font-size: 0.78rem;
   font-weight: 700;
-  padding: 6px 14px;
+  padding: 7px 16px;
   border-radius: 9999px;
   text-decoration: none;
-  margin-top: 8px;
-  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.28);
+  box-shadow: 0 3px 10px rgba(37, 211, 102, 0.28);
   transition: all 0.25s ease;
 }
 
-.qris-wa-confirm-btn:hover {
+.btn-wa-confirm-global:hover {
   background: #1EBE5D;
   transform: translateY(-1.5px);
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 5px 14px rgba(37, 211, 102, 0.4);
 }
 
-.qris-wa-confirm-btn svg {
+.btn-wa-confirm-global svg {
   flex-shrink: 0;
 }
 

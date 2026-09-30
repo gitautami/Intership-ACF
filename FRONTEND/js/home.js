@@ -22,7 +22,7 @@ function initHeroSlider() {
 
   let currentSlide = 0;
   const totalSlides = slides.length;
-  const slideDuration = 4500; // 4.5 seconds per slide
+  const slideDuration = 5500; // 5.5 detik per slide (durasi pas: tidak terlalu cepat & tidak terlalu lambat)
   let slideInterval = null;
 
   function goToSlide(index) {

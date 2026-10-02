@@ -437,8 +437,6 @@
       if (!dataCategories.some(c => c.slug === 'kabar-sekolah-juara')) {
         dataCategories.splice(1, 0, { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' });
       }
-
-      saveCategories();
     } catch (e) {
       dataCategories = [...DEFAULT_CATEGORIES];
     }
@@ -727,7 +725,6 @@
           dataMitra = [];
         }
       }
-      saveDataMitra();
 
       // Relawan - Ambil dari MySQL Backend API / Fallback Storage
       if (window.ACF_API && window.ACF_API.relawan) {
@@ -742,7 +739,6 @@
           dataRelawan = [];
         }
       }
-      saveDataRelawan();
 
       // Articles - Ambil dari MySQL Backend API / Fallback Storage
       if (window.ACF_API && window.ACF_API.articles) {
@@ -787,13 +783,12 @@
 
         dataArticles = cleanList;
         dataArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
-        saveArticlesData();
       }
 
-      // Pastikan kategori dari artikel yang tersimpan terdaftar
+      // Pastikan kategori dari artikel yang tersimpan terdaftar di memori
       dataArticles.forEach(art => {
         if (art.category && art.categoryLabel && !dataCategories.some(c => c.slug === art.category)) {
-          registerCategory(art.categoryLabel, art.category);
+          dataCategories.push({ slug: art.category, label: art.categoryLabel });
         }
       });
 
@@ -2590,10 +2585,17 @@
     }
 
     // Real-time synchronization when user submits form in another tab or window gains focus
-    window.addEventListener('storage', (e) => {
+    let isStorageSyncing = false;
+    window.addEventListener('storage', async (e) => {
       if (e.key === 'acf_admin_data_mitra' || e.key === 'acf_admin_data_relawan' || e.key === 'acf_articles_data' || e.key === 'acf_custom_categories') {
-        loadAllData();
-        renderAll();
+        if (isStorageSyncing) return;
+        isStorageSyncing = true;
+        try {
+          await loadAllData();
+          renderAll();
+        } finally {
+          setTimeout(() => { isStorageSyncing = false; }, 300);
+        }
       }
     });
 

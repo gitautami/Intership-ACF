@@ -80,6 +80,8 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 28px;
   margin-top: 40px;
+  min-height: 520px;
+  align-content: start;
 }
 
 .kabar-card {

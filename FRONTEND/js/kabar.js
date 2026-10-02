@@ -458,9 +458,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
           currentArticles = deduplicateArticles(parsed);
-          try {
-            localStorage.setItem('acf_articles_data', JSON.stringify(currentArticles));
-          } catch (e) {}
         }
       }
     } catch (e) {}
@@ -535,17 +532,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderCategoryChips() {
     if (!categoriesContainer) return;
 
-    // Attach click listeners to existing HTML buttons
+    // Record existing slugs from HTML buttons
     const existingButtons = categoriesContainer.querySelectorAll('.kabar-filter-btn');
     const existingSlugs = new Set();
     existingButtons.forEach(btn => {
       const slug = btn.getAttribute('data-category');
       if (slug) existingSlugs.add(slug);
-
-      btn.onclick = (e) => {
-        e.preventDefault();
-        setFilterCategory(slug || 'all');
-      };
     });
 
     // If there are custom categories from backend/admin not yet in DOM, append them
@@ -556,10 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.className = `kabar-filter-btn ${activeCategorySlug === cat.slug ? 'active' : ''}`;
         btn.setAttribute('data-category', cat.slug);
         btn.textContent = cat.label;
-        btn.onclick = (e) => {
-          e.preventDefault();
-          setFilterCategory(cat.slug);
-        };
         categoriesContainer.appendChild(btn);
         existingSlugs.add(cat.slug);
       }
@@ -577,7 +565,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function setFilterCategory(slug) {
-    activeCategorySlug = slug || 'all';
+    const targetSlug = slug || 'all';
+    if (activeCategorySlug === targetSlug) return;
+    activeCategorySlug = targetSlug;
     visibleLimit = 12;
 
     document.querySelectorAll('.kabar-filter-btn').forEach(btn => {
@@ -595,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Expose globally so inline onclick on HTML buttons works instantly
   window.setKabarCategory = setFilterCategory;
 
-  // Event delegation on category container as additional safety layer
+  // Single centralized event delegation for category filter clicks
   if (categoriesContainer) {
     categoriesContainer.addEventListener('click', (e) => {
       const btn = e.target.closest('.kabar-filter-btn');
@@ -692,8 +682,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return matchCat && matchQuery;
     });
 
-    articlesGrid.innerHTML = '';
-
     if (filtered.length === 0) {
       articlesGrid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #64748B;">
@@ -709,6 +697,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // When showing 'all' without query, show up to visibleLimit; otherwise show all matching
     const countToShow = (activeCategorySlug === 'all' && !query) ? visibleLimit : filtered.length;
     const itemsToShow = filtered.slice(0, countToShow);
+
+    // Smart DOM check: avoid wiping DOM if the exact cards are already rendered
+    const targetIds = itemsToShow.map((a, idx) => String(a.id || idx)).join(',');
+    const currentCards = Array.from(articlesGrid.querySelectorAll('.kabar-card'));
+    const currentRenderedIds = currentCards.map(c => c.getAttribute('data-id')).join(',');
+    const existingLoadMore = articlesGrid.querySelector('.kabar-load-more-wrap');
+    const shouldHaveLoadMore = (activeCategorySlug === 'all' && !query && filtered.length > visibleLimit);
+
+    if (currentCards.length > 0 && targetIds === currentRenderedIds && Boolean(existingLoadMore) === shouldHaveLoadMore) {
+      return; // Already showing exact target cards, no DOM wipe/flash!
+    }
+
+    articlesGrid.innerHTML = '';
 
     itemsToShow.forEach((art, idx) => {
       const card = document.createElement('article');
@@ -776,15 +777,13 @@ document.addEventListener('DOMContentLoaded', () => {
             parsed = deduplicateArticles(parsed);
             parsed.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
 
-            // Clean localStorage cache as well so it stays strictly unique
-            try {
-              localStorage.setItem('acf_articles_data', JSON.stringify(parsed));
-            } catch (e) {}
-
             const oldIds = currentArticles.map(c => c.id).join(',');
             const newIds = parsed.map(c => c.id).join(',');
             if (oldIds !== newIds) {
               currentArticles = parsed;
+              try {
+                localStorage.setItem('acf_articles_data', JSON.stringify(parsed));
+              } catch (e) {}
               renderGrid();
             }
           }
@@ -802,8 +801,12 @@ document.addEventListener('DOMContentLoaded', () => {
               parsedCats.push(defCat);
             }
           });
-          currentCategories = parsedCats;
-          renderCategoryChips();
+          const oldCatSlugs = currentCategories.map(c => c.slug).join(',');
+          const newCatSlugs = parsedCats.map(c => c.slug).join(',');
+          if (oldCatSlugs !== newCatSlugs) {
+            currentCategories = parsedCats;
+            renderCategoryChips();
+          }
         }
       }
     } catch (e) {}
@@ -1056,10 +1059,43 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', applyFilters);
   }
 
-  // Listen to cross-tab storage updates
+  // Listen to cross-tab storage updates with debouncing and change detection
+  let storageDebounceTimer = null;
   window.addEventListener('storage', (e) => {
-    if (e.key === 'acf_articles_data' || e.key === 'acf_custom_categories') {
-      loadAndRenderArticles();
+    if (e.key === 'acf_articles_data') {
+      clearTimeout(storageDebounceTimer);
+      storageDebounceTimer = setTimeout(() => {
+        try {
+          const saved = localStorage.getItem('acf_articles_data');
+          if (saved) {
+            const parsed = deduplicateArticles(JSON.parse(saved));
+            const oldIds = currentArticles.map(c => c.id).join(',');
+            const newIds = parsed.map(c => c.id).join(',');
+            if (oldIds !== newIds) {
+              currentArticles = parsed;
+              renderGrid();
+            }
+          }
+        } catch (err) {}
+      }, 150);
+    } else if (e.key === 'acf_custom_categories') {
+      clearTimeout(storageDebounceTimer);
+      storageDebounceTimer = setTimeout(() => {
+        try {
+          const savedCats = localStorage.getItem('acf_custom_categories');
+          if (savedCats) {
+            const parsedCats = JSON.parse(savedCats);
+            if (Array.isArray(parsedCats) && parsedCats.length > 0) {
+              const oldCatSlugs = currentCategories.map(c => c.slug).join(',');
+              const newCatSlugs = parsedCats.map(c => c.slug).join(',');
+              if (oldCatSlugs !== newCatSlugs) {
+                currentCategories = parsedCats;
+                renderCategoryChips();
+              }
+            }
+          }
+        } catch (err) {}
+      }, 150);
     }
   });
 

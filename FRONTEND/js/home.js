@@ -392,18 +392,9 @@ function initHomeKabar() {
       }
       
       if (articles.length === 0) {
-        const saved = localStorage.getItem('acf_articles_data');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            articles = parsed.filter(a => (a.status || 'Terbit') !== 'Draf').slice(0, 3);
-          } else {
-            articles = DEFAULT_ARTICLES.slice(0, 3);
-          }
-        } else {
-          articles = DEFAULT_ARTICLES.slice(0, 3);
-        }
+        articles = DEFAULT_ARTICLES.slice(0, 3);
       }
+      localStorage.removeItem('acf_articles_data');
     } catch (e) {
       articles = DEFAULT_ARTICLES.slice(0, 3);
     }
@@ -452,12 +443,6 @@ function initHomeKabar() {
   // Initial render
   renderHomeKabar();
 
-  // Listen to cross-tab storage changes from Admin or Kabar page
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'acf_articles_data') {
-      renderHomeKabar();
-    }
-  });
 }
 
 

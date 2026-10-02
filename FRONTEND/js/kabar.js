@@ -452,35 +452,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 1. Synchronous Local Data Initialization
   function initLocalData() {
-    try {
-      const saved = localStorage.getItem('acf_articles_data');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          currentArticles = deduplicateArticles(parsed);
-        }
-      }
-    } catch (e) {}
-
-    if (!currentArticles || currentArticles.length === 0) {
-      currentArticles = deduplicateArticles([...DEFAULT_ARTICLES]);
-    }
-
+    currentArticles = deduplicateArticles([...DEFAULT_ARTICLES]);
     currentArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+    currentCategories = [...DEFAULT_CATEGORIES];
 
     try {
-      const savedCats = localStorage.getItem('acf_custom_categories');
-      if (savedCats) {
-        const parsedCats = JSON.parse(savedCats);
-        if (Array.isArray(parsedCats) && parsedCats.length > 0) {
-          currentCategories = parsedCats;
-        }
-      }
+      localStorage.removeItem('acf_articles_data');
+      localStorage.removeItem('acf_custom_categories');
     } catch (e) {}
-
-    if (!currentCategories || currentCategories.length === 0) {
-      currentCategories = [...DEFAULT_CATEGORIES];
-    }
   }
 
   // 2. Helper to match card category against active filter
@@ -781,9 +760,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const newIds = parsed.map(c => c.id).join(',');
             if (oldIds !== newIds) {
               currentArticles = parsed;
-              try {
-                localStorage.setItem('acf_articles_data', JSON.stringify(parsed));
-              } catch (e) {}
               renderGrid();
             }
           }
@@ -1059,45 +1035,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', applyFilters);
   }
 
-  // Listen to cross-tab storage updates with debouncing and change detection
-  let storageDebounceTimer = null;
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'acf_articles_data') {
-      clearTimeout(storageDebounceTimer);
-      storageDebounceTimer = setTimeout(() => {
-        try {
-          const saved = localStorage.getItem('acf_articles_data');
-          if (saved) {
-            const parsed = deduplicateArticles(JSON.parse(saved));
-            const oldIds = currentArticles.map(c => c.id).join(',');
-            const newIds = parsed.map(c => c.id).join(',');
-            if (oldIds !== newIds) {
-              currentArticles = parsed;
-              renderGrid();
-            }
-          }
-        } catch (err) {}
-      }, 150);
-    } else if (e.key === 'acf_custom_categories') {
-      clearTimeout(storageDebounceTimer);
-      storageDebounceTimer = setTimeout(() => {
-        try {
-          const savedCats = localStorage.getItem('acf_custom_categories');
-          if (savedCats) {
-            const parsedCats = JSON.parse(savedCats);
-            if (Array.isArray(parsedCats) && parsedCats.length > 0) {
-              const oldCatSlugs = currentCategories.map(c => c.slug).join(',');
-              const newCatSlugs = parsedCats.map(c => c.slug).join(',');
-              if (oldCatSlugs !== newCatSlugs) {
-                currentCategories = parsedCats;
-                renderCategoryChips();
-              }
-            }
-          }
-        } catch (err) {}
-      }, 150);
-    }
-  });
+
 
   // Global helper to open article modal by ID or title search (for "Baca Juga" links)
   window.openArticleModalById = function (id, titleSearch = '') {

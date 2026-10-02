@@ -7,10 +7,12 @@
 (function () {
   'use strict';
 
-  // Bersihkan sisa cache legacy localStorage untuk Mitra & Relawan
+  // Bersihkan sisa cache legacy localStorage
   try {
     localStorage.removeItem('acf_admin_data_mitra');
     localStorage.removeItem('acf_admin_data_relawan');
+    localStorage.removeItem('acf_articles_data');
+    localStorage.removeItem('acf_custom_categories');
   } catch (e) {}
 
   // Google Apps Script Web App Endpoint
@@ -428,13 +430,7 @@
       }
 
       if (!dataCategories || dataCategories.length === 0) {
-        const stored = localStorage.getItem('acf_custom_categories');
-        if (stored) {
-          let parsed = JSON.parse(stored);
-          dataCategories = Array.isArray(parsed) && parsed.length > 0 ? parsed.filter(c => !isSchoolCategory(c.slug, c.label)) : [...DEFAULT_CATEGORIES];
-        } else {
-          dataCategories = [...DEFAULT_CATEGORIES];
-        }
+        dataCategories = [...DEFAULT_CATEGORIES];
       }
 
       if (!dataCategories.some(c => c.slug === 'kabar-sekolah-daya-setara')) {
@@ -443,13 +439,15 @@
       if (!dataCategories.some(c => c.slug === 'kabar-sekolah-juara')) {
         dataCategories.splice(1, 0, { slug: 'kabar-sekolah-juara', label: 'Artikel Sekolah Juara' });
       }
+      localStorage.removeItem('acf_custom_categories');
     } catch (e) {
       dataCategories = [...DEFAULT_CATEGORIES];
     }
   }
 
   function saveCategories() {
-    localStorage.setItem('acf_custom_categories', JSON.stringify(dataCategories));
+    // Kategori dikelola langsung lewat MySQL Backend API
+    localStorage.removeItem('acf_custom_categories');
   }
 
   function registerCategory(label, customSlug = '') {
@@ -736,19 +734,18 @@
       }
       localStorage.removeItem('acf_admin_data_relawan');
 
-      // Articles - Ambil dari MySQL Backend API / Fallback Storage
+      // Articles - Ambil langsung dari MySQL Backend API
       if (window.ACF_API && window.ACF_API.articles) {
         const fetchedArticles = await window.ACF_API.articles.getAll({ status: 'all' });
         if (Array.isArray(fetchedArticles) && fetchedArticles.length > 0) {
           dataArticles = fetchedArticles;
         } else {
-          const storedArticles = localStorage.getItem('acf_articles_data');
-          dataArticles = storedArticles ? JSON.parse(storedArticles) : [...INITIAL_ARTICLES_DATA];
+          dataArticles = [];
         }
       } else {
-        const storedArticles = localStorage.getItem('acf_articles_data');
-        dataArticles = storedArticles ? JSON.parse(storedArticles) : [...INITIAL_ARTICLES_DATA];
+        dataArticles = [];
       }
+      localStorage.removeItem('acf_articles_data');
 
       if (Array.isArray(dataArticles)) {
         const normalizeTitle = (t) => String(t || '').trim().toLowerCase().replace(/[\u2018\u2019\u201C\u201D"']/g, '').replace(/\s+/g, ' ');
@@ -811,8 +808,8 @@
   }
 
   function saveArticlesData() {
-    dataArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
-    localStorage.setItem('acf_articles_data', JSON.stringify(dataArticles));
+    // Data artikel dikelola langsung lewat MySQL Backend API
+    localStorage.removeItem('acf_articles_data');
   }
 
   /* ===================================================
@@ -2576,20 +2573,7 @@
       btnSyncSpreadsheet.addEventListener('click', syncFromSpreadsheet);
     }
 
-    // Real-time synchronization when user submits form in another tab or window gains focus
-    let isStorageSyncing = false;
-    window.addEventListener('storage', async (e) => {
-      if (e.key === 'acf_articles_data' || e.key === 'acf_custom_categories') {
-        if (isStorageSyncing) return;
-        isStorageSyncing = true;
-        try {
-          await loadAllData();
-          renderAll();
-        } finally {
-          setTimeout(() => { isStorageSyncing = false; }, 300);
-        }
-      }
-    });
+
 
     window.addEventListener('focus', () => {
       loadAllData();

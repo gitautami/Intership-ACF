@@ -58,7 +58,7 @@
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 1800);
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     const config = {
       signal: options.signal || controller.signal,
@@ -148,45 +148,28 @@
         try {
           const res = await apiFetch('categories.php', { method: 'GET' });
           if (res.success && Array.isArray(res.data)) {
-            localStorage.setItem('acf_custom_categories', JSON.stringify(res.data));
             return res.data;
           }
           return [];
         } catch (err) {
-          // Fallback to local storage
-          const stored = localStorage.getItem('acf_custom_categories');
-          return stored ? JSON.parse(stored) : [];
+          console.error('Gagal mengambil kategori:', err);
+          return [];
         }
       },
 
       async create(label, slug) {
-        try {
-          const res = await apiFetch('categories.php', {
-            method: 'POST',
-            body: JSON.stringify({ label, slug })
-          });
-          return res.data;
-        } catch (err) {
-          // Fallback
-          const stored = JSON.parse(localStorage.getItem('acf_custom_categories') || '[]');
-          const item = { label, slug: slug || label.toLowerCase().replace(/\s+/g, '-') };
-          stored.push(item);
-          localStorage.setItem('acf_custom_categories', JSON.stringify(stored));
-          return item;
-        }
+        const res = await apiFetch('categories.php', {
+          method: 'POST',
+          body: JSON.stringify({ label, slug })
+        });
+        return res.data;
       },
 
       async delete(slug) {
-        try {
-          await apiFetch(`categories.php?slug=${encodeURIComponent(slug)}`, {
-            method: 'DELETE'
-          });
-        } catch (err) {
-          const stored = JSON.parse(localStorage.getItem('acf_custom_categories') || '[]');
-          const filtered = stored.filter(c => c.slug !== slug);
-          localStorage.setItem('acf_custom_categories', JSON.stringify(filtered));
-        }
-        return { success: true };
+        const res = await apiFetch(`categories.php?slug=${encodeURIComponent(slug)}`, {
+          method: 'DELETE'
+        });
+        return res;
       }
     },
 
@@ -206,105 +189,41 @@
         try {
           const res = await apiFetch(`articles.php${qs}`, { method: 'GET' });
           if (res.success && Array.isArray(res.data)) {
-            // Update local storage cache
-            if (!params.search && !params.category && (!params.status || params.status === 'all')) {
-              localStorage.setItem('acf_articles_data', JSON.stringify(res.data));
-            }
             return res.data;
           }
           return [];
         } catch (err) {
-          // Fallback to local storage
-          const stored = localStorage.getItem('acf_articles_data');
-          let list = stored ? JSON.parse(stored) : [];
-          if (params.status && params.status !== 'all') {
-            list = list.filter(a => (a.status || 'Terbit') === params.status);
-          }
-          if (params.category && params.category !== 'all') {
-            list = list.filter(a => a.category === params.category);
-          }
-          if (params.search) {
-            const kw = params.search.toLowerCase();
-            list = list.filter(a => (a.title && a.title.toLowerCase().includes(kw)) || (a.excerpt && a.excerpt.toLowerCase().includes(kw)));
-          }
-          if (params.limit) {
-            list = list.slice(params.offset || 0, (params.offset || 0) + params.limit);
-          }
-          return list;
+          console.error('Gagal mengambil artikel dari server:', err);
+          return [];
         }
       },
 
       async getById(id) {
-        try {
-          const res = await apiFetch(`articles.php?id=${encodeURIComponent(id)}`, { method: 'GET' });
-          return res.data;
-        } catch (err) {
-          const stored = JSON.parse(localStorage.getItem('acf_articles_data') || '[]');
-          return stored.find(a => a.id === id) || null;
-        }
+        const res = await apiFetch(`articles.php?id=${encodeURIComponent(id)}`, { method: 'GET' });
+        return res.data;
       },
 
       async create(articleData) {
-        try {
-          const res = await apiFetch('articles.php', {
-            method: 'POST',
-            body: JSON.stringify(articleData)
-          });
-          // Sync local storage
-          const stored = JSON.parse(localStorage.getItem('acf_articles_data') || '[]');
-          stored.unshift(res.data);
-          localStorage.setItem('acf_articles_data', JSON.stringify(stored));
-          return res.data;
-        } catch (err) {
-          const stored = JSON.parse(localStorage.getItem('acf_articles_data') || '[]');
-          const item = {
-            id: articleData.id || 'ART-' + Date.now(),
-            ...articleData
-          };
-          stored.unshift(item);
-          localStorage.setItem('acf_articles_data', JSON.stringify(stored));
-          return item;
-        }
+        const res = await apiFetch('articles.php', {
+          method: 'POST',
+          body: JSON.stringify(articleData)
+        });
+        return res.data;
       },
 
       async update(id, articleData) {
-        try {
-          const res = await apiFetch(`articles.php?id=${encodeURIComponent(id)}`, {
-            method: 'PUT',
-            body: JSON.stringify({ id, ...articleData })
-          });
-          // Sync local storage
-          const stored = JSON.parse(localStorage.getItem('acf_articles_data') || '[]');
-          const idx = stored.findIndex(a => a.id === id);
-          if (idx !== -1) {
-            stored[idx] = { ...stored[idx], ...res.data };
-            localStorage.setItem('acf_articles_data', JSON.stringify(stored));
-          }
-          return res.data;
-        } catch (err) {
-          const stored = JSON.parse(localStorage.getItem('acf_articles_data') || '[]');
-          const idx = stored.findIndex(a => a.id === id);
-          if (idx !== -1) {
-            stored[idx] = { ...stored[idx], ...articleData };
-            localStorage.setItem('acf_articles_data', JSON.stringify(stored));
-          }
-          return { id, ...articleData };
-        }
+        const res = await apiFetch(`articles.php?id=${encodeURIComponent(id)}`, {
+          method: 'PUT',
+          body: JSON.stringify({ id, ...articleData })
+        });
+        return res.data;
       },
 
       async delete(id) {
-        try {
-          await apiFetch(`articles.php?id=${encodeURIComponent(id)}`, {
-            method: 'DELETE'
-          });
-        } catch (err) {
-          console.log('Fallback delete article');
-        } finally {
-          const stored = JSON.parse(localStorage.getItem('acf_articles_data') || '[]');
-          const filtered = stored.filter(a => a.id !== id);
-          localStorage.setItem('acf_articles_data', JSON.stringify(filtered));
-        }
-        return { success: true };
+        const res = await apiFetch(`articles.php?id=${encodeURIComponent(id)}`, {
+          method: 'DELETE'
+        });
+        return res;
       },
 
       async uploadImage(file) {
@@ -452,12 +371,11 @@
           const res = await apiFetch('stats.php', { method: 'GET' });
           return res.data;
         } catch (err) {
-          const articles = JSON.parse(localStorage.getItem('acf_articles_data') || '[]');
           return {
             mitra: { total: 0, pending: 0 },
             relawan: { total: 0, pending: 0 },
             forms: { total: 0, pending: 0 },
-            articles: { total: articles.length, published: articles.filter(a => (a.status || 'Terbit') === 'Terbit').length }
+            articles: { total: 0, published: 0 }
           };
         }
       }

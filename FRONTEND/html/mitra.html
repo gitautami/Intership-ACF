@@ -13,16 +13,50 @@
   <link rel="stylesheet" href="../css/tentang.css">
   <style>
     .mitra-hero-section {
-      padding: 140px 0 70px;
-      background: linear-gradient(135deg, #7D2280 0%, #9B389E 50%, #6E1B71 100%);
-      color: #FFFFFF;
       position: relative;
+      width: 100%;
+      min-height: clamp(500px, 45.13vw, 700px);
+      display: flex;
+      align-items: center;
+      padding: 160px 0 90px;
+      background-image: linear-gradient(135deg, #7D2280 0%, #9B389E 50%, #6E1B71 100%);
+      color: #FFFFFF;
       overflow: hidden;
+      border-bottom: 2px solid rgba(245, 166, 35, 0.3);
+    }
+    .mitra-hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 85% 20%, rgba(245, 166, 35, 0.22) 0%, transparent 55%),
+                  radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .mitra-hero-section .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
     }
     .mitra-hero-content {
       max-width: 820px;
       margin: 0 auto;
       text-align: center;
+    }
+    .mitra-hero-badge {
+      display: inline-block;
+      color: #FDE68A;
+      background: rgba(245, 166, 35, 0.2);
+      border: 1px solid rgba(245, 166, 35, 0.4);
+      padding: 5px 16px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
     }
     .mitra-hero-title {
       font-size: clamp(2.2rem, 4.5vw, 3.4rem);
@@ -30,12 +64,14 @@
       color: #FFFFFF;
       line-height: 1.2;
       margin-bottom: 18px;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
     }
     .mitra-hero-desc {
       font-size: 1.15rem;
-      color: rgba(255, 255, 255, 0.92);
+      color: rgba(255, 255, 255, 0.95);
       line-height: 1.8;
       margin-bottom: 0;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
     }
     .mitra-cta-box {
       background: linear-gradient(135deg, #7D2280 0%, #9B389E 60%, #5B135E 100%);
@@ -99,6 +135,99 @@
       background: #FFFFFF;
       color: var(--acf-purple);
       border-color: #FFFFFF;
+    }
+
+    /* Grid Mitra Satu Per Satu (Halaman Mitra) */
+    .mitra-page-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 22px;
+      margin-top: 36px;
+    }
+
+    .mitra-grid-card {
+      background: #FFFFFF;
+      border: 1.5px solid #EAE2EF;
+      border-radius: 18px;
+      padding: 24px 18px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+      box-shadow: 0 4px 16px rgba(125, 34, 128, 0.04);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .mitra-grid-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 32px rgba(125, 34, 128, 0.12);
+      border-color: rgba(125, 34, 128, 0.45);
+    }
+
+    .mitra-grid-card-img-wrap {
+      width: 100%;
+      height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mitra-grid-card-img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: grayscale(15%);
+      transition: all 0.3s ease;
+    }
+
+    .mitra-grid-card:hover .mitra-grid-card-img {
+      filter: grayscale(0%);
+      transform: scale(1.06);
+    }
+
+    .mitra-grid-card-name {
+      margin-top: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #475569;
+      text-align: center;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 1200px) {
+      .mitra-page-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .mitra-page-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .mitra-page-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .mitra-grid-card {
+        min-height: 120px;
+        padding: 16px 12px;
+      }
+      .mitra-grid-card-img-wrap {
+        height: 50px;
+      }
+      .mitra-grid-card-name {
+        font-size: 0.75rem;
+        margin-top: 8px;
+      }
     }
   </style>
 </head>
@@ -357,6 +486,7 @@
     <section class="mitra-hero-section">
       <div class="container">
         <div class="mitra-hero-content reveal">
+          <span class="mitra-hero-badge">Jejaring Kemitraan Strategis</span>
           <h1 class="mitra-hero-title">
             Mitra Kolaborasi ACF Eduhub
           </h1>
@@ -367,287 +497,300 @@
       </div>
     </section>
 
-    <!-- 8. Logo Mitra Section (Slider Bergerak Sama Persis Seperti di Homepage) -->
-    <section class="section home-mitra-section" id="mitra-section" style="padding: 70px 0;">
+    <!-- 8. Logo Mitra Section (Grid Satu Per Satu) -->
+    <section class="section" id="mitra-section" style="padding: 70px 0;">
       <div class="container">
         
         <!-- Main Section Header -->
         <div class="section-header centered reveal">
           <span class="section-label">MITRA</span>
-          <h2 class="section-title mitra-main-title">pendidikan terbaik untuk semua</h2>
+          <h2 class="section-title mitra-main-title">Pendidikan Terbaik untuk Semua</h2>
           <p class="section-subtitle">
-            Bergabunglah bersama kami membantu peserta didik Indonesia dalam menerima pendidikan terbaik
+            Bergabunglah bersama kami membantu peserta didik Indonesia dalam menerima pendidikan terbaik melalui jejaring kemitraan strategis.
           </p>
         </div>
 
-        <!-- Heading Kecil di atas slider (Draf Konten: Dipercaya oleh) -->
-        <div class="mitra-slider-heading reveal">
+        <!-- Heading Kecil (Dipercaya oleh) -->
+        <div class="mitra-slider-heading reveal" style="margin-top: 20px;">
           <span class="mitra-accent-bar"></span>
-          <span class="mitra-heading-text">Dipercaya oleh</span>
+          <span class="mitra-heading-text">Dipercaya oleh Lebih dari 30+ Mitra Ternama</span>
         </div>
 
-        <!-- Mitra Slider Carousel Container -->
-        <div class="mitra-slider-container reveal" id="mitraSliderContainer">
+        <!-- Mitra Grid Container (Persatu-satu / Tanpa Slider) -->
+        <div class="mitra-page-grid reveal">
           
-          <button class="mitra-arrow-btn prev" id="mitraPrevBtn" aria-label="Mitra Sebelumnya">
-            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-          </button>
-
-          <div class="mitra-slider-viewport" id="mitraSliderViewport">
-            <div class="mitra-slider-track" id="mitraSliderTrack">
-              
-              <!-- 1. Lokadesa -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Lokadesa-300x68.png" alt="Logo Lokadesa" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 2. Pungki Purnadi & Associates -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/pungki purnadi.jpg" alt="Logo Pungki Purnadi & Associates" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 3. AYPI -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/AYPI.png" alt="Logo Asosiasi Yayasan Pendidikan Islam (AYPI)" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 4. Universitas Insan Cendekia Mandiri -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/uiv insan cendekia mandiri.png" alt="Logo Universitas Insan Cendekia Mandiri" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 5. Inspira -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/inspira.png" alt="Logo Inspira" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 6. Paragon Corp -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Paragon-Corp-300x71.png" alt="Logo Paragon Technology and Innovation" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 7. BSI Maslahat -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/logo_bsi_maslahat-300x52.png" alt="Logo BSI Maslahat" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 8. Yayasan Pendidikan Telkom -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/yayasan telkom.jpg" alt="Logo Yayasan Pendidikan Telkom" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 9. YBM PLN -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/ybm pln.jpg" alt="Logo Yayasan Baitul Maal PLN (YBM PLN)" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 10. Lintasarta -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Lintasarta-new-300x132.png" alt="Logo Lintasarta" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 11. Rumah Zakat -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Rumah-Zakat-300x122.png" alt="Logo Rumah Zakat" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 12. Rumah Wakaf -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Rumah-Wakaf-300x102.png" alt="Logo Rumah Wakaf" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 13. Filantropi Indonesia -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Filantropi-Indonesia-300x97.png" alt="Logo Filantropi Indonesia" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 14. Yayasan Kebaikan Indonesia -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Kebaikan-Indonesia-300x300.png" alt="Logo Yayasan Kebaikan Indonesia" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 15. Relawan Nusantara -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Relawan-Nusantara.png" alt="Logo Relawan Nusantara" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 16. Cita Sehat Foundation -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/cita sehat foundation.png" alt="Logo Cita Sehat Foundation" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 17. Masjid Nusantara -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/masjid nusantara.png" alt="Logo Masjid Nusantara" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 18. Sharing Happiness -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Sharing-Happiness-04-300x82.png" alt="Logo Sharing Happiness" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 19. Filantra -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Filantra.png" alt="Logo Filantra" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 20. MTT (Majelis Telkomsel Taqwa) -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-MTT.png" alt="Logo MTT Majelis Telkomsel Taqwa" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 21. RASBI -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-RASBI.png" alt="Logo RASBI" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 22. Pemkab Bandung -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Pemkab-Bandung.png" alt="Logo Pemkab Bandung" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 23. BMKS -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-BMKS.png" alt="Logo BMKS" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 24. NFBSL -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-NFBSL.png" alt="Logo NFBSL Nurul Fikri Boarding School Lembang" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 25. Fajar Hidayah -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Fajar-Hidayah-300x206.png" alt="Logo Fajar Hidayah" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 26. An-Nahl -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/An-Nahl-300x97.png" alt="Logo An-Nahl Islamic School" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 27. SMK N 2 Karawang -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-SMK-N-2-Karawang-300x300.png" alt="Logo SMK N 2 Karawang" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 28. SIT Izzuddin -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/sekolah islam terpadu izzudin.png" alt="Logo Sekolah Islam Terpadu Izzuddin" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 29. SIT Lukmanul Hakim Bandung -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/sekolah islam terpadu lukmanul hakim bandung.jpg" alt="Logo SIT Lukmanul Hakim Bandung" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 30. SMPIT Baitul Anshor -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/smp islam terpadu baitul anshor.jpg" alt="Logo SMPIT Baitul Anshor" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 31. Yayasan Nurul Aulia -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Yayasan-Nurul-Aulia-Citeureup-Cimahi-Utara.png" alt="Logo Yayasan Nurul Aulia" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 32. Yayasan Rabbani Asysa -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Yayasan-Rabbani-Asysa.png" alt="Logo Yayasan Rabbani Asysa" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 33. Utama -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/Logo-Utama-300x83.png" alt="Logo Utama" class="mitra-logo-img">
-                </div>
-              </div>
-
-              <!-- 34. HCR ID -->
-              <div class="mitra-logo-item">
-                <div class="mitra-logo-box">
-                  <img src="../assets/logo-mitra/hcr id.png" alt="Logo Human Care Response (HCR ID)" class="mitra-logo-img">
-                </div>
-              </div>
-
+          <!-- 1. Lokadesa -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Lokadesa-300x68.png" alt="Logo Lokadesa" class="mitra-grid-card-img" loading="lazy">
             </div>
+            <div class="mitra-grid-card-name">Lokadesa</div>
           </div>
 
-          <button class="mitra-arrow-btn next" id="mitraNextBtn" aria-label="Mitra Selanjutnya">
-            <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-          </button>
-
-        </div>
-
-        <!-- Slider Pagination Dots -->
-        <div class="mitra-dots-container reveal" id="mitraDotsContainer">
-          <div class="mitra-dots" id="mitraDots" role="tablist">
-            <!-- Rendered by JS -->
+          <!-- 2. Pungki Purnadi & Associates -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/pungki purnadi.jpg" alt="Logo Pungki Purnadi &amp; Associates" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Pungki Purnadi &amp; Associates</div>
           </div>
+
+          <!-- 3. AYPI -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/AYPI.png" alt="Logo AYPI" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">AYPI</div>
+          </div>
+
+          <!-- 4. Universitas Insan Cendekia Mandiri -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/uiv insan cendekia mandiri.png" alt="Logo Universitas Insan Cendekia Mandiri" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Univ. Insan Cendekia Mandiri</div>
+          </div>
+
+          <!-- 5. Inspira -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/inspira.png" alt="Logo Inspira" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Inspira</div>
+          </div>
+
+          <!-- 6. Paragon Corp -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Paragon-Corp-300x71.png" alt="Logo Paragon Technology and Innovation" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Paragon Corp</div>
+          </div>
+
+          <!-- 7. BSI Maslahat -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/logo_bsi_maslahat-300x52.png" alt="Logo BSI Maslahat" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">BSI Maslahat</div>
+          </div>
+
+          <!-- 8. Yayasan Pendidikan Telkom -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/yayasan telkom.jpg" alt="Logo Yayasan Pendidikan Telkom" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Yayasan Telkom</div>
+          </div>
+
+          <!-- 9. YBM PLN -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/ybm pln.jpg" alt="Logo YBM PLN" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">YBM PLN</div>
+          </div>
+
+          <!-- 10. Lintasarta -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Lintasarta-new-300x132.png" alt="Logo Lintasarta" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Lintasarta</div>
+          </div>
+
+          <!-- 11. Rumah Zakat -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Rumah-Zakat-300x122.png" alt="Logo Rumah Zakat" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Rumah Zakat</div>
+          </div>
+
+          <!-- 12. Rumah Wakaf -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Rumah-Wakaf-300x102.png" alt="Logo Rumah Wakaf" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Rumah Wakaf</div>
+          </div>
+
+          <!-- 13. Filantropi Indonesia -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Filantropi-Indonesia-300x97.png" alt="Logo Filantropi Indonesia" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Filantropi Indonesia</div>
+          </div>
+
+          <!-- 14. Yayasan Kebaikan Indonesia -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Kebaikan-Indonesia-300x300.png" alt="Logo Yayasan Kebaikan Indonesia" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Kebaikan Indonesia</div>
+          </div>
+
+          <!-- 15. Relawan Nusantara -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Relawan-Nusantara.png" alt="Logo Relawan Nusantara" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Relawan Nusantara</div>
+          </div>
+
+          <!-- 16. Cita Sehat Foundation -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/cita sehat foundation.png" alt="Logo Cita Sehat Foundation" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Cita Sehat Foundation</div>
+          </div>
+
+          <!-- 17. Masjid Nusantara -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/masjid nusantara.png" alt="Logo Masjid Nusantara" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Masjid Nusantara</div>
+          </div>
+
+          <!-- 18. Sharing Happiness -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Sharing-Happiness-04-300x82.png" alt="Logo Sharing Happiness" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Sharing Happiness</div>
+          </div>
+
+          <!-- 19. Filantra -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Filantra.png" alt="Logo Filantra" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Filantra</div>
+          </div>
+
+          <!-- 20. MTT (Majelis Telkomsel Taqwa) -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-MTT.png" alt="Logo MTT" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Majelis Telkomsel Taqwa</div>
+          </div>
+
+          <!-- 21. RASBI -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-RASBI.png" alt="Logo RASBI" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">RASBI</div>
+          </div>
+
+          <!-- 22. Pemkab Bandung -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Pemkab-Bandung.png" alt="Logo Pemkab Bandung" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Pemkab Bandung</div>
+          </div>
+
+          <!-- 23. BMKS -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-BMKS.png" alt="Logo BMKS" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">BMKS</div>
+          </div>
+
+          <!-- 24. NFBSL -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-NFBSL.png" alt="Logo NFBSL Nurul Fikri Boarding School Lembang" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">NFBS Lembang</div>
+          </div>
+
+          <!-- 25. Fajar Hidayah -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Fajar-Hidayah-300x206.png" alt="Logo Fajar Hidayah" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Fajar Hidayah</div>
+          </div>
+
+          <!-- 26. An-Nahl -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/An-Nahl-300x97.png" alt="Logo An-Nahl Islamic School" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">An-Nahl Islamic School</div>
+          </div>
+
+          <!-- 27. SMK N 2 Karawang -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-SMK-N-2-Karawang-300x300.png" alt="Logo SMK N 2 Karawang" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">SMKN 2 Karawang</div>
+          </div>
+
+          <!-- 28. SIT Izzuddin -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/sekolah islam terpadu izzudin.png" alt="Logo SIT Izzuddin" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">SIT Izzuddin</div>
+          </div>
+
+          <!-- 29. SIT Lukmanul Hakim Bandung -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/sekolah islam terpadu lukmanul hakim bandung.jpg" alt="Logo SIT Lukmanul Hakim Bandung" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">SIT Lukmanul Hakim</div>
+          </div>
+
+          <!-- 30. SMPIT Baitul Anshor -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/smp islam terpadu baitul anshor.jpg" alt="Logo SMPIT Baitul Anshor" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">SMPIT Baitul Anshor</div>
+          </div>
+
+          <!-- 31. Yayasan Nurul Aulia -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Yayasan-Nurul-Aulia-Citeureup-Cimahi-Utara.png" alt="Logo Yayasan Nurul Aulia" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Yayasan Nurul Aulia</div>
+          </div>
+
+          <!-- 32. Yayasan Rabbani Asysa -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Yayasan-Rabbani-Asysa.png" alt="Logo Yayasan Rabbani Asysa" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Yayasan Rabbani Asysa</div>
+          </div>
+
+          <!-- 33. Utama -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/Logo-Utama-300x83.png" alt="Logo Utama" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">Utama</div>
+          </div>
+
+          <!-- 34. HCR ID -->
+          <div class="mitra-grid-card">
+            <div class="mitra-grid-card-img-wrap">
+              <img src="../assets/logo-mitra/hcr id.png" alt="Logo HCR ID" class="mitra-grid-card-img" loading="lazy">
+            </div>
+            <div class="mitra-grid-card-name">HCR ID</div>
+          </div>
+
         </div>
 
       </div>
@@ -757,6 +900,5 @@
   <!-- ========== JAVASCRIPT FILES ========== -->
   <script src="../js/navbar.js"></script>
   <script src="../js/main.js"></script>
-  <script src="../js/home.js"></script>
 </body>
 </html>

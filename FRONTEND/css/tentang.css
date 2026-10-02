@@ -18,6 +18,10 @@
   overflow: hidden;
 }
 
+.page-hero.hero-no-bg {
+  background-image: linear-gradient(135deg, #7D2280 0%, #9B389E 50%, #6E1B71 100%);
+}
+
 .page-hero::before {
   content: '';
   position: absolute;

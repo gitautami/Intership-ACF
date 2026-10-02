@@ -992,3 +992,154 @@
   }
 }
 
+/* =============================================
+   LEGAL FORMAL & AKUNTABILITAS SECTION (CLEAN & RAPI)
+   ============================================= */
+.legal-clean-section {
+  padding: 60px 0 75px;
+  background: #FAFAFC;
+  border-top: 1px solid #ECE7EF;
+  border-bottom: 1px solid #ECE7EF;
+}
+
+.legal-clean-card {
+  background: #FFFFFF;
+  border: 1px solid #E2D9E7;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(125, 34, 128, 0.04);
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  overflow: hidden;
+}
+
+.legal-clean-col {
+  padding: 36px 32px;
+}
+
+.legal-clean-col:first-child {
+  border-right: 1px solid #F1EBF4;
+  background: #FCFAFD;
+}
+
+.legal-clean-col-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 24px 0;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid #EAE2EF;
+}
+
+.legal-clean-col-title svg {
+  width: 20px;
+  height: 20px;
+  color: #7D2280;
+  flex-shrink: 0;
+}
+
+/* List Identitas Kiri */
+.legal-clean-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.legal-clean-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: #FFFFFF;
+  border: 1px solid #EAE2EF;
+  border-radius: 12px;
+}
+
+.legal-clean-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.legal-clean-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.legal-clean-val.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.5px;
+  color: #7D2280;
+}
+
+/* List Riwayat Notaris Kanan */
+.legal-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.legal-history-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed #EAE2EF;
+}
+
+.legal-history-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.legal-year-badge {
+  background: #7D2280;
+  color: #FFFFFF;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.legal-history-content {
+  flex: 1;
+}
+
+.legal-history-title {
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 6px;
+}
+
+.legal-history-desc {
+  font-size: 0.86rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.legal-history-desc strong {
+  color: #1E293B;
+}
+
+@media (max-width: 900px) {
+  .legal-clean-card {
+    grid-template-columns: 1fr;
+  }
+  .legal-clean-col:first-child {
+    border-right: none;
+    border-bottom: 1px solid #F1EBF4;
+  }
+  .legal-clean-col {
+    padding: 26px 20px;
+  }
+}
+

@@ -237,236 +237,471 @@
       </section>
 
     </main>
-
-  </div>
-
   <!-- ==========================================
        MODAL: WORDPRESS STUDIO EDITOR & UPLOAD
        ========================================== -->
   <div class="admin-modal-backdrop" id="articleModal">
-    <div class="admin-modal-box wp-studio-modal-box">
+    <div class="admin-modal-box wp-studio-modal-box wp-gutenberg-modal">
       
-      <!-- Studio Header with Tabs -->
-      <div class="modal-header wp-studio-header">
-        <div class="wp-studio-nav">
-          <button type="button" class="wp-mode-tab active" id="tabModeEditor" data-mode="editor">
-            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
-            <span>✍️ WordPress Studio Editor</span>
+      <!-- Gutenberg Top Bar Header -->
+      <div class="modal-header wp-gutenberg-header">
+        <div class="wp-gb-header-left">
+          
+          <!-- WordPress Logo Button -->
+          <div class="wp-gb-logo-wrap" title="WordPress Editor">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878L5.617 8.167A9.957 9.957 0 0 1 12 4c2.26 0 4.343.753 6.014 2.022L12 2zm7.618 4.708A9.945 9.945 0 0 1 22 12c0 2.262-.754 4.346-2.025 6.018l-5.69-16.486c2.476 1.157 4.37 3.264 5.333 5.176zM3.824 14.567L8.91 21.36A9.972 9.972 0 0 1 2 12c0-.952.133-1.872.38-2.744l1.444 5.311zm8.356 7.411l3.526-10.222 3.42 9.387A9.948 9.948 0 0 1 12 21.978z"/>
+            </svg>
+          </div>
+
+          <!-- Gutenberg [+] Add Block Button -->
+          <button type="button" class="wp-gb-btn-add-block" id="btnGutenbergAddBlock" title="Tambah blok (Pilih Paragraf, Judul, Kutipan, Gambar, dll)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Tambah blok</span>
           </button>
-          <button type="button" class="wp-mode-tab" id="tabModeWpSync" data-mode="wpsync">
-            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            <span>🌐 Tarik dari WordPress (REST API)</span>
+
+          <!-- History Tools: Undo & Redo -->
+          <div class="wp-gb-history-group">
+            <button type="button" class="wp-gb-header-btn wp-tool-btn" data-cmd="undo" title="Urungkan (Ctrl+Z)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+            </button>
+            <button type="button" class="wp-gb-header-btn wp-tool-btn" data-cmd="redo" title="Ulangi (Ctrl+Y)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+            </button>
+          </div>
+
+
+
+        </div>
+
+        <div class="wp-gb-header-right">
+          <!-- Save Draft Button -->
+          <button type="button" class="wp-gb-btn-draft" id="btnSaveDraft" title="Simpan sebagai draf internal">
+            Simpan draf
+          </button>
+
+          <!-- Publish Button -->
+          <button type="submit" form="articleForm" class="wp-gb-btn-publish" id="btnSaveArticle">
+            <span id="btnSaveArticleText">Terbitkan</span>
+          </button>
+
+          <!-- Toggle Right Sidebar Button (Settings Cog) -->
+          <button type="button" class="wp-gb-header-btn active" id="btnToggleWpSidebar" title="Pengaturan Dokumen &amp; Blok">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </button>
+
+          <!-- Close Modal Button -->
+          <button type="button" class="wp-gb-header-btn wp-gb-btn-close" id="btnArticleModalClose" aria-label="Tutup Editor">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
-        <button type="button" class="modal-close-btn" id="btnArticleModalClose" aria-label="Tutup">
-          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
       </div>
 
-      <!-- VIEW 1: WORDPRESS STUDIO 2-COLUMN EDITOR -->
+      <!-- VIEW 1: WORDPRESS GUTENBERG 2-COLUMN EDITOR -->
       <div id="wpStudioEditorView" class="wp-view-pane active">
         <form id="articleForm" autocomplete="off">
           <input type="hidden" id="articleEditId" value="">
           <input type="hidden" id="articleStatusInput" value="Terbit">
 
-          <div class="wp-editor-workspace">
+          <div class="wp-gb-workspace-wrap">
             
-            <!-- LEFT COLUMN: Gutenberg Canvas (Editor) -->
-            <div class="wp-editor-canvas-col">
+            <!-- POPUP: GUTENBERG BLOCK INSERTER DRAWER -->
+            <div class="wp-gb-block-inserter" id="wpBlockInserterDrawer" style="display: none;">
+              <div class="wp-gb-inserter-header">
+                <span class="wp-gb-inserter-title">Pilih Blok WordPress</span>
+                <button type="button" class="wp-gb-inserter-close" id="btnCloseBlockInserter" aria-label="Tutup Pilihan Blok">✕</button>
+              </div>
+              <div class="wp-gb-inserter-search">
+                <input type="text" id="wpBlockSearchInput" placeholder="Cari jenis blok (judul, foto, kutipan...)">
+              </div>
               
-              <!-- Post Title -->
-              <div class="wp-title-wrapper">
-                <input type="text" id="articleTitle" class="wp-input-title" placeholder="Tambahkan Judul Artikel..." required>
+              <div class="wp-gb-inserter-section">
+                <div class="wp-gb-section-name">Teks &amp; Tipografi</div>
+                <div class="wp-gb-block-grid">
+                  <button type="button" class="wp-gb-block-card" data-block-type="p">
+                    <div class="wp-gb-card-icon">¶</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Paragraf</strong>
+                      <span>Teks naskah standar</span>
+                    </div>
+                  </button>
+                  <button type="button" class="wp-gb-block-card" data-block-type="lead-p">
+                    <div class="wp-gb-card-icon">✨</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Paragraf Pembuka</strong>
+                      <span>Lead sorotan berita</span>
+                    </div>
+                  </button>
+                  <button type="button" class="wp-gb-block-card" data-block-type="h2">
+                    <div class="wp-gb-card-icon">H2</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Sub-Judul H2</strong>
+                      <span>Judul seksi utama</span>
+                    </div>
+                  </button>
+                  <button type="button" class="wp-gb-block-card" data-block-type="h3">
+                    <div class="wp-gb-card-icon">H3</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Sub-Judul H3</strong>
+                      <span>Sub-bagian topik</span>
+                    </div>
+                  </button>
+                  <button type="button" class="wp-gb-block-card" data-block-type="blockquote">
+                    <div class="wp-gb-card-icon">❝</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Kutipan Tokoh</strong>
+                      <span>Quote narasumber</span>
+                    </div>
+                  </button>
+                  <button type="button" class="wp-gb-block-card" data-block-type="callout">
+                    <div class="wp-gb-card-icon">📌</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Kotak Sorotan</strong>
+                      <span>Catatan / callout penting</span>
+                    </div>
+                  </button>
+                </div>
               </div>
 
-              <!-- WYSIWYG Formatting Toolbar -->
-              <div class="wp-rich-toolbar">
+              <div class="wp-gb-inserter-section">
+                <div class="wp-gb-section-name">Media &amp; Elemen Desain</div>
+                <div class="wp-gb-block-grid">
+                  <button type="button" class="wp-gb-block-card" data-block-type="insert-image">
+                    <div class="wp-gb-card-icon">🖼️</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Gambar Inline</strong>
+                      <span>Sisipkan foto ke dalam naskah</span>
+                    </div>
+                  </button>
+                  <button type="button" class="wp-gb-block-card" data-block-type="list-ul">
+                    <div class="wp-gb-card-icon">•</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Daftar Poin</strong>
+                      <span>Bullet list poin penting</span>
+                    </div>
+                  </button>
+                  <button type="button" class="wp-gb-block-card" data-block-type="list-ol">
+                    <div class="wp-gb-card-icon">1.</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Daftar Nomor</strong>
+                      <span>Numbered list berurutan</span>
+                    </div>
+                  </button>
+                  <button type="button" class="wp-gb-block-card" data-block-type="hr">
+                    <div class="wp-gb-card-icon">➖</div>
+                    <div class="wp-gb-card-info">
+                      <strong>Pemisah Bagian</strong>
+                      <span>Garis divider pembatas</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CENTER MAIN: GUTENBERG CANVAS AREA -->
+            <div class="wp-gb-editor-area">
+              
+              <!-- Floating Contextual Block Toolbar -->
+              <div class="wp-rich-toolbar wp-gb-context-toolbar">
                 <div class="wp-tool-group">
-                  <select id="wpBlockFormat" class="wp-select-format" title="Format Blok & Paragraf">
-                    <option value="p">¶ Paragraf Standar</option>
-                    <option value="multi-p">➕ Tambah Paragraf Baru (Multi-Paragraf)</option>
-                    <option value="lead-p">✨ Paragraf Pembuka (Lead / Ringkasan)</option>
-                    <option value="h2">H2 Sub Judul Utama</option>
-                    <option value="h3">H3 Sub Judul Sedang</option>
-                    <option value="h4">H4 Sub Judul Kecil</option>
-                    <option value="blockquote">❝ Kutipan / Quote</option>
-                    <option value="callout">📌 Kotak Catatan / Sorotan (Callout)</option>
-                    <option value="hr">➖ Garis Pembatas Paragraf</option>
-                  </select>
+                  <!-- Block Format Dropdown Switcher -->
+                  <div class="wp-select-format-wrapper">
+                    <select id="wpBlockFormat" class="wp-select-format" title="Ubah tipe blok atau gaya paragraf">
+                      <option value="p">¶ Paragraf</option>
+                      <option value="lead-p">✨ Paragraf Pembuka (Lead)</option>
+                      <option value="h2">H2 Judul Utama</option>
+                      <option value="h3">H3 Sub-Judul Sedang</option>
+                      <option value="h4">H4 Sub-Judul Kecil</option>
+                      <option value="blockquote">❝ Kutipan (Quote)</option>
+                      <option value="callout">📌 Kotak Sorotan (Callout)</option>
+                      <option value="multi-p">➕ Sisipkan Paragraf Baru</option>
+                      <option value="hr">➖ Garis Pemisah (Divider)</option>
+                    </select>
+                    <span class="wp-select-caret">▾</span>
+                  </div>
                 </div>
 
                 <div class="wp-toolbar-divider"></div>
 
+                <!-- Text Alignments -->
                 <div class="wp-tool-group">
-                  <button type="button" class="wp-tool-btn" data-cmd="bold" title="Tebal (Ctrl+B)"><strong>B</strong></button>
-                  <button type="button" class="wp-tool-btn" data-cmd="italic" title="Miring (Ctrl+I)"><em>I</em></button>
-                  <button type="button" class="wp-tool-btn" data-cmd="underline" title="Garis Bawah (Ctrl+U)"><u>U</u></button>
-                  <button type="button" class="wp-tool-btn" data-cmd="strikeThrough" title="Coret (Strikethrough)"><s>S</s></button>
+                  <button type="button" class="wp-tool-btn" data-cmd="justifyLeft" title="Rata Kiri">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
+                  </button>
+                  <button type="button" class="wp-tool-btn" data-cmd="justifyCenter" title="Rata Tengah">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                  </button>
                 </div>
 
                 <div class="wp-toolbar-divider"></div>
 
+                <!-- Text Formatting -->
                 <div class="wp-tool-group">
-                  <button type="button" class="wp-tool-btn" data-cmd="insertUnorderedList" title="Poin Bullet List">• List</button>
-                  <button type="button" class="wp-tool-btn" data-cmd="insertOrderedList" title="Angka Numbered List">1. List</button>
-                  <button type="button" class="wp-tool-btn" id="btnWpInsertLink" title="Sisipkan Link URL">🔗 Link</button>
-                  <button type="button" class="wp-tool-btn" id="btnWpInsertImage" title="Sisipkan Foto di Tulisan">🖼️ Foto</button>
+                  <button type="button" class="wp-tool-btn" data-cmd="bold" title="Tebal / Bold (Ctrl+B)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
+                  </button>
+                  <button type="button" class="wp-tool-btn" data-cmd="italic" title="Miring / Italic (Ctrl+I)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+                  </button>
+                  <button type="button" class="wp-tool-btn" data-cmd="underline" title="Garis Bawah (Ctrl+U)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>
+                  </button>
+                  <button type="button" class="wp-tool-btn" data-cmd="strikeThrough" title="Coret (Strikethrough)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="12" x2="20" y2="12"/><path d="M17.5 7.5c-.8-1.5-2.5-2.5-5.5-2.5-4 0-5.5 2-5.5 3.5 0 2.5 4 3 6 3.5m4.5 4.5c0 2-2 3.5-5 3.5-4 0-6-2-6-4"/></svg>
+                  </button>
                 </div>
 
                 <div class="wp-toolbar-divider"></div>
 
+                <!-- Inserts & Lists -->
                 <div class="wp-tool-group">
-                  <button type="button" class="wp-tool-btn" data-cmd="removeFormat" title="Hapus Pemformatan">🧹 Bersihkan</button>
+                  <button type="button" class="wp-tool-btn" id="btnWpInsertLink" title="Tautan / Link">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  </button>
+                  <button type="button" class="wp-tool-btn" id="btnWpInsertImage" title="Sisipkan Gambar Inline">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="3" ry="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  </button>
+                  <button type="button" class="wp-tool-btn" data-cmd="insertUnorderedList" title="Daftar Bullet">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1.5" fill="currentColor"/><circle cx="4.5" cy="12" r="1.5" fill="currentColor"/><circle cx="4.5" cy="18" r="1.5" fill="currentColor"/></svg>
+                  </button>
+                  <button type="button" class="wp-tool-btn" data-cmd="insertOrderedList" title="Daftar Nomor">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="10" y1="6" x2="20" y2="6"/><line x1="10" y1="12" x2="20" y2="12"/><line x1="10" y1="18" x2="20" y2="18"/><path d="M4 6h1.5v4"/><path d="M3.5 10H6"/><path d="M6 18H3.5c0-1.2 2.5-1.5 2.5-2.5 0-.6-.5-1-1.2-1-.7 0-1.3.4-1.3.9"/></svg>
+                  </button>
+                  <button type="button" class="wp-tool-btn wp-tool-btn-clean" data-cmd="removeFormat" title="Hapus Pemformatan">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                  </button>
                 </div>
               </div>
 
-              <!-- ContentEditable Canvas Editor -->
-              <div class="wp-content-canvas-wrap">
-                <div id="articleVisualEditor" class="wp-visual-editor" contenteditable="true" spellcheck="false" data-placeholder="Ketik atau paste isi artikel Anda di sini... Mendukung paragraf, sub-judul, kutipan, dan foto."></div>
-                <textarea id="articleContent" style="display: none;"></textarea>
+              <!-- Gutenberg Document Canvas Paper -->
+              <div class="wp-gb-paper-sheet">
+                
+                <!-- Gutenberg Post Title (Tambahkan judul) -->
+                <div class="wp-gb-title-box">
+                  <textarea id="articleTitle" class="wp-gb-title-input" rows="1" placeholder="Tambahkan judul" required></textarea>
+                </div>
+
+                <!-- Gutenberg ContentEditable Writing Area -->
+                <div class="wp-content-canvas-wrap">
+                  <div id="articleVisualEditor" class="wp-visual-editor wp-gb-visual-canvas" contenteditable="true" spellcheck="false" data-placeholder="Ketik / atau klik [+] di kiri atas untuk memilih blok..."></div>
+                  <textarea id="articleContent" style="display: none;"></textarea>
+                </div>
+
               </div>
 
-              <!-- Word Count & Editor Stats Footer -->
-              <div class="wp-editor-footer-stats">
-                <span id="wpStatsCount">0 Kata • 0 Karakter</span>
-                <span style="color: #64748B;">Format HTML Otomatis Aktif</span>
+              <!-- Gutenberg Bottom Breadcrumbs & Stats Bar -->
+              <div class="wp-gb-footer-bar">
+                <div class="wp-gb-breadcrumbs">
+                  <span>Dokumen</span>
+                  <span class="wp-gb-bc-sep">›</span>
+                  <span class="wp-gb-bc-active">Paragraf</span>
+                </div>
+                <div class="wp-gb-stats-wrap">
+                  <span id="wpStatsCount" class="wp-stats-count-pill">0 Kata • 0 Karakter</span>
+                </div>
               </div>
 
             </div>
 
-            <!-- RIGHT COLUMN: Document Settings Sidebar -->
-            <div class="wp-editor-sidebar-col">
+            <!-- RIGHT SIDEBAR: GUTENBERG POST & BLOCK SETTINGS -->
+            <div class="wp-editor-sidebar-col wp-gb-sidebar" id="wpGutenbergSidebar">
               
-              <!-- Sidebar Section 1: Publish & Status -->
-              <div class="wp-sidebar-box">
-                <div class="wp-box-title">
-                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                  <span>Publikasi</span>
-                </div>
-                <div class="wp-box-body">
-                  <div class="wp-field-row">
-                    <label class="wp-label">Status Post</label>
-                    <select id="articleStatusSelect" class="wp-select">
-                      <option value="Terbit">Terbit (Live)</option>
-                      <option value="Draf">Draf (Disimpan)</option>
-                    </select>
-                  </div>
-
-                  <div class="wp-field-row">
-                    <label class="wp-label">Penulis / Redaksi</label>
-                    <input type="text" id="articleAuthor" class="wp-input" value="Tim Redaksi ACF" placeholder="Nama Penulis..." required>
-                  </div>
-
-                  <div class="wp-field-row">
-                    <label class="wp-label">Tanggal Publikasi</label>
-                    <input type="text" id="articleDateInput" class="wp-input" placeholder="Otomatis Hari Ini">
-                  </div>
-
-                  <!-- Action Buttons -->
-                  <div class="wp-publish-actions">
-                    <button type="button" class="btn-wp-draft" id="btnSaveDraft">
-                      <span>Simpan Draf</span>
-                    </button>
-                    <button type="submit" class="btn-wp-publish" id="btnSaveArticle">
-                      <span id="btnSaveArticleText">Publikasikan</span>
-                    </button>
-                  </div>
-                </div>
+              <!-- Gutenberg Sidebar Tab Switcher (Pos vs Blok) -->
+              <div class="wp-gb-sidebar-tabs">
+                <button type="button" class="wp-gb-side-tab active" id="tabGbPost" data-tab-pane="paneGbPost">
+                  Pos
+                </button>
+                <button type="button" class="wp-gb-side-tab" id="tabGbBlock" data-tab-pane="paneGbBlock">
+                  Blok
+                </button>
               </div>
 
-              <!-- Sidebar Section 2: Featured Image (Gambar Utama) -->
-              <div class="wp-sidebar-box">
-                <div class="wp-box-title">
-                  <svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                  <span>Gambar Unggulan (Featured Image)</span>
-                </div>
-                <div class="wp-box-body">
-                  
-                  <!-- Local File Upload Dropzone -->
-                  <div class="wp-dropzone" id="wpDropzone">
-                    <input type="file" id="wpFileInput" accept="image/*" style="display: none;">
-                    <div class="wp-dropzone-content" id="wpDropzoneContent">
-                      <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-                      <div style="font-weight: 600; font-size: 0.84rem; color: #1E293B;">Upload Foto dari Komputer</div>
-                      <div style="font-size: 0.74rem; color: #64748B;">Klik untuk memilih file foto (JPG/PNG/WEBP)</div>
+              <!-- TAB PANE 1: POS (DOCUMENT SETTINGS) -->
+              <div class="wp-gb-pane active" id="paneGbPost">
+                
+                <!-- Accordion 1: Ringkasan & Visibilitas -->
+                <details class="wp-gb-accordion" open>
+                  <summary class="wp-gb-acc-header">
+                    <span>Ringkasan</span>
+                    <span class="wp-gb-acc-arrow">▾</span>
+                  </summary>
+                  <div class="wp-gb-acc-content">
+                    <div class="wp-gb-meta-row">
+                      <span class="wp-gb-meta-label">Visibilitas</span>
+                      <span class="wp-gb-meta-val wp-gb-link-text">Publik</span>
+                    </div>
+
+                    <div class="wp-gb-meta-row">
+                      <span class="wp-gb-meta-label">Status</span>
+                      <div style="flex: 1; max-width: 170px;">
+                        <select id="articleStatusSelect" class="wp-select" style="font-size: 0.8rem; padding: 4px 8px;">
+                          <option value="Terbit">🟢 Diterbitkan</option>
+                          <option value="Draf">🟡 Draf</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="wp-gb-meta-row">
+                      <span class="wp-gb-meta-label">Publikasi</span>
+                      <div style="flex: 1; max-width: 170px;">
+                        <input type="text" id="articleDateInput" class="wp-input" style="font-size: 0.8rem; padding: 4px 8px;" placeholder="Segera">
+                      </div>
+                    </div>
+
+                    <div class="wp-gb-meta-row">
+                      <span class="wp-gb-meta-label">Penulis</span>
+                      <div style="flex: 1; max-width: 170px;">
+                        <input type="text" id="articleAuthor" class="wp-input" style="font-size: 0.8rem; padding: 4px 8px;" value="Tim Redaksi ACF" required>
+                      </div>
                     </div>
                   </div>
+                </details>
 
-                  <!-- URL Input Alternative -->
-                  <div style="margin-top: 10px;">
-                    <label class="wp-label" style="font-size: 0.76rem;">Atau Masukkan URL Foto:</label>
-                    <input type="url" id="articleCover" class="wp-input" placeholder="https://images.unsplash.com/photo-..." required>
-                  </div>
-
-                  <!-- Preset Pills -->
-                  <div class="quick-image-pills" style="margin-top: 8px;">
-                    <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80">Kelas Guru</button>
-                    <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&q=80">Siswa Juara</button>
-                    <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80">Vokasi</button>
-                    <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80">Relawan</button>
-                  </div>
-
-                  <!-- Live Image Preview -->
-                  <div class="wp-preview-thumb-box" id="coverPreviewBox" style="margin-top: 10px;">
-                    <img id="coverPreviewImg" src="" alt="Pratinjau Sampul">
-                    <div class="cover-preview-placeholder" id="coverPlaceholder">
-                      <span>Pratinjau foto sampul akan muncul di sini</span>
+                <!-- Accordion 2: Kategori -->
+                <details class="wp-gb-accordion" open>
+                  <summary class="wp-gb-acc-header">
+                    <span>Kategori</span>
+                    <span class="wp-gb-acc-arrow">▾</span>
+                  </summary>
+                  <div class="wp-gb-acc-content">
+                    <div class="wp-category-select-row">
+                      <select id="articleCategory" class="wp-select" required>
+                        <option value="kabar-sekolah-daya-setara">Artikel Sekolah Daya Setara</option>
+                        <option value="kabar-sekolah-juara">Artikel Sekolah Juara</option>
+                        <option value="artikel">Artikel Pendidikan</option>
+                        <option value="liputan">Liputan Lapangan</option>
+                        <option value="vokasi">Program Vokasi</option>
+                        <option value="opini">Kolaborasi & Opini</option>
+                      </select>
                     </div>
-                  </div>
 
-                </div>
-              </div>
-
-              <!-- Sidebar Section 3: Kategori & Tag -->
-              <div class="wp-sidebar-box">
-                <div class="wp-box-title">
-                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                  <span>Kategori Berita</span>
-                </div>
-                <div class="wp-box-body">
-                  <div style="display: flex; gap: 8px;">
-                    <select id="articleCategory" class="wp-select" style="flex: 1;" required>
-                      <!-- Loaded dynamically via JS -->
-                      <option value="kabar-sekolah-daya-setara">Artikel Sekolah Daya Setara</option>
-                      <option value="kabar-sekolah-juara">Artikel Sekolah Juara</option>
-                      <option value="artikel">Artikel Pendidikan</option>
-                      <option value="liputan">Liputan Lapangan</option>
-                      <option value="vokasi">Program Vokasi</option>
-                      <option value="opini">Kolaborasi & Opini</option>
-                    </select>
-                    <button type="button" class="btn-outline-action" id="btnToggleNewCategory" title="Tambah Kategori Baru" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap; border-color: #CBD5E1; color: #475569;">
-                      + Baru
-                    </button>
-                    <button type="button" class="btn-outline-action" id="btnEditorManageCategories" title="Kelola & Hapus Kategori" style="padding: 6px 10px; font-size: 0.8rem; white-space: nowrap; border-color: #CBD5E1; color: #475569;">
-                      Kelola
-                    </button>
-                  </div>
-                  
-                  <!-- Form Tambah Kategori Kustom -->
-                  <div id="newCategoryInputWrap" style="display: none; margin-top: 10px; padding: 10px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
-                    <label class="wp-label" style="font-size: 0.76rem; margin-bottom: 4px;">Nama Kategori Baru:</label>
-                    <div style="display: flex; gap: 6px;">
-                      <input type="text" id="newCategoryName" class="wp-input" placeholder="Contoh: Prestasi Siswa, Beasiswa..." style="font-size: 0.82rem; padding: 6px 10px;">
-                      <button type="button" class="btn-wp-publish" id="btnSaveNewCategory" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap; width: auto; min-width: unset;">
-                        Simpan
+                    <div style="display: flex; gap: 8px; margin-top: 8px;">
+                      <button type="button" class="btn-outline-action btn-sm-action" id="btnToggleNewCategory" style="flex: 1;">
+                        + Tambah Kategori Baru
                       </button>
-                      <button type="button" class="btn-outline-action" id="btnCancelNewCategory" style="padding: 6px 10px; font-size: 0.8rem;">
-                        ✕
+                      <button type="button" class="btn-outline-action btn-sm-action" id="btnEditorManageCategories">
+                        Kelola
                       </button>
                     </div>
+
+                    <!-- Add New Category Form -->
+                    <div id="newCategoryInputWrap" class="wp-new-category-box" style="display: none; margin-top: 10px;">
+                      <label class="wp-label" for="newCategoryName" style="font-size: 0.74rem;">Nama Kategori Baru:</label>
+                      <div style="display: flex; gap: 6px; margin-top: 4px;">
+                        <input type="text" id="newCategoryName" class="wp-input" placeholder="Nama kategori...">
+                        <button type="button" class="btn-wp-publish" id="btnSaveNewCategory" style="padding: 6px 12px; font-size: 0.78rem; width: auto; flex: none;">
+                          Simpan
+                        </button>
+                        <button type="button" class="btn-outline-action" id="btnCancelNewCategory" style="padding: 6px 10px; font-size: 0.78rem;">
+                          ✕
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </details>
+
+                <!-- Accordion 3: Gambar Unggulan (Featured Image) -->
+                <details class="wp-gb-accordion" open>
+                  <summary class="wp-gb-acc-header">
+                    <span>Gambar Unggulan</span>
+                    <span class="wp-gb-acc-arrow">▾</span>
+                  </summary>
+                  <div class="wp-gb-acc-content">
+                    <!-- Live Image Preview -->
+                    <div class="wp-preview-thumb-box" id="coverPreviewBox">
+                      <img id="coverPreviewImg" src="" alt="Pratinjau Sampul">
+                      <div class="cover-preview-placeholder" id="coverPlaceholder">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <span>Tetapkan gambar unggulan</span>
+                      </div>
+                    </div>
+
+                    <!-- Local Dropzone -->
+                    <div class="wp-dropzone" id="wpDropzone" style="margin-top: 10px;">
+                      <input type="file" id="wpFileInput" accept="image/*" style="display: none;">
+                      <div class="wp-dropzone-content" id="wpDropzoneContent">
+                        <div style="font-weight: 600; font-size: 0.8rem; color: #1E1E1E;">Pilih / Ganti Gambar dari Komputer</div>
+                        <div style="font-size: 0.72rem; color: #64748B;">Klik untuk upload file foto</div>
+                      </div>
+                    </div>
+
+                    <!-- URL Input Fallback -->
+                    <div style="margin-top: 10px;">
+                      <label class="wp-label" for="articleCover" style="font-size: 0.74rem;">Atau URL Foto Eksternal:</label>
+                      <input type="url" id="articleCover" class="wp-input" placeholder="https://..." required style="font-size: 0.8rem; padding: 6px 8px;">
+                    </div>
+
+                    <!-- Preset Chips -->
+                    <div class="quick-image-pills-wrap" style="margin-top: 10px;">
+                      <span class="wp-preset-label" style="font-size: 0.72rem;">Preset Cepat:</span>
+                      <div class="quick-image-pills">
+                        <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80">🎒 Kelas</button>
+                        <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&q=80">🏆 Siswa</button>
+                        <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80">🛠️ Vokasi</button>
+                        <button type="button" class="btn-quick-img" data-img="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80">🤝 Relawan</button>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                <!-- Accordion 4: Kutipan (Excerpt) -->
+                <details class="wp-gb-accordion" open>
+                  <summary class="wp-gb-acc-header">
+                    <span>Kutipan</span>
+                    <span class="wp-gb-acc-arrow">▾</span>
+                  </summary>
+                  <div class="wp-gb-acc-content">
+                    <textarea id="articleExcerpt" class="wp-textarea" rows="3" placeholder="Tulis kutipan opsional untuk naskah ini..." required style="font-size: 0.82rem;"></textarea>
+                    <div class="wp-field-help" style="margin-top: 4px; font-size: 0.72rem;">
+                      <em>Kutipan ditampilkan sebagai cuplikan kartu kabar di beranda.</em>
+                    </div>
+                  </div>
+                </details>
+
               </div>
 
-              <!-- Sidebar Section 4: Ringkasan / Excerpt -->
-              <div class="wp-sidebar-box">
-                <div class="wp-box-title">
-                  <svg viewBox="0 0 24 24" width="16" height="16"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                  <span>Kutipan Ringkas (Excerpt)</span>
-                </div>
-                <div class="wp-box-body">
-                  <textarea id="articleExcerpt" class="wp-textarea" rows="3" placeholder="Tulis ringkasan 1-2 kalimat untuk kartu berita di halaman Kabar..." required></textarea>
-                </div>
+              <!-- TAB PANE 2: BLOK (ACTIVE BLOCK SETTINGS) -->
+              <div class="wp-gb-pane" id="paneGbBlock">
+                <details class="wp-gb-accordion" open>
+                  <summary class="wp-gb-acc-header">
+                    <span>Tipografi Blok</span>
+                    <span class="wp-gb-acc-arrow">▾</span>
+                  </summary>
+                  <div class="wp-gb-acc-content">
+                    <label class="wp-label" style="font-size: 0.74rem;">Ukuran Teks:</label>
+                    <div class="wp-gb-typo-pills">
+                      <button type="button" class="wp-gb-pill-btn" data-font-size="small">Kecil</button>
+                      <button type="button" class="wp-gb-pill-btn active" data-font-size="normal">Standar</button>
+                      <button type="button" class="wp-gb-pill-btn" data-font-size="medium">Besar</button>
+                      <button type="button" class="wp-gb-pill-btn" data-font-size="large">Ekstra</button>
+                    </div>
+
+                    <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+                      <div>
+                        <div style="font-weight: 600; font-size: 0.8rem; color: #1E1E1E;">Drop Cap</div>
+                        <div style="font-size: 0.72rem; color: #64748B;">Perbesar huruf pertama paragraf</div>
+                      </div>
+                      <input type="checkbox" id="chkDropCap" style="cursor: pointer; width: 16px; height: 16px;">
+                    </div>
+                  </div>
+                </details>
+
+                <details class="wp-gb-accordion" open>
+                  <summary class="wp-gb-acc-header">
+                    <span>Warna Teks</span>
+                    <span class="wp-gb-acc-arrow">▾</span>
+                  </summary>
+                  <div class="wp-gb-acc-content">
+                    <label class="wp-label" style="font-size: 0.74rem;">Pilihan Warna Teks:</label>
+                    <div class="wp-gb-color-swatches">
+                      <button type="button" class="wp-color-circle" data-color="#1E293B" style="background: #1E293B;" title="Hitam"></button>
+                      <button type="button" class="wp-color-circle" data-color="#7D2280" style="background: #7D2280;" title="Ungu ACF"></button>
+                      <button type="button" class="wp-color-circle" data-color="#0284C7" style="background: #0284C7;" title="Biru"></button>
+                      <button type="button" class="wp-color-circle" data-color="#16A34A" style="background: #16A34A;" title="Hijau"></button>
+                      <button type="button" class="wp-color-circle" data-color="#DC2626" style="background: #DC2626;" title="Merah"></button>
+                    </div>
+                  </div>
+                </details>
               </div>
 
             </div>
@@ -475,33 +710,50 @@
         </form>
       </div>
 
-      <!-- VIEW 2: WORDPRESS REST API IMPORTER -->
-      <div id="wpStudioSyncView" class="wp-view-pane">
-        <div class="wp-sync-container">
-          <div class="wp-sync-intro">
-            <div class="wp-sync-icon-wrap">
-              <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12c0 5.515 4.486 10 10 10s10-4.485 10-10c0-5.514-4.486-10-10-10zm-1.02 15.65l-3.32-9.15h1.74l2.42 7.06 2.16-7.06h1.71l-3.28 9.15h-1.43z"/></svg>
-            </div>
-            <div>
-              <h4 style="font-size: 1.1rem; font-weight: 700; color: #0F172A; margin-bottom: 4px;">Integrasi WordPress REST API</h4>
-              <p style="color: #64748B; font-size: 0.88rem;">
-                Tarik otomatis artikel dan berita dari website WordPress Anda (contoh: <code>https://acf.or.id/wp-json/wp/v2/posts</code>) untuk langsung disinkronkan ke halaman Kabar.
-              </p>
-            </div>
-          </div>
 
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: SINKRONISASI & IMPOR WORDPRESS (REST API)
+       ========================================== -->
+  <div class="admin-modal-backdrop" id="wpSyncModal">
+    <div class="admin-modal-box wp-sync-modal-box">
+      
+      <!-- Dedicated WordPress Importer Header -->
+      <div class="modal-header wp-sync-modal-header">
+        <div class="wp-sync-header-left">
+          <div class="wp-sync-logo-wrap">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <path d="M12 2C6.486 2 2 6.486 2 12c0 5.515 4.486 10 10 10s10-4.485 10-10c0-5.514-4.486-10-10-10zm-1.02 15.65l-3.32-9.15h1.74l2.42 7.06 2.16-7.06h1.71l-3.28 9.15h-1.43z"/>
+            </svg>
+          </div>
+          <div class="wp-sync-header-title">
+            <h4>Integrasi &amp; Impor Artikel WordPress</h4>
+            <p>Tarik dan sinkronkan artikel secara instan dari website WordPress via REST API</p>
+          </div>
+        </div>
+        <button type="button" class="modal-close-btn wp-sync-close-btn" id="btnCloseWpSyncModal" aria-label="Tutup Impor">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Importer Content Body -->
+      <div class="wp-sync-modal-body">
+        <div class="wp-sync-container">
+          
           <div class="wp-sync-form-card">
             <div style="margin-bottom: 16px;">
-              <label class="wp-label" for="wpApiEndpointInput">URL Artikel / Blog WordPress REST API:</label>
+              <label class="wp-label" for="wpApiEndpointInput">URL Endpoint / Website WordPress (REST API):</label>
               <div style="display: flex; gap: 10px; margin-top: 6px;">
                 <input type="text" id="wpApiEndpointInput" class="wp-input" placeholder="Contoh: https://acf.or.id/ atau https://gitautamiblog.wordpress.com/" value="https://acf.or.id/">
                 <button type="button" class="btn-create-article" id="btnFetchWpApi" style="white-space: nowrap; padding: 10px 20px;">
-                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                  <span>Tarik Artikel WordPress</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  <span>Tarik Artikel</span>
                 </button>
               </div>
               <div style="font-size: 0.78rem; color: #64748B; margin-top: 6px; line-height: 1.5;">
-                💡 <em>Tips: Masukkan link <strong>acf.or.id</strong> atau website WordPress lainnya untuk menarik <strong>semua artikel & seluruh kategori</strong> secara otomatis.</em>
+                💡 <em>Tips: Cukup masukkan alamat website seperti <strong>https://acf.or.id/</strong> untuk menarik seluruh artikel terbaru.</em>
               </div>
             </div>
 
@@ -519,10 +771,10 @@
                   <option value="artikel">Artikel Pendidikan</option>
                   <option value="liputan">Liputan Lapangan</option>
                   <option value="vokasi">Program Vokasi</option>
-                  <option value="opini">Kolaborasi & Opini</option>
+                  <option value="opini">Kolaborasi &amp; Opini</option>
                 </select>
                 <button type="button" class="btn-outline-action" id="btnToggleNewWpCategory" title="Tambah Kategori Baru" style="padding: 7px 14px; font-size: 0.82rem; white-space: nowrap; border-color: #CBD5E1; color: #475569; font-weight: 600;">
-                  + Tambah Kategori Baru
+                  + Tambah Kategori
                 </button>
               </div>
 
@@ -531,7 +783,7 @@
                 <label class="wp-label" style="font-size: 0.76rem; margin-bottom: 4px;">Nama Kategori Baru:</label>
                 <div style="display: flex; gap: 6px;">
                   <input type="text" id="newWpCategoryName" class="wp-input" placeholder="Contoh: Liputan Khusus, Opini Guru, Berita Prestasi..." style="font-size: 0.82rem; padding: 6px 10px;">
-                  <button type="button" class="btn-wp-publish" id="btnSaveNewWpCategory" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap; width: auto; min-width: unset;">
+                  <button type="button" class="btn-wp-publish" id="btnSaveNewWpCategory" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap; width: auto; flex: none;">
                     Simpan
                   </button>
                   <button type="button" class="btn-outline-action" id="btnCancelNewWpCategory" style="padding: 6px 10px; font-size: 0.8rem;">
@@ -546,7 +798,7 @@
           <div id="wpFetchResultsBox" style="margin-top: 20px; display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
               <h5 style="font-weight: 700; color: #1E293B; font-size: 0.95rem;">Artikel Ditemukan dari WordPress (<span id="wpFetchCount">0</span>):</h5>
-              <button type="button" class="btn-outline-action" id="btnImportAllWp" style="font-size: 0.82rem; padding: 6px 14px;">
+              <button type="button" class="btn-outline-action" id="btnImportAllWp" style="font-size: 0.82rem; padding: 6px 14px; background: #FAF5FF; border-color: #C4B5FD; color: #7D2280; font-weight: 600;">
                 📥 Impor Semua ke Halaman Kabar
               </button>
             </div>

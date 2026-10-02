@@ -227,6 +227,8 @@
   const wpStudioEditorView = document.getElementById('wpStudioEditorView');
   const wpStudioSyncView = document.getElementById('wpStudioSyncView');
   const btnOpenWpSyncModal = document.getElementById('btnOpenWpSyncModal');
+  const wpSyncModal = document.getElementById('wpSyncModal');
+  const btnCloseWpSyncModal = document.getElementById('btnCloseWpSyncModal');
 
   // Local File Upload Dropzone
   const wpDropzone = document.getElementById('wpDropzone');
@@ -529,9 +531,19 @@
   /* ===================================================
      CATEGORY MANAGER MODAL & CRUD
      =================================================== */
+  function updateBodyScrollLock() {
+    const hasOpenModal = document.querySelector('.admin-modal-backdrop.show');
+    if (hasOpenModal) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+  }
+
   function openCategoryModal() {
     if (categoryManagerModal) {
       categoryManagerModal.classList.add('show');
+      updateBodyScrollLock();
       renderCategoryManagerList();
       if (inputNewCatLabel) {
         inputNewCatLabel.value = '';
@@ -543,6 +555,7 @@
   function closeCategoryModal() {
     if (categoryManagerModal) {
       categoryManagerModal.classList.remove('show');
+      updateBodyScrollLock();
     }
   }
 
@@ -1060,21 +1073,22 @@
   /* ===================================================
      4. WORDPRESS STUDIO EDITOR & REST API HANDLERS
      =================================================== */
-  function switchWpModalTab(mode) {
-    if (mode === 'editor') {
-      tabModeEditor.classList.add('active');
-      tabModeWpSync.classList.remove('active');
-      wpStudioEditorView.classList.add('active');
-      wpStudioSyncView.classList.remove('active');
-    } else {
-      tabModeEditor.classList.remove('active');
-      tabModeWpSync.classList.add('active');
-      wpStudioEditorView.classList.remove('active');
-      wpStudioSyncView.classList.add('active');
+  function openWpSyncModal() {
+    renderCategorySelects(wpImportCategory?.value || '__auto__');
+    if (wpSyncModal) {
+      wpSyncModal.classList.add('show');
+      updateBodyScrollLock();
     }
   }
 
-  function openCreateArticleModal(mode = 'editor') {
+  function closeWpSyncModal() {
+    if (wpSyncModal) {
+      wpSyncModal.classList.remove('show');
+      updateBodyScrollLock();
+    }
+  }
+
+  function openCreateArticleModal() {
     if (articleForm) articleForm.reset();
     if (articleEditId) articleEditId.value = '';
     if (articleStatusInput) articleStatusInput.value = 'Terbit';
@@ -1094,10 +1108,12 @@
     renderCategorySelects('artikel');
     updateWpStats();
     updateCoverPreview('');
-    if (btnSaveArticleText) btnSaveArticleText.textContent = 'Publikasikan';
+    if (btnSaveArticleText) btnSaveArticleText.textContent = 'Terbitkan';
 
-    switchWpModalTab(mode);
-    if (articleModal) articleModal.classList.add('show');
+    if (articleModal) {
+      articleModal.classList.add('show');
+      updateBodyScrollLock();
+    }
   }
 
   function openEditArticleModal(id) {
@@ -1105,7 +1121,7 @@
     if (!art) return;
 
     if (articleEditId) articleEditId.value = art.id;
-    if (btnSaveArticleText) btnSaveArticleText.textContent = 'Simpan Perubahan';
+    if (btnSaveArticleText) btnSaveArticleText.textContent = 'Perbarui';
     if (newCategoryInputWrap) newCategoryInputWrap.style.display = 'none';
     if (newCategoryName) newCategoryName.value = '';
 
@@ -1127,12 +1143,17 @@
 
     updateCoverPreview(art.cover || '');
     updateWpStats();
-    switchWpModalTab('editor');
-    if (articleModal) articleModal.classList.add('show');
+    if (articleModal) {
+      articleModal.classList.add('show');
+      updateBodyScrollLock();
+    }
   }
 
   function closeArticleModal() {
-    if (articleModal) articleModal.classList.remove('show');
+    if (articleModal) {
+      articleModal.classList.remove('show');
+      updateBodyScrollLock();
+    }
   }
 
   function updateCoverPreview(url) {
@@ -1151,9 +1172,10 @@
   function updateWpStats() {
     if (!articleVisualEditor || !wpStatsCount) return;
     const text = (articleVisualEditor.innerText || '').trim();
-    const words = text ? text.split(/\s+/).length : 0;
+    const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
     const chars = text.length;
-    wpStatsCount.textContent = `${words} Kata • ${chars} Karakter`;
+    const readingTime = Math.max(1, Math.ceil(words / 180));
+    wpStatsCount.innerHTML = `<strong>${words}</strong> Kata &nbsp;•&nbsp; <strong>${chars}</strong> Karakter &nbsp;•&nbsp; ⏱️ <strong>~${words > 0 ? readingTime : 0} mnt</strong> baca`;
     if (articleContent) articleContent.value = articleVisualEditor.innerHTML;
   }
 
@@ -1711,7 +1733,7 @@
     });
 
     showToast(`Semua (${currentWpFetchedPosts.length}) artikel WordPress berhasil disinkronkan ke Kabar!`, 'success');
-    closeArticleModal();
+    closeWpSyncModal();
   }
 
   /* ===================================================
@@ -1924,10 +1946,12 @@
     }
 
     detailModal.classList.add('show');
+    updateBodyScrollLock();
   }
 
   function closeDetailModal() {
     detailModal.classList.remove('show');
+    updateBodyScrollLock();
   }
 
   /* ===================================================
@@ -2137,15 +2161,17 @@
       btnNavArticles.addEventListener('click', () => switchDashboardView('viewDashboardArticles'));
     }
 
-    // WordPress Studio Mode Tabs Switcher
-    if (tabModeEditor) {
-      tabModeEditor.addEventListener('click', () => switchWpModalTab('editor'));
-    }
-    if (tabModeWpSync) {
-      tabModeWpSync.addEventListener('click', () => switchWpModalTab('wpsync'));
-    }
+    // WordPress REST API Sync Modal triggers
     if (btnOpenWpSyncModal) {
-      btnOpenWpSyncModal.addEventListener('click', () => openCreateArticleModal('wpsync'));
+      btnOpenWpSyncModal.addEventListener('click', openWpSyncModal);
+    }
+    if (btnCloseWpSyncModal) {
+      btnCloseWpSyncModal.addEventListener('click', closeWpSyncModal);
+    }
+    if (wpSyncModal) {
+      wpSyncModal.addEventListener('click', (e) => {
+        if (e.target === wpSyncModal) closeWpSyncModal();
+      });
     }
 
     // Rich Text WYSIWYG Toolbar Commands
@@ -2249,6 +2275,143 @@
         setTimeout(updateWpStats, 50);
       });
     }
+
+    if (articleStatusSelect) {
+      articleStatusSelect.addEventListener('change', () => {
+        if (articleStatusInput) articleStatusInput.value = articleStatusSelect.value;
+      });
+    }
+
+    // Auto-grow Gutenberg Title Textarea
+    if (articleTitle) {
+      articleTitle.addEventListener('input', () => {
+        articleTitle.style.height = 'auto';
+        articleTitle.style.height = articleTitle.scrollHeight + 'px';
+      });
+    }
+
+    // Gutenberg Add Block Drawer Toggle
+    const btnGutenbergAddBlock = document.getElementById('btnGutenbergAddBlock');
+    const wpBlockInserterDrawer = document.getElementById('wpBlockInserterDrawer');
+    const btnCloseBlockInserter = document.getElementById('btnCloseBlockInserter');
+    const wpBlockSearchInput = document.getElementById('wpBlockSearchInput');
+
+    if (btnGutenbergAddBlock && wpBlockInserterDrawer) {
+      btnGutenbergAddBlock.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = wpBlockInserterDrawer.style.display === 'flex';
+        wpBlockInserterDrawer.style.display = isOpen ? 'none' : 'flex';
+        btnGutenbergAddBlock.classList.toggle('active', !isOpen);
+        if (!isOpen && wpBlockSearchInput) {
+          setTimeout(() => wpBlockSearchInput.focus(), 50);
+        }
+      });
+    }
+
+    if (btnCloseBlockInserter && wpBlockInserterDrawer) {
+      btnCloseBlockInserter.addEventListener('click', () => {
+        wpBlockInserterDrawer.style.display = 'none';
+        if (btnGutenbergAddBlock) btnGutenbergAddBlock.classList.remove('active');
+      });
+    }
+
+    // Search in Block Inserter
+    if (wpBlockSearchInput) {
+      wpBlockSearchInput.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('.wp-gb-block-card').forEach(card => {
+          const text = card.textContent.toLowerCase();
+          card.style.display = text.includes(q) ? 'flex' : 'none';
+        });
+      });
+    }
+
+    // Block Cards Click (Insert Block)
+    document.querySelectorAll('.wp-gb-block-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const bType = card.getAttribute('data-block-type');
+        if (!articleVisualEditor) return;
+        articleVisualEditor.focus();
+
+        if (bType === 'p') {
+          document.execCommand('formatBlock', false, '<p>');
+        } else if (bType === 'lead-p') {
+          document.execCommand('insertHTML', false, '<p class="article-lead">Tuliskan ringkasan atau paragraf pembuka artikel di sini...</p><p><br></p>');
+        } else if (bType === 'h2' || bType === 'h3') {
+          document.execCommand('formatBlock', false, `<${bType}>`);
+        } else if (bType === 'blockquote') {
+          document.execCommand('formatBlock', false, '<blockquote>');
+        } else if (bType === 'callout') {
+          document.execCommand('insertHTML', false, '<div class="wp-callout-box"><p><strong>Catatan Penting:</strong> Tuliskan poin atau catatan sorotan di sini...</p></div><p><br></p>');
+        } else if (bType === 'list-ul') {
+          document.execCommand('insertUnorderedList', false, null);
+        } else if (bType === 'list-ol') {
+          document.execCommand('insertOrderedList', false, null);
+        } else if (bType === 'hr') {
+          document.execCommand('insertHorizontalRule', false, null);
+          document.execCommand('insertHTML', false, '<p><br></p>');
+        } else if (bType === 'insert-image') {
+          if (btnWpInsertImage) btnWpInsertImage.click();
+        }
+
+        if (wpBlockInserterDrawer) wpBlockInserterDrawer.style.display = 'none';
+        if (btnGutenbergAddBlock) btnGutenbergAddBlock.classList.remove('active');
+        updateWpStats();
+      });
+    });
+
+    // Toggle Right Sidebar (Settings Cog)
+    const btnToggleWpSidebar = document.getElementById('btnToggleWpSidebar');
+    const wpGutenbergWorkspace = document.querySelector('.wp-gb-workspace-wrap');
+    if (btnToggleWpSidebar && wpGutenbergWorkspace) {
+      btnToggleWpSidebar.addEventListener('click', () => {
+        wpGutenbergWorkspace.classList.toggle('sidebar-collapsed');
+        btnToggleWpSidebar.classList.toggle('active');
+      });
+    }
+
+    // Sidebar Tab Switcher: Pos vs Blok
+    const sideTabs = document.querySelectorAll('.wp-gb-side-tab');
+    sideTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        sideTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const targetPane = tab.getAttribute('data-tab-pane');
+        document.querySelectorAll('.wp-gb-pane').forEach(p => p.classList.remove('active'));
+        const paneEl = document.getElementById(targetPane);
+        if (paneEl) paneEl.classList.add('active');
+      });
+    });
+
+    // Typography Size Pills in Blok Tab
+    document.querySelectorAll('.wp-gb-pill-btn[data-font-size]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.wp-gb-pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const sz = btn.getAttribute('data-font-size');
+        const sizeMap = { small: '0.9rem', normal: '1.08rem', medium: '1.25rem', large: '1.5rem' };
+        if (articleVisualEditor) {
+          const sel = window.getSelection();
+          if (sel && sel.rangeCount > 0 && sel.toString().trim().length > 0) {
+            const range = sel.getRangeAt(0);
+            const span = document.createElement('span');
+            span.style.fontSize = sizeMap[sz] || '1.08rem';
+            range.surroundContents(span);
+          }
+        }
+      });
+    });
+
+    // Color Swatches in Blok Tab
+    document.querySelectorAll('.wp-color-circle[data-color]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const color = btn.getAttribute('data-color');
+        if (color) {
+          document.execCommand('foreColor', false, color);
+          if (articleVisualEditor) articleVisualEditor.focus();
+        }
+      });
+    });
 
     // Local File Upload (Dropzone)
     if (wpDropzone && wpFileInput) {

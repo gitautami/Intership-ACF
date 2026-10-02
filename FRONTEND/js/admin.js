@@ -7,6 +7,12 @@
 (function () {
   'use strict';
 
+  // Bersihkan sisa cache legacy localStorage untuk Mitra & Relawan
+  try {
+    localStorage.removeItem('acf_admin_data_mitra');
+    localStorage.removeItem('acf_admin_data_relawan');
+  } catch (e) {}
+
   // Google Apps Script Web App Endpoint
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBPKjNYHI1M3NifBOQJnH2Rjt_HUzxyZroYxLb2iPt7XMp72leWUjVtDACrqlxfadT/exec';
 
@@ -120,7 +126,7 @@
   let dataCategories = [];
   let currentWpFetchedPosts = [];
   let activeTab = 'tabMitra';
-  let activeDashboard = 'viewDashboardForms';
+  let activeDashboard = 'viewDashboardArticles';
 
   // DOM Elements - Auth
   const loginScreen = document.getElementById('loginScreen');
@@ -352,17 +358,17 @@
   function switchDashboardView(viewId) {
     activeDashboard = viewId;
     if (viewId === 'viewDashboardForms') {
-      btnNavForms.classList.add('active');
-      btnNavArticles.classList.remove('active');
-      viewDashboardForms.classList.add('active');
-      viewDashboardArticles.classList.remove('active');
+      if (btnNavForms) btnNavForms.classList.add('active');
+      if (btnNavArticles) btnNavArticles.classList.remove('active');
+      if (viewDashboardForms) viewDashboardForms.classList.add('active');
+      if (viewDashboardArticles) viewDashboardArticles.classList.remove('active');
       renderTableMitra();
       renderTableRelawan();
     } else {
-      btnNavForms.classList.remove('active');
-      btnNavArticles.classList.add('active');
-      viewDashboardForms.classList.remove('active');
-      viewDashboardArticles.classList.add('active');
+      if (btnNavForms) btnNavForms.classList.remove('active');
+      if (btnNavArticles) btnNavArticles.classList.add('active');
+      if (viewDashboardForms) viewDashboardForms.classList.remove('active');
+      if (viewDashboardArticles) viewDashboardArticles.classList.add('active');
       renderTableArticles();
     }
   }
@@ -712,33 +718,23 @@
     try {
       await loadCategories();
 
-      // Mitra - Ambil dari MySQL Backend API / Fallback Storage
+      // Mitra - Ambil langsung dari MySQL Backend API
       if (window.ACF_API && window.ACF_API.mitra) {
         const fetchedMitra = await window.ACF_API.mitra.getAll();
         dataMitra = Array.isArray(fetchedMitra) ? fetchedMitra.filter(item => !isMockItem(item)) : [];
       } else {
-        const storedMitra = localStorage.getItem('acf_admin_data_mitra');
-        if (storedMitra) {
-          const parsed = JSON.parse(storedMitra);
-          dataMitra = Array.isArray(parsed) ? parsed.filter(item => !isMockItem(item)) : [];
-        } else {
-          dataMitra = [];
-        }
+        dataMitra = [];
       }
+      localStorage.removeItem('acf_admin_data_mitra');
 
-      // Relawan - Ambil dari MySQL Backend API / Fallback Storage
+      // Relawan - Ambil langsung dari MySQL Backend API
       if (window.ACF_API && window.ACF_API.relawan) {
         const fetchedRelawan = await window.ACF_API.relawan.getAll();
         dataRelawan = Array.isArray(fetchedRelawan) ? fetchedRelawan.filter(item => !isMockItem(item)) : [];
       } else {
-        const storedRelawan = localStorage.getItem('acf_admin_data_relawan');
-        if (storedRelawan) {
-          const parsed = JSON.parse(storedRelawan);
-          dataRelawan = Array.isArray(parsed) ? parsed.filter(item => !isMockItem(item)) : [];
-        } else {
-          dataRelawan = [];
-        }
+        dataRelawan = [];
       }
+      localStorage.removeItem('acf_admin_data_relawan');
 
       // Articles - Ambil dari MySQL Backend API / Fallback Storage
       if (window.ACF_API && window.ACF_API.articles) {
@@ -805,11 +801,13 @@
   }
 
   function saveDataMitra() {
-    localStorage.setItem('acf_admin_data_mitra', JSON.stringify(dataMitra));
+    // Data kemitraan kini langsung dikelola melalui MySQL Backend API
+    localStorage.removeItem('acf_admin_data_mitra');
   }
 
   function saveDataRelawan() {
-    localStorage.setItem('acf_admin_data_relawan', JSON.stringify(dataRelawan));
+    // Data relawan kini langsung dikelola melalui MySQL Backend API
+    localStorage.removeItem('acf_admin_data_relawan');
   }
 
   function saveArticlesData() {
@@ -1870,12 +1868,10 @@
         const newStatus = btn.getAttribute('data-status');
         item.status = newStatus;
         if (type === 'mitra') {
-          saveDataMitra();
           if (window.ACF_API && window.ACF_API.mitra) {
             window.ACF_API.mitra.updateStatus(item.id, newStatus).catch(() => {});
           }
         } else {
-          saveDataRelawan();
           if (window.ACF_API && window.ACF_API.relawan) {
             window.ACF_API.relawan.updateStatus(item.id, newStatus).catch(() => {});
           }
@@ -1914,13 +1910,11 @@
         if (confirm(`Hapus data ${targetName} dari dashboard?`)) {
           if (type === 'mitra') {
             dataMitra = dataMitra.filter(m => m.id !== item.id);
-            saveDataMitra();
             if (window.ACF_API && window.ACF_API.mitra) {
               window.ACF_API.mitra.delete(item.id).catch(() => {});
             }
           } else {
             dataRelawan = dataRelawan.filter(r => r.id !== item.id);
-            saveDataRelawan();
             if (window.ACF_API && window.ACF_API.relawan) {
               window.ACF_API.relawan.delete(item.id).catch(() => {});
             }
@@ -2039,11 +2033,9 @@
         if (resJson && resJson.status === 'success') {
           if (Array.isArray(resJson.mitra) && resJson.mitra.length > 0) {
             dataMitra = resJson.mitra;
-            saveDataMitra();
           }
           if (Array.isArray(resJson.relawan) && resJson.relawan.length > 0) {
             dataRelawan = resJson.relawan;
-            saveDataRelawan();
           }
           renderAll();
           showToast('Data berhasil disinkronkan dari Google Spreadsheet!', 'success');
@@ -2587,7 +2579,7 @@
     // Real-time synchronization when user submits form in another tab or window gains focus
     let isStorageSyncing = false;
     window.addEventListener('storage', async (e) => {
-      if (e.key === 'acf_admin_data_mitra' || e.key === 'acf_admin_data_relawan' || e.key === 'acf_articles_data' || e.key === 'acf_custom_categories') {
+      if (e.key === 'acf_articles_data' || e.key === 'acf_custom_categories') {
         if (isStorageSyncing) return;
         isStorageSyncing = true;
         try {

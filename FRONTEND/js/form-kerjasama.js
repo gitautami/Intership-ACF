@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pesan: pesan || '-'
       };
 
-      // Simpan ke database MySQL Backend (dan sinkronisasi lokal)
+      // Simpan ke database MySQL Backend
       try {
         if (window.ACF_API && window.ACF_API.mitra) {
           await window.ACF_API.mitra.create({
@@ -103,31 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
             estimasiWaktu: estimasiWaktu || '-',
             pesan: pesan || '-'
           });
-        } else {
-          const now = new Date();
-          const timestampStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-          const localList = JSON.parse(localStorage.getItem('acf_admin_data_mitra') || '[]');
-          localList.unshift({
-            id: 'MITRA-' + Date.now().toString().slice(-4),
-            timestamp: timestampStr,
-            namaInstansi,
-            jenisInstansi,
-            kotaInstansi,
-            namaPIC,
-            jabatanPIC,
-            email: emailPIC,
-            noWA,
-            fokusProgram: selectedPrograms.join(', ') || '-',
-            fokusKemitraan: selectedPrograms.join(', ') || '-',
-            jenisKemitraan: jenisKemitraan || '-',
-            estimasiWaktu: estimasiWaktu || '-',
-            pesan: pesan || '-',
-            status: 'Menunggu'
-          });
-          localStorage.setItem('acf_admin_data_mitra', JSON.stringify(localList));
         }
       } catch (e) {
-        console.warn('Gagal menyimpan ke admin database/local storage:', e);
+        console.warn('Gagal menyimpan ke admin database:', e);
       }
 
       // Kirim ke Google Sheets
@@ -220,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         motivasi: motivasi || '-'
       };
 
-      // Simpan ke database MySQL Backend (dan sinkronisasi lokal)
+      // Simpan ke database MySQL Backend
       try {
         if (window.ACF_API && window.ACF_API.relawan) {
           await window.ACF_API.relawan.create({
@@ -234,28 +212,9 @@ document.addEventListener('DOMContentLoaded', () => {
             keahlianUtama: keahlianUtama || '-',
             motivasi: motivasi || '-'
           });
-        } else {
-          const now = new Date();
-          const timestampStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-          const localList = JSON.parse(localStorage.getItem('acf_admin_data_relawan') || '[]');
-          localList.unshift({
-            id: 'REL-' + Date.now().toString().slice(-4),
-            timestamp: timestampStr,
-            namaLengkap,
-            domisili,
-            profesi,
-            email,
-            noWA,
-            peranRelawan: selectedRoles.join(', ') || '-',
-            komitmenWaktu,
-            keahlianUtama: keahlianUtama || '-',
-            motivasi: motivasi || '-',
-            status: 'Menunggu'
-          });
-          localStorage.setItem('acf_admin_data_relawan', JSON.stringify(localList));
         }
       } catch (e) {
-        console.warn('Gagal menyimpan ke admin database/local storage:', e);
+        console.warn('Gagal menyimpan ke admin database:', e);
       }
 
       // Kirim ke Google Sheets

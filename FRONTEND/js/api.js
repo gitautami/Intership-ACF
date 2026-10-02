@@ -331,82 +331,37 @@
         try {
           const res = await apiFetch(`mitra.php${qs}`, { method: 'GET' });
           if (res.success && Array.isArray(res.data)) {
-            localStorage.setItem('acf_admin_data_mitra', JSON.stringify(res.data));
             return res.data;
           }
           return [];
         } catch (err) {
-          const stored = localStorage.getItem('acf_admin_data_mitra');
-          let list = stored ? JSON.parse(stored) : [];
-          if (params.status && params.status !== 'all') {
-            list = list.filter(m => (m.status || 'Menunggu') === params.status);
-          }
-          if (params.search) {
-            const kw = params.search.toLowerCase();
-            list = list.filter(m => (m.namaInstansi && m.namaInstansi.toLowerCase().includes(kw)) || (m.namaPIC && m.namaPIC.toLowerCase().includes(kw)));
-          }
-          return list;
+          console.error('Gagal mengambil data kemitraan dari server:', err);
+          return [];
         }
       },
 
       async create(mitraData) {
-        try {
-          const res = await apiFetch('mitra.php', {
-            method: 'POST',
-            body: JSON.stringify(mitraData)
-          });
-          // Update local cache
-          const stored = JSON.parse(localStorage.getItem('acf_admin_data_mitra') || '[]');
-          stored.unshift({ ...mitraData, id: res.data.id, status: res.data.status, timestamp: res.data.timestamp });
-          localStorage.setItem('acf_admin_data_mitra', JSON.stringify(stored));
-          return res.data;
-        } catch (err) {
-          const stored = JSON.parse(localStorage.getItem('acf_admin_data_mitra') || '[]');
-          const fallbackItem = {
-            id: 'MITRA-' + Date.now().toString().slice(-4),
-            timestamp: new Date().toLocaleString('id-ID'),
-            status: 'Menunggu',
-            ...mitraData
-          };
-          stored.unshift(fallbackItem);
-          localStorage.setItem('acf_admin_data_mitra', JSON.stringify(stored));
-          return fallbackItem;
-        }
+        const res = await apiFetch('mitra.php', {
+          method: 'POST',
+          body: JSON.stringify(mitraData)
+        });
+        return res.data;
       },
 
       async updateStatus(id, status, catatanAdmin = '') {
-        try {
-          await apiFetch(`mitra.php?id=${encodeURIComponent(id)}`, {
-            method: 'PATCH',
-            body: JSON.stringify({ id, status, catatanAdmin })
-          });
-        } catch (err) {
-          console.log('Offline fallback update mitra');
-        } finally {
-          const stored = JSON.parse(localStorage.getItem('acf_admin_data_mitra') || '[]');
-          const idx = stored.findIndex(m => m.id === id);
-          if (idx !== -1) {
-            stored[idx].status = status;
-            if (catatanAdmin) stored[idx].catatanAdmin = catatanAdmin;
-            localStorage.setItem('acf_admin_data_mitra', JSON.stringify(stored));
-          }
-        }
-        return { success: true };
+        const res = await apiFetch(`mitra.php?id=${encodeURIComponent(id)}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ id, status, catatanAdmin })
+        });
+        return res;
       },
 
       async delete(id) {
-        try {
-          await apiFetch(`mitra.php?id=${encodeURIComponent(id)}`, {
-            method: 'DELETE'
-          });
-        } catch (err) {
-          console.log('Offline fallback delete mitra');
-        } finally {
-          const stored = JSON.parse(localStorage.getItem('acf_admin_data_mitra') || '[]');
-          const filtered = stored.filter(m => m.id !== id);
-          localStorage.setItem('acf_admin_data_mitra', JSON.stringify(filtered));
-        }
-        return { success: true };
+        const res = await apiFetch(`mitra.php?id=${encodeURIComponent(id)}`, {
+          method: 'DELETE',
+          body: JSON.stringify({ id })
+        });
+        return res;
       }
     },
 
@@ -423,81 +378,37 @@
         try {
           const res = await apiFetch(`relawan.php${qs}`, { method: 'GET' });
           if (res.success && Array.isArray(res.data)) {
-            localStorage.setItem('acf_admin_data_relawan', JSON.stringify(res.data));
             return res.data;
           }
           return [];
         } catch (err) {
-          const stored = localStorage.getItem('acf_admin_data_relawan');
-          let list = stored ? JSON.parse(stored) : [];
-          if (params.status && params.status !== 'all') {
-            list = list.filter(r => (r.status || 'Menunggu') === params.status);
-          }
-          if (params.search) {
-            const kw = params.search.toLowerCase();
-            list = list.filter(r => (r.namaLengkap && r.namaLengkap.toLowerCase().includes(kw)) || (r.email && r.email.toLowerCase().includes(kw)));
-          }
-          return list;
+          console.error('Gagal mengambil data relawan dari server:', err);
+          return [];
         }
       },
 
       async create(relawanData) {
-        try {
-          const res = await apiFetch('relawan.php', {
-            method: 'POST',
-            body: JSON.stringify(relawanData)
-          });
-          const stored = JSON.parse(localStorage.getItem('acf_admin_data_relawan') || '[]');
-          stored.unshift({ ...relawanData, id: res.data.id, status: res.data.status, timestamp: res.data.timestamp });
-          localStorage.setItem('acf_admin_data_relawan', JSON.stringify(stored));
-          return res.data;
-        } catch (err) {
-          const stored = JSON.parse(localStorage.getItem('acf_admin_data_relawan') || '[]');
-          const fallbackItem = {
-            id: 'REL-' + Date.now().toString().slice(-4),
-            timestamp: new Date().toLocaleString('id-ID'),
-            status: 'Menunggu',
-            ...relawanData
-          };
-          stored.unshift(fallbackItem);
-          localStorage.setItem('acf_admin_data_relawan', JSON.stringify(stored));
-          return fallbackItem;
-        }
+        const res = await apiFetch('relawan.php', {
+          method: 'POST',
+          body: JSON.stringify(relawanData)
+        });
+        return res.data;
       },
 
       async updateStatus(id, status, catatanAdmin = '') {
-        try {
-          await apiFetch(`relawan.php?id=${encodeURIComponent(id)}`, {
-            method: 'PATCH',
-            body: JSON.stringify({ id, status, catatanAdmin })
-          });
-        } catch (err) {
-          console.log('Offline fallback update relawan');
-        } finally {
-          const stored = JSON.parse(localStorage.getItem('acf_admin_data_relawan') || '[]');
-          const idx = stored.findIndex(r => r.id === id);
-          if (idx !== -1) {
-            stored[idx].status = status;
-            if (catatanAdmin) stored[idx].catatanAdmin = catatanAdmin;
-            localStorage.setItem('acf_admin_data_relawan', JSON.stringify(stored));
-          }
-        }
-        return { success: true };
+        const res = await apiFetch(`relawan.php?id=${encodeURIComponent(id)}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ id, status, catatanAdmin })
+        });
+        return res;
       },
 
       async delete(id) {
-        try {
-          await apiFetch(`relawan.php?id=${encodeURIComponent(id)}`, {
-            method: 'DELETE'
-          });
-        } catch (err) {
-          console.log('Offline fallback delete relawan');
-        } finally {
-          const stored = JSON.parse(localStorage.getItem('acf_admin_data_relawan') || '[]');
-          const filtered = stored.filter(r => r.id !== id);
-          localStorage.setItem('acf_admin_data_relawan', JSON.stringify(filtered));
-        }
-        return { success: true };
+        const res = await apiFetch(`relawan.php?id=${encodeURIComponent(id)}`, {
+          method: 'DELETE',
+          body: JSON.stringify({ id })
+        });
+        return res;
       }
     },
 
@@ -541,13 +452,11 @@
           const res = await apiFetch('stats.php', { method: 'GET' });
           return res.data;
         } catch (err) {
-          const mitra = JSON.parse(localStorage.getItem('acf_admin_data_mitra') || '[]');
-          const relawan = JSON.parse(localStorage.getItem('acf_admin_data_relawan') || '[]');
           const articles = JSON.parse(localStorage.getItem('acf_articles_data') || '[]');
           return {
-            mitra: { total: mitra.length, pending: mitra.filter(m => (m.status || 'Menunggu') === 'Menunggu').length },
-            relawan: { total: relawan.length, pending: relawan.filter(r => (r.status || 'Menunggu') === 'Menunggu').length },
-            forms: { total: mitra.length + relawan.length, pending: mitra.filter(m => (m.status || 'Menunggu') === 'Menunggu').length + relawan.filter(r => (r.status || 'Menunggu') === 'Menunggu').length },
+            mitra: { total: 0, pending: 0 },
+            relawan: { total: 0, pending: 0 },
+            forms: { total: 0, pending: 0 },
             articles: { total: articles.length, published: articles.filter(a => (a.status || 'Terbit') === 'Terbit').length }
           };
         }

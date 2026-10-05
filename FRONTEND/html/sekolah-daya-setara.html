@@ -263,13 +263,14 @@
   <!-- ========== MAIN PAGE CONTENT ========== -->
   <main>
     
-    <!-- Hero Banner (Format Homepage / Sekolah Juara) -->
-    <section class="home-hero-slider-section" aria-label="Banner Sekolah Daya Setara">
-      <div class="hero-slider-container" style="min-height: 75vh;">
-        <div class="hero-slide active" style="position: relative; width: 100%; height: 100%; min-height: 75vh; opacity: 1; visibility: visible; transform: none; display: flex; align-items: center; background: linear-gradient(135deg, #7D2280 0%, #9B389E 50%, #6E1B71 100%);">
+    <!-- Hero Banner Sekolah Daya Setara -->
+    <section class="home-hero-slider-section" aria-label="Banner Sekolah Daya Setara" style="position: relative; overflow: hidden; background: #6E1B71;">
+      <div style="position: relative; width: 100%;">
+        <img src="../assets/unit-pendidikan/Sekolah Daya Setara - Alternative.jpg" alt="Banner Sekolah Daya Setara" style="width: 100%; height: auto; min-height: 480px; max-height: 720px; object-fit: cover; object-position: center 30%; display: block;">
+        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(125, 34, 128, 0.88) 0%, rgba(100, 20, 105, 0.78) 50%, rgba(45, 10, 50, 0.85) 100%); display: flex; align-items: center; padding: 40px 0;">
           <div class="container">
-            <div class="home-hero-content" style="opacity: 1; transform: none; max-width: 920px;">
-              <h1 class="home-hero-title">
+            <div class="home-hero-content" style="max-width: 900px; color: #FFFFFF;">
+              <h1 class="home-hero-title" style="color: #FFFFFF; font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 800; margin-bottom: 0;">
                 Sekolah Daya Setara
               </h1>
             </div>
@@ -336,7 +337,54 @@
       </div>
     </section>
 
-    <!-- 3. Slider Kegiatan Sekolah Daya Setara Reguler -->
+    <!-- 3. Slider Kegiatan Sekolah Daya Setara -->
+    <section class="section sds-gallery-section" id="kegiatan-sekolah-daya-setara" style="padding: 70px 0 80px; background: #FAFCFE;">
+      <div class="container">
+        
+        <div class="section-header centered reveal" style="margin-bottom: 36px;">
+          <h2 style="font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; color: #1E293B; letter-spacing: -0.5px;">
+            Kegiatan Sekolah Daya Setara
+          </h2>
+        </div>
+
+        <!-- Slider Container -->
+        <div class="sds-slider-wrapper reveal">
+          <div class="sds-slider-track">
+            <!-- Page 1 (Photos 1 - 4) -->
+            <div class="sds-slider-page active">
+              <div class="sds-gallery-grid">
+                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (1).JPG" alt="Kegiatan Sekolah Daya Setara 1" class="sds-gallery-img" loading="lazy"></div>
+                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (2).JPG" alt="Kegiatan Sekolah Daya Setara 2" class="sds-gallery-img" loading="lazy"></div>
+                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (3).JPG" alt="Kegiatan Sekolah Daya Setara 3" class="sds-gallery-img" loading="lazy"></div>
+                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (4).JPG" alt="Kegiatan Sekolah Daya Setara 4" class="sds-gallery-img" loading="lazy"></div>
+              </div>
+            </div>
+
+            <!-- Page 2 (Photos 5 - 7) -->
+            <div class="sds-slider-page">
+              <div class="sds-gallery-grid">
+                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (5).JPG" alt="Kegiatan Sekolah Daya Setara 5" class="sds-gallery-img" loading="lazy"></div>
+                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (6).JPG" alt="Kegiatan Sekolah Daya Setara 6" class="sds-gallery-img" loading="lazy"></div>
+                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (7).JPG" alt="Kegiatan Sekolah Daya Setara 7" class="sds-gallery-img" loading="lazy"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination Bar (Prev 1 2 Next) -->
+          <div class="sds-pagination-bar">
+            <button class="sds-pag-btn prev-btn" aria-label="Halaman Sebelumnya" disabled>Prev</button>
+            <div class="sds-pag-numbers">
+              <button class="sds-num-btn active" data-page="0">1</button>
+              <button class="sds-num-btn" data-page="1">2</button>
+            </div>
+            <button class="sds-pag-btn next-btn" aria-label="Halaman Berikutnya">Next</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. Slider Kegiatan Sekolah Daya Setara Reguler -->
     <section class="section sds-gallery-section" id="kegiatan-reguler" style="padding: 70px 0 80px; background: #FFFFFF;">
       <div class="container">
         
@@ -489,48 +537,52 @@
   <script src="../js/main.js"></script>
   <script src="../js/navbar.js"></script>
   <script>
-    // SDS Gallery Slider Pagination Logic
+    // Multi SDS Gallery Slider Pagination Logic
     document.addEventListener('DOMContentLoaded', function() {
-      const sdsPages = document.querySelectorAll('.sds-slider-page');
-      const sdsNumBtns = document.querySelectorAll('.sds-num-btn');
-      const sdsPrevBtn = document.getElementById('sdsPrevBtn');
-      const sdsNextBtn = document.getElementById('sdsNextBtn');
-      let currentSdsPage = 0;
+      const sliderWrappers = document.querySelectorAll('.sds-slider-wrapper');
+      
+      sliderWrappers.forEach(function(wrapper) {
+        const sdsPages = wrapper.querySelectorAll('.sds-slider-page');
+        const sdsNumBtns = wrapper.querySelectorAll('.sds-num-btn');
+        const sdsPrevBtn = wrapper.querySelector('.sds-pag-btn.prev-btn');
+        const sdsNextBtn = wrapper.querySelector('.sds-pag-btn.next-btn');
+        let currentSdsPage = 0;
 
-      function showSdsPage(pageIndex) {
-        if (pageIndex < 0 || pageIndex >= sdsPages.length) return;
-        currentSdsPage = pageIndex;
+        function showSdsPage(pageIndex) {
+          if (pageIndex < 0 || pageIndex >= sdsPages.length) return;
+          currentSdsPage = pageIndex;
 
-        sdsPages.forEach(function(page, idx) {
-          page.classList.toggle('active', idx === pageIndex);
+          sdsPages.forEach(function(page, idx) {
+            page.classList.toggle('active', idx === pageIndex);
+          });
+
+          sdsNumBtns.forEach(function(btn, idx) {
+            btn.classList.toggle('active', idx === pageIndex);
+          });
+
+          if (sdsPrevBtn) sdsPrevBtn.disabled = (currentSdsPage === 0);
+          if (sdsNextBtn) sdsNextBtn.disabled = (currentSdsPage === sdsPages.length - 1);
+        }
+
+        sdsNumBtns.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            const page = parseInt(btn.getAttribute('data-page'), 10);
+            showSdsPage(page);
+          });
         });
 
-        sdsNumBtns.forEach(function(btn, idx) {
-          btn.classList.toggle('active', idx === pageIndex);
-        });
+        if (sdsPrevBtn) {
+          sdsPrevBtn.addEventListener('click', function() {
+            showSdsPage(currentSdsPage - 1);
+          });
+        }
 
-        if (sdsPrevBtn) sdsPrevBtn.disabled = (currentSdsPage === 0);
-        if (sdsNextBtn) sdsNextBtn.disabled = (currentSdsPage === sdsPages.length - 1);
-      }
-
-      sdsNumBtns.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          const page = parseInt(btn.getAttribute('data-page'), 10);
-          showSdsPage(page);
-        });
+        if (sdsNextBtn) {
+          sdsNextBtn.addEventListener('click', function() {
+            showSdsPage(currentSdsPage + 1);
+          });
+        }
       });
-
-      if (sdsPrevBtn) {
-        sdsPrevBtn.addEventListener('click', function() {
-          showSdsPage(currentSdsPage - 1);
-        });
-      }
-
-      if (sdsNextBtn) {
-        sdsNextBtn.addEventListener('click', function() {
-          showSdsPage(currentSdsPage + 1);
-        });
-      }
     });
   </script>
 </body>

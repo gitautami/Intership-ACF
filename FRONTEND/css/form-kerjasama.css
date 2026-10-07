@@ -302,7 +302,7 @@
 .form-submit-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex-wrap: wrap;
   gap: 16px;
   padding-top: 24px;
@@ -344,6 +344,13 @@
 .form-privacy-note {
   font-size: 0.85rem;
   color: #64748B;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-privacy-note svg {
+  flex-shrink: 0;
 }
 
 /* Sidebar Info Card */

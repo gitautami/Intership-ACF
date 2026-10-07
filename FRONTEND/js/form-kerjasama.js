@@ -37,6 +37,56 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ----------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
+  // 1. Dynamic Toggle untuk Opsi "Lainnya"
+  // ----------------------------------------------------------------------------
+  const jenisInstansiSelect = document.getElementById('jenisInstansi');
+  const jenisInstansiLainnyaWrapper = document.getElementById('jenisInstansiLainnyaWrapper');
+  const jenisInstansiLainnyaInput = document.getElementById('jenisInstansiLainnya');
+
+  if (jenisInstansiSelect && jenisInstansiLainnyaWrapper) {
+    jenisInstansiSelect.addEventListener('change', () => {
+      const val = jenisInstansiSelect.value;
+      if (val === 'Komunitas / Lainnya' || val.toLowerCase().includes('lainnya')) {
+        jenisInstansiLainnyaWrapper.style.display = 'block';
+        if (jenisInstansiLainnyaInput) {
+          jenisInstansiLainnyaInput.required = true;
+          jenisInstansiLainnyaInput.focus();
+        }
+      } else {
+        jenisInstansiLainnyaWrapper.style.display = 'none';
+        if (jenisInstansiLainnyaInput) {
+          jenisInstansiLainnyaInput.required = false;
+          jenisInstansiLainnyaInput.value = '';
+        }
+      }
+    });
+  }
+
+  const profesiSelect = document.getElementById('profesiRelawan');
+  const profesiLainnyaWrapper = document.getElementById('profesiRelawanLainnyaWrapper');
+  const profesiLainnyaInput = document.getElementById('profesiRelawanLainnya');
+
+  if (profesiSelect && profesiLainnyaWrapper) {
+    profesiSelect.addEventListener('change', () => {
+      const val = profesiSelect.value;
+      if (val === 'Lainnya' || val.toLowerCase().includes('lainnya')) {
+        profesiLainnyaWrapper.style.display = 'block';
+        if (profesiLainnyaInput) {
+          profesiLainnyaInput.required = true;
+          profesiLainnyaInput.focus();
+        }
+      } else {
+        profesiLainnyaWrapper.style.display = 'none';
+        if (profesiLainnyaInput) {
+          profesiLainnyaInput.required = false;
+          profesiLainnyaInput.value = '';
+        }
+      }
+    });
+  }
+
+  // ----------------------------------------------------------------------------
   // 2. Handle Form Mitra Program
   // ----------------------------------------------------------------------------
   const formMitra = document.getElementById('formMitraProgram');
@@ -55,7 +105,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Collect data
       const namaInstansi = document.getElementById('namaInstansi')?.value.trim() || '';
-      const jenisInstansi = document.getElementById('jenisInstansi')?.value || '';
+      let jenisInstansi = document.getElementById('jenisInstansi')?.value || '';
+      const jenisInstansiLainnya = document.getElementById('jenisInstansiLainnya')?.value.trim() || '';
+      if ((jenisInstansi === 'Komunitas / Lainnya' || jenisInstansi.toLowerCase().includes('lainnya')) && jenisInstansiLainnya) {
+        jenisInstansi = `Lainnya (${jenisInstansiLainnya})`;
+      }
+
       const kotaInstansi = document.getElementById('kotaInstansi')?.value.trim() || '';
       const namaPIC = document.getElementById('namaPIC')?.value.trim() || '';
       const jabatanPIC = document.getElementById('jabatanPIC')?.value.trim() || '';
@@ -143,6 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       formMitra.reset();
+      if (jenisInstansiLainnyaWrapper) {
+        jenisInstansiLainnyaWrapper.style.display = 'none';
+      }
     });
   }
 
@@ -168,7 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('emailRelawan')?.value.trim() || '';
       const noWA = document.getElementById('noWARelawan')?.value.trim() || '';
       const domisili = document.getElementById('domisiliRelawan')?.value.trim() || '';
-      const profesi = document.getElementById('profesiRelawan')?.value || '';
+      let profesi = document.getElementById('profesiRelawan')?.value || '';
+      const profesiLainnya = document.getElementById('profesiRelawanLainnya')?.value.trim() || '';
+      if ((profesi === 'Lainnya' || profesi.toLowerCase().includes('lainnya')) && profesiLainnya) {
+        profesi = `Lainnya (${profesiLainnya})`;
+      }
+
       const komitmenWaktu = document.getElementById('komitmenWaktu')?.value || '';
       const keahlianUtama = document.getElementById('keahlianUtama')?.value.trim() || '';
       const motivasi = document.getElementById('motivasiRelawan')?.value.trim() || '';
@@ -251,6 +314,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       formRelawan.reset();
+      if (profesiLainnyaWrapper) {
+        profesiLainnyaWrapper.style.display = 'none';
+      }
     });
   }
 

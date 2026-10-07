@@ -417,7 +417,6 @@ function initHomeKabar() {
         <a href="${articleUrl}" class="home-kabar-img-link" aria-label="Baca ${escapeHTML(art.title || '')}">
           <div class="home-kabar-img-wrap">
             <img src="${escapeHTML(coverSrc)}" alt="${escapeHTML(art.title || 'Kabar ACF')}" class="home-kabar-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80'">
-            <span class="home-kabar-tag ${escapeHTML(catClass)}">${escapeHTML(catLabel)}</span>
           </div>
         </a>
         <div class="home-kabar-body">

@@ -12,16 +12,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const sidebarSearchInput = document.getElementById('sidebarSearchInput');
   const navItemsWithSubmenu = document.querySelectorAll('.side-nav-item.has-submenu');
 
-  // 1. Scroll Effect for Top Navbar
+  // 1. Scroll Effect for Top Navbar (Smooth Expand at Top, Compact on Scroll Down)
   if (navbar) {
+    let ticking = false;
+
     const handleScroll = () => {
       if (window.scrollY > 20) {
         navbar.classList.add('scrolled');
       } else {
         navbar.classList.remove('scrolled');
       }
+      ticking = false;
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+
     handleScroll();
   }
 
@@ -74,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
         const isOpen = item.classList.contains('open');
-        
+
         // Close other submenus
         navItemsWithSubmenu.forEach(otherItem => {
           if (otherItem !== item) {
@@ -96,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sidebarSearchInput.addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase().trim();
       const allNavItems = document.querySelectorAll('.side-nav-item');
-      
+
       allNavItems.forEach(item => {
         const text = item.textContent.toLowerCase();
         if (query === '' || text.includes(query)) {
@@ -114,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. Active Link Highlight
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
   const allLinks = document.querySelectorAll('.nav-link, .dropdown-item-card, .side-nav-link, .side-submenu-link');
-  
+
   allLinks.forEach(link => {
     const href = link.getAttribute('href');
     if (href && (href === currentPath || (currentPath === '' && href === 'index.html'))) {

@@ -166,23 +166,26 @@ document.addEventListener('DOMContentLoaded', () => {
       // Kirim ke Google Sheets
       await kirimKeGoogleSheets(payloadMitra);
 
+      // Tanggal Submit Real-time
+      const tanggalSubmit = new Intl.DateTimeFormat('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(new Date()).replace(/\./g, ':') + ' WIB';
+
       // Construct WhatsApp message URL
       const waBtn = document.getElementById('modalWaBtnMitra');
       if (waBtn) {
+        const programMitraText = selectedPrograms.length > 0 ? selectedPrograms.join(', ') : (jenisKemitraan || 'Mitra Program');
         const text = encodeURIComponent(
           `Halo Tim Kemitraan ACF Eduhub,\n\n` +
-          `Saya telah mengirimkan formulir kemitraan melalui website:\n` +
-          `• *Instansi/Perusahaan*: ${namaInstansi}\n` +
-          `• *Bentuk Lembaga*: ${jenisInstansi}\n` +
-          `• *Kota*: ${kotaInstansi}\n` +
-          `• *Nama PIC*: ${namaPIC} (${jabatanPIC})\n` +
-          `• *No. WA*: ${noWA}\n` +
-          `• *Email*: ${emailPIC}\n` +
-          `• *Bentuk Dukungan*: ${jenisKemitraan}\n` +
-          `• *Fokus Program*: ${selectedPrograms.join(', ') || '-'}\n` +
-          `• *Estimasi Waktu*: ${estimasiWaktu}\n` +
-          `• *Catatan*: ${pesan || '-'}\n\n` +
-          `Mohon informasi lebih lanjut terkait tindak lanjut proposal kolaborasi ini. Terima kasih!`
+          `Saya telah mengirimkan formulir kemitraan di website:\n` +
+          `• *Tanggal Submit*: ${tanggalSubmit}\n` +
+          `• *Atas Nama*: ${namaPIC} (${namaInstansi})\n` +
+          `• *Sebagai Mitra Program*: ${programMitraText}\n\n` +
+          `Mohon konfirmasi dan informasi langkah selanjutnya. Terima kasih!`
         );
         waBtn.href = `https://wa.me/6285179797661?text=${text}`;
       }
@@ -283,22 +286,26 @@ document.addEventListener('DOMContentLoaded', () => {
       // Kirim ke Google Sheets
       await kirimKeGoogleSheets(payloadRelawan);
 
+      // Tanggal Submit Real-time
+      const tanggalSubmit = new Intl.DateTimeFormat('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(new Date()).replace(/\./g, ':') + ' WIB';
+
       // Construct WhatsApp message URL
       const waBtn = document.getElementById('modalWaBtnRelawan');
       if (waBtn) {
+        const peranRelawanText = selectedRoles.length > 0 ? selectedRoles.join(', ') : 'Sahabat Eduhub';
         const text = encodeURIComponent(
           `Halo Tim Sahabat Eduhub (ACF Eduhub),\n\n` +
-          `Saya telah mendaftar sebagai relawan melalui website:\n` +
-          `• *Nama*: ${namaLengkap}\n` +
-          `• *Email*: ${email}\n` +
-          `• *No. WA*: ${noWA}\n` +
-          `• *Domisili*: ${domisili}\n` +
-          `• *Profesi*: ${profesi}\n` +
-          `• *Pilihan Peran*: ${selectedRoles.join(', ') || '-'}\n` +
-          `• *Ketersediaan*: ${komitmenWaktu}\n` +
-          `• *Keahlian*: ${keahlianUtama || '-'}\n` +
-          `• *Motivasi Singkat*: ${motivasi || '-'}\n\n` +
-          `Saya siap berkontribusi untuk kemajuan pendidikan anak Indonesia. Terima kasih!`
+          `Saya telah mengirimkan formulir pendaftaran relawan di website:\n` +
+          `• *Tanggal Submit*: ${tanggalSubmit}\n` +
+          `• *Atas Nama*: ${namaLengkap}\n` +
+          `• *Sebagai Relawan*: ${peranRelawanText}\n\n` +
+          `Mohon konfirmasi dan informasi langkah selanjutnya. Terima kasih!`
         );
         waBtn.href = `https://wa.me/6285179797661?text=${text}`;
       }

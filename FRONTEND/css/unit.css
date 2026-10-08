@@ -4,12 +4,36 @@
    ============================================= */
 
 .unit-header-banner {
-  padding: 135px 0 65px;
-  background: linear-gradient(135deg, #7D2280 0%, #9B389E 50%, #6E1B71 100%);
-  color: #FFFFFF;
   position: relative;
+  width: 100%;
+  min-height: clamp(500px, 45vw, 680px);
+  display: flex;
+  align-items: center;
+  padding: 160px 0 90px;
+  background-image: linear-gradient(135deg, rgba(82, 18, 86, 0.84) 0%, rgba(32, 10, 38, 0.70) 100%), url('../assets/unit-pendidikan/Sekolah Juara.jpg');
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  color: #FFFFFF;
   overflow: hidden;
   border-bottom: 2px solid rgba(245, 166, 35, 0.3);
+}
+
+.unit-header-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 85% 20%, rgba(245, 166, 35, 0.22) 0%, transparent 55%),
+              radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.unit-header-banner .container {
+  position: relative;
+  z-index: 2;
 }
 
 .unit-header-banner .section-label {

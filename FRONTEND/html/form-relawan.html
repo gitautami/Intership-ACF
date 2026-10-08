@@ -413,18 +413,28 @@
   <!-- ========== MODAL KONFIRMASI SUKSES RELAWAN ========== -->
   <div class="success-modal-overlay" id="modalSuksesRelawan">
     <div class="success-modal-box">
+      <button type="button" class="modal-corner-close" onclick="closeModal('modalSuksesRelawan')" aria-label="Tutup">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="modal-step-badge">
+        <span>⚡ Langkah Terakhir</span>
+      </div>
+
       <div class="modal-check-icon">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
       </div>
-      <h3 class="modal-title">Selamat Bergabung Sahabat Eduhub!</h3>
+
+      <h3 class="modal-title">Pendaftaran Relawan Tersimpan!</h3>
       <p class="modal-desc">
-        Pendaftaran relawan Anda telah kami terima. Koordinator relawan ACF Eduhub akan menghubungi Anda untuk informasi briefing dan grup komunitas.
+        Data Anda telah berhasil dicatat. Silakan <strong>klik tombol di bawah</strong> untuk konfirmasi ke WhatsApp Koordinator Relawan agar akun &amp; penugasan komunitas Anda dapat segera diaktifkan.
       </p>
 
       <div class="modal-action-buttons">
-        <button type="button" class="btn-modal-close" onclick="closeModal('modalSuksesRelawan')">
-          Tutup & Selesai
-        </button>
+        <a href="https://wa.me/6285179797661" target="_blank" rel="noopener noreferrer" class="btn-modal-wa" id="modalWaBtnRelawan">
+          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+          <span>Konfirmasi ke Koordinator via WhatsApp</span>
+        </a>
       </div>
     </div>
   </div>

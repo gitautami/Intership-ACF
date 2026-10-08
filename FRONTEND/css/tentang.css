@@ -165,51 +165,30 @@
 
 .vmv-photo-box {
   width: 100%;
-  max-width: 480px;
-  height: 380px;
+  max-width: 540px;
+  height: auto;
   border-radius: 20px;
   background: #F8FAFC;
-  border: 2px dashed #CBD5E1;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-}
-
-.vmv-photo-box:hover {
-  border-color: #94A3B8;
-  background: #F1F5F9;
-}
-
-.vmv-photo-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  color: #94A3B8;
-  text-align: center;
-}
-
-.vmv-photo-placeholder svg {
-  width: 52px;
-  height: 52px;
-  stroke: #94A3B8;
-}
-
-.vmv-photo-placeholder span {
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  border: 1px solid rgba(125, 34, 128, 0.15);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
 }
 
 .vmv-photo-box .vmv-photo {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   display: block;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vmv-photo-box:hover .vmv-photo {
+  transform: scale(1.03);
 }
 
 @media (max-width: 991px) {
@@ -228,7 +207,7 @@
 
   .vmv-photo-box {
     max-width: 100%;
-    height: 300px;
+    height: auto;
   }
 }
 

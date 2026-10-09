@@ -100,6 +100,33 @@
           </div>
         </div>
 
+        <div class="admin-dropdown-wrap" id="sheetsDropdownWrap">
+          <button type="button" class="btn-outline-action btn-sheets-dropdown" id="btnSheetsDropdown" title="Akses Google Spreadsheet Form Mitra & Relawan" aria-expanded="false">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="#0F9D58"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 8h-4.5V9H18v2zm-4.5 2H18v2h-4.5v-2zm-2-4H7V9h4.5v2zm0 2v2H7v-2h4.5zM5 5h14v2H5V5zm0 14v-2h14v2H5z"/></svg>
+            <span>Spreadsheet Form</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="admin-dropdown-menu" id="sheetsDropdownMenu">
+            <div class="dropdown-header-label">Google Spreadsheet Data</div>
+            <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=178961551#gid=178961551" target="_blank" rel="noopener noreferrer" class="dropdown-sheet-item">
+              <span class="dropdown-sheet-icon sheet-icon-mitra">🤝</span>
+              <div class="dropdown-sheet-text">
+                <strong>Data Form Jadi Mitra</strong>
+                <span>Sheet: Kemitraan & Kerjasama</span>
+              </div>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            </a>
+            <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=551297265#gid=551297265" target="_blank" rel="noopener noreferrer" class="dropdown-sheet-item">
+              <span class="dropdown-sheet-icon sheet-icon-relawan">✨</span>
+              <div class="dropdown-sheet-text">
+                <strong>Data Form Jadi Relawan</strong>
+                <span>Sheet: Pendaftaran Relawan</span>
+              </div>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            </a>
+          </div>
+        </div>
+
         <a href="index.html" target="_blank" class="btn-outline-action" title="Buka website publik">
           <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
           <span>Lihat Web</span>
@@ -125,10 +152,15 @@
         <div class="dashboard-header-row">
           <div>
             <h2 class="page-title">Manajemen & Publikasi Kabar</h2>
-            <p class="page-subtitle">Upload artikel baru, edit liputan kegiatan, dan kelola publikasi berita ACF Eduhub.</p>
+            <p class="page-subtitle">Upload artikel baru, kelola publikasi berita ACF Eduhub, dan akses data respon formulir.</p>
           </div>
 
           <div class="header-action-buttons">
+            <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=178961551#gid=178961551" target="_blank" rel="noopener noreferrer" class="btn-outline-action btn-sheet-header-btn" title="Buka Google Spreadsheet Data Mitra & Relawan">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="#0F9D58"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 8h-4.5V9H18v2zm-4.5 2H18v2h-4.5v-2zm-2-4H7V9h4.5v2zm0 2v2H7v-2h4.5zM5 5h14v2H5V5zm0 14v-2h14v2H5z"/></svg>
+              <span>📊 Spreadsheet Form</span>
+            </a>
+
             <a href="kabar.html" target="_blank" class="btn-outline-action" title="Lihat halaman kabar publik">
               <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
               <span>Lihat Halaman Kabar</span>
@@ -151,7 +183,7 @@
           </div>
         </div>
 
-        <!-- Article KPI Metrics Grid -->
+        <!-- KPI Metrics & Quick Access Grid -->
         <div class="metric-grid">
           
           <div class="metric-card metric-purple">
@@ -176,6 +208,113 @@
             </div>
           </div>
 
+          <!-- Quick Card: Spreadsheet Mitra -->
+          <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=178961551#gid=178961551" target="_blank" rel="noopener noreferrer" class="metric-card metric-sheet-card metric-sheet-mitra" title="Buka Spreadsheet Data Form Jadi Mitra">
+            <div class="metric-icon-wrap sheet-icon-emerald">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="#0F9D58"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 8h-4.5V9H18v2zm-4.5 2H18v2h-4.5v-2zm-2-4H7V9h4.5v2zm0 2v2H7v-2h4.5zM5 5h14v2H5V5zm0 14v-2h14v2H5z"/></svg>
+            </div>
+            <div class="metric-info" style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+                <span class="metric-label">Spreadsheet Mitra</span>
+                <span class="sheet-live-badge">Live Sync</span>
+              </div>
+              <span class="metric-value metric-value-sheet" style="font-size: 1.1rem; font-weight: 700; color: #0F9D58;">
+                Form Jadi Mitra ↗
+              </span>
+              <span class="metric-meta">Kelola respon kemitraan</span>
+            </div>
+          </a>
+
+          <!-- Quick Card: Spreadsheet Relawan -->
+          <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=551297265#gid=551297265" target="_blank" rel="noopener noreferrer" class="metric-card metric-sheet-card metric-sheet-relawan" title="Buka Spreadsheet Data Form Jadi Relawan">
+            <div class="metric-icon-wrap sheet-icon-sky">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="#0284C7"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 8h-4.5V9H18v2zm-4.5 2H18v2h-4.5v-2zm-2-4H7V9h4.5v2zm0 2v2H7v-2h4.5zM5 5h14v2H5V5zm0 14v-2h14v2H5z"/></svg>
+            </div>
+            <div class="metric-info" style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+                <span class="metric-label">Spreadsheet Relawan</span>
+                <span class="sheet-live-badge">Live Sync</span>
+              </div>
+              <span class="metric-value metric-value-sheet" style="font-size: 1.1rem; font-weight: 700; color: #0284C7;">
+                Form Jadi Relawan ↗
+              </span>
+              <span class="metric-meta">Kelola data calon relawan</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- ============================================================
+             DEDICATED PANEL: AKSES GOOGLE SPREADSHEET FORMULIR
+             ============================================================ -->
+        <div class="spreadsheet-hub-card">
+          <div class="spreadsheet-hub-header">
+            <div class="spreadsheet-hub-title-wrap">
+              <div class="sheet-main-icon">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="#0F9D58"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 8h-4.5V9H18v2zm-4.5 2H18v2h-4.5v-2zm-2-4H7V9h4.5v2zm0 2v2H7v-2h4.5zM5 5h14v2H5V5zm0 14v-2h14v2H5z"/></svg>
+              </div>
+              <div>
+                <h3 class="spreadsheet-hub-title">Kelola Data Formulir (Google Spreadsheet)</h3>
+                <p class="spreadsheet-hub-desc">Seluruh data yang diisi masyarakat melalui form <strong>Jadi Mitra</strong> dan <strong>Jadi Relawan</strong> di website otomatis masuk dan terorganisir di Google Sheets:</p>
+              </div>
+            </div>
+            <div class="spreadsheet-hub-status">
+              <span class="status-indicator-dot"></span>
+              <span>Terhubung Otomatis ke Form Website</span>
+            </div>
+          </div>
+
+          <div class="spreadsheet-cards-grid">
+            <!-- Card Mitra -->
+            <div class="sheet-action-card sheet-card-mitra">
+              <div class="sheet-card-top">
+                <div class="sheet-badge-type badge-mitra">
+                  <span class="badge-dot"></span>
+                  <span>🤝 Form Jadi Mitra</span>
+                </div>
+                <span class="sheet-tab-name">Tab: Mitra Program (gid: 178961551)</span>
+              </div>
+              <h4 class="sheet-card-title">Respon Formulir Kemitraan &amp; Kerjasama</h4>
+              <p class="sheet-card-desc">Berisi data instansi / komunitas, narahubung (PIC), email, nomor WhatsApp, program kemitraan yang dipilih, dan pesan kerjasama.</p>
+              
+              <div class="sheet-card-actions">
+                <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=178961551#gid=178961551" target="_blank" rel="noopener noreferrer" class="btn-sheet-open btn-sheet-open-mitra" title="Buka Spreadsheet Data Mitra di tab baru">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 8h-4.5V9H18v2zm-4.5 2H18v2h-4.5v-2zm-2-4H7V9h4.5v2zm0 2v2H7v-2h4.5zM5 5h14v2H5V5zm0 14v-2h14v2H5z"/></svg>
+                  <span>Buka Spreadsheet Mitra</span>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </a>
+                <button type="button" class="btn-copy-sheet-link" data-url="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=178961551#gid=178961551" title="Salin tautan spreadsheet data mitra">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                  <span>Salin Link</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card Relawan -->
+            <div class="sheet-action-card sheet-card-relawan">
+              <div class="sheet-card-top">
+                <div class="sheet-badge-type badge-relawan">
+                  <span class="badge-dot"></span>
+                  <span>✨ Form Jadi Relawan</span>
+                </div>
+                <span class="sheet-tab-name">Tab: Relawan Eduhub (gid: 551297265)</span>
+              </div>
+              <h4 class="sheet-card-title">Respon Formulir Pendaftaran Relawan</h4>
+              <p class="sheet-card-desc">Berisi identitas calon relawan, kontak, minat peran (Pengajar, Fasilitator, Dokumentasi, dsb.), keahlian, domisili, dan motivasi bergabung.</p>
+              
+              <div class="sheet-card-actions">
+                <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=551297265#gid=551297265" target="_blank" rel="noopener noreferrer" class="btn-sheet-open btn-sheet-open-relawan" title="Buka Spreadsheet Data Relawan di tab baru">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 8h-4.5V9H18v2zm-4.5 2H18v2h-4.5v-2zm-2-4H7V9h4.5v2zm0 2v2H7v-2h4.5zM5 5h14v2H5V5zm0 14v-2h14v2H5z"/></svg>
+                  <span>Buka Spreadsheet Relawan</span>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </a>
+                <button type="button" class="btn-copy-sheet-link" data-url="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=551297265#gid=551297265" title="Salin tautan spreadsheet data relawan">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                  <span>Salin Link</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Article List Table Container -->

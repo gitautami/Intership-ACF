@@ -2161,6 +2161,48 @@
       btnNavArticles.addEventListener('click', () => switchDashboardView('viewDashboardArticles'));
     }
 
+    // Google Spreadsheet Dropdown Toggle
+    const sheetsDropdownWrap = document.getElementById('sheetsDropdownWrap');
+    const btnSheetsDropdown = document.getElementById('btnSheetsDropdown');
+    if (sheetsDropdownWrap && btnSheetsDropdown) {
+      btnSheetsDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isActive = sheetsDropdownWrap.classList.toggle('active');
+        btnSheetsDropdown.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!sheetsDropdownWrap.contains(e.target)) {
+          sheetsDropdownWrap.classList.remove('active');
+          btnSheetsDropdown.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // Copy Google Spreadsheet Link to Clipboard
+    document.querySelectorAll('.btn-copy-sheet-link').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const url = btn.getAttribute('data-url');
+        if (!url) return;
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(url);
+          } else {
+            const tempInput = document.createElement('input');
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+          }
+          showToast('📋 Tautan Google Spreadsheet berhasil disalin!', 'success');
+        } catch (err) {
+          showToast('Gagal menyalin tautan secara otomatis.', 'info');
+        }
+      });
+    });
+
     // WordPress REST API Sync Modal triggers
     if (btnOpenWpSyncModal) {
       btnOpenWpSyncModal.addEventListener('click', openWpSyncModal);

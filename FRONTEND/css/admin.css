@@ -2400,3 +2400,465 @@ body.modal-open {
   cursor: not-allowed;
   transform: none;
 }
+
+/* ===================================================
+   GOOGLE SPREADSHEET PORTAL INTEGRATION STYLES
+   =================================================== */
+
+/* Topbar Dropdown */
+.admin-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-sheets-dropdown {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  color: #1E293B;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sheets-dropdown:hover {
+  border-color: #0F9D58;
+  color: #0F9D58;
+  background: #F0FDF4;
+}
+
+.admin-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 280px;
+  background: #FFFFFF;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-float);
+  padding: 8px;
+  z-index: 1000;
+  display: none;
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
+.admin-dropdown-wrap.active .admin-dropdown-menu {
+  display: block;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-header-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--admin-slate-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 6px 10px 4px;
+}
+
+.dropdown-sheet-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--admin-text-main);
+  transition: all 0.15s ease;
+}
+
+.dropdown-sheet-item:hover {
+  background: #F8FAFC;
+  transform: translateX(2px);
+}
+
+.dropdown-sheet-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.sheet-icon-mitra {
+  background: #DCFCE7;
+}
+
+.sheet-icon-relawan {
+  background: #E0F2FE;
+}
+
+.dropdown-sheet-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.dropdown-sheet-text strong {
+  font-size: 0.85rem;
+  color: var(--admin-navy);
+  line-height: 1.3;
+}
+
+.dropdown-sheet-text span {
+  font-size: 0.74rem;
+  color: var(--admin-slate-light);
+}
+
+.dropdown-sheet-item svg {
+  stroke: var(--admin-slate-light);
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-sheet-item:hover svg {
+  stroke: var(--admin-purple);
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+.btn-sheet-header-btn {
+  border-color: #A7F3D0;
+  color: #065F46;
+  background: #ECFDF5;
+  font-weight: 600;
+}
+
+.btn-sheet-header-btn:hover {
+  background: #D1FAE5;
+  border-color: #6EE7B7;
+  color: #047857;
+  transform: translateY(-1px);
+}
+
+/* Metric Sheet Cards */
+.metric-sheet-card {
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-sheet-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.metric-sheet-mitra::after {
+  background: #10B981;
+}
+
+.metric-sheet-relawan::after {
+  background: #0284C7;
+}
+
+.sheet-icon-emerald {
+  background: #DCFCE7;
+  color: #0F9D58;
+}
+
+.sheet-icon-sky {
+  background: #E0F2FE;
+  color: #0284C7;
+}
+
+.sheet-live-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #BBF7D0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sheet-live-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #16A34A;
+  display: inline-block;
+  animation: pulseLive 1.8s infinite;
+}
+
+@keyframes pulseLive {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.metric-value-sheet {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.metric-sheet-card:hover .metric-value-sheet {
+  transform: translateX(3px);
+}
+
+/* ============================================================
+   DEDICATED SPREADSHEET HUB CARD & GRID
+   ============================================================ */
+.spreadsheet-hub-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-subtle);
+  position: relative;
+  background-image: radial-gradient(circle at top right, rgba(16, 185, 129, 0.04), transparent 40%),
+                    radial-gradient(circle at bottom left, rgba(2, 132, 199, 0.04), transparent 40%);
+}
+
+.spreadsheet-hub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.spreadsheet-hub-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.sheet-main-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: #ECFDF5;
+  border: 1px solid #D1FAE5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.spreadsheet-hub-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--admin-navy);
+  margin-bottom: 4px;
+}
+
+.spreadsheet-hub-desc {
+  font-size: 0.85rem;
+  color: var(--admin-slate-light);
+  line-height: 1.5;
+}
+
+.spreadsheet-hub-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  color: #166534;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+}
+
+.spreadsheet-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.sheet-action-card {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.sheet-action-card:hover {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+.sheet-card-mitra:hover {
+  border-color: #86EFAC;
+}
+
+.sheet-card-relawan:hover {
+  border-color: #7DD3FC;
+}
+
+.sheet-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.sheet-badge-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.badge-mitra {
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.badge-relawan {
+  background: #F0F9FF;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.sheet-tab-name {
+  font-size: 0.74rem;
+  color: var(--admin-slate-light);
+  font-family: monospace;
+  background: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #E2E8F0;
+}
+
+.sheet-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--admin-navy);
+  margin-bottom: 8px;
+}
+
+.sheet-card-desc {
+  font-size: 0.84rem;
+  color: var(--admin-slate-light);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.sheet-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-sheet-open {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.btn-sheet-open-mitra {
+  background: linear-gradient(135deg, #0F9D58 0%, #0B8043 100%);
+}
+
+.btn-sheet-open-mitra:hover {
+  background: linear-gradient(135deg, #10B981 0%, #0F9D58 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 157, 88, 0.3);
+}
+
+.btn-sheet-open-relawan {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+}
+
+.btn-sheet-open-relawan:hover {
+  background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.btn-copy-sheet-link {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: var(--admin-slate);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-copy-sheet-link:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+  color: var(--admin-navy);
+  transform: translateY(-1px);
+}
+

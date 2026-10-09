@@ -25,11 +25,11 @@
 .page-hero.visi-misi-hero {
   min-height: clamp(520px, 45.13vw, 720px);
   display: flex;
-  align-items: flex-start;
-  padding: 125px 0 60px;
-  background-image: linear-gradient(to bottom, rgba(28, 7, 33, 0.88) 0%, rgba(76, 17, 82, 0.60) 50%, rgba(32, 10, 38, 0.32) 100%), url('../assets/tentang/Foto Tentang.jpg');
+  align-items: center;
+  padding: 160px 0 90px;
+  background-image: linear-gradient(135deg, rgba(82, 18, 86, 0.82) 0%, rgba(32, 10, 38, 0.68) 100%), url('../assets/tentang/Banner Tentang.jpg');
   background-size: cover;
-  background-position: center 15%;
+  background-position: center center;
   background-repeat: no-repeat;
   text-align: center;
 }

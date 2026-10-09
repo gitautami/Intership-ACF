@@ -137,7 +137,8 @@
 
 .program-card-img-wrap {
   width: 100%;
-  height: 220px;
+  aspect-ratio: 3 / 2;
+  height: auto;
   position: relative;
   overflow: hidden;
   background: #F1F5F9;
@@ -147,7 +148,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 25%;
+  object-position: center center;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   display: block;
 }
@@ -298,7 +299,8 @@
   .program-card-img-wrap {
     width: 100%;
     min-width: 100%;
-    height: 220px;
+    aspect-ratio: 3 / 2;
+    height: auto;
   }
   .program-card-content {
     padding: 20px 18px;

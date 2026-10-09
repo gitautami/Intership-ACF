@@ -105,7 +105,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 25%;
+  object-position: center 30%;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   display: block;
 }
@@ -117,7 +117,7 @@
 .kerjasama-img-badge {
   position: absolute;
   top: 16px;
-  right: 16px;
+  left: 16px;
   background: rgba(125, 34, 128, 0.88);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -128,6 +128,7 @@
   border-radius: 9999px;
   letter-spacing: 0.3px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 2;
 }
 
 .kerjasama-img-badge.gold {

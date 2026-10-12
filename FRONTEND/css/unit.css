@@ -2065,65 +2065,133 @@ a.sj-school-location:hover svg.sj-loc-pin {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 16px;
-  margin-top: 32px;
-  padding-top: 20px;
+  gap: 14px;
+  margin-top: 36px;
+  padding-top: 24px;
   border-top: 1px solid #E2E8F0;
 }
 
 .sds-pag-btn {
-  background: transparent;
-  border: none;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #64748B;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  color: #334155;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 6px 16px 6px 12px;
+  border-radius: 999px;
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sds-pag-btn.next-btn {
+  padding: 6px 12px 6px 16px;
+}
+
+.sds-pag-arrow-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7D2280;
+  transition: all 0.25s ease;
+}
+
+.sds-pag-arrow-box svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.sds-pag-text {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.sds-pag-btn.prev-btn:hover:not(:disabled) .sds-pag-arrow-box {
+  transform: translateX(-3px);
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.sds-pag-btn.next-btn:hover:not(:disabled) .sds-pag-arrow-box {
+  transform: translateX(3px);
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
 }
 
 .sds-pag-btn:hover:not(:disabled) {
-  color: #7D2280;
-  background: rgba(125, 34, 128, 0.06);
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #7D2280 0%, #A21CAF 100%);
+  border-color: #7D2280;
+  box-shadow: 0 6px 20px rgba(125, 34, 128, 0.28);
+  transform: translateY(-2px);
+}
+
+.sds-pag-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .sds-pag-btn:disabled {
-  color: #CBD5E1;
+  opacity: 0.4;
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+  color: #94A3B8;
   cursor: not-allowed;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.sds-pag-btn:disabled .sds-pag-arrow-box {
+  background: #E2E8F0;
+  color: #94A3B8;
 }
 
 .sds-pag-numbers {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  background: #F8FAFC;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid #E2E8F0;
 }
 
 .sds-num-btn {
   background: transparent;
   border: none;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.92rem;
+  font-weight: 700;
   color: #64748B;
   cursor: pointer;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.sds-num-btn:hover {
+.sds-num-btn:hover:not(.active) {
   color: #7D2280;
-  background: rgba(125, 34, 128, 0.08);
+  background: rgba(125, 34, 128, 0.1);
+  transform: scale(1.05);
 }
 
 .sds-num-btn.active {
-  color: #0284C7;
+  background: linear-gradient(135deg, #7D2280 0%, #A21CAF 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(125, 34, 128, 0.35);
   font-weight: 800;
-  font-size: 1.05rem;
+  transform: scale(1.06);
 }
 
 @media (max-width: 991px) {

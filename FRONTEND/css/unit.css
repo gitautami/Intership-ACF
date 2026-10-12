@@ -954,13 +954,17 @@
 }
 
 .sj-school-location {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 0.82rem;
   color: #64748B;
   font-weight: 500;
   margin-bottom: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: fit-content;
 }
 
 .sj-school-location svg {
@@ -968,6 +972,18 @@
   height: 14px;
   fill: #F5A623;
   flex-shrink: 0;
+  transition: transform 0.2s ease, fill 0.2s ease;
+}
+
+a.sj-school-location:hover {
+  color: #BE123C;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+a.sj-school-location:hover svg {
+  transform: scale(1.18);
+  fill: #BE123C;
 }
 
 .sj-school-name {

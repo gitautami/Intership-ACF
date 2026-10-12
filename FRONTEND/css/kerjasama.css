@@ -28,7 +28,7 @@
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at 85% 20%, rgba(245, 166, 35, 0.22) 0%, transparent 55%),
-              radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -270,15 +270,19 @@
   .kerjasama-header-banner {
     padding: 110px 0 45px;
   }
+
   .kerjasama-card-img-wrap {
     height: 220px;
   }
+
   .kerjasama-card-content {
     padding: 24px 20px 8px;
   }
+
   .kerjasama-card-title {
     font-size: 1.25rem;
   }
+
   .btn-kerjasama-action {
     margin: 0 20px 24px;
     padding: 13px 18px;

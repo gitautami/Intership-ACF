@@ -953,85 +953,153 @@
   margin-bottom: 20px;
 }
 
+
 .sj-school-location {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.82rem;
-  color: #64748B;
+  gap: 7px;
+  padding: 5px 13px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #475569;
   font-weight: 500;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   width: fit-content;
+  max-width: 100%;
 }
 
-.sj-school-location svg {
+.sj-school-location svg.sj-loc-pin {
   width: 14px;
   height: 14px;
-  fill: #F5A623;
+  fill: #EA4335;
   flex-shrink: 0;
   transition: transform 0.2s ease, fill 0.2s ease;
 }
 
 a.sj-school-location:hover {
-  color: #BE123C;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  background: #FEF2F2;
+  border-color: #FECACA;
+  color: #991B1B;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(234, 67, 53, 0.15);
+  text-decoration: none;
 }
 
-a.sj-school-location:hover svg {
-  transform: scale(1.18);
-  fill: #BE123C;
+a.sj-school-location:hover svg.sj-loc-pin {
+  transform: scale(1.2);
+  fill: #DC2626;
 }
 
 .sj-school-name {
-  font-size: 1.18rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #1E293B;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.35;
   letter-spacing: -0.2px;
 }
 
+.sj-school-name a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sj-school-name a:hover {
+  color: #7D2280;
+}
+
 .sj-school-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-top: auto;
 }
 
-.sj-btn-daftar {
+.sj-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sj-social-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sj-social-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 10px 14px;
-  background: #E11D48;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
   color: #FFFFFF !important;
-  font-size: 0.88rem;
-  font-weight: 600;
-  border-radius: 12px;
   text-decoration: none;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  border: none;
 }
 
-.sj-btn-daftar:hover {
-  background: #BE123C;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(225, 29, 72, 0.35);
-}
-
-.sj-btn-daftar svg {
-  width: 15px;
-  height: 15px;
+.sj-social-btn svg {
+  width: 17px;
+  height: 17px;
   transition: transform 0.2s ease;
 }
 
-.sj-btn-daftar:hover svg {
-  transform: translateX(3px);
+.sj-social-btn:hover {
+  transform: translateY(-2px);
+}
+
+.sj-social-btn:hover svg {
+  transform: scale(1.15);
+}
+
+/* WhatsApp: Hijau Resmi #25D366 */
+.sj-social-btn.wa {
+  background: #25D366;
+  box-shadow: 0 2px 6px rgba(37, 211, 102, 0.28);
+}
+.sj-social-btn.wa:hover {
+  background: #20bd5a;
+  box-shadow: 0 5px 12px rgba(37, 211, 102, 0.45);
+}
+
+/* Instagram: Gradien Resmi Instagram */
+.sj-social-btn.ig {
+  background: linear-gradient(45deg, #F58529 0%, #DD2A7B 50%, #8134AF 100%);
+  box-shadow: 0 2px 6px rgba(221, 42, 123, 0.28);
+}
+.sj-social-btn.ig:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 5px 14px rgba(221, 42, 123, 0.45);
+}
+
+/* Facebook: Biru Resmi #1877F2 */
+.sj-social-btn.fb {
+  background: #1877F2;
+  box-shadow: 0 2px 6px rgba(24, 119, 242, 0.28);
+}
+.sj-social-btn.fb:hover {
+  background: #166fe5;
+  box-shadow: 0 5px 12px rgba(24, 119, 242, 0.45);
+}
+
+/* TikTok: Hitam Resmi #010101 */
+.sj-social-btn.tt {
+  background: #010101;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+}
+.sj-social-btn.tt:hover {
+  background: #222222;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.45);
 }
 
 .sj-btn-brosur {
@@ -1039,28 +1107,67 @@ a.sj-school-location:hover svg {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px 14px;
-  background: #F8FAFC;
-  color: #334155 !important;
-  font-size: 0.88rem;
+  padding: 0 14px;
+  height: 34px;
+  background: linear-gradient(135deg, #7D2280 0%, #9B389E 100%);
+  color: #FFFFFF !important;
+  font-size: 0.85rem;
   font-weight: 600;
-  border: 1.5px solid #CBD5E1;
-  border-radius: 12px;
+  border: none;
+  border-radius: 9px;
   text-decoration: none;
-  transition: all 0.25s ease;
+  transition: all 0.22s ease;
+  flex: 1;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(125, 34, 128, 0.28);
 }
 
 .sj-btn-brosur:hover {
-  background: #F1F5F9;
-  border-color: #94A3B8;
-  color: #0F172A !important;
+  background: linear-gradient(135deg, #5B135E 0%, #7D2280 100%);
+  color: #FFFFFF !important;
   transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(125, 34, 128, 0.42);
 }
 
 .sj-btn-brosur svg {
   width: 15px;
   height: 15px;
-  stroke: #475569;
+  stroke: #FFFFFF;
+}
+
+.sj-btn-daftar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  padding: 0 16px;
+  background: linear-gradient(135deg, #F5A623 0%, #D97706 100%);
+  color: #FFFFFF !important;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: 11px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.32);
+  border: none;
+}
+
+.sj-btn-daftar:hover {
+  background: linear-gradient(135deg, #E09618 0%, #B45309 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45);
+}
+
+.sj-btn-daftar svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.sj-btn-daftar:hover svg {
+  transform: translateX(3px);
 }
 
 @media (max-width: 1024px) {

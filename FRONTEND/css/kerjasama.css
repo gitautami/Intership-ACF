@@ -6,14 +6,14 @@
 .kerjasama-header-banner {
   position: relative;
   width: 100%;
-  min-height: clamp(560px, 56.25vw, 840px);
+  min-height: clamp(560px, 48vw, 720px);
   display: flex;
   align-items: flex-end;
-  padding: 170px 0 65px;
+  padding: 160px 0 55px;
   background-color: #1A051C;
-  background-image: linear-gradient(to top, rgba(20, 5, 25, 0.95) 0%, rgba(45, 12, 52, 0.62) 50%, rgba(25, 6, 30, 0.20) 100%), url('../assets/form-kerjasama/Kemitraan 2.jpg');
+  background-image: linear-gradient(to top, rgba(18, 4, 24, 0.95) 0%, rgba(26, 6, 34, 0.85) 32%, rgba(35, 8, 45, 0.40) 60%, rgba(20, 5, 25, 0.20) 80%, rgba(20, 5, 25, 0.45) 100%), url('../assets/form-kerjasama/Kemitraan 2.jpg');
   background-size: cover;
-  background-position: center var(--nav-height, 84px);
+  background-position: center 72%;
   background-repeat: no-repeat;
   color: #FFFFFF;
   overflow: hidden;
@@ -105,7 +105,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 30%;
+  object-position: center 45%;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   display: block;
 }

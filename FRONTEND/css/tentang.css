@@ -1203,15 +1203,17 @@
 }
 
 .card-vokasi .model-icon-box {
-  background: rgba(245, 166, 35, 0.12);
+  background: #FFFFFF;
   color: #D97706;
-  border: 1px solid rgba(245, 166, 35, 0.25);
+  border: 1px solid rgba(245, 166, 35, 0.28);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.12);
 }
 
 .card-digital .model-icon-box {
-  background: rgba(99, 102, 241, 0.1);
+  background: #FFFFFF;
   color: #4F46E5;
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.12);
 }
 
 .model-icon-box svg {
@@ -1222,6 +1224,14 @@
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.model-icon-box img,
+.model-brand-icon-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
 }
 
 .model-pill-badge {
@@ -1252,6 +1262,33 @@
   background: rgba(99, 102, 241, 0.1);
   color: #4F46E5;
   border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.model-pill-badge.model-pill-badge-logo {
+  padding: 4px 12px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+}
+
+.card-vokasi .model-pill-badge.model-pill-badge-logo {
+  border: 1px solid rgba(245, 166, 35, 0.35);
+  box-shadow: 0 2px 8px rgba(245, 166, 35, 0.12);
+}
+
+.card-digital .model-pill-badge.model-pill-badge-logo {
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+}
+
+.model-badge-logo-img {
+  height: 20px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  display: block;
 }
 
 .model-card-title {

@@ -151,5 +151,214 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     document.body.appendChild(waAnchor);
   }
+
+  // 7. BILINGUAL CONTROLLER (INDONESIAN <-> ENGLISH via Segmented Pill & Google Translate)
+  const initBilingualFeature = () => {
+    // Current saved language
+    let currentLang = localStorage.getItem('acf_language') || 'id';
+
+    // Helper: Set Cookie for Google Translate across root, subpaths, and domain
+    const setTranslateCookie = (lang) => {
+      const domain = window.location.hostname;
+      const path = window.location.pathname;
+      const dir = path.substring(0, path.lastIndexOf('/') + 1);
+      const past = 'Thu, 01 Jan 1970 00:00:00 UTC';
+
+      if (lang === 'en') {
+        document.cookie = `googtrans=/id/en; path=/;`;
+        if (domain && domain !== 'localhost') {
+          document.cookie = `googtrans=/id/en; path=/; domain=${domain};`;
+        }
+        if (dir && dir !== '/') {
+          document.cookie = `googtrans=/id/en; path=${dir};`;
+        }
+      } else {
+        document.cookie = `googtrans=; expires=${past}; path=/;`;
+        document.cookie = `googtrans=; expires=${past}; path=/; domain=${domain};`;
+        if (dir && dir !== '/') {
+          document.cookie = `googtrans=; expires=${past}; path=${dir};`;
+          document.cookie = `googtrans=; expires=${past}; path=${dir}; domain=${domain};`;
+        }
+      }
+    };
+
+    // Ensure cookie is aligned with saved preference before Google Translate initializes
+    setTranslateCookie(currentLang);
+
+    // Sync button visual state across all buttons immediately
+    const syncButtonStates = (lang) => {
+      document.querySelectorAll('.lang-pill-btn, .lang-btn').forEach(btn => {
+        const isMatch = btn.getAttribute('data-lang') === lang;
+        btn.classList.toggle('active', isMatch);
+        btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+      });
+    };
+
+    // Instant UI translation for CTA buttons (zero-delay feedback)
+    const applyInstantUITranslation = (lang) => {
+      document.querySelectorAll('.btn-donasi span, .btn-sidebar-donasi span').forEach(s => {
+        s.textContent = lang === 'en' ? 'Donate Now' : 'Salurkan Donasi';
+      });
+    };
+
+    // Helper: Ensure Google Translate container exists
+    if (!document.getElementById('google_translate_element')) {
+      const gtDiv = document.createElement('div');
+      gtDiv.id = 'google_translate_element';
+      gtDiv.style.display = 'none';
+      document.body.appendChild(gtDiv);
+    }
+
+    // Helper: Define Google Translate callback
+    if (!window.googleTranslateElementInit) {
+      window.googleTranslateElementInit = function() {
+        if (window.google && window.google.translate) {
+          new window.google.translate.TranslateElement({
+            pageLanguage: 'id',
+            includedLanguages: 'id,en',
+            autoDisplay: false
+          }, 'google_translate_element');
+        }
+      };
+
+      // Load Google Translate script dynamically
+      const gtScript = document.createElement('script');
+      gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      gtScript.async = true;
+      document.head.appendChild(gtScript);
+    }
+
+    // Auto-inject segmented pill in desktop .nav-actions if not present
+    const navActions = document.querySelector('.nav-actions');
+    const btnDonasi = document.querySelector('.btn-donasi');
+    if (navActions && !navActions.querySelector('.lang-pill-switch')) {
+      const switcher = document.createElement('div');
+      switcher.className = 'lang-pill-switch';
+      switcher.setAttribute('role', 'group');
+      switcher.setAttribute('aria-label', 'Pilihan Bahasa');
+      switcher.innerHTML = `
+        <button type="button" class="lang-pill-btn ${currentLang === 'id' ? 'active' : ''}" data-lang="id" aria-pressed="${currentLang === 'id'}" title="Bahasa Indonesia">ID</button>
+        <button type="button" class="lang-pill-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" aria-pressed="${currentLang === 'en'}" title="English">EN</button>
+      `;
+      if (btnDonasi && btnDonasi.nextSibling) {
+        navActions.insertBefore(switcher, btnDonasi.nextSibling);
+      } else {
+        navActions.appendChild(switcher);
+      }
+    }
+
+    // Auto-inject in sidebar drawer for mobile users
+    const sidebarHeader = document.querySelector('.sidebar-header');
+    if (sidebarHeader && !document.querySelector('.sidebar-lang-row')) {
+      const sbLangRow = document.createElement('div');
+      sbLangRow.className = 'sidebar-lang-row';
+      sbLangRow.innerHTML = `
+        <div class="sidebar-lang-label">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          <span>Bahasa / Language</span>
+        </div>
+        <div class="lang-pill-switch" role="group" aria-label="Pilihan Bahasa Mobile">
+          <button type="button" class="lang-pill-btn ${currentLang === 'id' ? 'active' : ''}" data-lang="id" aria-pressed="${currentLang === 'id'}" title="Bahasa Indonesia">ID</button>
+          <button type="button" class="lang-pill-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" aria-pressed="${currentLang === 'en'}" title="English">EN</button>
+        </div>
+      `;
+      const searchBox = document.querySelector('.sidebar-search-box');
+      if (searchBox && searchBox.parentNode) {
+        searchBox.parentNode.insertBefore(sbLangRow, searchBox);
+      } else if (sidebarHeader.nextSibling) {
+        sidebarHeader.parentNode.insertBefore(sbLangRow, sidebarHeader.nextSibling);
+      }
+    }
+
+    // Immediately synchronize visual state and UI text
+    syncButtonStates(currentLang);
+    applyInstantUITranslation(currentLang);
+
+    // Function to trigger Google Translate widget combo safely
+    const triggerWidgetTranslation = (lang) => {
+      let attempts = 0;
+      const poll = setInterval(() => {
+        attempts++;
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          if (combo.value !== lang) {
+            combo.value = lang;
+            combo.dispatchEvent(new Event('change'));
+          }
+          clearInterval(poll);
+        }
+        if (attempts > 30) clearInterval(poll);
+      }, 200);
+    };
+
+    // Apply language change on user click
+    function applyLanguage(lang) {
+      if (lang === currentLang) return;
+      currentLang = lang;
+      localStorage.setItem('acf_language', lang);
+      setTranslateCookie(lang);
+      syncButtonStates(lang);
+      applyInstantUITranslation(lang);
+
+      if (lang === 'id') {
+        // Bersihkan translasi seketika dan reload ke tampilan asli Bahasa Indonesia
+        window.location.reload();
+      } else {
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          combo.value = 'en';
+          combo.dispatchEvent(new Event('change'));
+        } else {
+          window.location.reload();
+        }
+      }
+    }
+
+    // Attach click events on all language buttons
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.lang-pill-btn, .lang-btn');
+      if (btn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const targetLang = btn.getAttribute('data-lang');
+        if (targetLang) {
+          applyLanguage(targetLang);
+        }
+      }
+    });
+
+    // Ensure links preserve language cookie state upon navigation
+    document.addEventListener('click', (e) => {
+      const anchor = e.target.closest('a');
+      if (anchor && anchor.href && !anchor.href.startsWith('#') && !anchor.href.startsWith('javascript:')) {
+        setTranslateCookie(currentLang);
+      }
+    });
+
+    // Trigger translation on initial page load if language is English
+    if (currentLang === 'en') {
+      triggerWidgetTranslation('en');
+    }
+
+    // Cleanup Google Translate bar artifacts and keep layout clean
+    const removeGoogleBars = () => {
+      if (document.body.style.top && document.body.style.top !== '0px') {
+        document.body.style.setProperty('top', '0px', 'important');
+      }
+      if (document.documentElement.style.top && document.documentElement.style.top !== '0px') {
+        document.documentElement.style.setProperty('top', '0px', 'important');
+      }
+      const banners = document.querySelectorAll('.goog-te-banner-frame, iframe.skiptranslate, .VIpgJd-ZVi9od-ORHb-OEVmcd, .VIpgJd-ZVi9od-l4eHX-hSRGPd');
+      banners.forEach(b => {
+        b.style.setProperty('display', 'none', 'important');
+        b.style.setProperty('visibility', 'hidden', 'important');
+        b.style.setProperty('height', '0px', 'important');
+        b.style.setProperty('pointer-events', 'none', 'important');
+      });
+    };
+    setInterval(removeGoogleBars, 250);
+  };
+
+  initBilingualFeature();
 });
 

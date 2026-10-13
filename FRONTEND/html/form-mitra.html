@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
   <!-- CSS Stylesheets -->
-  <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/styles.css?v=5">
+  <link rel="stylesheet" href="../css/navbar.css?v=10">
   <link rel="stylesheet" href="../css/kerjasama.css">
   <link rel="stylesheet" href="../css/form-kerjasama.css">
 </head>
@@ -129,6 +129,12 @@
           <a href="donasi.html" class="btn-donasi" aria-label="Salurkan Donasi">
             <span>Salurkan Donasi</span>
           </a>
+
+          <!-- Bilingual Switcher (ID | EN) -->
+          <div class="lang-pill-switch" role="group" aria-label="Pilihan Bahasa">
+            <button type="button" class="lang-pill-btn active" data-lang="id" aria-pressed="true" title="Bahasa Indonesia">ID</button>
+            <button type="button" class="lang-pill-btn" data-lang="en" aria-pressed="false" title="English">EN</button>
+          </div>
 
           <button class="btn-sidebar-trigger btn-open-sidebar" aria-label="Buka Menu Kesamping">
             <div class="hamburger-icon">
@@ -546,7 +552,7 @@
   </footer>
 
   <!-- ========== JAVASCRIPT FILES ========== -->
-  <script src="../js/navbar.js"></script>
+  <script src="../js/navbar.js?v=10"></script>
   <script src="../js/main.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/form-kerjasama.js"></script>

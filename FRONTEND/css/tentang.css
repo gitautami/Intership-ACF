@@ -397,17 +397,21 @@
   font-family: 'Poppins', sans-serif;
 }
 
+.milestone-zigzag-section .container {
+  max-width: 1340px;
+}
+
 .milestone-zigzag-container {
   position: relative;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 30px auto 0;
 }
 
-/* Connecting Line Across the Middle (Desktop) */
+/* Connecting Line Across the Middle (Desktop 5 Columns) */
 .milestone-zigzag-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
   position: relative;
 }
 
@@ -415,10 +419,10 @@
   content: '';
   position: absolute;
   top: 50%;
-  left: 6%;
-  right: 6%;
+  left: 5%;
+  right: 5%;
   height: 4px;
-  background: linear-gradient(90deg, #7D2280 0%, #D97706 35%, #059669 70%, #2563EB 100%);
+  background: linear-gradient(90deg, #7D2280 0%, #D97706 25%, #059669 50%, #6366F1 75%, #0284C7 100%);
   transform: translateY(-50%);
   border-radius: 4px;
   z-index: 1;
@@ -446,15 +450,15 @@
 .milestone-zigzag-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 20px;
-  padding: 24px 20px;
+  border-radius: 18px;
+  padding: 16px 14px;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
   font-family: 'Poppins', sans-serif;
   flex: 1;
-  min-height: 220px;
+  min-height: 250px;
   display: flex;
   flex-direction: column;
 }
@@ -484,8 +488,8 @@
 }
 
 .m-icon-box {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -507,22 +511,22 @@
 }
 
 .m-badge-year {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 800;
   color: var(--phase-color);
   background: var(--phase-bg);
   border: 1px solid var(--phase-border);
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: 9999px;
   letter-spacing: 0.3px;
 }
 
 .m-card-photo-wrap {
   width: 100%;
-  height: 115px;
+  height: 140px;
   border-radius: 12px;
   overflow: hidden;
-  margin: 4px 0 12px;
+  margin: 6px 0 14px;
   background: #F8FAFC;
   border: 1px solid #E2E8F0;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -536,8 +540,15 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
   transition: transform 0.4s ease;
+}
+
+.m-card-photo.contain-fit {
+  object-fit: contain;
+  padding: 12px;
+  background: #FFFFFF;
 }
 
 .milestone-card-item:hover .m-card-photo {
@@ -546,26 +557,26 @@
 
 .m-tag-pill {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #64748B;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
 }
 
 .m-title {
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   font-weight: 700;
   color: #1E293B;
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
   line-height: 1.35;
 }
 
 .m-desc {
-  font-size: 0.84rem;
+  font-size: 0.81rem;
   color: #475569;
-  line-height: 1.6;
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -624,13 +635,19 @@
 }
 
 .phase-4 {
-  --phase-color: #2563EB;
-  --phase-bg: rgba(37, 99, 235, 0.08);
-  --phase-border: rgba(37, 99, 235, 0.2);
+  --phase-color: #6366F1;
+  --phase-bg: rgba(99, 102, 241, 0.08);
+  --phase-border: rgba(99, 102, 241, 0.2);
+}
+
+.phase-5 {
+  --phase-color: #0284C7;
+  --phase-bg: rgba(2, 132, 199, 0.08);
+  --phase-border: rgba(2, 132, 199, 0.2);
 }
 
 /* Mobile & Tablet Responsive */
-@media (max-width: 991px) {
+@media (max-width: 1024px) {
   .milestone-zigzag-grid {
     grid-template-columns: 1fr;
     gap: 28px;
@@ -644,7 +661,7 @@
     width: 3px;
     height: 100%;
     transform: none;
-    background: linear-gradient(180deg, #7D2280 0%, #D97706 35%, #059669 70%, #2563EB 100%);
+    background: linear-gradient(180deg, #7D2280 0%, #D97706 25%, #059669 50%, #6366F1 75%, #0284C7 100%);
   }
 
   .milestone-card-item.pos-top,

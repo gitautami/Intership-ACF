@@ -13,7 +13,7 @@
 
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="../css/styles.css?v=5">
-  <link rel="stylesheet" href="../css/navbar.css?v=10">
+  <link rel="stylesheet" href="../css/navbar.css?v=11">
   <link rel="stylesheet" href="../css/home.css">
   <link rel="stylesheet" href="../css/unit.css">
 </head>
@@ -166,6 +166,18 @@
       <div class="sidebar-brand">
         <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="sidebar-logo-img">
       </div>
+
+    <!-- Pilihan Bahasa Mobile -->
+    <div class="sidebar-lang-row">
+      <div class="sidebar-lang-label">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        <span>Bahasa / Language</span>
+      </div>
+      <div class="lang-pill-switch" role="group" aria-label="Pilihan Bahasa Mobile">
+        <button type="button" class="lang-pill-btn active" data-lang="id" aria-pressed="true" title="Bahasa Indonesia">ID</button>
+        <button type="button" class="lang-pill-btn" data-lang="en" aria-pressed="false" title="English">EN</button>
+      </div>
+    </div>
       <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Tutup Menu">
         <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
@@ -1078,7 +1090,7 @@
   </footer>
 
   <!-- JavaScript Modules -->
-  <script src="../js/navbar.js?v=10"></script>
+  <script src="../js/navbar.js?v=11"></script>
   <script src="../js/unit.js"></script>
   <script src="../js/main.js"></script>
 </body>

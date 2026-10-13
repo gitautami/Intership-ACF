@@ -1554,3 +1554,79 @@
     padding: 26px 20px;
   }
 }
+
+/* =============================================
+   WTP di Dalam Kotak Legalitas Resmi (Baris Bawah)
+   ============================================= */
+.legal-wtp-row {
+  grid-column: 1 / -1;
+  border-top: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  padding: 36px 32px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.wtp-text-col {
+  text-align: left;
+}
+
+.wtp-desc-text {
+  font-size: 1.02rem;
+  line-height: 1.85;
+  color: var(--text-body);
+  margin: 0;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.wtp-img-col {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.wtp-img-card {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wtp-img-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(125, 34, 128, 0.12);
+}
+
+.wtp-badge-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+}
+
+@media (max-width: 860px) {
+  .legal-wtp-row {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px 20px;
+    text-align: center;
+  }
+
+  .wtp-text-col {
+    text-align: center;
+  }
+
+  .wtp-desc-text {
+    text-align: center;
+  }
+
+  .wtp-img-col {
+    justify-content: center;
+  }
+}

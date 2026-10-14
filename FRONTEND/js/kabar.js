@@ -789,95 +789,256 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {}
   }
 
-  // 5.1 Dynamic Banner for Latest Article (Automatically updates when new articles exist)
-  function updateLatestArticleBanner(targetArticle = null) {
-    let latest = targetArticle;
-    if (!latest) {
-      const published = currentArticles
-        .filter(art => (art.status || 'Terbit') !== 'Draf')
-        .sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
-      latest = published[0] || DEFAULT_ARTICLES[0];
-    }
+  // 5.1 Dynamic Banner: 3-Slide Slider for Latest Articles (Auto-updates with newest news)
+  let kabarSliderInterval = null;
+  let kabarCurrentSlide = 0;
+  let kabarTopArticles = [];
+  let kabarSliderControlsInitialized = false;
 
-    if (!latest) return;
+  function getArticleCategoryLabel(art) {
+    if (!art) return 'Kabar Terkini';
+    if (art.categoryLabel) return art.categoryLabel;
+    const slug = art.category || '';
+    const found = currentCategories.find(c => c.slug === slug);
+    if (found && found.label) return found.label;
+    if (slug === 'kabar-sekolah-daya-setara') return 'Artikel Sekolah Daya Setara';
+    if (slug === 'kabar-sekolah-juara') return 'Artikel Sekolah Juara';
+    if (slug === 'artikel' || slug === 'artikel-pendidikan') return 'Artikel Pendidikan';
+    if (slug === 'liputan' || slug === 'liputan-lapangan') return 'Liputan Lapangan';
+    if (slug === 'vokasi' || slug === 'program-vokasi') return 'Program Vokasi';
+    if (slug === 'opini') return 'Kolaborasi & Opini';
+    return slug || 'Kabar Terkini';
+  }
 
-    const bannerImg = document.getElementById('kabarBannerImg');
-    const bannerAmbientImg = document.getElementById('kabarBannerAmbientImg');
-    const bannerPhotoCard = document.getElementById('kabarBannerPhotoCard');
-    const bannerBgImg = document.getElementById('kabarBannerBgImg');
-    const bannerCatText = document.getElementById('kabarBannerCatText');
-    const bannerTitle = document.getElementById('kabarBannerTitle');
-    const bannerExcerpt = document.getElementById('kabarBannerExcerpt');
-    const bannerMeta = document.getElementById('kabarBannerMeta');
-    const btnBannerRead = document.getElementById('btnBannerRead');
+  function updateLatestArticleBanner() {
+    // 1. Get published articles sorted by date descending (newest on top)
+    const published = currentArticles
+      .filter(art => (art.status || 'Terbit') !== 'Draf')
+      .sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
 
-    const coverUrl = latest.cover || '../assets/kabar-sekolahdayasetara/25.png';
-
-    // 1. Uncropped featured photo showcase
-    if (bannerImg) {
-      bannerImg.src = coverUrl;
-      bannerImg.alt = latest.title || 'Foto Artikel Terbaru';
-      bannerImg.onerror = () => {
-        bannerImg.src = '../assets/kabar-sekolahdayasetara/25.png';
-      };
-    }
-
-    // 2. Ambient background glow
-    if (bannerAmbientImg) {
-      bannerAmbientImg.src = coverUrl;
-      bannerAmbientImg.onerror = () => {
-        bannerAmbientImg.src = '../assets/kabar-sekolahdayasetara/25.png';
-      };
-    }
-
-    if (bannerBgImg) {
-      if (bannerBgImg.getAttribute('data-loaded-src') !== coverUrl) {
-        bannerBgImg.setAttribute('data-loaded-src', coverUrl);
-        const preloader = new Image();
-        preloader.onload = () => {
-          bannerBgImg.src = coverUrl;
-        };
-        preloader.onerror = () => {
-          bannerBgImg.src = '../assets/kabar-sekolahdayasetara/25.png';
-        };
-        preloader.src = coverUrl;
+    // Get top 3 latest articles
+    let topArticles = published.slice(0, 3);
+    if (topArticles.length < 3) {
+      // If fewer than 3, backfill from DEFAULT_ARTICLES to always guarantee 3 slides
+      for (const defArt of DEFAULT_ARTICLES) {
+        if (topArticles.length >= 3) break;
+        if (!topArticles.some(a => String(a.id) === String(defArt.id))) {
+          topArticles.push(defArt);
+        }
       }
     }
 
-    // 3. Clickable card opens modal
-    if (bannerPhotoCard) {
-      bannerPhotoCard.onclick = () => openArticleDetail(latest);
-      bannerPhotoCard.onkeydown = (e) => {
+    if (topArticles.length === 0) return;
+    kabarTopArticles = topArticles;
+
+    const sliderWrapper = document.getElementById('kabarSliderWrapper');
+    const dotsContainer = document.getElementById('kabarSliderDots');
+    if (!sliderWrapper) return;
+
+    if (kabarCurrentSlide >= kabarTopArticles.length) {
+      kabarCurrentSlide = 0;
+    }
+
+    // Build the 3 slides
+    sliderWrapper.innerHTML = kabarTopArticles.map((art, index) => {
+      const coverUrl = art.cover || '../assets/kabar-sekolahdayasetara/25.png';
+      const catLabel = getArticleCategoryLabel(art);
+      const dateStr = art.date || 'Terkini';
+      const authorStr = art.author ? `Oleh ${art.author}` : 'ACF Eduhub';
+      const isActive = index === kabarCurrentSlide;
+      const rankBadge = index === 0 ? 'Terbaru #1' : index === 1 ? 'Terbaru #2' : 'Terbaru #3';
+
+      return `
+        <div class="kabar-hero-slide ${isActive ? 'active' : ''}" data-slide-index="${index}">
+          <div class="kabar-banner-bg-wrapper">
+            <img class="kabar-banner-bg-img" src="${escapeHTML(coverUrl)}" alt="${escapeHTML(art.title || 'Foto Berita Terbaru')}" loading="${index === 0 ? 'eager' : 'lazy'}" onerror="this.src='../assets/kabar-sekolahdayasetara/25.png'">
+            <div class="kabar-banner-overlay"></div>
+          </div>
+          <div class="container kabar-banner-container">
+            <div class="kabar-banner-content">
+              <div class="kabar-banner-badge-row">
+                <span class="section-label">Kabar Terbaru</span>
+              </div>
+              <h1 class="kabar-banner-title" data-art-index="${index}" tabindex="0" role="button" title="Klik untuk membaca artikel lengkap">
+                ${escapeHTML(art.title || 'Warta & Publikasi ACF Eduhub')}
+              </h1>
+              <p class="kabar-banner-excerpt">
+                ${escapeHTML(art.excerpt || '')}
+              </p>
+              <div class="kabar-banner-actions">
+                <button type="button" class="btn-banner-read" data-art-index="${index}" aria-label="Baca Artikel ${escapeHTML(art.title || '')}">
+                  <span>Baca Artikel Ini</span>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                <div class="kabar-banner-meta-info">
+                  <span class="meta-date">${escapeHTML(dateStr)}</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-author">${escapeHTML(authorStr)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Build the 3 pagination dots
+    if (dotsContainer) {
+      dotsContainer.innerHTML = kabarTopArticles.map((art, index) => {
+        const isActive = index === kabarCurrentSlide;
+        return `
+          <button type="button" class="kabar-slider-dot ${isActive ? 'active' : ''}" data-slide="${index}" role="tab" aria-label="Slide Berita ${index + 1}: ${escapeHTML(art.title || '')}" aria-selected="${isActive ? 'true' : 'false'}"></button>
+        `;
+      }).join('');
+    }
+
+    // Attach click events on title and read buttons to open detail modal
+    sliderWrapper.querySelectorAll('.btn-banner-read, .kabar-banner-title').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const idx = parseInt(e.currentTarget.getAttribute('data-art-index'), 10);
+        if (!isNaN(idx) && kabarTopArticles[idx]) {
+          openArticleDetail(kabarTopArticles[idx]);
+        }
+      });
+      el.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          openArticleDetail(latest);
+          const idx = parseInt(e.currentTarget.getAttribute('data-art-index'), 10);
+          if (!isNaN(idx) && kabarTopArticles[idx]) {
+            openArticleDetail(kabarTopArticles[idx]);
+          }
+        }
+      });
+    });
+
+    // Initialize or refresh slider navigation logic
+    setupKabarSliderNavigation();
+  }
+
+  function goToKabarSlide(index) {
+    if (!kabarTopArticles || kabarTopArticles.length === 0) return;
+    const total = kabarTopArticles.length;
+    if (index >= total) {
+      kabarCurrentSlide = 0;
+    } else if (index < 0) {
+      kabarCurrentSlide = total - 1;
+    } else {
+      kabarCurrentSlide = index;
+    }
+
+    const sliderWrapper = document.getElementById('kabarSliderWrapper');
+    const dotsContainer = document.getElementById('kabarSliderDots');
+
+    if (sliderWrapper) {
+      const slides = sliderWrapper.querySelectorAll('.kabar-hero-slide');
+      slides.forEach((s, i) => {
+        if (i === kabarCurrentSlide) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+    }
+
+    if (dotsContainer) {
+      const dots = dotsContainer.querySelectorAll('.kabar-slider-dot');
+      dots.forEach((d, i) => {
+        if (i === kabarCurrentSlide) {
+          d.classList.add('active');
+          d.setAttribute('aria-selected', 'true');
+        } else {
+          d.classList.remove('active');
+          d.setAttribute('aria-selected', 'false');
+        }
+      });
+    }
+  }
+
+  function nextKabarSlide() {
+    goToKabarSlide(kabarCurrentSlide + 1);
+  }
+
+  function prevKabarSlide() {
+    goToKabarSlide(kabarCurrentSlide - 1);
+  }
+
+  function startKabarAutoplay() {
+    stopKabarAutoplay();
+    kabarSliderInterval = setInterval(() => {
+      nextKabarSlide();
+    }, 5500);
+  }
+
+  function stopKabarAutoplay() {
+    if (kabarSliderInterval) {
+      clearInterval(kabarSliderInterval);
+      kabarSliderInterval = null;
+    }
+  }
+
+  function setupKabarSliderNavigation() {
+    const banner = document.getElementById('kabarHeroBanner');
+    const prevBtn = document.getElementById('kabarSliderPrev');
+    const nextBtn = document.getElementById('kabarSliderNext');
+    const dotsContainer = document.getElementById('kabarSliderDots');
+
+    // Dot click delegation
+    if (dotsContainer) {
+      dotsContainer.onclick = (e) => {
+        const dot = e.target.closest('.kabar-slider-dot');
+        if (dot) {
+          const idx = parseInt(dot.getAttribute('data-slide'), 10);
+          if (!isNaN(idx)) {
+            goToKabarSlide(idx);
+            startKabarAutoplay();
+          }
         }
       };
     }
 
-    // 4. Texts & badges
-    if (bannerCatText) {
-      bannerCatText.textContent = latest.categoryLabel || getCatLabel(latest.category) || 'Artikel Terbaru';
+    if (!kabarSliderControlsInitialized) {
+      kabarSliderControlsInitialized = true;
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          prevKabarSlide();
+          startKabarAutoplay();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          nextKabarSlide();
+          startKabarAutoplay();
+        });
+      }
+
+      if (banner) {
+        banner.addEventListener('mouseenter', stopKabarAutoplay);
+        banner.addEventListener('mouseleave', startKabarAutoplay);
+
+        // Touch swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        banner.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        banner.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          const diff = touchStartX - touchEndX;
+          if (Math.abs(diff) > 40) {
+            if (diff > 0) {
+              nextKabarSlide();
+            } else {
+              prevKabarSlide();
+            }
+            startKabarAutoplay();
+          }
+        }, { passive: true });
+      }
     }
 
-    if (bannerTitle) {
-      bannerTitle.textContent = latest.title || 'Warta & Publikasi ACF Eduhub';
-      bannerTitle.onclick = () => openArticleDetail(latest);
-    }
-
-    if (bannerExcerpt) {
-      bannerExcerpt.textContent = latest.excerpt || '';
-    }
-
-    if (bannerMeta) {
-      const dateStr = latest.date || 'Terkini';
-      const authorStr = latest.author ? `Oleh ${latest.author}` : 'ACF Eduhub';
-      bannerMeta.innerHTML = `<span class="meta-date">${escapeHTML(dateStr)}</span><span class="meta-divider">•</span><span class="meta-author">${escapeHTML(authorStr)}</span>`;
-    }
-
-    if (btnBannerRead) {
-      btnBannerRead.onclick = () => openArticleDetail(latest);
-    }
+    startKabarAutoplay();
   }
 
   // Expose globally for external sync or admin listeners

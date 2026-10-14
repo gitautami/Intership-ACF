@@ -295,44 +295,57 @@
   <!-- ========== MAIN CONTENT ========== -->
   <main>
     
-    <!-- Hero Banner with Latest Article Photo as Full Background (Updates automatically) -->
-    <section class="kabar-hero-banner" id="kabarHeroBanner">
-      <!-- Full Background Photo of Latest Article (Positioned to preserve heads/faces) -->
-      <div class="kabar-banner-bg-wrapper">
-        <img id="kabarBannerBgImg" class="kabar-banner-bg-img" src="../assets/kabar-sekolahdayasetara/25.png" alt="Foto Artikel Terbaru ACF Eduhub" loading="eager">
-        <div class="kabar-banner-overlay"></div>
-      </div>
-
-      <!-- Banner Content (Bottom Aligned, Cinematic) -->
-      <div class="container kabar-banner-container">
-        <div class="kabar-banner-content reveal visible">
-          <div class="kabar-banner-badge-row">
-            <span class="section-label">Kabar &amp; Publikasi</span>
-            <span class="kabar-latest-pill" id="kabarBannerPill">
-              <span class="kabar-pulse-dot"></span>
-              <span id="kabarBannerCatText">Artikel Terbaru</span>
-            </span>
+    <!-- Hero Banner Slider with 3 Latest Articles (Updates automatically) -->
+    <section class="kabar-hero-banner" id="kabarHeroBanner" aria-label="Slider Berita Terbaru ACF Eduhub">
+      <!-- Slider Wrapper containing the 3 slides -->
+      <div class="kabar-slider-wrapper" id="kabarSliderWrapper">
+        <!-- Initial Slide 1 (Will be dynamically populated & updated from latest articles) -->
+        <div class="kabar-hero-slide active" data-slide-index="0">
+          <div class="kabar-banner-bg-wrapper">
+            <img class="kabar-banner-bg-img" src="../assets/kabar-sekolahdayasetara/25.png" alt="Foto Berita Terbaru ACF Eduhub" loading="eager">
+            <div class="kabar-banner-overlay"></div>
           </div>
-
-          <h1 class="kabar-banner-title" id="kabarBannerTitle">
-            Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan
-          </h1>
-
-          <p class="kabar-banner-excerpt" id="kabarBannerExcerpt">
-            Pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C di Sekolah Daya Setara.
-          </p>
-
-          <div class="kabar-banner-actions">
-            <button type="button" class="btn-banner-read" id="btnBannerRead">
-              <span>Baca Artikel Ini</span>
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
-            <div class="kabar-banner-meta-info" id="kabarBannerMeta">
-              <span class="meta-date">Aug 7, 2026</span>
-              <span class="meta-divider">•</span>
-              <span class="meta-author">Oleh cerianak</span>
+          <div class="container kabar-banner-container">
+            <div class="kabar-banner-content">
+              <div class="kabar-banner-badge-row">
+                <span class="section-label">Kabar Terbaru</span>
+              </div>
+              <h1 class="kabar-banner-title" tabindex="0" role="button">
+                Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan
+              </h1>
+              <p class="kabar-banner-excerpt">
+                Pelepasan peserta didik Tahun Ajaran 2025/2026 yang telah berhasil menyelesaikan perjalanan belajarnya melalui jalur pendidikan kesetaraan Paket B dan Paket C di Sekolah Daya Setara.
+              </p>
+              <div class="kabar-banner-actions">
+                <button type="button" class="btn-banner-read">
+                  <span>Baca Artikel Ini</span>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                <div class="kabar-banner-meta-info">
+                  <span class="meta-date">Aug 7, 2026</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-author">Oleh cerianak</span>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Slider Controls (Prev / Next Buttons) -->
+      <button type="button" class="kabar-slider-nav-btn prev" id="kabarSliderPrev" aria-label="Berita Sebelumnya">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button type="button" class="kabar-slider-nav-btn next" id="kabarSliderNext" aria-label="Berita Selanjutnya">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      <!-- Slider Pagination Dots -->
+      <div class="kabar-slider-dots-wrapper">
+        <div class="kabar-slider-dots" id="kabarSliderDots" role="tablist" aria-label="Pilihan Berita Terkini">
+          <button type="button" class="kabar-slider-dot active" data-slide="0" role="tab" aria-label="Slide Berita 1" aria-selected="true"></button>
+          <button type="button" class="kabar-slider-dot" data-slide="1" role="tab" aria-label="Slide Berita 2" aria-selected="false"></button>
+          <button type="button" class="kabar-slider-dot" data-slide="2" role="tab" aria-label="Slide Berita 3" aria-selected="false"></button>
         </div>
       </div>
     </section>

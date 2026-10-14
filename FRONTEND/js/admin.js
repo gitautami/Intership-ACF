@@ -822,6 +822,9 @@
 
   function saveArticlesData() {
     // Data artikel dikelola langsung lewat MySQL Backend API
+    try {
+      localStorage.setItem('acf_article_updated', Date.now().toString());
+    } catch (e) {}
     localStorage.removeItem('acf_articles_data');
   }
 

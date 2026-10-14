@@ -6,14 +6,13 @@
 .kerjasama-header-banner {
   position: relative;
   width: 100%;
-  min-height: clamp(560px, 48vw, 720px);
+  min-height: clamp(500px, 45vw, 680px);
   display: flex;
   align-items: flex-end;
   padding: 160px 0 55px;
-  background-color: #1A051C;
-  background-image: linear-gradient(to top, rgba(18, 4, 24, 0.95) 0%, rgba(26, 6, 34, 0.85) 32%, rgba(35, 8, 45, 0.40) 60%, rgba(20, 5, 25, 0.20) 80%, rgba(20, 5, 25, 0.45) 100%), url('../assets/form-kerjasama/Kemitraan 2.jpg');
+  background-image: linear-gradient(to top, rgba(18, 4, 24, 0.92) 0%, rgba(26, 6, 34, 0.80) 32%, rgba(45, 10, 50, 0.38) 65%, rgba(82, 18, 86, 0.40) 100%), url('../assets/form-kerjasama/Kemitraan 2.jpg');
   background-size: cover;
-  background-position: center 72%;
+  background-position: center 35%;
   background-repeat: no-repeat;
   color: #FFFFFF;
   overflow: hidden;
@@ -92,6 +91,11 @@
   box-shadow: 0 20px 45px rgba(125, 34, 128, 0.12);
 }
 
+.kerjasama-card-box#relawan:hover {
+  border-color: rgba(245, 166, 35, 0.5);
+  box-shadow: 0 20px 45px rgba(245, 166, 35, 0.18);
+}
+
 /* Image Container Inside Card */
 .kerjasama-card-img-wrap {
   position: relative;
@@ -132,8 +136,9 @@
 }
 
 .kerjasama-img-badge.gold {
-  background: rgba(217, 119, 6, 0.9);
+  background: rgba(245, 166, 35, 0.95);
   color: #FFFFFF;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Card Content Area */
@@ -210,7 +215,7 @@
 }
 
 #relawan .benefit-dot {
-  background: #D97706;
+  background: #F5A623;
 }
 
 .btn-kerjasama-action {
@@ -224,26 +229,29 @@
   font-weight: 700;
   font-size: 0.95rem;
   text-decoration: none;
-  background: linear-gradient(135deg, #7D2280 0%, #9333EA 100%);
+  background: linear-gradient(135deg, #7D2280 0%, #9B389E 100%);
   color: #FFFFFF;
-  box-shadow: 0 6px 18px rgba(125, 34, 128, 0.25);
+  box-shadow: 0 6px 18px rgba(125, 34, 128, 0.28);
   transition: all 0.25s ease;
 }
 
 .btn-kerjasama-action:hover {
-  background: linear-gradient(135deg, #6B1D6E 0%, #7E22CE 100%);
+  background: linear-gradient(135deg, #631766 0%, #7D2280 100%);
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(125, 34, 128, 0.35);
+  box-shadow: 0 10px 24px rgba(125, 34, 128, 0.4);
 }
 
 .btn-kerjasama-action.gold-btn {
-  background: linear-gradient(135deg, #7D2280 0%, #8A2BE2 50%, #D97706 100%);
-  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.25);
+  background: linear-gradient(135deg, #E89510 0%, #F5A623 50%, #FBB515 100%);
+  color: #FFFFFF;
+  text-shadow: 0 1px 2px rgba(180, 83, 9, 0.35);
+  box-shadow: 0 6px 18px rgba(245, 166, 35, 0.35);
 }
 
 .btn-kerjasama-action.gold-btn:hover {
-  background: linear-gradient(135deg, #6B1D6E 0%, #7D2280 70%, #B45309 100%);
-  box-shadow: 0 10px 24px rgba(217, 119, 6, 0.35);
+  background: linear-gradient(135deg, #D97706 0%, #E89510 50%, #F5A623 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(245, 166, 35, 0.45);
 }
 
 .btn-kerjasama-action svg {
@@ -268,7 +276,7 @@
 
 @media (max-width: 640px) {
   .kerjasama-header-banner {
-    padding: 110px 0 45px;
+    padding: 105px 0 45px;
   }
 
   .kerjasama-card-img-wrap {

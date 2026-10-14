@@ -9,7 +9,7 @@
   min-height: clamp(500px, 45vw, 680px);
   display: flex;
   align-items: flex-end;
-  padding: 160px 0 55px;
+  padding: 130px 0 55px;
   background-image: linear-gradient(to top, rgba(18, 4, 24, 0.92) 0%, rgba(26, 6, 34, 0.80) 32%, rgba(45, 10, 50, 0.38) 65%, rgba(82, 18, 86, 0.40) 100%), url('../assets/form-kerjasama/Kemitraan 2.jpg');
   background-size: cover;
   background-position: center 35%;

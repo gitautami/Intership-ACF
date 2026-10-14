@@ -43,7 +43,7 @@
     --text-muted: #718096;
 
     /* Spacing */
-    --section-padding: 100px 0;
+    --section-padding: 60px 0;
     --container-width: 1200px;
     --container-padding: 0 24px;
 
@@ -197,7 +197,7 @@ p {
 }
 
 .section-header {
-    margin-bottom: 60px;
+    margin-bottom: 38px;
 }
 
 .section-header.centered {
@@ -505,14 +505,14 @@ p {
    INTRO / ABOUT SECTION
    ============================================= */
 .intro-section {
-    padding: 100px 0;
+    padding: 60px 0;
     background: var(--white);
 }
 
 .intro-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 80px;
+    gap: 48px;
     align-items: center;
 }
 
@@ -573,7 +573,7 @@ p {
    TIMELINE SECTION
    ============================================= */
 .timeline-section {
-    padding: 100px 0;
+    padding: 60px 0;
     background: var(--bg-light);
     position: relative;
 }
@@ -692,14 +692,14 @@ p {
    LEGALITY SECTION
    ============================================= */
 .legality-section {
-    padding: 100px 0;
+    padding: 60px 0;
     background: var(--white);
 }
 
 .legality-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 60px;
+    gap: 40px;
     align-items: center;
 }
 
@@ -838,7 +838,7 @@ p {
    IMPACT STATS SECTION
    ============================================= */
 .impact-section {
-    padding: 100px 0;
+    padding: 60px 0;
     background: linear-gradient(135deg, var(--navy) 0%, #243447 100%);
     color: var(--white);
     position: relative;
@@ -873,7 +873,7 @@ p {
 
 .impact-description {
     max-width: 800px;
-    margin: 0 auto 60px;
+    margin: 0 auto 36px;
     text-align: center;
     font-size: 1.1rem;
     color: rgba(255, 255, 255, 0.8);
@@ -920,7 +920,7 @@ p {
    AWARDS SECTION
    ============================================= */
 .awards-section {
-    padding: 100px 0;
+    padding: 60px 0;
     background: var(--bg-light);
 }
 
@@ -1008,14 +1008,14 @@ p {
    VISI MISI SECTIONS
    ============================================= */
 .visi-section {
-    padding: 100px 0;
+    padding: 60px 0;
     background: var(--white);
 }
 
 .visi-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 80px;
+    gap: 48px;
     align-items: center;
 }
 
@@ -1075,7 +1075,7 @@ p {
 
 /* Misi Section */
 .misi-section {
-    padding: 100px 0;
+    padding: 60px 0;
     background: var(--bg-light);
 }
 
@@ -1083,7 +1083,7 @@ p {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 28px;
-    margin-top: 60px;
+    margin-top: 36px;
 }
 
 .misi-card {
@@ -1176,7 +1176,7 @@ p {
    VALUES SECTION
    ============================================= */
 .values-section {
-    padding: 100px 0;
+    padding: 60px 0;
     background: var(--white);
 }
 
@@ -1184,7 +1184,7 @@ p {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 32px;
-    margin-top: 60px;
+    margin-top: 36px;
 }
 
 .value-card {
@@ -1256,7 +1256,7 @@ p {
    MODEL SECTION
    ============================================= */
 .model-section {
-    padding: 100px 0;
+    padding: 60px 0;
     background: var(--bg-light);
 }
 
@@ -1273,8 +1273,8 @@ p {
 }
 
 .model-highlight {
-    margin: 48px 0;
-    padding: 36px 40px;
+    margin: 32px 0;
+    padding: 32px 36px;
     background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
     border-radius: var(--radius-xl);
     color: var(--white);

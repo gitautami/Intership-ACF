@@ -135,6 +135,8 @@
   color: #475569;
   line-height: 1.8;
   margin-bottom: 18px;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .sds-text-body p:last-child {

@@ -760,6 +760,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const newIds = parsed.map(c => c.id).join(',');
             if (oldIds !== newIds) {
               currentArticles = parsed;
+              updateLatestArticleBanner();
               renderGrid();
             }
           }
@@ -788,8 +789,103 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {}
   }
 
+  // 5.1 Dynamic Banner for Latest Article (Automatically updates when new articles exist)
+  function updateLatestArticleBanner(targetArticle = null) {
+    let latest = targetArticle;
+    if (!latest) {
+      const published = currentArticles
+        .filter(art => (art.status || 'Terbit') !== 'Draf')
+        .sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
+      latest = published[0] || DEFAULT_ARTICLES[0];
+    }
+
+    if (!latest) return;
+
+    const bannerImg = document.getElementById('kabarBannerImg');
+    const bannerAmbientImg = document.getElementById('kabarBannerAmbientImg');
+    const bannerPhotoCard = document.getElementById('kabarBannerPhotoCard');
+    const bannerBgImg = document.getElementById('kabarBannerBgImg');
+    const bannerCatText = document.getElementById('kabarBannerCatText');
+    const bannerTitle = document.getElementById('kabarBannerTitle');
+    const bannerExcerpt = document.getElementById('kabarBannerExcerpt');
+    const bannerMeta = document.getElementById('kabarBannerMeta');
+    const btnBannerRead = document.getElementById('btnBannerRead');
+
+    const coverUrl = latest.cover || '../assets/kabar-sekolahdayasetara/25.png';
+
+    // 1. Uncropped featured photo showcase
+    if (bannerImg) {
+      bannerImg.src = coverUrl;
+      bannerImg.alt = latest.title || 'Foto Artikel Terbaru';
+      bannerImg.onerror = () => {
+        bannerImg.src = '../assets/kabar-sekolahdayasetara/25.png';
+      };
+    }
+
+    // 2. Ambient background glow
+    if (bannerAmbientImg) {
+      bannerAmbientImg.src = coverUrl;
+      bannerAmbientImg.onerror = () => {
+        bannerAmbientImg.src = '../assets/kabar-sekolahdayasetara/25.png';
+      };
+    }
+
+    if (bannerBgImg) {
+      if (bannerBgImg.getAttribute('data-loaded-src') !== coverUrl) {
+        bannerBgImg.setAttribute('data-loaded-src', coverUrl);
+        const preloader = new Image();
+        preloader.onload = () => {
+          bannerBgImg.src = coverUrl;
+        };
+        preloader.onerror = () => {
+          bannerBgImg.src = '../assets/kabar-sekolahdayasetara/25.png';
+        };
+        preloader.src = coverUrl;
+      }
+    }
+
+    // 3. Clickable card opens modal
+    if (bannerPhotoCard) {
+      bannerPhotoCard.onclick = () => openArticleDetail(latest);
+      bannerPhotoCard.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openArticleDetail(latest);
+        }
+      };
+    }
+
+    // 4. Texts & badges
+    if (bannerCatText) {
+      bannerCatText.textContent = latest.categoryLabel || getCatLabel(latest.category) || 'Artikel Terbaru';
+    }
+
+    if (bannerTitle) {
+      bannerTitle.textContent = latest.title || 'Warta & Publikasi ACF Eduhub';
+      bannerTitle.onclick = () => openArticleDetail(latest);
+    }
+
+    if (bannerExcerpt) {
+      bannerExcerpt.textContent = latest.excerpt || '';
+    }
+
+    if (bannerMeta) {
+      const dateStr = latest.date || 'Terkini';
+      const authorStr = latest.author ? `Oleh ${latest.author}` : 'ACF Eduhub';
+      bannerMeta.innerHTML = `<span class="meta-date">${escapeHTML(dateStr)}</span><span class="meta-divider">•</span><span class="meta-author">${escapeHTML(authorStr)}</span>`;
+    }
+
+    if (btnBannerRead) {
+      btnBannerRead.onclick = () => openArticleDetail(latest);
+    }
+  }
+
+  // Expose globally for external sync or admin listeners
+  window.updateKabarLatestBanner = updateLatestArticleBanner;
+
   function loadAndRenderArticles() {
     initLocalData();
+    updateLatestArticleBanner();
     renderCategoryChips();
     renderGrid();
     syncBackendData();
@@ -1066,5 +1162,12 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (e) {
     console.warn('Error reading URL params:', e);
   }
+
+  // Listen for storage events (e.g. from Admin Dashboard in another tab)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'acf_article_updated' || e.key === 'acf_articles_data' || e.key === 'acf_articles_reload') {
+      syncBackendData();
+    }
+  });
 });
 

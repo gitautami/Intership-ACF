@@ -1107,6 +1107,17 @@ a.sj-school-location:hover svg.sj-loc-pin {
   box-shadow: 0 5px 12px rgba(0, 0, 0, 0.45);
 }
 
+/* YouTube: Merah Resmi #FF0000 */
+.sj-social-btn.yt {
+  background: #FF0000;
+  box-shadow: 0 2px 6px rgba(255, 0, 0, 0.28);
+}
+
+.sj-social-btn.yt:hover {
+  background: #D90000;
+  box-shadow: 0 5px 12px rgba(255, 0, 0, 0.45);
+}
+
 .sj-btn-brosur {
   display: inline-flex;
   align-items: center;

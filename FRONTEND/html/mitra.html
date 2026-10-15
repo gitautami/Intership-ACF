@@ -18,27 +18,33 @@
   <link rel="stylesheet" href="../css/tentang.css">
   <style>
     .mitra-hero-section {
-      position: relative;
-      width: 100%;
-      min-height: clamp(500px, 45.13vw, 700px);
-      display: flex;
-      align-items: center;
-      padding: 130px 0 60px;
-      background-image: linear-gradient(135deg, #7D2280 0%, #9B389E 50%, #6E1B71 100%);
+      padding: 135px 0 50px;
+      background: linear-gradient(135deg, #7D2280 0%, #9B389E 50%, #6E1B71 100%);
       color: #FFFFFF;
+      position: relative;
       overflow: hidden;
-      border-bottom: 2px solid rgba(245, 166, 35, 0.3);
+      border-bottom: 2px solid transparent;
+      border-image: linear-gradient(90deg, #7D2280 0%, #F5A623 50%, #7D2280 100%) 1;
     }
-    .mitra-hero-section::before {
-      content: '';
+    .form-hero-glow {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 85% 20%, rgba(245, 166, 35, 0.22) 0%, transparent 55%),
-                  radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+      border-radius: 50%;
+      filter: blur(80px);
       pointer-events: none;
+    }
+    .form-hero-glow.glow-1 {
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(245, 166, 35, 0.28) 0%, transparent 70%);
+      top: -60px;
+      right: 10%;
+    }
+    .form-hero-glow.glow-2 {
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(147, 51, 234, 0.35) 0%, transparent 70%);
+      bottom: -80px;
+      left: 8%;
     }
     .mitra-hero-section .container {
       position: relative;
@@ -61,22 +67,29 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .mitra-hero-title {
-      font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+      font-size: clamp(2rem, 4vw, 2.8rem);
       font-weight: 800;
       color: #FFFFFF;
-      line-height: 1.2;
-      margin-bottom: 18px;
-      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+      line-height: 1.25;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.3);
+    }
+    .mitra-hero-title span {
+      background: linear-gradient(135deg, #FFF1C5 0%, #FBBF24 50%, #F5A623 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
     }
     .mitra-hero-desc {
-      font-size: 1.15rem;
-      color: rgba(255, 255, 255, 0.95);
-      line-height: 1.8;
-      margin-bottom: 0;
-      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+      font-size: 1.05rem;
+      color: #E2E8F0;
+      line-height: 1.65;
+      max-width: 780px;
+      margin: 0 auto;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
     }
     .mitra-cta-box {
       background: linear-gradient(135deg, #7D2280 0%, #9B389E 60%, #5B135E 100%);
@@ -241,6 +254,12 @@
       .mitra-grid-card-name {
         font-size: 0.75rem;
         margin-top: 8px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .mitra-hero-section {
+        padding: 110px 14px 40px;
       }
     }
   </style>
@@ -515,11 +534,13 @@
     
     <!-- Hero Banner Mitra -->
     <section class="mitra-hero-section">
+      <div class="form-hero-glow glow-1"></div>
+      <div class="form-hero-glow glow-2"></div>
       <div class="container">
         <div class="mitra-hero-content reveal">
           <span class="mitra-hero-badge">Jejaring Kemitraan Strategis</span>
           <h1 class="mitra-hero-title">
-            Mitra Kolaborasi ACF Eduhub
+            Mitra Kolaborasi <span>ACF Eduhub</span>
           </h1>
           <p class="mitra-hero-desc">
             Bersama puluhan institusi pemerintah, korporasi multinasional, BUMN, lembaga filantropi, dan institusi pendidikan terkemuka mewujudkan transformasi mutu pendidikan yang inklusif dan merata di Indonesia.

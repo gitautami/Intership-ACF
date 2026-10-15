@@ -300,6 +300,7 @@
     box-shadow: 0 4px 14px rgba(125, 34, 128, 0.3);
     text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap !important;
 }
 
 .btn-donasi:hover {
@@ -409,7 +410,7 @@ body {
     position: static !important;
 }
 
-#goog-gt-tt, 
+#goog-gt-tt,
 .goog-te-balloon-frame {
     display: none !important;
 }
@@ -846,22 +847,33 @@ body {
     .btn-sidebar-trigger {
         display: inline-flex;
     }
+
+    /* Pindahkan fitur bilingual ke dalam menu: sembunyikan switcher di top navbar */
+    .nav-actions .lang-pill-switch {
+        display: none !important;
+    }
+
+    .btn-donasi {
+        padding: 7px 15px;
+        font-size: 0.82rem;
+        white-space: nowrap;
+    }
 }
 
 @media (max-width: 768px) {
     :root {
-        --nav-height: 80px;
+        --nav-height: 72px;
         --sidebar-width: 320px;
     }
 
     .nav-container {
-        padding: 0 18px;
-        gap: 12px;
+        padding: 0 16px;
+        gap: 10px;
     }
 
     .brand-logo-img {
-        height: 68px;
-        max-width: 240px;
+        height: 52px;
+        max-width: 180px;
     }
 
     .nav-actions {
@@ -869,50 +881,58 @@ body {
     }
 
     .btn-donasi {
-        padding: 8px 16px;
-        font-size: 0.84rem;
+        padding: 6px 14px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        white-space: nowrap;
+        border-radius: 9999px;
+        box-shadow: 0 2px 8px rgba(125, 34, 128, 0.22);
     }
 
     .btn-sidebar-trigger {
-        padding: 8px 12px;
-        font-size: 0.84rem;
+        padding: 6px 12px;
+        font-size: 0.80rem;
     }
 }
 
 @media (max-width: 480px) {
     :root {
-        --nav-height: 72px;
+        --nav-height: 64px;
     }
 
     .nav-container {
-        padding: 0 14px;
+        padding: 0 12px;
         gap: 8px;
     }
 
     .brand-logo-img {
-        height: 58px;
-        max-width: 200px;
+        height: 42px;
+        max-width: 135px;
     }
 
     .nav-actions {
         gap: 6px;
     }
 
+    /* Ukuran button Salurkan Donasi dibuat proporsional dan ramping di mobile */
     .btn-donasi {
-        padding: 7px 12px;
-        font-size: 0.78rem;
+        padding: 5px 11px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        white-space: nowrap;
         border-radius: 9999px;
+        box-shadow: 0 2px 6px rgba(125, 34, 128, 0.2);
     }
 
     .btn-sidebar-trigger {
-        padding: 7px 10px;
-        font-size: 0.78rem;
-        gap: 6px;
+        padding: 5px 9px;
+        font-size: 0.75rem;
+        gap: 5px;
     }
 
     .hamburger-icon {
-        width: 18px;
-        height: 12px;
+        width: 16px;
+        height: 11px;
     }
 
     .hamburger-icon span {
@@ -929,18 +949,23 @@ body {
     }
 
     .sidebar-logo-img {
-        height: 58px;
+        height: 50px;
     }
 }
 
 @media (max-width: 360px) {
     .brand-logo-img {
-        height: 56px;
-        max-width: 170px;
+        height: 36px;
+        max-width: 110px;
+    }
+
+    .btn-donasi {
+        padding: 4px 8px;
+        font-size: 0.68rem;
     }
 
     .btn-donasi span {
-        font-size: 0.75rem;
+        font-size: 0.68rem;
     }
 
     .btn-sidebar-trigger span {
@@ -948,7 +973,7 @@ body {
     }
 
     .btn-sidebar-trigger {
-        padding: 8px;
+        padding: 7px;
         border-radius: 50%;
     }
 }

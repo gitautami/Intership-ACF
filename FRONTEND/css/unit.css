@@ -1386,18 +1386,13 @@ a.sj-school-location:hover svg.sj-loc-pin {
 }
 
 .sj-habits-logo-img {
-  height: 72px;
+  height: 64px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
   display: block;
   margin: 0 auto;
-  image-rendering: -webkit-optimize-contrast;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.sj-habits-logo-img:hover {
-  transform: scale(1.05);
+  filter: drop-shadow(0 4px 14px rgba(2, 132, 199, 0.12));
 }
 
 .sj-habits-sparkle {
@@ -1576,10 +1571,6 @@ a.sj-school-location:hover svg.sj-loc-pin {
     margin-bottom: 40px;
   }
 
-  .sj-habits-logo-img {
-    height: 60px;
-  }
-
   .sj-habit-card {
     width: calc(50% - 20px);
     min-width: 160px;
@@ -1601,10 +1592,6 @@ a.sj-school-location:hover svg.sj-loc-pin {
 }
 
 @media (max-width: 480px) {
-  .sj-habits-logo-img {
-    height: 48px;
-  }
-
   .sj-habit-card {
     width: 100%;
     max-width: 240px;
@@ -1633,21 +1620,6 @@ a.sj-school-location:hover svg.sj-loc-pin {
   justify-content: center;
   gap: 12px;
   margin-bottom: 8px;
-}
-
-.sj-adab-logo-img {
-  height: 72px;
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  image-rendering: -webkit-optimize-contrast;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.sj-adab-logo-img:hover {
-  transform: scale(1.05);
 }
 
 .sj-adab-main-title {
@@ -1830,10 +1802,6 @@ a.sj-school-location:hover svg.sj-loc-pin {
     margin-bottom: 36px;
   }
 
-  .sj-adab-logo-img {
-    height: 60px;
-  }
-
   .sj-adab-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 24px 12px;
@@ -1855,10 +1823,6 @@ a.sj-school-location:hover svg.sj-loc-pin {
 }
 
 @media (max-width: 480px) {
-  .sj-adab-logo-img {
-    height: 48px;
-  }
-
   .sj-adab-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px 10px;
@@ -1879,29 +1843,6 @@ a.sj-school-location:hover svg.sj-loc-pin {
   text-align: center;
   max-width: 680px;
   margin: 0 auto 34px;
-}
-
-.sj-lukman-brand-wrap {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.sj-lukman-logo-img {
-  height: 72px;
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  image-rendering: -webkit-optimize-contrast;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.sj-lukman-logo-img:hover {
-  transform: scale(1.05);
 }
 
 .sj-lukman-brand-title {
@@ -2052,10 +1993,6 @@ a.sj-school-location:hover svg.sj-loc-pin {
     margin-bottom: 24px;
   }
 
-  .sj-lukman-logo-img {
-    height: 60px;
-  }
-
   .sj-lukman-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
@@ -2079,10 +2016,6 @@ a.sj-school-location:hover svg.sj-loc-pin {
 }
 
 @media (max-width: 480px) {
-  .sj-lukman-logo-img {
-    height: 48px;
-  }
-
   .sj-lukman-grid {
     grid-template-columns: 1fr;
     gap: 14px;

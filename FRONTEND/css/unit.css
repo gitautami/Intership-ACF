@@ -2029,6 +2029,197 @@ a.sj-school-location:hover svg.sj-loc-pin {
   }
 }
 
+/* ===================================================
+   3 KOLOM PILAR KARAKTER SEKOLAH JUARA
+   (7 Habits Juara, 12 Adab Juara, Lukman Berilmu)
+=================================================== */
+.sj-pillars-section {
+  padding: 60px 0 80px;
+  background: linear-gradient(180deg, #F8FAFC 0%, #F0F9FF 50%, #F8FAFC 100%);
+  position: relative;
+  border-top: 1px solid #E2E8F0;
+  overflow: hidden;
+}
+
+.sj-pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1.15fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.sj-pillar-card {
+  background: #FFFFFF;
+  border: 2px solid #0284C7;
+  border-radius: 24px;
+  padding: 26px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 28px rgba(2, 132, 199, 0.07);
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.sj-pillar-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(2, 132, 199, 0.13);
+}
+
+.sj-pillar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.sj-pillar-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0284C7;
+  border-radius: 16px;
+  padding: 8px 22px;
+  background: #FFFFFF;
+  min-height: 58px;
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.08);
+  transition: transform 0.25s ease;
+}
+
+.sj-pillar-badge:hover {
+  transform: scale(1.04);
+}
+
+.sj-pillar-logo {
+  height: 42px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* 7 Habits Items */
+.sj-pillar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+/* 12 Adab Subgrid (2 Kolom) */
+.sj-pillar-subgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  flex: 1;
+}
+
+.sj-subgrid-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Shared Item Row */
+.sj-pillar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  transition: all 0.2s ease;
+}
+
+.sj-pillar-item:hover {
+  background: #F0F9FF;
+  border-color: #BAE6FD;
+  transform: translateX(3px);
+}
+
+.sj-item-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 5px rgba(2, 132, 199, 0.18));
+}
+
+.sj-item-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1E293B;
+  line-height: 1.35;
+}
+
+/* Lukman Berilmu Specific Styles */
+.sj-lukman-goal {
+  font-size: 0.85rem;
+  color: #475569;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 18px;
+  padding: 0 4px;
+}
+
+.sj-lukman-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.sj-lukman-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #F0F9FF;
+  border: 1.5px solid #BAE6FD;
+  transition: all 0.2s ease;
+}
+
+.sj-lukman-item:hover {
+  background: #E0F2FE;
+  transform: translateX(3px);
+}
+
+.sj-lukman-icon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 6px rgba(2, 132, 199, 0.15));
+}
+
+.sj-lukman-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0284C7;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .sj-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sj-pillar-card {
+    padding: 22px 14px;
+    border-radius: 20px;
+  }
+  .sj-pillar-subgrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
 /* =============================================
    Sekolah Daya Setara — Gallery Slider Section
    ============================================= */

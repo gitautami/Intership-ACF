@@ -35,12 +35,32 @@ document.addEventListener('DOMContentLoaded', () => {
         handleScroll();
     }
 
-    // 2. Open / Close Sidebar Drawer
+    // 2. Open / Close Sidebar Drawer with Bulletproof Scroll Lock
+    let savedScrollY = 0;
+
     function openSidebar() {
         if (sidebarDrawer && sidebarOverlay) {
+            savedScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+            // Lock background body scrolling completely on both mobile and desktop
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${savedScrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.width = '100%';
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+
             sidebarDrawer.classList.add('active');
             sidebarOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            document.body.classList.add('sidebar-open');
+
+            // Ensure drawer menu is scrolled to top on open
+            const sbBody = sidebarDrawer.querySelector('.sidebar-body');
+            if (sbBody) {
+                sbBody.scrollTop = 0;
+            }
+
             if (sidebarSearchInput) {
                 setTimeout(() => sidebarSearchInput.focus(), 250);
             }
@@ -51,7 +71,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sidebarDrawer && sidebarOverlay) {
             sidebarDrawer.classList.remove('active');
             sidebarOverlay.classList.remove('active');
-            document.body.style.overflow = '';
+            document.body.classList.remove('sidebar-open');
+
+            // Restore body positioning and exact scroll position
+            document.body.style.removeProperty('position');
+            document.body.style.removeProperty('top');
+            document.body.style.removeProperty('left');
+            document.body.style.removeProperty('right');
+            document.body.style.removeProperty('width');
+            document.body.style.removeProperty('overflow');
+            document.documentElement.style.removeProperty('overflow');
+
+            window.scrollTo(0, savedScrollY);
         }
     }
 
@@ -68,6 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (sidebarOverlay) {
         sidebarOverlay.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+    }
+
+    if (sidebarDrawer) {
+        // Prevent background scrolling when dragging on non-scrollable header/search/footer
+        const nonScrollableParts = sidebarDrawer.querySelectorAll('.sidebar-header, .sidebar-lang-row, .sidebar-search-box, .sidebar-footer');
+        nonScrollableParts.forEach(el => {
+            el.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+        });
     }
 
     // Close on Escape Key

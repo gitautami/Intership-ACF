@@ -13,7 +13,7 @@
 
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/navbar.css?v=26">
+  <link rel="stylesheet" href="../css/navbar.css?v=27">
   <link rel="stylesheet" href="../css/program.css?v=8">
 </head>
 <body>
@@ -157,6 +157,10 @@
       <div class="sidebar-brand">
         <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="sidebar-logo-img">
       </div>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Tutup Menu">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
 
     <!-- Pilihan Bahasa Mobile -->
     <div class="sidebar-lang-row">
@@ -168,10 +172,6 @@
         <button type="button" class="lang-pill-btn active" data-lang="id" aria-pressed="true" title="Bahasa Indonesia">ID</button>
         <button type="button" class="lang-pill-btn" data-lang="en" aria-pressed="false" title="English">EN</button>
       </div>
-    </div>
-      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Tutup Menu">
-        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
     </div>
 
     <div class="sidebar-search-box">
@@ -688,7 +688,7 @@
   </footer>
 
   <!-- ========== JAVASCRIPT FILES (Separated per module) ========== -->
-  <script src="../js/navbar.js?v=11"></script>
+  <script src="../js/navbar.js?v=12"></script>
   <script src="../js/main.js"></script>
   <script src="../js/program.js"></script>
 </body>

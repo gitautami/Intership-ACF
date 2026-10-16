@@ -28,10 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
           e.preventDefault();
           
           // Close mobile sidebar drawer if it was opened
-          if (sidebarDrawer && sidebarOverlay && sidebarDrawer.classList.contains('active')) {
-            sidebarDrawer.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-            document.body.style.overflow = '';
+          const closeBtn = document.getElementById('sidebarCloseBtn');
+          if (sidebarDrawer && sidebarDrawer.classList.contains('active') && closeBtn) {
+            closeBtn.click();
           }
 
           smoothScrollTo(targetEl);

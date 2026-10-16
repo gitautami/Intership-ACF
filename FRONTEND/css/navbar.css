@@ -436,24 +436,37 @@ body {
 .btn-sidebar-trigger {
     display: none;
     align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    background: #F8FAFC;
-    border: 1px solid #E2E8F0;
-    border-radius: 10px;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px 13px;
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 9999px;
     color: var(--nav-text-dark);
     font-size: 0.84rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     font-family: inherit;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
 }
 
 .btn-sidebar-trigger:hover {
     background: var(--primary-purple-soft);
-    border-color: rgba(125, 34, 128, 0.3);
+    border-color: rgba(125, 34, 128, 0.35);
     color: var(--primary-purple);
     transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(125, 34, 128, 0.15);
+}
+
+.btn-sidebar-trigger > span {
+    display: inline-block !important;
+    font-size: inherit;
+    font-weight: 700;
+    line-height: 1;
+    color: inherit;
+    white-space: nowrap !important;
 }
 
 .hamburger-icon {
@@ -462,14 +475,15 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    flex-shrink: 0;
 }
 
 .hamburger-icon span {
-    display: block;
-    height: 2px;
-    width: 100%;
-    background: currentColor;
-    border-radius: 2px;
+    display: block !important;
+    height: 2px !important;
+    width: 100% !important;
+    background: currentColor !important;
+    border-radius: 2px !important;
     transition: all 0.2s ease;
 }
 
@@ -925,18 +939,26 @@ body {
     }
 
     .btn-sidebar-trigger {
-        padding: 5px 9px;
-        font-size: 0.75rem;
+        display: inline-flex !important;
+        padding: 5px 10px;
+        font-size: 0.76rem;
         gap: 5px;
+        border-radius: 9999px !important;
     }
 
     .hamburger-icon {
-        width: 16px;
+        width: 15px;
         height: 11px;
     }
 
     .hamburger-icon span {
-        height: 2px;
+        height: 2px !important;
+        display: block !important;
+    }
+
+    .btn-sidebar-trigger > span {
+        display: inline-block !important;
+        font-size: 0.76rem !important;
     }
 
     .sidebar-nav-drawer {
@@ -954,13 +976,22 @@ body {
 }
 
 @media (max-width: 360px) {
+    .nav-container {
+        padding: 0 8px;
+        gap: 4px;
+    }
+
     .brand-logo-img {
         height: 36px;
-        max-width: 110px;
+        max-width: 105px;
+    }
+
+    .nav-actions {
+        gap: 4px;
     }
 
     .btn-donasi {
-        padding: 4px 8px;
+        padding: 5px 8px;
         font-size: 0.68rem;
     }
 
@@ -968,13 +999,27 @@ body {
         font-size: 0.68rem;
     }
 
-    .btn-sidebar-trigger span {
-        display: none;
+    .btn-sidebar-trigger {
+        display: inline-flex !important;
+        padding: 5px 8px;
+        font-size: 0.72rem;
+        gap: 4px;
+        border-radius: 9999px !important;
     }
 
-    .btn-sidebar-trigger {
-        padding: 7px;
-        border-radius: 50%;
+    .btn-sidebar-trigger .hamburger-icon {
+        width: 13px;
+        height: 10px;
+    }
+
+    .btn-sidebar-trigger .hamburger-icon span {
+        display: block !important;
+        height: 1.8px !important;
+    }
+
+    .btn-sidebar-trigger > span {
+        display: inline-block !important;
+        font-size: 0.72rem !important;
     }
 }
 

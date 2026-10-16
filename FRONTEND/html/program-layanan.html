@@ -14,7 +14,7 @@
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/navbar.css?v=25">
-  <link rel="stylesheet" href="../css/program.css?v=5">
+  <link rel="stylesheet" href="../css/program.css?v=8">
 </head>
 <body>
 
@@ -191,22 +191,14 @@
         </a>
       </div>
 
-      <div class="side-nav-item has-submenu open">
-        <button class="side-nav-link active">
+      <!-- 2. Program Layanan -->
+      <div class="side-nav-item">
+        <a href="program-layanan.html" class="side-nav-link active">
           <div class="side-link-left">
             <svg class="side-nav-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
             <span>Program Layanan</span>
           </div>
-          <svg class="side-link-chevron" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <div class="side-submenu">
-          <a href="#kategori-1" class="side-submenu-link">1. Keberlanjutan Unit Pendidikan</a>
-          <a href="#kategori-2" class="side-submenu-link">2. Tanggap Bencana & Pemulihan</a>
-          <a href="#kategori-3" class="side-submenu-link">3. Kesejahteraan Ekosistem</a>
-          <a href="#kategori-4" class="side-submenu-link">4. Kemanusiaan Internasional</a>
-          <a href="#kategori-5" class="side-submenu-link">5. Forum & Advokasi Pendidikan</a>
-          <a href="#kategori-6" class="side-submenu-link">6. Kepemimpinan & Manajemen</a>
-        </div>
+        </a>
       </div>
 
       <div class="side-nav-item has-submenu">
@@ -287,46 +279,14 @@
     <section class="program-header-banner">
       <div class="container">
         <span class="section-label">Program Unggulan ACF</span>
-        <h1 style="font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 800; margin-bottom: 12px;">
+        <h1 class="program-banner-title">
           Program Layanan Pendidikan
         </h1>
-        <p style="font-size: 1.1rem; max-width: 760px; line-height: 1.7;">
+        <p class="program-banner-desc">
           Inisiatif holistik ACF Eduhub yang mencakup 7 program berdampak tinggi, dikelompokkan ke dalam 6 kategori induk untuk ekosistem pendidikan yang tangguh dan merata.
         </p>
       </div>
     </section>
-
-    <!-- Quick Navigation Pills (Mobile & Desktop) -->
-    <nav class="program-category-nav" aria-label="Navigasi Kategori Program">
-      <div class="container">
-        <div class="category-nav-scroll">
-          <a href="#kategori-1" class="category-nav-pill active">
-            <span class="pill-num">1</span>
-            <span>Unit Pendidikan</span>
-          </a>
-          <a href="#kategori-2" class="category-nav-pill">
-            <span class="pill-num">2</span>
-            <span>Tanggap Bencana</span>
-          </a>
-          <a href="#kategori-3" class="category-nav-pill">
-            <span class="pill-num">3</span>
-            <span>Kesejahteraan Ekosistem</span>
-          </a>
-          <a href="#kategori-4" class="category-nav-pill">
-            <span class="pill-num">4</span>
-            <span>Kemanusiaan</span>
-          </a>
-          <a href="#kategori-5" class="category-nav-pill">
-            <span class="pill-num">5</span>
-            <span>Forum & Advokasi</span>
-          </a>
-          <a href="#kategori-6" class="category-nav-pill">
-            <span class="pill-num">6</span>
-            <span>Manajemen Sekolah</span>
-          </a>
-        </div>
-      </div>
-    </nav>
 
     <!-- Kategori 1: Keberlanjutan Unit Pendidikan (2 Program) -->
     <section class="program-category-section" id="kategori-1">
@@ -343,7 +303,7 @@
 
         <div class="programs-subgrid">
           <!-- Program 1 -->
-          <div class="program-detail-card reveal">
+          <div class="program-detail-card reveal" id="program-1">
             <div class="program-card-img-wrap">
               <img src="../assets/unit-pendidikan/Sekolah Juara.jpg" alt="Program Beasiswa & Keberlanjutan Sekolah Juara" class="program-card-img">
             </div>
@@ -374,7 +334,7 @@
           </div>
 
           <!-- Program 2 -->
-          <div class="program-detail-card reveal">
+          <div class="program-detail-card reveal" id="program-2">
             <div class="program-card-img-wrap">
               <img src="../assets/unit-pendidikan/Sekolah Daya Setara (1).JPG" alt="Kesejahteraan Guru & Operasional Sekolah Daya Setara" class="program-card-img">
             </div>
@@ -422,7 +382,7 @@
 
         <div class="programs-subgrid">
           <!-- Program 3 -->
-          <div class="program-detail-card reveal">
+          <div class="program-detail-card reveal" id="program-3">
             <div class="program-card-img-wrap">
               <img src="../assets/layanan-program/IMG_6436.jpg" alt="Layanan Pascabencana" class="program-card-img">
             </div>
@@ -470,7 +430,7 @@
 
         <div class="programs-subgrid">
           <!-- Program 4 -->
-          <div class="program-detail-card reveal">
+          <div class="program-detail-card reveal" id="program-4">
             <div class="program-card-img-wrap">
               <img src="../assets/donasi/Kado Lebaran Penjaga Sekolah.jpg" alt="Kesejahteraan Ekosistem Sekolah - Kado Lebaran Penjaga Sekolah" class="program-card-img">
             </div>
@@ -518,7 +478,7 @@
 
         <div class="programs-subgrid">
           <!-- Program 5 -->
-          <div class="program-detail-card reveal">
+          <div class="program-detail-card reveal" id="program-5">
             <div class="program-card-img-wrap">
               <img src="../assets/layanan-program/IMG_6442.jpg" alt="Bantuan Kemanusiaan Internasional" class="program-card-img" loading="lazy">
             </div>
@@ -566,7 +526,7 @@
 
         <div class="programs-subgrid">
           <!-- Program 6 -->
-          <div class="program-detail-card reveal">
+          <div class="program-detail-card reveal" id="program-6">
             <div class="program-card-img-wrap">
               <img src="../assets/layanan-program/Web Banner Education Maret 2026-03.jpg" alt="Education Outlook — Forum Tahunan Pendidikan" class="program-card-img">
             </div>
@@ -614,7 +574,7 @@
 
         <div class="programs-subgrid">
           <!-- Program 7 -->
-          <div class="program-detail-card reveal">
+          <div class="program-detail-card reveal" id="program-7">
             <div class="program-card-img-wrap">
               <img src="../assets/layanan-program/Workshop SPMB.jpg" alt="Konsultasi & Pendampingan Manajemen Sekolah - Workshop SPMB" class="program-card-img">
             </div>

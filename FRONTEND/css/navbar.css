@@ -710,6 +710,42 @@ body {
     flex-shrink: 0;
 }
 
+.side-nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.side-nav-row .side-nav-link {
+    flex: 1;
+}
+
+.side-submenu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #94A3B8;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.side-submenu-toggle:hover {
+    background: #F1F5F9;
+    color: var(--primary-purple);
+}
+
+.side-nav-item.open .side-submenu-toggle .side-link-chevron {
+    transform: rotate(90deg);
+    stroke: var(--primary-purple);
+}
+
 .side-link-chevron {
     width: 14px;
     height: 14px;
@@ -722,6 +758,14 @@ body {
 .side-nav-item.open .side-link-chevron {
     transform: rotate(90deg);
     stroke: var(--primary-purple);
+}
+
+.side-submenu-link.highlight-sublink {
+    color: var(--primary-purple);
+    font-weight: 700;
+    background: rgba(125, 34, 128, 0.06);
+    border-radius: 6px;
+    margin-bottom: 2px;
 }
 
 /* Submenu Accordion (Smooth CSS transition) */

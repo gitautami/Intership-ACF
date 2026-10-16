@@ -123,24 +123,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Sidebar Accordion Submenus
     navItemsWithSubmenu.forEach(item => {
+        const toggleBtn = item.querySelector('.side-submenu-toggle');
         const trigger = item.querySelector('.side-nav-link');
-        if (trigger) {
-            trigger.addEventListener('click', (e) => {
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 const isOpen = item.classList.contains('open');
 
-                // Close other submenus
                 navItemsWithSubmenu.forEach(otherItem => {
                     if (otherItem !== item) {
                         otherItem.classList.remove('open');
                     }
                 });
 
-                if (isOpen) {
-                    item.classList.remove('open');
-                } else {
-                    item.classList.add('open');
-                }
+                item.classList.toggle('open', !isOpen);
+            });
+        } else if (trigger && trigger.tagName === 'BUTTON') {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isOpen = item.classList.contains('open');
+
+                navItemsWithSubmenu.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('open');
+                    }
+                });
+
+                item.classList.toggle('open', !isOpen);
             });
         }
     });

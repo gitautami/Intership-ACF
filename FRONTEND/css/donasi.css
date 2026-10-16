@@ -1005,17 +1005,17 @@
 
 @media (max-width: 640px) {
   .donasi-hero {
-    padding: 115px 14px 50px;
-    min-height: 420px;
+    padding: 100px 14px 40px;
+    min-height: auto;
   }
   .donasi-hero-title {
-    font-size: clamp(1.8rem, 6vw, 2.25rem);
-    margin-bottom: 12px;
+    font-size: clamp(1.6rem, 5.5vw, 2.1rem);
+    margin-bottom: 10px;
   }
   .donasi-hero-desc {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 24px;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin-bottom: 16px;
   }
   .donasi-hero-stats-row {
     gap: 10px;
@@ -1031,18 +1031,45 @@
     font-size: 0.74rem;
   }
 
+  .qris-card-wrapper {
+    padding: 20px 14px;
+    border-radius: 18px;
+  }
+  .qris-frame-footer {
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+  }
+  .btn-qris-download {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .bank-rekening-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .btn-wa-confirm-global {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 0.76rem;
+    padding: 8px 12px;
+  }
+
   .channel-title {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
   }
   .channel-subtitle {
-    font-size: 0.92rem;
+    font-size: 0.88rem;
   }
   .mitra-channels-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 18px;
   }
   .mitra-channel-card {
-    padding: 26px 20px;
+    padding: 22px 18px;
     border-radius: 18px;
   }
   .mitra-avatar {
@@ -1052,23 +1079,30 @@
     border-radius: 13px;
   }
   .mitra-name {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
   }
   .mitra-card-desc {
-    font-size: 0.9rem;
-    line-height: 1.58;
+    font-size: 0.88rem;
+    line-height: 1.55;
   }
   .btn-channel-action {
-    padding: 14px 20px;
-    font-size: 0.94rem;
+    padding: 11px 14px;
+    font-size: 0.85rem;
+    min-height: 46px;
+    height: auto;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+    text-align: center;
+    justify-content: center;
   }
 
   .donasi-gallery-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 18px;
   }
   .donasi-gallery-img-box {
-    height: 220px;
+    height: 200px;
   }
 }
 

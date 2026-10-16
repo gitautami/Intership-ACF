@@ -1056,16 +1056,51 @@
   .kabar-banner-actions {
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
     gap: 12px;
   }
 
   .btn-banner-read {
     padding: 10px 20px;
     font-size: 0.88rem;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .kabar-search-wrapper {
     width: 100%;
     min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .kabar-hero-banner,
+  .kabar-slider-wrapper {
+    min-height: 480px;
+  }
+
+  .kabar-hero-slide {
+    padding: 25px 0 60px;
+    min-height: 480px;
+  }
+
+  .kabar-banner-title {
+    font-size: 1.3rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .kabar-banner-excerpt {
+    font-size: 0.82rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 12px !important;
+  }
+
+  .btn-banner-read {
+    padding: 8px 16px;
+    font-size: 0.82rem;
+  }
+
+  .kabar-banner-meta-info {
+    font-size: 0.78rem;
   }
 }

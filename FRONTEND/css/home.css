@@ -369,41 +369,45 @@
 
 @media (max-width: 480px) {
   .hero-slider-container {
-    min-height: clamp(500px, 82vh, 580px);
+    min-height: clamp(480px, 82vh, 560px);
   }
 
   .hero-slides-wrapper {
-    min-height: clamp(500px, 82vh, 580px);
+    min-height: clamp(480px, 82vh, 560px);
   }
 
   .hero-slide {
-    min-height: clamp(500px, 82vh, 580px);
-    padding: 82px 0 58px;
+    min-height: clamp(480px, 82vh, 560px);
+    padding: 82px 0 68px;
   }
 
   .hero-slide .home-hero-content {
-    padding: 0 2px;
+    padding: 0 4px;
+    width: 100%;
   }
 
   .home-hero-tag {
     font-size: 0.72rem;
     padding: 5px 12px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .home-hero-tag svg {
     width: 13px;
     height: 13px;
+    flex-shrink: 0;
   }
 
   .home-hero-title {
     font-size: clamp(1.42rem, 5.4vw, 1.78rem);
     line-height: 1.25;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .home-hero-desc {
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     line-height: 1.5;
     margin-bottom: 18px;
   }
@@ -412,6 +416,10 @@
     padding: 10px 20px;
     font-size: 0.85rem;
     gap: 6px;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    justify-content: center;
   }
 
   .slider-nav-btn {
@@ -434,7 +442,7 @@
   }
 
   .slider-dots {
-    bottom: 18px;
+    bottom: 16px;
     padding: 5px 12px;
     gap: 6px;
   }
@@ -1419,8 +1427,30 @@
   .testimoni-grid {
     grid-template-columns: 1fr;
   }
+  .btn-testimoni-program {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 12px 18px;
+    font-size: 0.88rem;
+  }
+  .kerjasama-card-box {
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .btn-kerjasama-action {
+    width: calc(100% - 32px) !important;
+    margin: 0 16px 20px !important;
+    box-sizing: border-box !important;
+    text-align: center;
+    justify-content: center;
+    padding: 12px 16px !important;
+    font-size: 0.88rem;
+  }
   .donasi-banner-card {
-    padding: 32px 20px;
+    padding: 28px 18px;
     border-radius: 18px;
   }
 }

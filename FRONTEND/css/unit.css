@@ -281,9 +281,29 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .unit-header-banner {
-    padding: 105px 0 45px;
+    min-height: auto;
+    padding: 105px 0 42px;
+  }
+
+  .unit-header-banner h1,
+  .unit-header-banner .unit-banner-title {
+    font-size: clamp(1.65rem, 5.5vw, 2.2rem) !important;
+    line-height: 1.25 !important;
+    margin-bottom: 10px !important;
+  }
+
+  .unit-header-banner p,
+  .unit-header-banner .unit-banner-desc {
+    font-size: 0.92rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .unit-header-banner .section-label {
+    font-size: 0.74rem;
+    padding: 4px 13px;
+    margin-bottom: 10px;
   }
 
   .unit-section-block {
@@ -295,11 +315,20 @@
   }
 
   .unit-title-main {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
 
   .unit-desc-lead {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+  }
+
+  .btn-guruverse-portal {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 0.92rem;
+    box-sizing: border-box;
+    text-align: center;
   }
 }
 
@@ -1197,18 +1226,64 @@ a.sj-school-location:hover svg.sj-loc-pin {
 
 @media (max-width: 640px) {
   .sj-map-section {
-    padding: 60px 0 50px;
+    padding: 45px 0 40px;
   }
 
   .sj-map-card {
-    padding: 16px 12px;
-    border-radius: 18px;
+    padding: 14px 10px;
+    border-radius: 16px;
   }
 
   .sj-schools-grid {
     grid-template-columns: 1fr;
-    margin-top: 36px;
+    margin-top: 28px;
     gap: 16px;
+  }
+
+  .sj-school-card {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .sj-school-body {
+    padding: 16px;
+  }
+
+  .sj-actions-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .sj-social-group {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .sj-social-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .sj-social-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .sj-btn-brosur {
+    flex: 1 1 auto;
+    min-width: 80px;
+    height: 32px;
+    font-size: 0.8rem;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+
+  .sj-btn-daftar {
+    height: 38px;
+    font-size: 0.88rem;
+    box-sizing: border-box;
+    width: 100%;
   }
 }
 
@@ -2431,5 +2506,27 @@ a.sj-school-location:hover svg.sj-loc-pin {
 @media (max-width: 540px) {
   .sds-gallery-grid {
     grid-template-columns: 1fr;
+  }
+
+  .sds-pagination-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .sds-pag-numbers {
+    gap: 4px;
+    padding: 3px;
+  }
+
+  .sds-num-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+
+  .sds-pag-btn {
+    padding: 5px 12px;
+    font-size: 0.85rem;
   }
 }

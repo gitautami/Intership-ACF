@@ -223,6 +223,25 @@
   transform: scale(1.03);
 }
 
+@media (max-width: 768px) {
+  .page-hero,
+  .page-hero.visi-misi-hero {
+    min-height: auto;
+    padding: 105px 0 42px;
+  }
+
+  .page-hero-title {
+    font-size: clamp(1.65rem, 5.5vw, 2.2rem) !important;
+    line-height: 1.25 !important;
+    margin-bottom: 10px !important;
+  }
+
+  .page-hero-subtitle {
+    font-size: 0.92rem !important;
+    line-height: 1.6 !important;
+  }
+}
+
 @media (max-width: 991px) {
   .vmv-layout-grid {
     grid-template-columns: 1fr;
@@ -781,16 +800,19 @@
 
 @media (max-width: 640px) {
   .page-hero {
-    padding: 120px 0 60px;
-    min-height: 420px;
+    padding: 100px 0 36px;
+    min-height: auto;
   }
 
   .page-hero-title {
-    font-size: 1.8rem;
+    font-size: clamp(1.5rem, 5.2vw, 1.85rem) !important;
+    line-height: 1.25 !important;
+    margin-bottom: 8px !important;
   }
 
   .page-hero-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.9rem !important;
+    line-height: 1.55 !important;
   }
 
   .team-row-pembina {

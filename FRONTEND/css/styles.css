@@ -2039,3 +2039,26 @@ footer.footer,
         height: 38px;
     }
 }
+
+/* =============================================
+   MOBILE OVERFLOW & CARD / BUTTON SAFEGUARDS
+   ============================================= */
+@media (max-width: 768px) {
+    /* Ensure buttons & links stay strictly within card and box bounds */
+    button,
+    .btn,
+    [class*="btn-"],
+    .card,
+    [class*="-card"] {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Wrap text inside buttons if screen is extra narrow */
+    button,
+    .btn,
+    [class*="btn-"] {
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+}

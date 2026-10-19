@@ -2530,3 +2530,601 @@ a.sj-school-location:hover svg.sj-loc-pin {
     font-size: 0.85rem;
   }
 }
+
+/* ==========================================================================
+   GALERI SEKOLAH JUARA — SLIDER & LIGHTBOX MODAL
+   ========================================================================== */
+
+.sj-gallery-section {
+  position: relative;
+  padding: 85px 0 95px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF5FC 45%, #F4EEF7 100%);
+  overflow: hidden;
+  border-top: 1px solid rgba(125, 34, 128, 0.08);
+}
+
+/* Background Glowing Accents */
+.sj-gallery-section::before,
+.sj-gallery-section::after {
+  content: '';
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  opacity: 0.22;
+  z-index: 0;
+}
+
+.sj-gallery-section::before {
+  top: -60px;
+  left: -80px;
+  background: radial-gradient(circle, #7D2280 0%, transparent 70%);
+}
+
+.sj-gallery-section::after {
+  bottom: -60px;
+  right: -80px;
+  background: radial-gradient(circle, #F5A623 0%, transparent 70%);
+}
+
+.sj-gallery-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+.sj-gallery-header {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 42px;
+}
+
+.sj-gallery-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  background: linear-gradient(135deg, rgba(125, 34, 128, 0.1) 0%, rgba(245, 166, 35, 0.14) 100%);
+  border: 1px solid rgba(125, 34, 128, 0.16);
+  border-radius: 999px;
+  color: #7D2280;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 14px;
+}
+
+.sj-gallery-badge svg {
+  stroke: #7D2280;
+}
+
+.sj-gallery-title {
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+  font-weight: 800;
+  color: #1E102E;
+  margin: 0 0 14px;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+}
+
+.sj-gallery-subtitle {
+  font-size: 1.02rem;
+  color: #64748B;
+  line-height: 1.65;
+  margin: 0 auto;
+}
+
+/* Slider Outer Wrap */
+.sj-gallery-slider-wrap {
+  position: relative;
+  width: 100%;
+  padding: 10px 0;
+}
+
+/* Viewport & Track */
+.sj-gallery-viewport {
+  overflow: hidden;
+  width: 100%;
+  border-radius: 22px;
+  padding: 12px 4px 18px;
+}
+
+.sj-gallery-track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+/* Gallery Photo Cards */
+.sj-gallery-card {
+  flex: 0 0 calc((100% - 48px) / 3);
+  min-width: 0;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(125, 34, 128, 0.1);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(125, 34, 128, 0.08);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  user-select: none;
+}
+
+.sj-gallery-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(245, 166, 35, 0.55);
+  box-shadow: 0 20px 42px rgba(125, 34, 128, 0.18);
+}
+
+.sj-gallery-media {
+  position: relative;
+  width: 100%;
+  height: 270px;
+  overflow: hidden;
+  background: #1E102E;
+}
+
+.sj-gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sj-gallery-card:hover .sj-gallery-img {
+  transform: scale(1.08);
+}
+
+/* Hover Overlay with Zoom Icon */
+.sj-gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(30, 16, 46, 0.1) 0%, rgba(30, 16, 46, 0.75) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sj-gallery-card:hover .sj-gallery-overlay {
+  opacity: 1;
+}
+
+.sj-gallery-zoom-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #7D2280;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transform: translateY(10px);
+  transition: transform 0.3s ease;
+}
+
+.sj-gallery-card:hover .sj-gallery-zoom-badge {
+  transform: translateY(0);
+}
+
+.sj-gallery-zoom-badge svg {
+  stroke: #7D2280;
+  width: 16px;
+  height: 16px;
+}
+
+/* Slider Controls (Side Arrows like homepage banner) */
+.sj-gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(28, 14, 44, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.sj-gallery-nav:hover {
+  background: #7D2280;
+  border-color: #F5A623;
+  color: #FFFFFF;
+  transform: translateY(-50%) scale(1.12);
+  box-shadow: 0 0 20px rgba(245, 166, 35, 0.5);
+}
+
+.sj-gallery-nav.prev {
+  left: -24px;
+}
+
+.sj-gallery-nav.next {
+  right: -24px;
+}
+
+.sj-gallery-nav svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  fill: none;
+}
+
+.sj-gallery-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: translateY(-50%) scale(1);
+  box-shadow: none;
+}
+
+/* Pagination Dots */
+.sj-gallery-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 26px;
+}
+
+.sj-gallery-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(125, 34, 128, 0.22);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sj-gallery-dot:hover {
+  background: #7D2280;
+  transform: scale(1.2);
+}
+
+.sj-gallery-dot.active {
+  width: 28px;
+  height: 10px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #7D2280 0%, #F5A623 100%);
+  box-shadow: 0 2px 8px rgba(125, 34, 128, 0.35);
+}
+
+/* ==========================================================================
+   LIGHTBOX MODAL WITH BUILT-IN SLIDER
+   ========================================================================== */
+
+.sj-lightbox-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sj-lightbox-modal.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+
+.sj-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 5, 20, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  cursor: pointer;
+}
+
+.sj-lightbox-dialog {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 980px;
+  max-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  background: #180B26;
+  border: 1.5px solid rgba(245, 166, 35, 0.3);
+  border-radius: 24px;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+  animation: sjModalPop 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes sjModalPop {
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Lightbox Header */
+.sj-lightbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(28, 14, 44, 0.98);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sj-lightbox-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(245, 166, 35, 0.12);
+  border: 1px solid rgba(245, 166, 35, 0.25);
+  border-radius: 999px;
+  color: #F5A623;
+  font-weight: 700;
+  font-size: 0.84rem;
+}
+
+.sj-lightbox-close {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.sj-lightbox-close:hover {
+  background: #EF4444;
+  border-color: #EF4444;
+  transform: rotate(90deg) scale(1.08);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+}
+
+/* Lightbox Stage (Image & Side Slider Buttons) */
+.sj-lightbox-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  max-height: 80vh;
+  padding: 16px 64px 20px;
+  background: #0E0517;
+  overflow: hidden;
+}
+
+.sj-lightbox-img-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sj-lightbox-img {
+  max-width: 100%;
+  max-height: 76vh;
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, opacity 0.25s ease;
+}
+
+/* Lightbox Side Buttons */
+.sj-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(30, 16, 46, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.25s ease;
+}
+
+.sj-lightbox-nav:hover {
+  background: #7D2280;
+  border-color: #F5A623;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 18px rgba(245, 166, 35, 0.5);
+}
+
+.sj-lightbox-nav.prev {
+  left: 14px;
+}
+
+.sj-lightbox-nav.next {
+  right: 14px;
+}
+
+.sj-lightbox-nav svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  fill: none;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (TABLET & MOBILE)
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+  .sj-gallery-nav.prev {
+    left: -12px;
+  }
+  .sj-gallery-nav.next {
+    right: -12px;
+  }
+}
+
+@media (max-width: 991px) {
+  .sj-gallery-section {
+    padding: 70px 0 80px;
+  }
+
+  .sj-gallery-card {
+    flex: 0 0 calc((100% - 20px) / 2);
+  }
+
+  .sj-gallery-track {
+    gap: 20px;
+  }
+
+  .sj-gallery-media {
+    height: 210px;
+  }
+
+  .sj-gallery-nav {
+    width: 44px;
+    height: 44px;
+  }
+
+  .sj-gallery-nav.prev {
+    left: 4px;
+  }
+
+  .sj-gallery-nav.next {
+    right: 4px;
+  }
+
+  .sj-lightbox-stage {
+    padding: 12px 50px;
+    max-height: 55vh;
+  }
+
+  .sj-lightbox-img {
+    max-height: 52vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .sj-gallery-section {
+    padding: 55px 0 65px;
+  }
+
+  .sj-gallery-header {
+    margin-bottom: 30px;
+  }
+
+  .sj-gallery-title {
+    font-size: 1.7rem;
+  }
+
+  .sj-gallery-subtitle {
+    font-size: 0.92rem;
+  }
+
+  .sj-gallery-card {
+    flex: 0 0 100%;
+  }
+
+  .sj-gallery-media {
+    height: 250px;
+  }
+
+  /* Responsive Slider Buttons on Mobile */
+  .sj-gallery-nav {
+    width: 38px;
+    height: 38px;
+    top: 50%;
+  }
+
+  .sj-gallery-nav.prev {
+    left: 8px;
+  }
+
+  .sj-gallery-nav.next {
+    right: 8px;
+  }
+
+  .sj-gallery-nav svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Responsive Lightbox on Mobile */
+  .sj-lightbox-modal {
+    padding: 10px;
+  }
+
+  .sj-lightbox-dialog {
+    max-height: 92vh;
+    border-radius: 18px;
+  }
+
+  .sj-lightbox-header {
+    padding: 12px 16px;
+  }
+
+  .sj-lightbox-counter {
+    font-size: 0.78rem;
+    padding: 4px 10px;
+  }
+
+  .sj-lightbox-close {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sj-lightbox-stage {
+    padding: 10px 10px 16px;
+    min-height: 260px;
+    max-height: 72vh;
+  }
+
+  .sj-lightbox-img {
+    max-height: 68vh;
+  }
+
+  .sj-lightbox-nav {
+    width: 38px;
+    height: 38px;
+  }
+
+  .sj-lightbox-nav.prev {
+    left: 8px;
+  }
+
+  .sj-lightbox-nav.next {
+    right: 8px;
+  }
+}

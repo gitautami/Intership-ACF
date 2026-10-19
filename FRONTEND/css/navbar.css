@@ -774,12 +774,14 @@ body {
     overflow: hidden;
     transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, padding 0.25s ease;
     opacity: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px;
     padding: 0 6px 0 44px;
     background: #F8FAFC;
     border-radius: 0 0 8px 8px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .side-nav-item.open .side-submenu {
@@ -789,13 +791,17 @@ body {
 }
 
 .side-submenu-link {
-    padding: 7px 10px;
+    display: block !important;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
     font-size: 0.84rem;
     font-weight: 500;
     color: var(--nav-text-body);
     text-decoration: none;
     border-radius: 6px;
     transition: all 0.15s ease;
+    text-align: left;
 }
 
 .side-submenu-link:hover {

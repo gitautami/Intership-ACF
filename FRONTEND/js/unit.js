@@ -14,137 +14,175 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Initialize Galeri Sekolah Juara Slider & Lightbox (if on page)
-  initSjGallerySlider();
+  // 1. Initialize Galeri Sekolah Juara Infinite Slider & Lightbox
+  initInfiniteGallerySlider({
+    wrapId: 'sjGallerySliderWrap',
+    trackId: 'sjGalleryTrack',
+    prevBtnId: 'sjGalleryPrevBtn',
+    nextBtnId: 'sjGalleryNextBtn',
+    dotsId: 'sjGalleryDots',
+    modalId: 'sjLightboxModal',
+    modalBackdropId: 'sjLightboxBackdrop',
+    modalCloseId: 'sjLightboxClose',
+    modalImgId: 'sjLightboxImg',
+    modalCounterId: 'sjLightboxCounter',
+    modalPrevId: 'sjLightboxPrev',
+    modalNextId: 'sjLightboxNext'
+  });
+
+  // 2. Initialize Galeri Sekolah Daya Setara Infinite Slider & Lightbox
+  initInfiniteGallerySlider({
+    wrapId: 'sdsGallerySliderWrap',
+    trackId: 'sdsGalleryTrack',
+    prevBtnId: 'sdsGalleryPrevBtn',
+    nextBtnId: 'sdsGalleryNextBtn',
+    dotsId: 'sdsGalleryDots',
+    modalId: 'sdsLightboxModal',
+    modalBackdropId: 'sdsLightboxBackdrop',
+    modalCloseId: 'sdsLightboxClose',
+    modalImgId: 'sdsLightboxImg',
+    modalCounterId: 'sdsLightboxCounter',
+    modalPrevId: 'sdsLightboxPrev',
+    modalNextId: 'sdsLightboxNext'
+  });
 });
 
 /**
- * Galeri Sekolah Juara — Interactive Responsive Slider & Lightbox Modal
+ * Reusable Infinite Loop Carousel & Lightbox for Unit Pendidikan Galleries
+ * Seamless forward and backward continuous loop ("nyambung terus tanpa akhir")
  */
-function initSjGallerySlider() {
-  const wrap = document.getElementById('sjGallerySliderWrap');
+function initInfiniteGallerySlider(config) {
+  const wrap = document.getElementById(config.wrapId);
   if (!wrap) return;
 
-  const track = document.getElementById('sjGalleryTrack');
-  const cards = track ? track.querySelectorAll('.sj-gallery-card') : [];
-  const prevBtn = document.getElementById('sjGalleryPrevBtn');
-  const nextBtn = document.getElementById('sjGalleryNextBtn');
-  const dotsContainer = document.getElementById('sjGalleryDots');
+  const track = document.getElementById(config.trackId);
+  if (!track) return;
 
-  // Lightbox Elements
-  const modal = document.getElementById('sjLightboxModal');
-  const backdrop = document.getElementById('sjLightboxBackdrop');
-  const closeBtn = document.getElementById('sjLightboxClose');
-  const lbImg = document.getElementById('sjLightboxImg');
-  const lbTitle = document.getElementById('sjLightboxTitle');
-  const lbDesc = document.getElementById('sjLightboxDesc');
-  const lbCounter = document.getElementById('sjLightboxCounter');
-  const lbPrev = document.getElementById('sjLightboxPrev');
-  const lbNext = document.getElementById('sjLightboxNext');
+  const originalCards = Array.from(track.querySelectorAll('.sj-gallery-card'));
+  if (originalCards.length === 0) return;
 
-  if (!track || cards.length === 0) return;
+  const prevBtn = document.getElementById(config.prevBtnId);
+  const nextBtn = document.getElementById(config.nextBtnId);
+  const dotsContainer = document.getElementById(config.dotsId);
 
-  const totalCards = cards.length;
-  let currentSlide = 0;
+  // Modal elements
+  const modal = document.getElementById(config.modalId);
+  const backdrop = document.getElementById(config.modalBackdropId);
+  const closeBtn = document.getElementById(config.modalCloseId);
+  const lbImg = document.getElementById(config.modalImgId);
+  const lbCounter = document.getElementById(config.modalCounterId);
+  const lbPrev = document.getElementById(config.modalPrevId);
+  const lbNext = document.getElementById(config.modalNextId);
+
+  const realCount = originalCards.length;
+  // Clone 4 items on each end for seamless looping
+  const cloneCount = Math.min(realCount, 4);
+
+  // 1. Prepend clones of the last cloneCount cards
+  for (let i = realCount - cloneCount; i < realCount; i++) {
+    const idx = (i % realCount + realCount) % realCount;
+    const clone = originalCards[idx].cloneNode(true);
+    clone.classList.add('sj-clone');
+    track.insertBefore(clone, track.firstChild);
+  }
+
+  // 2. Append clones of the first cloneCount cards
+  for (let i = 0; i < cloneCount; i++) {
+    const clone = originalCards[i].cloneNode(true);
+    clone.classList.add('sj-clone');
+    track.appendChild(clone);
+  }
+
+  let currentIndex = 0; // 0 corresponds to the first original card
+  let isSliding = false;
   let autoplayInterval = null;
-  const autoplayDuration = 4500; // 4.5 detik rotasi halus
+  const autoplayDuration = 3800; // 3.8 detik rotasi otomatis terus-menerus
 
-  // Helper to determine items per view
-  function getItemsPerView() {
-    const width = window.innerWidth;
-    if (width <= 640) return 1;
-    if (width <= 991) return 2;
-    return 3;
+  function getCardWidthAndGap() {
+    const firstCard = originalCards[0];
+    const cardRect = firstCard.getBoundingClientRect();
+    const style = window.getComputedStyle(track);
+    const gap = parseFloat(style.gap) || (window.innerWidth <= 991 ? 20 : 24);
+    return { width: cardRect.width, gap: gap };
   }
 
-  function getMaxSlide() {
-    const itemsPerView = getItemsPerView();
-    return Math.max(0, totalCards - itemsPerView);
+  function setTrackPosition(index, animate = true) {
+    const { width, gap } = getCardWidthAndGap();
+    const domIndex = index + cloneCount;
+    const shiftX = domIndex * (width + gap);
+
+    if (animate) {
+      track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+    } else {
+      track.style.transition = 'none';
+    }
+    track.style.transform = `translateX(-${shiftX}px)`;
   }
 
-  // Render pagination dots
+  const maxDots = Math.min(realCount, 10);
+
+  function updateDots() {
+    if (!dotsContainer) return;
+    const dots = dotsContainer.querySelectorAll('.sj-gallery-dot');
+    const realIndex = ((currentIndex % realCount) + realCount) % realCount;
+    const activeDotIndex = realCount <= 10 
+      ? realIndex 
+      : Math.min(maxDots - 1, Math.floor((realIndex / realCount) * maxDots));
+
+    dots.forEach((dot, idx) => {
+      const isActive = idx === activeDotIndex;
+      dot.classList.toggle('active', isActive);
+      dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+  }
+
   function renderDots() {
     if (!dotsContainer) return;
     dotsContainer.innerHTML = '';
-    const maxSlide = getMaxSlide();
-    const dotsCount = maxSlide + 1;
-
-    for (let i = 0; i < dotsCount; i++) {
+    for (let i = 0; i < maxDots; i++) {
       const dot = document.createElement('button');
-      dot.className = 'sj-gallery-dot' + (i === currentSlide ? ' active' : '');
+      dot.className = 'sj-gallery-dot' + (i === 0 ? ' active' : '');
       dot.setAttribute('type', 'button');
       dot.setAttribute('role', 'tab');
-      dot.setAttribute('aria-label', `Halaman Galeri ${i + 1}`);
-      dot.setAttribute('aria-selected', i === currentSlide ? 'true' : 'false');
+      dot.setAttribute('aria-label', `Foto ${i + 1}`);
       dot.addEventListener('click', () => {
-        goToSlide(i);
+        if (isSliding) return;
+        const target = realCount <= 10 ? i : Math.floor((i / maxDots) * realCount);
+        goToSlide(target);
         startAutoplay();
       });
       dotsContainer.appendChild(dot);
     }
   }
 
-  // Update slider position
-  function goToSlide(index) {
-    const maxSlide = getMaxSlide();
-    if (index > maxSlide) {
-      currentSlide = 0;
-    } else if (index < 0) {
-      currentSlide = maxSlide;
-    } else {
-      currentSlide = index;
-    }
+  function goToSlide(targetIndex) {
+    if (isSliding) return;
+    isSliding = true;
+    currentIndex = targetIndex;
+    setTrackPosition(currentIndex, true);
+    updateDots();
 
-    if (cards.length > 0) {
-      const cardRect = cards[0].getBoundingClientRect();
-      const style = window.getComputedStyle(track);
-      const gap = parseFloat(style.gap) || (window.innerWidth <= 991 ? 20 : 24);
-      const shiftX = currentSlide * (cardRect.width + gap);
-      track.style.transform = `translateX(-${shiftX}px)`;
-    }
-
-    // Update Dots
-    if (dotsContainer) {
-      const dots = dotsContainer.querySelectorAll('.sj-gallery-dot');
-      dots.forEach((dot, idx) => {
-        if (idx === currentSlide) {
-          dot.classList.add('active');
-          dot.setAttribute('aria-selected', 'true');
-        } else {
-          dot.classList.remove('active');
-          dot.setAttribute('aria-selected', 'false');
-        }
-      });
-    }
-
-    // Update Nav Button States
-    if (prevBtn) {
-      prevBtn.disabled = false;
-    }
-    if (nextBtn) {
-      nextBtn.disabled = false;
-    }
+    // After animation finishes, handle seamless wrap-around if currently at cloned cards
+    setTimeout(() => {
+      if (currentIndex >= realCount) {
+        currentIndex = currentIndex % realCount;
+        setTrackPosition(currentIndex, false);
+      } else if (currentIndex < 0) {
+        currentIndex = ((currentIndex % realCount) + realCount) % realCount;
+        setTrackPosition(currentIndex, false);
+      }
+      isSliding = false;
+    }, 510);
   }
 
   function nextSlide() {
-    const maxSlide = getMaxSlide();
-    if (currentSlide >= maxSlide) {
-      goToSlide(0);
-    } else {
-      goToSlide(currentSlide + 1);
-    }
+    goToSlide(currentIndex + 1);
   }
 
   function prevSlide() {
-    const maxSlide = getMaxSlide();
-    if (currentSlide <= 0) {
-      goToSlide(maxSlide);
-    } else {
-      goToSlide(currentSlide - 1);
-    }
+    goToSlide(currentIndex - 1);
   }
 
-  // Autoplay Management
   function startAutoplay() {
     stopAutoplay();
     autoplayInterval = setInterval(() => {
@@ -159,7 +197,7 @@ function initSjGallerySlider() {
     }
   }
 
-  // Event Listeners for Slider Controls
+  // Navigation Buttons
   if (nextBtn) {
     nextBtn.addEventListener('click', () => {
       nextSlide();
@@ -174,11 +212,11 @@ function initSjGallerySlider() {
     });
   }
 
-  // Pause on hover
+  // Hover Pause
   wrap.addEventListener('mouseenter', stopAutoplay);
   wrap.addEventListener('mouseleave', startAutoplay);
 
-  // Touch Swipe for In-Page Slider (Mobile)
+  // Touch Swipe on mobile
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -189,180 +227,129 @@ function initSjGallerySlider() {
 
   wrap.addEventListener('touchend', (e) => {
     touchEndX = e.changedTouches[0].screenX;
-    handleSliderSwipe();
-    startAutoplay();
-  }, { passive: true });
-
-  function handleSliderSwipe() {
-    const threshold = 40;
+    const threshold = 35;
     if (touchEndX < touchStartX - threshold) {
       nextSlide();
     } else if (touchEndX > touchStartX + threshold) {
       prevSlide();
     }
-  }
+    startAutoplay();
+  }, { passive: true });
 
-  // Resize handler
+  // Window resize debounced
   let resizeTimer = null;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      renderDots();
-      goToSlide(currentSlide);
+      setTrackPosition(currentIndex, false);
+      updateDots();
     }, 150);
   });
 
-  // Initial Slider Render
+  // Initial render
+  setTrackPosition(0, false);
   renderDots();
-  goToSlide(0);
   startAutoplay();
 
   // ==========================================
-  // LIGHTBOX MODAL WITH FULL SLIDER CAPABILITY
+  // LIGHTBOX MODAL (Full Photo Preview & Modal Slider)
   // ==========================================
-  let activeLbIndex = 0;
-
-  // Extract gallery data directly from DOM cards
-  const galleryItems = Array.from(cards).map((card) => {
-    const imgEl = card.querySelector('.sj-gallery-img');
-    const title = card.getAttribute('data-title') || (card.querySelector('.sj-gallery-card-title') ? card.querySelector('.sj-gallery-card-title').textContent.trim() : 'Galeri Sekolah Juara');
-    const loc = card.getAttribute('data-location') || (card.querySelector('.sj-gallery-location-tag') ? card.querySelector('.sj-gallery-location-tag').textContent.trim() : 'Sekolah Juara');
-    const desc = card.getAttribute('data-desc') || (card.querySelector('.sj-gallery-card-desc') ? card.querySelector('.sj-gallery-card-desc').textContent.trim() : '');
-
-    return {
-      src: imgEl ? imgEl.getAttribute('src') : '',
-      alt: imgEl ? imgEl.getAttribute('alt') : 'Foto Galeri',
-      title: title,
-      location: loc,
-      desc: desc
-    };
-  });
-
-  function openLightbox(index) {
-    if (!modal) return;
-    stopAutoplay(); // pause slider while modal is viewed
-    activeLbIndex = index;
-    updateLightboxContent(index);
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeLightbox() {
-    if (!modal) return;
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    startAutoplay();
-  }
-
-  function updateLightboxContent(index) {
-    if (index >= galleryItems.length) {
-      activeLbIndex = 0;
-    } else if (index < 0) {
-      activeLbIndex = galleryItems.length - 1;
-    } else {
-      activeLbIndex = index;
-    }
-
-    const item = galleryItems[activeLbIndex];
-    if (!item) return;
-
-    if (lbImg) {
-      // Smooth fade transition
-      lbImg.style.opacity = '0';
-      lbImg.style.transform = 'scale(0.97)';
-
-      setTimeout(() => {
-        lbImg.src = item.src;
-        lbImg.alt = item.alt;
-        lbImg.style.opacity = '1';
-        lbImg.style.transform = 'scale(1)';
-      }, 120);
-    }
-
-    if (lbTitle) {
-      lbTitle.textContent = `${item.title} — ${item.location}`;
-    }
-
-    if (lbDesc) {
-      lbDesc.textContent = item.desc;
-    }
-
-    if (lbCounter) {
-      lbCounter.textContent = `Foto ${activeLbIndex + 1} / ${galleryItems.length}`;
-    }
-  }
-
-  function nextLightbox() {
-    updateLightboxContent(activeLbIndex + 1);
-  }
-
-  function prevLightbox() {
-    updateLightboxContent(activeLbIndex - 1);
-  }
-
-  // Click on cards to open Lightbox
-  cards.forEach((card, idx) => {
-    card.addEventListener('click', () => {
-      openLightbox(idx);
-    });
-  });
-
-  // Lightbox Controls
-  if (lbNext) {
-    lbNext.addEventListener('click', (e) => {
-      e.stopPropagation();
-      nextLightbox();
-    });
-  }
-
-  if (lbPrev) {
-    lbPrev.addEventListener('click', (e) => {
-      e.stopPropagation();
-      prevLightbox();
-    });
-  }
-
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeLightbox);
-  }
-
-  if (backdrop) {
-    backdrop.addEventListener('click', closeLightbox);
-  }
-
-  // Keyboard navigation inside lightbox
-  document.addEventListener('keydown', (e) => {
-    if (!modal || !modal.classList.contains('active')) return;
-
-    if (e.key === 'Escape') {
-      closeLightbox();
-    } else if (e.key === 'ArrowRight') {
-      nextLightbox();
-    } else if (e.key === 'ArrowLeft') {
-      prevLightbox();
-    }
-  });
-
-  // Touch Swipe inside Lightbox (Mobile)
-  let lbTouchStartX = 0;
-  let lbTouchEndX = 0;
-
   if (modal) {
+    const galleryItems = originalCards.map((card) => {
+      const imgEl = card.querySelector('.sj-gallery-img');
+      return {
+        src: imgEl ? imgEl.getAttribute('src') : '',
+        alt: imgEl ? imgEl.getAttribute('alt') : 'Foto Galeri'
+      };
+    });
+
+    let activeLbIndex = 0;
+
+    function openLightbox(index) {
+      stopAutoplay();
+      activeLbIndex = ((index % realCount) + realCount) % realCount;
+      updateLightbox(activeLbIndex);
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      startAutoplay();
+    }
+
+    function updateLightbox(index) {
+      activeLbIndex = ((index % realCount) + realCount) % realCount;
+      const item = galleryItems[activeLbIndex];
+      if (!item) return;
+
+      if (lbImg) {
+        lbImg.style.opacity = '0';
+        lbImg.style.transform = 'scale(0.97)';
+        setTimeout(() => {
+          lbImg.src = item.src;
+          lbImg.alt = item.alt;
+          lbImg.style.opacity = '1';
+          lbImg.style.transform = 'scale(1)';
+        }, 120);
+      }
+
+      if (lbCounter) {
+        lbCounter.textContent = `Foto ${activeLbIndex + 1} / ${realCount}`;
+      }
+    }
+
+    // Delegated click on all cards (including clones)
+    track.addEventListener('click', (e) => {
+      const card = e.target.closest('.sj-gallery-card');
+      if (!card) return;
+      const dataIdx = parseInt(card.getAttribute('data-index'), 10);
+      if (!isNaN(dataIdx)) {
+        openLightbox(dataIdx);
+      }
+    });
+
+    if (lbNext) {
+      lbNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateLightbox(activeLbIndex + 1);
+      });
+    }
+
+    if (lbPrev) {
+      lbPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateLightbox(activeLbIndex - 1);
+      });
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    if (backdrop) backdrop.addEventListener('click', closeLightbox);
+
+    document.addEventListener('keydown', (e) => {
+      if (!modal.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      else if (e.key === 'ArrowRight') updateLightbox(activeLbIndex + 1);
+      else if (e.key === 'ArrowLeft') updateLightbox(activeLbIndex - 1);
+    });
+
+    let lbTouchStartX = 0;
+    let lbTouchEndX = 0;
     modal.addEventListener('touchstart', (e) => {
       lbTouchStartX = e.changedTouches[0].screenX;
     }, { passive: true });
 
     modal.addEventListener('touchend', (e) => {
       lbTouchEndX = e.changedTouches[0].screenX;
-      const threshold = 40;
+      const threshold = 35;
       if (lbTouchEndX < lbTouchStartX - threshold) {
-        nextLightbox();
+        updateLightbox(activeLbIndex + 1);
       } else if (lbTouchEndX > lbTouchStartX + threshold) {
-        prevLightbox();
+        updateLightbox(activeLbIndex - 1);
       }
     }, { passive: true });
   }
 }
-

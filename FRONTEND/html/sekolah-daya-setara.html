@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/navbar.css?v=31">
   <link rel="stylesheet" href="../css/home.css">
-  <link rel="stylesheet" href="../css/unit.css?v=2.2">
+  <link rel="stylesheet" href="../css/unit.css?v=5">
 </head>
 <body>
 
@@ -372,104 +372,363 @@
     </section>
 
     <!-- 3. Slider Kegiatan Sekolah Daya Setara -->
-    <section class="section sds-gallery-section" id="kegiatan-sekolah-daya-setara" style="padding: 60px 0; background: #FAFCFE;">
+    <section class="sj-gallery-section" id="kegiatan-sekolah-daya-setara">
       <div class="container">
         
-        <div class="section-header centered reveal" style="margin-bottom: 36px;">
-          <h2 style="font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; color: #1E293B; letter-spacing: -0.5px;">
-            Kegiatan Sekolah Daya Setara
-          </h2>
+        <!-- Header Galeri -->
+        <div class="sj-gallery-header">
+          <span class="sj-gallery-badge">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>Dokumentasi & Aktivitas</span>
+          </span>
+          <h2 class="sj-gallery-title">Kegiatan Sekolah Daya Setara</h2>
+          <p class="sj-gallery-subtitle">
+            Dokumentasi komprehensif pembelajaran kesetaraan resmi, pelatihan keterampilan vokasi siap kerja, dan antusiasme warga belajar Sekolah Daya Setara di seluruh Indonesia.
+          </p>
         </div>
 
-        <!-- Slider Container -->
-        <div class="sds-slider-wrapper reveal">
-          <div class="sds-slider-track">
-            <!-- Page 1 (Photos 1 - 4) -->
-            <div class="sds-slider-page active">
-              <div class="sds-gallery-grid">
-                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (1).JPG" alt="Kegiatan Sekolah Daya Setara 1" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (2).JPG" alt="Kegiatan Sekolah Daya Setara 2" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (3).JPG" alt="Kegiatan Sekolah Daya Setara 3" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (4).JPG" alt="Kegiatan Sekolah Daya Setara 4" class="sds-gallery-img" loading="lazy"></div>
-              </div>
-            </div>
+        <!-- Slider Wrapper (Side Navigation seperti Banner Homepage) -->
+        <div class="sj-gallery-slider-wrap" id="sdsGallerySliderWrap">
+          
+          <!-- Tombol Navigasi Slider di Samping Kiri & Kanan -->
+          <button type="button" class="sj-gallery-nav prev" id="sdsGalleryPrevBtn" aria-label="Foto Sebelumnya">
+            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          
+          <button type="button" class="sj-gallery-nav next" id="sdsGalleryNextBtn" aria-label="Foto Selanjutnya">
+            <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
 
-            <!-- Page 2 (Photos 5 - 7) -->
-            <div class="sds-slider-page">
-              <div class="sds-gallery-grid">
-                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (5).JPG" alt="Kegiatan Sekolah Daya Setara 5" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (6).JPG" alt="Kegiatan Sekolah Daya Setara 6" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/unit-pendidikan/Sekolah Daya Setara (7).JPG" alt="Kegiatan Sekolah Daya Setara 7" class="sds-gallery-img" loading="lazy"></div>
-              </div>
-            </div>
+          <!-- Viewport & Track Slider -->
+          <div class="sj-gallery-viewport" id="sdsGalleryViewport">
+            <div class="sj-gallery-track" id="sdsGalleryTrack">
 
-            <!-- Page 3 (Photos 8 - 11) -->
-            <div class="sds-slider-page">
-              <div class="sds-gallery-grid">
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/PKBM-Ceria-Sukabumi-1-1-400x284.jpg" alt="Kegiatan PKBM Ceria Sukabumi" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/PKBM-Ceria-Pangandaran-2-1-400x284.jpg" alt="Kegiatan PKBM Ceria Pangandaran" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/PKBM-Ceria-Pangandaran-1-400x284.jpg" alt="Kegiatan PKBM Ceria Pangandaran" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/PKBM-Ceria-Lembang-3-400x284.jpg" alt="Kegiatan PKBM Ceria Lembang" class="sds-gallery-img" loading="lazy"></div>
+              <!-- Card 1 -->
+              <div class="sj-gallery-card" data-index="0">
+                <div class="sj-gallery-media">
+                  <img src="../assets/unit-pendidikan/Sekolah Daya Setara (1).JPG" alt="Kegiatan Pembelajaran Sekolah Daya Setara" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Page 4 (Photos 12 - 15) -->
-            <div class="sds-slider-page">
-              <div class="sds-gallery-grid">
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/PKBM-Ceria-Lembang-2-400x284.jpg" alt="Kegiatan PKBM Ceria Lembang" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/PKBM-Ceria-Indramayu-5-400x284.jpg" alt="Kegiatan PKBM Ceria Indramayu" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/PKBM-Ceria-Indramayu-2-400x284.jpg" alt="Kegiatan PKBM Ceria Indramayu" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/PKBM-Ceria-Indramayu-1-400x284.jpg" alt="Kegiatan PKBM Ceria Indramayu" class="sds-gallery-img" loading="lazy"></div>
+              <!-- Card 2 -->
+              <div class="sj-gallery-card" data-index="1">
+                <div class="sj-gallery-media">
+                  <img src="../assets/unit-pendidikan/Sekolah Daya Setara (2).JPG" alt="Kegiatan Pembelajaran Sekolah Daya Setara" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Page 5 (Photos 16 - 19) -->
-            <div class="sds-slider-page">
-              <div class="sds-gallery-grid">
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/pilihan-9-400x284.jpg" alt="Kegiatan Vokasi PKBM" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/pilihan-6-400x284.jpg" alt="Kegiatan Warga Belajar" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/pilihan-3-1-400x284.jpg" alt="Kegiatan Belajar PKBM" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/IMG_5365-400x284.jpg" alt="Dokumentasi PKBM" class="sds-gallery-img" loading="lazy"></div>
+              <!-- Card 3 -->
+              <div class="sj-gallery-card" data-index="2">
+                <div class="sj-gallery-media">
+                  <img src="../assets/unit-pendidikan/Sekolah Daya Setara (3).JPG" alt="Kegiatan Pembelajaran Sekolah Daya Setara" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Page 6 (Photos 20 - 22) -->
-            <div class="sds-slider-page">
-              <div class="sds-gallery-grid">
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/IMG_5156-400x284.jpg" alt="Dokumentasi Warga Belajar" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/IMG_3727-400x284.jpg" alt="Dokumentasi Pelatihan PKBM" class="sds-gallery-img" loading="lazy"></div>
-                <div class="sds-gallery-card"><img src="../assets/sekolah-daya setara/FullSizeRender-5-400x284.jpg" alt="Dokumentasi Pembelajaran" class="sds-gallery-img" loading="lazy"></div>
+              <!-- Card 4 -->
+              <div class="sj-gallery-card" data-index="3">
+                <div class="sj-gallery-media">
+                  <img src="../assets/unit-pendidikan/Sekolah Daya Setara (4).JPG" alt="Kegiatan Pembelajaran Sekolah Daya Setara" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
               </div>
+
+              <!-- Card 5 -->
+              <div class="sj-gallery-card" data-index="4">
+                <div class="sj-gallery-media">
+                  <img src="../assets/unit-pendidikan/Sekolah Daya Setara (5).JPG" alt="Kegiatan Pembelajaran Sekolah Daya Setara" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 6 -->
+              <div class="sj-gallery-card" data-index="5">
+                <div class="sj-gallery-media">
+                  <img src="../assets/unit-pendidikan/Sekolah Daya Setara (6).JPG" alt="Kegiatan Pembelajaran Sekolah Daya Setara" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 7 -->
+              <div class="sj-gallery-card" data-index="6">
+                <div class="sj-gallery-media">
+                  <img src="../assets/unit-pendidikan/Sekolah Daya Setara (7).JPG" alt="Kegiatan Pembelajaran Sekolah Daya Setara" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 8 -->
+              <div class="sj-gallery-card" data-index="7">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/PKBM-Ceria-Sukabumi-1-1-400x284.jpg" alt="Kegiatan PKBM Ceria Sukabumi" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 9 -->
+              <div class="sj-gallery-card" data-index="8">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/PKBM-Ceria-Pangandaran-2-1-400x284.jpg" alt="Kegiatan PKBM Ceria Pangandaran" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 10 -->
+              <div class="sj-gallery-card" data-index="9">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/PKBM-Ceria-Pangandaran-1-400x284.jpg" alt="Kegiatan PKBM Ceria Pangandaran" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 11 -->
+              <div class="sj-gallery-card" data-index="10">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/PKBM-Ceria-Lembang-3-400x284.jpg" alt="Kegiatan PKBM Ceria Lembang" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 12 -->
+              <div class="sj-gallery-card" data-index="11">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/PKBM-Ceria-Lembang-2-400x284.jpg" alt="Kegiatan PKBM Ceria Lembang" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 13 -->
+              <div class="sj-gallery-card" data-index="12">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/PKBM-Ceria-Indramayu-5-400x284.jpg" alt="Kegiatan PKBM Ceria Indramayu" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 14 -->
+              <div class="sj-gallery-card" data-index="13">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/PKBM-Ceria-Indramayu-2-400x284.jpg" alt="Kegiatan PKBM Ceria Indramayu" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 15 -->
+              <div class="sj-gallery-card" data-index="14">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/PKBM-Ceria-Indramayu-1-400x284.jpg" alt="Kegiatan PKBM Ceria Indramayu" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 16 -->
+              <div class="sj-gallery-card" data-index="15">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/pilihan-9-400x284.jpg" alt="Pelatihan Vokasi Sekolah Daya Setara" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 17 -->
+              <div class="sj-gallery-card" data-index="16">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/pilihan-6-400x284.jpg" alt="Aktivitas Warga Belajar PKBM" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 18 -->
+              <div class="sj-gallery-card" data-index="17">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/pilihan-3-1-400x284.jpg" alt="Pembelajaran Mandiri Siswa PKBM" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 19 -->
+              <div class="sj-gallery-card" data-index="18">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/IMG_5365-400x284.jpg" alt="Dokumentasi Praktik Vokasi" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 20 -->
+              <div class="sj-gallery-card" data-index="19">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/IMG_5156-400x284.jpg" alt="Dokumentasi Pembelajaran Kelas" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 21 -->
+              <div class="sj-gallery-card" data-index="20">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/IMG_3727-400x284.jpg" alt="Dokumentasi Pelatihan Keterampilan" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 22 -->
+              <div class="sj-gallery-card" data-index="21">
+                <div class="sj-gallery-media">
+                  <img src="../assets/sekolah-daya setara/FullSizeRender-5-400x284.jpg" alt="Dokumentasi Belajar Bersama" class="sj-gallery-img" loading="lazy">
+                  <div class="sj-gallery-overlay">
+                    <span class="sj-gallery-zoom-badge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
-          <!-- Pagination Bar (Prev 1 2 3 4 5 6 Next) -->
-          <div class="sds-pagination-bar">
-            <button class="sds-pag-btn prev-btn" aria-label="Halaman Sebelumnya" disabled>
-              <span class="sds-pag-arrow-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-              </span>
-              <span class="sds-pag-text">Prev</span>
-            </button>
-            <div class="sds-pag-numbers">
-              <button class="sds-num-btn active" data-page="0">1</button>
-              <button class="sds-num-btn" data-page="1">2</button>
-              <button class="sds-num-btn" data-page="2">3</button>
-              <button class="sds-num-btn" data-page="3">4</button>
-              <button class="sds-num-btn" data-page="4">5</button>
-              <button class="sds-num-btn" data-page="5">6</button>
-            </div>
-            <button class="sds-pag-btn next-btn" aria-label="Halaman Berikutnya">
-              <span class="sds-pag-text">Next</span>
-              <span class="sds-pag-arrow-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-              </span>
-            </button>
-          </div>
+          <!-- Pagination Dots Slider -->
+          <div class="sj-gallery-dots" id="sdsGalleryDots" role="tablist"></div>
+
         </div>
 
       </div>
     </section>
+
+    <!-- Modal Lightbox Galeri Sekolah Daya Setara (Bisa Klik & Ada Slider) -->
+    <div class="sj-lightbox-modal" id="sdsLightboxModal" aria-hidden="true" role="dialog" aria-label="Pratinjau Foto Galeri">
+      <div class="sj-lightbox-backdrop" id="sdsLightboxBackdrop"></div>
+      
+      <div class="sj-lightbox-dialog">
+        <!-- Header: Counter & Close -->
+        <div class="sj-lightbox-header">
+          <div class="sj-lightbox-counter" id="sdsLightboxCounter">Foto 1 / 22</div>
+          <button type="button" class="sj-lightbox-close" id="sdsLightboxClose" aria-label="Tutup Galeri">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- Main Image Stage with Slider Nav Buttons -->
+        <div class="sj-lightbox-stage">
+          <button type="button" class="sj-lightbox-nav prev" id="sdsLightboxPrev" aria-label="Foto Sebelumnya">
+            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+
+          <div class="sj-lightbox-img-wrap">
+            <img src="" alt="" id="sdsLightboxImg" class="sj-lightbox-img">
+          </div>
+
+          <button type="button" class="sj-lightbox-nav next" id="sdsLightboxNext" aria-label="Foto Selanjutnya">
+            <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
 
   </main>
 
@@ -554,54 +813,6 @@
   <!-- JavaScript Modules -->
   <script src="../js/main.js"></script>
   <script src="../js/navbar.js?v=11"></script>
-  <script>
-    // Multi SDS Gallery Slider Pagination Logic
-    document.addEventListener('DOMContentLoaded', function() {
-      const sliderWrappers = document.querySelectorAll('.sds-slider-wrapper');
-      
-      sliderWrappers.forEach(function(wrapper) {
-        const sdsPages = wrapper.querySelectorAll('.sds-slider-page');
-        const sdsNumBtns = wrapper.querySelectorAll('.sds-num-btn');
-        const sdsPrevBtn = wrapper.querySelector('.sds-pag-btn.prev-btn');
-        const sdsNextBtn = wrapper.querySelector('.sds-pag-btn.next-btn');
-        let currentSdsPage = 0;
-
-        function showSdsPage(pageIndex) {
-          if (pageIndex < 0 || pageIndex >= sdsPages.length) return;
-          currentSdsPage = pageIndex;
-
-          sdsPages.forEach(function(page, idx) {
-            page.classList.toggle('active', idx === pageIndex);
-          });
-
-          sdsNumBtns.forEach(function(btn, idx) {
-            btn.classList.toggle('active', idx === pageIndex);
-          });
-
-          if (sdsPrevBtn) sdsPrevBtn.disabled = (currentSdsPage === 0);
-          if (sdsNextBtn) sdsNextBtn.disabled = (currentSdsPage === sdsPages.length - 1);
-        }
-
-        sdsNumBtns.forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            const page = parseInt(btn.getAttribute('data-page'), 10);
-            showSdsPage(page);
-          });
-        });
-
-        if (sdsPrevBtn) {
-          sdsPrevBtn.addEventListener('click', function() {
-            showSdsPage(currentSdsPage - 1);
-          });
-        }
-
-        if (sdsNextBtn) {
-          sdsNextBtn.addEventListener('click', function() {
-            showSdsPage(currentSdsPage + 1);
-          });
-        }
-      });
-    });
-  </script>
+  <script src="../js/unit.js?v=5"></script>
 </body>
 </html>

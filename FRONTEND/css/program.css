@@ -7,13 +7,13 @@
 .program-header-banner {
   position: relative;
   width: 100%;
-  min-height: clamp(380px, 35vw, 520px);
+  min-height: clamp(500px, 45vw, 680px);
   display: flex;
   align-items: center;
-  padding: 135px 0 55px;
-  background-image: linear-gradient(135deg, rgba(82, 18, 86, 0.82) 0%, rgba(32, 10, 38, 0.68) 100%), url('../assets/homepage/Banner 2.jpg');
+  padding: 130px 0 60px;
+  background-image: linear-gradient(135deg, rgba(82, 18, 86, 0.84) 0%, rgba(32, 10, 38, 0.70) 100%), url('../assets/homepage/Banner 2.jpg');
   background-size: cover;
-  background-position: center center;
+  background-position: center 30%;
   background-repeat: no-repeat;
   color: #FFFFFF;
   overflow: hidden;
@@ -315,24 +315,25 @@
 @media (max-width: 768px) {
   .program-header-banner {
     min-height: auto;
-    padding: 100px 0 36px;
+    padding: 105px 0 42px;
+    background-position: center 25%;
   }
 
   .program-header-banner .section-label {
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     padding: 4px 13px;
     margin-bottom: 10px;
   }
 
   .program-banner-title {
-    font-size: 1.65rem !important;
+    font-size: clamp(1.65rem, 5.5vw, 2.2rem) !important;
     line-height: 1.25 !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 10px !important;
   }
 
   .program-banner-desc {
     font-size: 0.92rem !important;
-    line-height: 1.55 !important;
+    line-height: 1.6 !important;
   }
 
   .program-category-section {
@@ -502,18 +503,8 @@
    ============================================= */
 @media (max-width: 480px) {
   .program-header-banner {
-    padding: 90px 0 28px;
-  }
-
-  .program-banner-title {
-    font-size: 1.45rem !important;
-    line-height: 1.22 !important;
-    margin-bottom: 6px !important;
-  }
-
-  .program-banner-desc {
-    font-size: 0.85rem !important;
-    line-height: 1.5 !important;
+    padding: 105px 0 40px;
+    background-position: center 25%;
   }
 
   .program-category-section {

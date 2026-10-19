@@ -797,20 +797,24 @@
 .sj-hero-banner {
   position: relative;
   width: 100%;
-  min-height: 280px;
-  margin-top: 72px;
-  /* navbar offset */
-  background: url('../assets/sekolah-juara/hero_bg.png') center/cover no-repeat;
+  min-height: clamp(500px, 45vw, 680px);
+  margin-top: 0;
   display: flex;
   align-items: center;
+  padding: 130px 0 60px;
   overflow: hidden;
 }
 
 .sj-hero-banner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.15) 100%);
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sj-hero-banner {
+    min-height: auto;
+    padding: 105px 0 42px;
+    margin-top: 0;
+  }
 }
 
 .sj-hero-banner-inner {

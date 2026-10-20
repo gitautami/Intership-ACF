@@ -850,6 +850,41 @@
   margin: 18px 0;
 }
 
+.kabar-detail-prose figure {
+  margin: 24px 0;
+}
+
+.kabar-detail-prose figure.align-center {
+  text-align: center;
+  margin: 24px auto;
+}
+
+.kabar-detail-prose figure.align-left {
+  float: left;
+  margin: 8px 24px 18px 0;
+  max-width: 48%;
+}
+
+.kabar-detail-prose figure.align-right {
+  float: right;
+  margin: 8px 0 18px 24px;
+  max-width: 48%;
+}
+
+.kabar-detail-prose figure img {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.kabar-detail-prose figcaption {
+  font-size: 0.84rem;
+  color: #64748B;
+  font-style: italic;
+  margin-top: 8px;
+  text-align: center;
+}
+
 /* =============================================
    Article Social Share Section (Compact Icon-Only)
    ============================================= */

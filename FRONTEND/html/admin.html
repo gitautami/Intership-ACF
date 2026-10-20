@@ -4,6 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal Admin — ACF Eduhub</title>
+
+  <!-- Live Server Auto-Reload Guard during Article Editing -->
+  <script>
+    (function() {
+      // Mencegah Live Server me-reload halaman web secara otomatis saat foto diupload
+      if (typeof window !== 'undefined' && 'WebSocket' in window) {
+        var OriginalWebSocket = window.WebSocket;
+        window.WebSocket = function(url, protocols) {
+          var ws = protocols !== undefined ? new OriginalWebSocket(url, protocols) : new OriginalWebSocket(url);
+          
+          var origAddEventListener = ws.addEventListener;
+          ws.addEventListener = function(type, listener, options) {
+            if (type === 'message') {
+              var wrapped = function(event) {
+                if (event && event.data === 'reload') {
+                  var modal = document.getElementById('articleModal');
+                  if (modal && modal.classList.contains('show')) {
+                    console.warn('[ACF Studio] Dev Server reload dicegah saat sedang menulis artikel agar naskah tidak hilang.');
+                    return;
+                  }
+                }
+                return listener.apply(this, arguments);
+              };
+              return origAddEventListener.call(ws, type, wrapped, options);
+            }
+            return origAddEventListener.apply(ws, arguments);
+          };
+
+          var internalOnMessage = null;
+          Object.defineProperty(ws, 'onmessage', {
+            get: function() { return internalOnMessage; },
+            set: function(handler) {
+              if (typeof handler !== 'function') {
+                internalOnMessage = null;
+                return;
+              }
+              internalOnMessage = function(event) {
+                if (event && event.data === 'reload') {
+                  var modal = document.getElementById('articleModal');
+                  if (modal && modal.classList.contains('show')) {
+                    console.warn('[ACF Studio] Dev Server reload dicegah saat sedang menulis artikel agar naskah tidak hilang.');
+                    return;
+                  }
+                }
+                return handler.apply(this, arguments);
+              };
+            }
+          });
+
+          return ws;
+        };
+        window.WebSocket.prototype = OriginalWebSocket.prototype;
+      }
+    })();
+  </script>
   
   <!-- Favicon / Tab Icon & Mobile App Icon -->
   <link rel="icon" type="image/png" href="../assets/logo-acf/icon tab.png">
@@ -14,7 +69,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin.css?v=20261020_1">
 </head>
 <body>
 
@@ -306,6 +361,12 @@
                 <option value="opini">Kolaborasi & Opini</option>
               </select>
 
+              <select id="filterStatusArticle" class="select-filter">
+                <option value="all">Semua Status</option>
+                <option value="Terbit">🟢 Terpublikasi</option>
+                <option value="Draf">🟡 Draf</option>
+              </select>
+
               <button type="button" class="btn-outline-action" id="btnToolbarManageCategories" title="Kelola & Hapus Kategori" style="padding: 7px 12px; font-size: 0.82rem; border-color: #CBD5E1; color: #1E293B;">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 <span>Kelola Kategori</span>
@@ -382,13 +443,19 @@
         </div>
 
         <div class="wp-gb-header-right">
+          <!-- Draft Autosave Indicator -->
+          <div class="wp-autosave-indicator" id="wpAutosaveIndicator" style="display: none; align-items: center; gap: 5px; font-size: 0.74rem; color: #16A34A; font-weight: 500; margin-right: 6px;">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="wpAutosaveText">Draf tersimpan</span>
+          </div>
+
           <!-- Save Draft Button -->
           <button type="button" class="wp-gb-btn-draft" id="btnSaveDraft" title="Simpan sebagai draf internal">
             Simpan draf
           </button>
 
           <!-- Publish Button -->
-          <button type="submit" form="articleForm" class="wp-gb-btn-publish" id="btnSaveArticle">
+          <button type="button" class="wp-gb-btn-publish" id="btnSaveArticle">
             <span id="btnSaveArticleText">Terbitkan</span>
           </button>
 
@@ -583,13 +650,59 @@
               <!-- Gutenberg Document Canvas Paper -->
               <div class="wp-gb-paper-sheet">
                 
+                <!-- Banner Pemulihan Draf Otomatis -->
+                <div id="wpDraftRecoveryBanner" class="wp-draft-recovery-banner" style="display: none;">
+                  <div class="wp-draft-banner-left">
+                    <span class="wp-draft-banner-icon">⚡</span>
+                    <div>
+                      <strong style="color: #7D2280;">Draf tulisan Anda sebelumnya dipulihkan!</strong>
+                      <div id="wpDraftRecoveryTime" style="font-size: 0.73rem; color: #64748B;">Tersimpan otomatis saat Anda menulis sebelumnya.</div>
+                    </div>
+                  </div>
+                  <div class="wp-draft-banner-actions">
+                    <button type="button" class="btn-draft-action btn-draft-discard" id="btnDiscardRecoveredDraft" title="Hapus draf ini dan mulai tulisan baru">✕ Mulai Baru</button>
+                    <button type="button" class="btn-draft-action btn-draft-keep" id="btnKeepRecoveredDraft" title="Lanjutkan draf ini">✓ Lanjutkan</button>
+                  </div>
+                </div>
+
                 <!-- Gutenberg Post Title (Tambahkan judul) -->
                 <div class="wp-gb-title-box">
                   <textarea id="articleTitle" class="wp-gb-title-input" rows="1" placeholder="Tambahkan judul" required></textarea>
                 </div>
 
                 <!-- Gutenberg ContentEditable Writing Area -->
-                <div class="wp-content-canvas-wrap">
+                <div class="wp-content-canvas-wrap" style="position: relative;">
+                  
+                  <!-- Floating Toolbar for Selected Inline Image -->
+                  <div class="wp-inline-img-toolbar" id="wpInlineImgToolbar" style="display: none;">
+                    <div class="img-tool-group">
+                      <button type="button" class="btn-img-tool" data-align="left" title="Rata Kiri">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="6" x2="3" y2="6"/><line x1="15" y1="12" x2="3" y2="12"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+                        <span>Kiri</span>
+                      </button>
+                      <button type="button" class="btn-img-tool" data-align="center" title="Rata Tengah">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="6"/><line x1="21" y1="12" x2="3" y2="12"/><line x1="18" y1="18" x2="6" y2="18"/></svg>
+                        <span>Tengah</span>
+                      </button>
+                      <button type="button" class="btn-img-tool" data-align="right" title="Rata Kanan">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="12" x2="9" y2="12"/><line x1="21" y1="18" x2="7" y2="18"/></svg>
+                        <span>Kanan</span>
+                      </button>
+                    </div>
+                    <div class="img-tool-divider"></div>
+                    <div class="img-tool-group">
+                      <button type="button" class="btn-img-tool" id="btnReplaceSelectedImg" title="Ganti File Foto Ini">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        <span>Ganti Foto</span>
+                      </button>
+                      <button type="button" class="btn-img-tool btn-img-tool-delete" id="btnDeleteSelectedImg" title="Hapus Foto Ini">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span>Hapus</span>
+                      </button>
+                    </div>
+                  </div>
+                  <input type="file" id="replaceInlineImgFileInput" accept="image/*" style="display: none;">
+
                   <div id="articleVisualEditor" class="wp-visual-editor wp-gb-visual-canvas" contenteditable="true" spellcheck="false" data-placeholder="Ketik / atau klik [+] di kiri atas untuk memilih blok..."></div>
                   <textarea id="articleContent" style="display: none;"></textarea>
                 </div>
@@ -713,29 +826,48 @@
                     <span>Gambar Unggulan</span>
                     <span class="wp-gb-acc-arrow">▾</span>
                   </summary>
-                  <div class="wp-gb-acc-content">
-                    <!-- Live Image Preview -->
-                    <div class="wp-preview-thumb-box" id="coverPreviewBox">
+                    <!-- Live Image Preview Box -->
+                    <div class="cover-preview-box wp-cover-preview-interactive" id="coverPreviewBox" title="Klik untuk memilih foto dari komputer">
                       <img id="coverPreviewImg" src="" alt="Pratinjau Sampul">
                       <div class="cover-preview-placeholder" id="coverPlaceholder">
                         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                         <span>Tetapkan gambar unggulan</span>
+                        <small style="font-size: 0.72rem; color: #94A3B8; margin-top: 2px;">Klik untuk upload file foto</small>
+                      </div>
+                      <div class="cover-hover-overlay" id="coverHoverOverlay" style="display: none;">
+                        <button type="button" class="btn-cover-action" id="btnChangeCover" title="Ganti Foto">
+                          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                          <span>Ganti Foto</span>
+                        </button>
+                        <button type="button" class="btn-cover-action btn-cover-delete" id="btnRemoveCover" title="Hapus Foto">
+                          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                          <span>Hapus</span>
+                        </button>
                       </div>
                     </div>
 
-                    <!-- Local Dropzone -->
-                    <div class="wp-dropzone" id="wpDropzone" style="margin-top: 10px;">
-                      <input type="file" id="wpFileInput" accept="image/*" style="display: none;">
-                      <div class="wp-dropzone-content" id="wpDropzoneContent">
-                        <div style="font-weight: 600; font-size: 0.8rem; color: #1E1E1E;">Pilih / Ganti Gambar dari Komputer</div>
-                        <div style="font-size: 0.72rem; color: #64748B;">Klik untuk upload file foto</div>
-                      </div>
+                    <!-- Action buttons row: Pilih dari Komputer & Hapus -->
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                      <button type="button" class="btn-outline-action" id="btnUploadCoverComputer" style="flex: 1; padding: 7px 10px; font-size: 0.78rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-color: #CBD5E1; color: #1E293B;">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span>Pilih Foto dari Komputer</span>
+                      </button>
+                      <button type="button" class="btn-outline-action" id="btnRemoveCoverDirect" style="display: none; padding: 7px 10px; font-size: 0.78rem; color: #DC2626; border-color: #FECACA; background: #FEF2F2;" title="Hapus foto unggulan">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span>Hapus</span>
+                      </button>
                     </div>
 
-                    <!-- URL Input Fallback -->
+                    <!-- Hidden file inputs -->
+                    <input type="file" id="wpFileInput" accept="image/*" style="display: none;">
+
+                    <!-- URL Input Fallback with Apply Button -->
                     <div style="margin-top: 10px;">
-                      <label class="wp-label" for="articleCover" style="font-size: 0.74rem;">Atau URL Foto Eksternal:</label>
-                      <input type="url" id="articleCover" class="wp-input" placeholder="https://..." required style="font-size: 0.8rem; padding: 6px 8px;">
+                      <label class="wp-label" for="articleCover" style="font-size: 0.74rem;">Atau Tempel URL Gambar:</label>
+                      <div style="display: flex; gap: 6px; margin-top: 4px;">
+                        <input type="text" id="articleCover" class="wp-input" placeholder="https://..." style="font-size: 0.8rem; padding: 6px 8px; flex: 1;">
+                        <button type="button" class="btn-outline-action" id="btnApplyCoverUrl" style="padding: 6px 10px; font-size: 0.76rem; font-weight: 600; white-space: nowrap;">Terapkan</button>
+                      </div>
                     </div>
 
                     <!-- Preset Chips -->
@@ -758,9 +890,9 @@
                     <span class="wp-gb-acc-arrow">▾</span>
                   </summary>
                   <div class="wp-gb-acc-content">
-                    <textarea id="articleExcerpt" class="wp-textarea" rows="3" placeholder="Tulis kutipan opsional untuk naskah ini..." required style="font-size: 0.82rem;"></textarea>
+                    <textarea id="articleExcerpt" class="wp-textarea" rows="3" placeholder="Tulis kutipan opsional untuk naskah ini..." style="font-size: 0.82rem;"></textarea>
                     <div class="wp-field-help" style="margin-top: 4px; font-size: 0.72rem;">
-                      <em>Kutipan ditampilkan sebagai cuplikan kartu kabar di beranda.</em>
+                      <em>Kutipan ditampilkan sebagai cuplikan kartu kabar di beranda (otomatis diambil dari paragraf awal jika kosong).</em>
                     </div>
                   </div>
                 </details>
@@ -817,6 +949,82 @@
         </form>
       </div>
 
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: SISIPKAN & KELOLA GAMBAR INLINE
+       ========================================== -->
+  <div class="admin-modal-backdrop" id="inlineImageModal" style="z-index: 10000;">
+    <div class="admin-modal-box" style="max-width: 520px; border-radius: 16px; padding: 0; overflow: hidden; background: #FFFFFF; box-shadow: 0 25px 60px rgba(0,0,0,0.25);">
+      
+      <div class="modal-header" style="padding: 16px 20px; background: #FAF5FF; border-bottom: 1px solid #E9D5FF; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.25rem;">🖼️</span>
+          <h4 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #581C87;">Sisipkan Foto ke Dalam Tulisan</h4>
+        </div>
+        <button type="button" class="wp-gb-header-btn wp-gb-btn-close" id="btnCloseInlineImageModal" aria-label="Tutup" style="width: 32px; height: 32px;">✕</button>
+      </div>
+
+      <div style="padding: 20px;">
+        <!-- Tabs: Komputer vs URL -->
+        <div style="display: flex; gap: 6px; background: #F1F5F9; padding: 4px; border-radius: 8px; margin-bottom: 16px;">
+          <button type="button" class="btn-inline-img-tab active" id="tabInlineImgComputer" style="flex: 1; padding: 7px 12px; border-radius: 6px; border: none; font-size: 0.82rem; font-weight: 700; cursor: pointer; background: #FFFFFF; color: #7D2280; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+            📁 Dari Komputer
+          </button>
+          <button type="button" class="btn-inline-img-tab" id="tabInlineImgUrl" style="flex: 1; padding: 7px 12px; border-radius: 6px; border: none; font-size: 0.82rem; font-weight: 600; cursor: pointer; background: transparent; color: #64748B;">
+            🔗 Tempel URL Foto
+          </button>
+        </div>
+
+        <!-- Pane 1: Komputer -->
+        <div id="paneInlineImgComputer">
+          <div class="wp-dropzone" id="inlineImgDropzone" style="border: 2px dashed #C4B5FD; border-radius: 12px; padding: 24px 16px; text-align: center; background: #FAF5FF; cursor: pointer; transition: all 0.2s ease;">
+            <input type="file" id="inlineImgFileInput" accept="image/*" style="display: none;">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#7D2280" stroke-width="1.8" style="margin-bottom: 8px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div style="font-weight: 700; font-size: 0.88rem; color: #581C87;" id="inlineDropzoneTitle">Klik untuk pilih gambar dari komputer</div>
+            <div style="font-size: 0.76rem; color: #7E22CE; margin-top: 4px;">atau seret (drag & drop) file foto ke kotak ini</div>
+            <div id="inlineImgSelectedFileBadge" style="display: none; margin-top: 10px; background: #EDE9FE; color: #581C87; padding: 4px 10px; border-radius: 9999px; font-size: 0.76rem; font-weight: 600;"></div>
+          </div>
+        </div>
+
+        <!-- Pane 2: URL -->
+        <div id="paneInlineImgUrl" style="display: none;">
+          <label class="wp-label" for="inlineImgUrlInput" style="font-size: 0.78rem;">Alamat URL Gambar (JPG/PNG/WEBP):</label>
+          <input type="text" id="inlineImgUrlInput" class="wp-input" placeholder="https://..." style="margin-top: 6px; font-size: 0.85rem; padding: 8px 12px;">
+        </div>
+
+        <!-- Image Settings (Alignment & Caption) -->
+        <div style="margin-top: 16px;">
+          <label class="wp-label" style="font-size: 0.78rem;">Perataan Posisi Foto:</label>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px;">
+            <button type="button" class="btn-align-choice active" data-align="center" style="padding: 8px; border: 1.5px solid #7D2280; background: #FAF5FF; color: #7D2280; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; text-align: center;">
+              ⬌ Tengah
+            </button>
+            <button type="button" class="btn-align-choice" data-align="left" style="padding: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #475569; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-align: center;">
+              ⫷ Kiri
+            </button>
+            <button type="button" class="btn-align-choice" data-align="right" style="padding: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #475569; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-align: center;">
+              Kanan ⫸
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px;">
+          <label class="wp-label" for="inlineImgCaptionInput" style="font-size: 0.78rem;">Keterangan Foto / Caption (Opsional):</label>
+          <input type="text" id="inlineImgCaptionInput" class="wp-input" placeholder="Contoh: Suasana kegiatan belajar mengajar..." style="margin-top: 6px; font-size: 0.82rem; padding: 7px 10px;">
+        </div>
+
+        <!-- Submit insertion button -->
+        <div style="margin-top: 20px; display: flex; gap: 8px; justify-content: flex-end;">
+          <button type="button" class="btn-outline-action" id="btnCancelInlineImage" style="padding: 8px 16px; font-size: 0.82rem;">Batal</button>
+          <button type="button" class="btn-create-article" id="btnConfirmInsertInlineImage" style="padding: 8px 18px; font-size: 0.82rem; font-weight: 700; background: #7D2280; color: #FFFFFF; border: none; border-radius: 8px; cursor: pointer;">
+            ✓ Sisipkan ke Tulisan
+          </button>
+        </div>
+
+      </div>
 
     </div>
   </div>
@@ -975,7 +1183,7 @@
   <div class="admin-toast-container" id="toastContainer"></div>
 
   <!-- JavaScript Modules -->
-  <script src="../js/api.js?v=20261002_3"></script>
-  <script src="../js/admin.js?v=20261002_3"></script>
+  <script src="../js/api.js?v=20261020_1"></script>
+  <script src="../js/admin.js?v=20261020_1"></script>
 </body>
 </html>

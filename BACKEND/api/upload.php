@@ -52,7 +52,7 @@ $newFileName = 'img_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' .
 $targetPath = $uploadDir . $newFileName;
 
 if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-    $relativePath = 'assets/uploads/' . $newFileName;
+    $relativePath = '../assets/uploads/' . $newFileName;
     jsonSuccess([
         'url'      => $relativePath,
         'filename' => $newFileName,

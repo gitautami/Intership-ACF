@@ -1,0 +1,10 @@
+{
+  "liveServer.settings.ignoreFiles": [
+    "**/assets/uploads/**",
+    "**/assets/uploads/*",
+    "FRONTEND/assets/uploads/**",
+    "BACKEND/**",
+    "**/.git/**"
+  ],
+  "liveServer.settings.donotShowInfoMsg": true
+}

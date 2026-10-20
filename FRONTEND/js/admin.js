@@ -175,6 +175,7 @@
   const countArticleCategories = document.getElementById('countArticleCategories');
   const searchArticle = document.getElementById('searchArticle');
   const filterCategoryArticle = document.getElementById('filterCategoryArticle');
+  const filterStatusArticle = document.getElementById('filterStatusArticle');
   const tbodyArticles = document.getElementById('tbodyArticles');
   const emptyArticles = document.getElementById('emptyArticles');
   const btnOpenCreateArticleModal = document.getElementById('btnOpenCreateArticleModal');
@@ -218,8 +219,21 @@
   const btnWpInsertLink = document.getElementById('btnWpInsertLink');
   const btnWpInsertImage = document.getElementById('btnWpInsertImage');
   const btnSaveDraft = document.getElementById('btnSaveDraft');
+  const btnSaveArticle = document.getElementById('btnSaveArticle');
   const btnSaveArticleText = document.getElementById('btnSaveArticleText');
   const btnArticleModalClose = document.getElementById('btnArticleModalClose');
+  const wpAutosaveIndicator = document.getElementById('wpAutosaveIndicator');
+  const wpAutosaveText = document.getElementById('wpAutosaveText');
+  const wpDraftRecoveryBanner = document.getElementById('wpDraftRecoveryBanner');
+  const wpDraftRecoveryTime = document.getElementById('wpDraftRecoveryTime');
+  const btnDiscardRecoveredDraft = document.getElementById('btnDiscardRecoveredDraft');
+  const btnKeepRecoveredDraft = document.getElementById('btnKeepRecoveredDraft');
+
+  // Inline Image Floating Toolbar Elements
+  const wpInlineImgToolbar = document.getElementById('wpInlineImgToolbar');
+  const replaceInlineImgFileInput = document.getElementById('replaceInlineImgFileInput');
+  const btnReplaceSelectedImg = document.getElementById('btnReplaceSelectedImg');
+  const btnDeleteSelectedImg = document.getElementById('btnDeleteSelectedImg');
 
   // WordPress Mode Tabs & Views
   const tabModeEditor = document.getElementById('tabModeEditor');
@@ -858,7 +872,8 @@
     if (badgeTabRelawan) badgeTabRelawan.textContent = totalRelawan;
 
     // Articles Metrics
-    if (countArticlesPublished) countArticlesPublished.textContent = dataArticles.length;
+    const publishedArticlesCount = dataArticles.filter(art => (art.status || 'Terbit') !== 'Draf').length;
+    if (countArticlesPublished) countArticlesPublished.textContent = publishedArticlesCount;
     if (countArticleCategories) countArticleCategories.textContent = dataCategories.length;
   }
 
@@ -1014,6 +1029,7 @@
     if (!tbodyArticles) return;
     const query = (searchArticle?.value || '').toLowerCase().trim();
     const catFilter = filterCategoryArticle?.value || 'all';
+    const statusFilter = filterStatusArticle?.value || 'all';
 
     const filtered = dataArticles.filter(art => {
       const matchQuery = !query ||
@@ -1022,7 +1038,8 @@
         (art.excerpt || '').toLowerCase().includes(query);
 
       const matchCat = catFilter === 'all' || art.category === catFilter;
-      return matchQuery && matchCat;
+      const matchStatus = statusFilter === 'all' || (art.status || 'Terbit') === statusFilter;
+      return matchQuery && matchCat && matchStatus;
     });
 
     const sortedArticles = [...filtered].sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
@@ -1034,6 +1051,10 @@
     } else {
       if (emptyArticles) emptyArticles.style.display = 'none';
       sortedArticles.forEach((art) => {
+        const isDraft = (art.status === 'Draf');
+        const statusBadgeClass = isDraft ? 'status-menunggu status-badge-draf' : 'status-diterima status-badge-terbit';
+        const statusBadgeText = isDraft ? 'Draf' : 'Terpublikasi';
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>
@@ -1055,7 +1076,7 @@
             <span class="cell-date">${escapeHTML(art.date || '-')}</span>
           </td>
           <td>
-            <span class="status-badge status-diterima">Terpublikasi</span>
+            <span class="status-badge ${statusBadgeClass}">${statusBadgeText}</span>
           </td>
           <td style="text-align: right; white-space: nowrap;">
             <button type="button" class="btn-action-view btn-edit-article" data-id="${art.id}" style="margin-right: 6px;">
@@ -1091,6 +1112,121 @@
     }
   }
 
+  // ==========================================
+  // WORDPRESS ARTICLE DRAFT AUTOSAVE & RECOVERY
+  // ==========================================
+  const DRAFT_STORAGE_KEY = 'acf_active_article_draft_v1';
+  let autosaveDebounceTimer = null;
+
+  function triggerAutosave() {
+    if (!articleModal || !articleModal.classList.contains('show')) return;
+    
+    // Jangan autosave jika sedang mengedit artikel yang sudah ada (hanya untuk naskah baru/draf aktif)
+    const isExistingEdit = articleEditId && articleEditId.value;
+    if (isExistingEdit) return;
+
+    const title = articleTitle ? articleTitle.value.trim() : '';
+    const content = articleVisualEditor ? articleVisualEditor.innerHTML.trim() : '';
+    const cover = articleCover ? articleCover.value.trim() : '';
+
+    if (!title && !content && !cover) {
+      return;
+    }
+
+    clearTimeout(autosaveDebounceTimer);
+    autosaveDebounceTimer = setTimeout(() => {
+      saveDraftToStorage();
+    }, 400);
+  }
+
+  function saveDraftToStorage() {
+    try {
+      const nowStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      const draftData = {
+        title: articleTitle ? articleTitle.value : '',
+        content: articleVisualEditor ? articleVisualEditor.innerHTML : '',
+        excerpt: articleExcerpt ? articleExcerpt.value : '',
+        cover: articleCover ? articleCover.value : '',
+        category: articleCategory ? articleCategory.value : 'artikel',
+        author: articleAuthor ? articleAuthor.value : 'Tim Redaksi ACF',
+        status: articleStatusSelect ? articleStatusSelect.value : 'Terbit',
+        date: articleDateInput ? articleDateInput.value : '',
+        savedAt: nowStr
+      };
+
+      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draftData));
+
+      if (wpAutosaveIndicator && wpAutosaveText) {
+        wpAutosaveText.textContent = `Draf tersimpan (${nowStr})`;
+        wpAutosaveIndicator.style.display = 'inline-flex';
+      }
+    } catch (e) {
+      console.warn('Gagal menyimpan draf otomatis:', e);
+    }
+  }
+
+  function clearActiveDraftSession() {
+    try {
+      clearTimeout(autosaveDebounceTimer);
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
+      if (wpAutosaveIndicator) wpAutosaveIndicator.style.display = 'none';
+      if (wpDraftRecoveryBanner) wpDraftRecoveryBanner.style.display = 'none';
+    } catch (e) {}
+  }
+
+  function checkAndRestoreDraft() {
+    try {
+      const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (!raw) return false;
+      const draft = JSON.parse(raw);
+      if (!draft || (!draft.title && !draft.content && !draft.cover)) {
+        clearActiveDraftSession();
+        return false;
+      }
+
+      if (articleTitle) articleTitle.value = draft.title || '';
+      if (articleVisualEditor) articleVisualEditor.innerHTML = draft.content || '';
+      if (articleContent) articleContent.value = draft.content || '';
+      if (articleExcerpt) articleExcerpt.value = draft.excerpt || '';
+      if (articleCover) articleCover.value = draft.cover || '';
+      if (articleAuthor) articleAuthor.value = draft.author || 'Tim Redaksi ACF';
+      if (draft.date && articleDateInput) articleDateInput.value = draft.date;
+
+      if (draft.category && articleCategory) {
+        renderCategorySelects(draft.category);
+        articleCategory.value = draft.category;
+      }
+
+      if (draft.status) {
+        if (articleStatusSelect) articleStatusSelect.value = draft.status;
+        if (articleStatusInput) articleStatusInput.value = draft.status;
+      }
+
+      updateCoverPreview(draft.cover || '');
+      updateWpStats();
+
+      if (wpDraftRecoveryBanner) {
+        if (wpDraftRecoveryTime && draft.savedAt) {
+          wpDraftRecoveryTime.textContent = `Tersimpan otomatis pukul ${draft.savedAt}. Anda dapat melanjutkan atau membuang draf ini.`;
+        }
+        wpDraftRecoveryBanner.style.display = 'flex';
+      }
+
+      if (wpAutosaveIndicator && wpAutosaveText) {
+        wpAutosaveText.textContent = `Draf tersimpan (${draft.savedAt || ''})`;
+        wpAutosaveIndicator.style.display = 'inline-flex';
+      }
+
+      return true;
+    } catch (e) {
+      console.warn('Gagal memulihkan draf:', e);
+      return false;
+    }
+  }
+
+  // ==========================================
+  // MODAL CONTROLLERS & FORM HANDLERS
+  // ==========================================
   function openCreateArticleModal() {
     if (articleForm) articleForm.reset();
     if (articleEditId) articleEditId.value = '';
@@ -1100,7 +1236,7 @@
     if (newCategoryInputWrap) newCategoryInputWrap.style.display = 'none';
     if (newCategoryName) newCategoryName.value = '';
     
-    // Set default today's date
+    // Set default tanggal hari ini
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     const now = new Date();
     if (articleDateInput) articleDateInput.value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
@@ -1113,6 +1249,12 @@
     updateCoverPreview('');
     if (btnSaveArticleText) btnSaveArticleText.textContent = 'Terbitkan';
 
+    // Cek apakah ada draf tersimpan yang bisa dipulihkan
+    const hasRestored = checkAndRestoreDraft();
+    if (!hasRestored && wpDraftRecoveryBanner) {
+      wpDraftRecoveryBanner.style.display = 'none';
+    }
+
     if (articleModal) {
       articleModal.classList.add('show');
       updateBodyScrollLock();
@@ -1122,6 +1264,9 @@
   function openEditArticleModal(id) {
     const art = dataArticles.find(a => a.id === id);
     if (!art) return;
+
+    if (wpDraftRecoveryBanner) wpDraftRecoveryBanner.style.display = 'none';
+    if (wpAutosaveIndicator) wpAutosaveIndicator.style.display = 'none';
 
     if (articleEditId) articleEditId.value = art.id;
     if (btnSaveArticleText) btnSaveArticleText.textContent = 'Perbarui';
@@ -1153,6 +1298,7 @@
   }
 
   function closeArticleModal() {
+    deselectInlineFigure();
     if (articleModal) {
       articleModal.classList.remove('show');
       updateBodyScrollLock();
@@ -1161,14 +1307,22 @@
 
   function updateCoverPreview(url) {
     if (!coverPreviewImg || !coverPlaceholder) return;
-    if (url && (url.trim().startsWith('http') || url.trim().startsWith('data:image'))) {
-      coverPreviewImg.src = url;
+    const cleanUrl = (url || '').trim();
+    const coverHoverOverlay = document.getElementById('coverHoverOverlay');
+    const btnRemoveCoverDirect = document.getElementById('btnRemoveCoverDirect');
+
+    if (cleanUrl && (cleanUrl.startsWith('http') || cleanUrl.startsWith('data:image') || cleanUrl.startsWith('../assets') || cleanUrl.startsWith('assets/') || cleanUrl.includes('/'))) {
+      coverPreviewImg.src = cleanUrl;
       coverPreviewImg.style.display = 'block';
       coverPlaceholder.style.display = 'none';
+      if (coverHoverOverlay) coverHoverOverlay.style.display = 'flex';
+      if (btnRemoveCoverDirect) btnRemoveCoverDirect.style.display = 'inline-flex';
     } else {
       coverPreviewImg.src = '';
       coverPreviewImg.style.display = 'none';
       coverPlaceholder.style.display = 'flex';
+      if (coverHoverOverlay) coverHoverOverlay.style.display = 'none';
+      if (btnRemoveCoverDirect) btnRemoveCoverDirect.style.display = 'none';
     }
   }
 
@@ -1182,12 +1336,12 @@
     if (articleContent) articleContent.value = articleVisualEditor.innerHTML;
   }
 
-  async function handleArticleSubmit(e) {
-    if (e) e.preventDefault();
+  async function handleArticleSubmit(targetStatus) {
+    if (targetStatus && targetStatus.preventDefault) targetStatus.preventDefault();
 
     const title = articleTitle?.value.trim() || '';
     if (!title) {
-      showToast('Judul artikel wajib diisi!', 'info');
+      showToast('Judul artikel wajib diisi!', 'warning');
       articleTitle?.focus();
       return;
     }
@@ -1198,7 +1352,17 @@
     const cover = articleCover?.value.trim() || 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80';
     const excerpt = articleExcerpt?.value.trim() || (articleVisualEditor ? articleVisualEditor.innerText.slice(0, 140) + '...' : '');
     const content = (articleVisualEditor && articleVisualEditor.innerHTML.trim()) || excerpt;
-    const status = articleStatusInput?.value || articleStatusSelect?.value || 'Terbit';
+    
+    // Pastikan status akurat sesuai tombol yang ditekan (Draf vs Terbit)
+    let status = 'Terbit';
+    if (typeof targetStatus === 'string' && (targetStatus === 'Draf' || targetStatus === 'Terbit')) {
+      status = targetStatus;
+    } else if (articleStatusInput && (articleStatusInput.value === 'Draf' || articleStatusInput.value === 'Terbit')) {
+      status = articleStatusInput.value;
+    } else if (articleStatusSelect && (articleStatusSelect.value === 'Draf' || articleStatusSelect.value === 'Terbit')) {
+      status = articleStatusSelect.value;
+    }
+
     const editId = articleEditId?.value || '';
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -1246,6 +1410,7 @@
       showToast(status === 'Draf' ? 'Artikel disimpan sebagai Draf!' : 'Artikel baru berhasil dipublikasikan!', 'success');
     }
 
+    clearActiveDraftSession();
     saveArticlesData();
     renderTableArticles();
     updateMetricCards();
@@ -1272,38 +1437,160 @@
     }
   }
 
-  // --- Local File Image Reader & Server Uploader ---
+  // --- Local File Image Reader & Server Uploader (Gambar Unggulan) ---
   async function handleLocalImageUpload(file) {
     if (!file || !file.type.startsWith('image/')) {
       showToast('Harap pilih file gambar (JPG, PNG, WEBP).', 'info');
       return;
     }
 
-    showToast('Mengunggah foto sampul...', 'info');
+    // 1. Tampilkan pratinjau lokal SECARA INSTAN agar tidak ada jeda
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64Url = e.target.result;
+      if (articleCover) articleCover.value = base64Url;
+      resetCoverPlaceholder();
+      updateCoverPreview(base64Url);
+      triggerAutosave();
+    };
+    reader.readAsDataURL(file);
 
-    // Coba upload ke Server Backend
+    showToast('Mengunggah foto sampul ke server...', 'info');
+
+    // 2. Unggah ke Backend Server secara asinkron di latar belakang
     if (window.ACF_API && window.ACF_API.articles) {
       try {
         const uploadRes = await window.ACF_API.articles.uploadImage(file);
         if (uploadRes && uploadRes.url) {
           if (articleCover) articleCover.value = uploadRes.url;
+          resetCoverPlaceholder();
           updateCoverPreview(uploadRes.url);
-          showToast('Foto sampul berhasil diunggah ke server!', 'success');
+          triggerAutosave();
+          showToast('Foto sampul berhasil tersimpan di server!', 'success');
           return;
         }
       } catch (uploadErr) {
-        console.warn('Upload ke backend gagal, beralih ke preview lokal:', uploadErr);
+        console.warn('Upload backend gagal, pratinjau lokal tetap aktif:', uploadErr);
+        showToast('Foto sampul lokal dimuat.', 'info');
       }
     }
+  }
 
+  function resetCoverPlaceholder() {
+    if (coverPlaceholder) {
+      coverPlaceholder.innerHTML = `
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>Tetapkan gambar unggulan</span>
+        <small style="font-size: 0.72rem; color: #94A3B8; margin-top: 2px;">Klik untuk upload file foto</small>
+      `;
+    }
+  }
+
+  // ==========================================
+  // INLINE IMAGE IN-PLACE GUTENBERG BLOCK EDITING
+  // ==========================================
+  let activeSelectedFigure = null;
+
+  function selectInlineFigure(figure) {
+    if (!figure || !wpInlineImgToolbar) return;
+    deselectInlineFigure();
+
+    activeSelectedFigure = figure;
+    activeSelectedFigure.classList.add('is-selected');
+
+    const canvasWrap = document.querySelector('.wp-content-canvas-wrap');
+    if (!canvasWrap) return;
+
+    const wrapRect = canvasWrap.getBoundingClientRect();
+    const figRect = figure.getBoundingClientRect();
+
+    const top = figRect.top - wrapRect.top - 46;
+    const left = (figRect.left - wrapRect.left) + (figRect.width / 2);
+
+    wpInlineImgToolbar.style.top = `${Math.max(8, top)}px`;
+    wpInlineImgToolbar.style.left = `${left}px`;
+    wpInlineImgToolbar.style.transform = 'translateX(-50%)';
+    wpInlineImgToolbar.style.display = 'flex';
+
+    const isLeft = figure.classList.contains('align-left');
+    const isRight = figure.classList.contains('align-right');
+    const currentAlign = isLeft ? 'left' : (isRight ? 'right' : 'center');
+
+    document.querySelectorAll('.btn-img-tool[data-align]').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-align') === currentAlign);
+    });
+  }
+
+  function deselectInlineFigure() {
+    if (activeSelectedFigure) {
+      activeSelectedFigure.classList.remove('is-selected');
+      activeSelectedFigure = null;
+    }
+    if (wpInlineImgToolbar) {
+      wpInlineImgToolbar.style.display = 'none';
+    }
+  }
+
+  function insertInlineImageToEditor(imageUrl, align = 'center', caption = '') {
+    if (!articleVisualEditor) return null;
+    articleVisualEditor.focus();
+
+    const alignClass = `align-${align || 'center'}`;
+    const cleanUrl = String(imageUrl || '').trim();
+    const captionHtml = caption
+      ? `<figcaption contenteditable="true">${escapeHTML(caption)}</figcaption>`
+      : `<figcaption contenteditable="true" placeholder="Tulis keterangan foto (opsional)..."></figcaption>`;
+
+    const figureHtml = `<figure class="wp-editor-figure ${alignClass}" contenteditable="false"><img src="${cleanUrl}" alt="Foto Artikel" loading="lazy">${captionHtml}</figure><p><br></p>`;
+
+    try {
+      document.execCommand('insertHTML', false, figureHtml);
+    } catch (e) {
+      articleVisualEditor.innerHTML += figureHtml;
+    }
+
+    articleVisualEditor.focus();
+    updateWpStats();
+    triggerAutosave();
+
+    const allFigures = articleVisualEditor.querySelectorAll('figure.wp-editor-figure');
+    const newFigure = allFigures.length ? allFigures[allFigures.length - 1] : null;
+    if (newFigure) {
+      selectInlineFigure(newFigure);
+    }
+    return newFigure;
+  }
+
+  async function handleInlineImageFile(file, align = 'center', caption = '') {
+    if (!file || !file.type.startsWith('image/')) {
+      showToast('Harap pilih file gambar (JPG, PNG, WEBP).', 'info');
+      return;
+    }
+
+    // 1. Tampilkan langsung secara instan
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64Url = e.target.result;
-      if (articleCover) articleCover.value = base64Url;
-      updateCoverPreview(base64Url);
-      showToast('Foto sampul lokal berhasil dimuat!', 'success');
+    reader.onload = async (e) => {
+      const localDataUrl = e.target.result;
+      const insertedFigure = insertInlineImageToEditor(localDataUrl, align, caption);
+
+      // 2. Di latar belakang, unggah ke server backend
+      if (window.ACF_API && window.ACF_API.articles) {
+        try {
+          const uploadRes = await window.ACF_API.articles.uploadImage(file);
+          if (uploadRes && uploadRes.url && insertedFigure) {
+            const targetImg = insertedFigure.querySelector('img');
+            if (targetImg) {
+              targetImg.src = uploadRes.url;
+              triggerAutosave();
+            }
+          }
+        } catch (err) {
+          console.warn('Upload inline backend gagal, foto lokal tetap aktif:', err);
+        }
+      }
     };
     reader.readAsDataURL(file);
+    showToast('Foto berhasil disisipkan ke naskah!', 'success');
   }
 
   // --- Helper: Decode HTML Entities in text from WordPress ---
@@ -2082,19 +2369,63 @@
   /* ===================================================
      8. TOAST NOTIFICATIONS & UTILS
      =================================================== */
-  function showToast(message, type = 'info') {
+  function showToast(message, type = 'info', duration = 3500) {
     if (!toastContainer) return;
+
+    // Batasi maksimal 2 toast aktif agar tidak menumpuk di layar
+    const currentToasts = toastContainer.querySelectorAll('.admin-toast:not(.toast-hiding)');
+    if (currentToasts.length >= 2) {
+      for (let i = 0; i <= currentToasts.length - 2; i++) {
+        removeToastElement(currentToasts[i]);
+      }
+    }
+
     const toast = document.createElement('div');
     toast.className = `admin-toast toast-${type}`;
-    toast.textContent = message;
-    toastContainer.appendChild(toast);
 
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
-      toast.style.transition = 'all 0.3s ease';
-      setTimeout(() => toast.remove(), 300);
-    }, 3500);
+    let iconHtml = 'ℹ️';
+    if (type === 'success') {
+      iconHtml = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    } else if (type === 'error' || type === 'danger') {
+      iconHtml = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+    } else if (type === 'warning') {
+      iconHtml = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    } else {
+      iconHtml = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+    }
+
+    toast.innerHTML = `
+      <div class="toast-icon">${iconHtml}</div>
+      <div class="toast-body">${escapeHTML(message)}</div>
+      <button type="button" class="toast-close-btn" aria-label="Tutup notifikasi">✕</button>
+    `;
+
+    function removeToastElement(el) {
+      if (!el || el.classList.contains('toast-hiding')) return;
+      el.classList.add('toast-hiding');
+      setTimeout(() => {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, 250);
+    }
+
+    const closeBtn = toast.querySelector('.toast-close-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeToastElement(toast);
+      });
+    }
+
+    let hideTimer = setTimeout(() => {
+      removeToastElement(toast);
+    }, duration);
+
+    toast.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+    toast.addEventListener('mouseleave', () => {
+      hideTimer = setTimeout(() => removeToastElement(toast), 1500);
+    });
+
+    toastContainer.appendChild(toast);
   }
 
   function escapeHTML(str) {
@@ -2303,12 +2634,7 @@
     if (btnWpInsertImage) {
       btnWpInsertImage.addEventListener('click', (e) => {
         e.preventDefault();
-        const imgUrl = prompt('Masukkan URL Gambar yang ingin disisipkan ke dalam tulisan:', 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80');
-        if (imgUrl && imgUrl.trim() !== '') {
-          document.execCommand('insertImage', false, imgUrl.trim());
-          if (articleVisualEditor) articleVisualEditor.focus();
-          updateWpStats();
-        }
+        openInlineImageModal();
       });
     }
 
@@ -2458,40 +2784,337 @@
       });
     });
 
-    // Local File Upload (Dropzone)
-    if (wpDropzone && wpFileInput) {
-      wpDropzone.addEventListener('click', () => wpFileInput.click());
-      
-      wpFileInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-          handleLocalImageUpload(e.target.files[0]);
+    // ==========================================
+    // GAMBAR UNGGULAN (FEATURED IMAGE) LISTENERS
+    // ==========================================
+    const btnUploadCoverComputer = document.getElementById('btnUploadCoverComputer');
+    const coverPreviewBox = document.getElementById('coverPreviewBox');
+    const btnChangeCover = document.getElementById('btnChangeCover');
+    const btnRemoveCover = document.getElementById('btnRemoveCover');
+    const btnRemoveCoverDirect = document.getElementById('btnRemoveCoverDirect');
+    const btnApplyCoverUrl = document.getElementById('btnApplyCoverUrl');
+
+    if (btnUploadCoverComputer && wpFileInput) {
+      btnUploadCoverComputer.addEventListener('click', (e) => {
+        e.preventDefault();
+        wpFileInput.click();
+      });
+    }
+
+    if (coverPreviewBox && wpFileInput) {
+      coverPreviewBox.addEventListener('click', (e) => {
+        if (e.target.closest('#btnChangeCover') || e.target.closest('#btnRemoveCover')) return;
+        if (!articleCover || !articleCover.value.trim()) {
+          wpFileInput.click();
         }
       });
 
-      wpDropzone.addEventListener('dragover', (e) => {
+      coverPreviewBox.addEventListener('dragover', (e) => {
         e.preventDefault();
-        wpDropzone.classList.add('dragover');
+        coverPreviewBox.style.borderColor = '#7D2280';
+        coverPreviewBox.style.background = '#FAF5FF';
       });
 
-      wpDropzone.addEventListener('dragleave', () => {
-        wpDropzone.classList.remove('dragover');
+      coverPreviewBox.addEventListener('dragleave', () => {
+        coverPreviewBox.style.borderColor = '';
+        coverPreviewBox.style.background = '';
       });
 
-      wpDropzone.addEventListener('drop', (e) => {
+      coverPreviewBox.addEventListener('drop', (e) => {
         e.preventDefault();
-        wpDropzone.classList.remove('dragover');
+        coverPreviewBox.style.borderColor = '';
+        coverPreviewBox.style.background = '';
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
           handleLocalImageUpload(e.dataTransfer.files[0]);
         }
       });
     }
 
+    if (wpFileInput) {
+      wpFileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleLocalImageUpload(e.target.files[0]);
+        }
+      });
+    }
+
+    if (btnChangeCover && wpFileInput) {
+      btnChangeCover.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        wpFileInput.click();
+      });
+    }
+
+    function removeCoverImage(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (articleCover) articleCover.value = '';
+      if (wpFileInput) wpFileInput.value = '';
+      resetCoverPlaceholder();
+      updateCoverPreview('');
+      showToast('Gambar unggulan telah dihapus.', 'info');
+    }
+
+    if (btnRemoveCover) btnRemoveCover.addEventListener('click', removeCoverImage);
+    if (btnRemoveCoverDirect) btnRemoveCoverDirect.addEventListener('click', removeCoverImage);
+
+    if (btnApplyCoverUrl && articleCover) {
+      btnApplyCoverUrl.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = articleCover.value.trim();
+        if (url) {
+          updateCoverPreview(url);
+          showToast('URL gambar diterapkan!', 'success');
+        } else {
+          showToast('Masukkan URL gambar terlebih dahulu.', 'info');
+        }
+      });
+    }
+
+    // ==========================================
+    // GAMBAR INLINE (CONTENT BODY IMAGE) LISTENERS
+    // ==========================================
+    const inlineImageModal = document.getElementById('inlineImageModal');
+    const btnCloseInlineImageModal = document.getElementById('btnCloseInlineImageModal');
+    const btnCancelInlineImage = document.getElementById('btnCancelInlineImage');
+    const tabInlineImgComputer = document.getElementById('tabInlineImgComputer');
+    const tabInlineImgUrl = document.getElementById('tabInlineImgUrl');
+    const paneInlineImgComputer = document.getElementById('paneInlineImgComputer');
+    const paneInlineImgUrl = document.getElementById('paneInlineImgUrl');
+    const inlineImgDropzone = document.getElementById('inlineImgDropzone');
+    const inlineImgFileInput = document.getElementById('inlineImgFileInput');
+    const inlineDropzoneTitle = document.getElementById('inlineDropzoneTitle');
+    const inlineImgSelectedFileBadge = document.getElementById('inlineImgSelectedFileBadge');
+    const inlineImgUrlInput = document.getElementById('inlineImgUrlInput');
+    const inlineImgCaptionInput = document.getElementById('inlineImgCaptionInput');
+    const btnConfirmInsertInlineImage = document.getElementById('btnConfirmInsertInlineImage');
+
+    let inlineSelectedFile = null;
+    let inlineSelectedAlign = 'center';
+    let savedEditorSelection = null;
+
+    function saveEditorSelection() {
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) {
+        savedEditorSelection = sel.getRangeAt(0).cloneRange();
+      }
+    }
+
+    function restoreEditorSelection() {
+      if (savedEditorSelection && window.getSelection) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(savedEditorSelection);
+      }
+    }
+
+    function openInlineImageModal() {
+      saveEditorSelection();
+      inlineSelectedFile = null;
+      inlineSelectedAlign = 'center';
+
+      if (inlineImgSelectedFileBadge) {
+        inlineImgSelectedFileBadge.style.display = 'none';
+        inlineImgSelectedFileBadge.textContent = '';
+      }
+      if (inlineDropzoneTitle) inlineDropzoneTitle.textContent = 'Klik untuk pilih gambar dari komputer';
+      if (inlineImgFileInput) inlineImgFileInput.value = '';
+      if (inlineImgUrlInput) inlineImgUrlInput.value = '';
+      if (inlineImgCaptionInput) inlineImgCaptionInput.value = '';
+
+      if (tabInlineImgComputer) tabInlineImgComputer.click();
+
+      document.querySelectorAll('.btn-align-choice').forEach(btn => {
+        const isCenter = btn.getAttribute('data-align') === 'center';
+        btn.classList.toggle('active', isCenter);
+        btn.style.border = isCenter ? '1.5px solid #7D2280' : '1px solid #CBD5E1';
+        btn.style.background = isCenter ? '#FAF5FF' : '#FFFFFF';
+        btn.style.color = isCenter ? '#7D2280' : '#475569';
+      });
+
+      if (inlineImageModal) {
+        inlineImageModal.classList.add('show');
+      }
+    }
+
+    function closeInlineImageModal() {
+      if (inlineImageModal) {
+        inlineImageModal.classList.remove('show');
+      }
+    }
+
+    if (btnCloseInlineImageModal) btnCloseInlineImageModal.addEventListener('click', closeInlineImageModal);
+    if (btnCancelInlineImage) btnCancelInlineImage.addEventListener('click', closeInlineImageModal);
+    if (inlineImageModal) {
+      inlineImageModal.addEventListener('click', (e) => {
+        if (e.target === inlineImageModal) closeInlineImageModal();
+      });
+    }
+
+    // Inline Image Tabs Switcher
+    if (tabInlineImgComputer && tabInlineImgUrl) {
+      tabInlineImgComputer.addEventListener('click', () => {
+        tabInlineImgComputer.classList.add('active');
+        tabInlineImgComputer.style.background = '#FFFFFF';
+        tabInlineImgComputer.style.color = '#7D2280';
+        tabInlineImgComputer.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+
+        tabInlineImgUrl.classList.remove('active');
+        tabInlineImgUrl.style.background = 'transparent';
+        tabInlineImgUrl.style.color = '#64748B';
+        tabInlineImgUrl.style.boxShadow = 'none';
+
+        if (paneInlineImgComputer) paneInlineImgComputer.style.display = 'block';
+        if (paneInlineImgUrl) paneInlineImgUrl.style.display = 'none';
+      });
+
+      tabInlineImgUrl.addEventListener('click', () => {
+        tabInlineImgUrl.classList.add('active');
+        tabInlineImgUrl.style.background = '#FFFFFF';
+        tabInlineImgUrl.style.color = '#7D2280';
+        tabInlineImgUrl.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+
+        tabInlineImgComputer.classList.remove('active');
+        tabInlineImgComputer.style.background = 'transparent';
+        tabInlineImgComputer.style.color = '#64748B';
+        tabInlineImgComputer.style.boxShadow = 'none';
+
+        if (paneInlineImgComputer) paneInlineImgComputer.style.display = 'none';
+        if (paneInlineImgUrl) paneInlineImgUrl.style.display = 'block';
+        if (inlineImgUrlInput) inlineImgUrlInput.focus();
+      });
+    }
+
+    // Inline Image File Select & Dropzone
+    if (inlineImgDropzone && inlineImgFileInput) {
+      inlineImgDropzone.addEventListener('click', () => inlineImgFileInput.click());
+
+      inlineImgFileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          inlineSelectedFile = e.target.files[0];
+          if (inlineDropzoneTitle) inlineDropzoneTitle.textContent = `File dipilih: ${inlineSelectedFile.name}`;
+          if (inlineImgSelectedFileBadge) {
+            inlineImgSelectedFileBadge.style.display = 'inline-block';
+            inlineImgSelectedFileBadge.textContent = `✓ ${inlineSelectedFile.name} (${Math.round(inlineSelectedFile.size / 1024)} KB)`;
+          }
+        }
+      });
+
+      inlineImgDropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        inlineImgDropzone.style.borderColor = '#7D2280';
+        inlineImgDropzone.style.background = '#F3E8FF';
+      });
+
+      inlineImgDropzone.addEventListener('dragleave', () => {
+        inlineImgDropzone.style.borderColor = '#C4B5FD';
+        inlineImgDropzone.style.background = '#FAF5FF';
+      });
+
+      inlineImgDropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        inlineImgDropzone.style.borderColor = '#C4B5FD';
+        inlineImgDropzone.style.background = '#FAF5FF';
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          inlineSelectedFile = e.dataTransfer.files[0];
+          if (inlineDropzoneTitle) inlineDropzoneTitle.textContent = `File dipilih: ${inlineSelectedFile.name}`;
+          if (inlineImgSelectedFileBadge) {
+            inlineImgSelectedFileBadge.style.display = 'inline-block';
+            inlineImgSelectedFileBadge.textContent = `✓ ${inlineSelectedFile.name} (${Math.round(inlineSelectedFile.size / 1024)} KB)`;
+          }
+        }
+      });
+    }
+
+    // Alignment Choices in Modal
+    document.querySelectorAll('.btn-align-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-align-choice').forEach(b => {
+          b.classList.remove('active');
+          b.style.border = '1px solid #CBD5E1';
+          b.style.background = '#FFFFFF';
+          b.style.color = '#475569';
+        });
+        btn.classList.add('active');
+        btn.style.border = '1.5px solid #7D2280';
+        btn.style.background = '#FAF5FF';
+        btn.style.color = '#7D2280';
+        inlineSelectedAlign = btn.getAttribute('data-align') || 'center';
+      });
+    });
+
+    // Confirm Insert Inline Image
+    if (btnConfirmInsertInlineImage) {
+      btnConfirmInsertInlineImage.addEventListener('click', async () => {
+        const caption = inlineImgCaptionInput?.value.trim() || '';
+        const isComputerTab = tabInlineImgComputer?.classList.contains('active');
+
+        if (isComputerTab) {
+          if (!inlineSelectedFile) {
+            showToast('Harap pilih file gambar terlebih dahulu.', 'info');
+            return;
+          }
+          closeInlineImageModal();
+          restoreEditorSelection();
+          await handleInlineImageFile(inlineSelectedFile, inlineSelectedAlign, caption);
+        } else {
+          const url = inlineImgUrlInput?.value.trim();
+          if (!url) {
+            showToast('Harap masukkan URL gambar.', 'info');
+            return;
+          }
+          closeInlineImageModal();
+          restoreEditorSelection();
+          insertInlineImageToEditor(url, inlineSelectedAlign, caption);
+          showToast('Gambar berhasil disisipkan!', 'success');
+        }
+      });
+    }
+
+    // Direct Drag-and-Drop and Paste directly into Visual Canvas
+    if (articleVisualEditor) {
+      articleVisualEditor.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      articleVisualEditor.addEventListener('drop', async (e) => {
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          const file = e.dataTransfer.files[0];
+          if (file.type.startsWith('image/')) {
+            e.preventDefault();
+            e.stopPropagation();
+            await handleInlineImageFile(file, 'center', '');
+          }
+        }
+      });
+
+      articleVisualEditor.addEventListener('paste', async (e) => {
+        const clipboardItems = e.clipboardData?.items;
+        if (clipboardItems) {
+          for (let i = 0; i < clipboardItems.length; i++) {
+            if (clipboardItems[i].type.startsWith('image/')) {
+              e.preventDefault();
+              const file = clipboardItems[i].getAsFile();
+              if (file) {
+                await handleInlineImageFile(file, 'center', '');
+                return;
+              }
+            }
+          }
+        }
+      });
+    }
+
     // Save as Draft Button
     if (btnSaveDraft) {
-      btnSaveDraft.addEventListener('click', () => {
+      btnSaveDraft.addEventListener('click', (e) => {
+        if (e && e.preventDefault) e.preventDefault();
         if (articleStatusInput) articleStatusInput.value = 'Draf';
         if (articleStatusSelect) articleStatusSelect.value = 'Draf';
-        handleArticleSubmit();
+        handleArticleSubmit('Draf');
       });
     }
 
@@ -2529,6 +3152,7 @@
     // Search & Filter Articles
     if (searchArticle) searchArticle.addEventListener('input', renderTableArticles);
     if (filterCategoryArticle) filterCategoryArticle.addEventListener('change', renderTableArticles);
+    if (filterStatusArticle) filterStatusArticle.addEventListener('change', renderTableArticles);
 
     // Custom Category Management Listeners
     if (btnToggleNewCategory && newCategoryInputWrap) {
@@ -2645,22 +3269,187 @@
     if (btnOpenCreateArticleModal) {
       btnOpenCreateArticleModal.addEventListener('click', () => openCreateArticleModal('editor'));
     }
-    if (articleForm) {
-      articleForm.addEventListener('submit', (e) => {
-        if (articleStatusInput && articleStatusSelect) {
-          articleStatusInput.value = articleStatusSelect.value;
-        }
-        handleArticleSubmit(e);
+
+    if (btnSaveArticle) {
+      btnSaveArticle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const currentSel = articleStatusSelect ? articleStatusSelect.value : (articleStatusInput ? articleStatusInput.value : 'Terbit');
+        if (articleStatusInput) articleStatusInput.value = currentSel;
+        handleArticleSubmit(currentSel);
       });
     }
+
+    if (articleForm) {
+      // MENCEGAH TEKAN ENTER PADA INPUT APAPUN MENUTUP/MENERBITKAN EDITOR SECARA TIDAK SENGAJA
+      articleForm.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+          e.preventDefault();
+          if (e.target.id === 'articleCover') {
+            const url = e.target.value.trim();
+            if (url) {
+              updateCoverPreview(url);
+              triggerAutosave();
+              showToast('URL foto diterapkan!', 'success');
+            }
+          }
+        }
+      });
+
+      // Jangan pernah submit form secara native (semua submit dilakukan via tombol terbitkan/draf)
+      articleForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+      });
+    }
+
     if (btnArticleModalClose) {
       btnArticleModalClose.addEventListener('click', closeArticleModal);
     }
+
+    // Autosave triggers on field inputs
+    if (articleTitle) {
+      articleTitle.addEventListener('input', triggerAutosave);
+    }
+    if (articleVisualEditor) {
+      articleVisualEditor.addEventListener('input', () => {
+        updateWpStats();
+        triggerAutosave();
+      });
+    }
+    if (articleCategory) {
+      articleCategory.addEventListener('change', triggerAutosave);
+    }
+    if (articleAuthor) {
+      articleAuthor.addEventListener('input', triggerAutosave);
+    }
+    if (articleExcerpt) {
+      articleExcerpt.addEventListener('input', triggerAutosave);
+    }
+
+    // Banner Pemulihan Draf
+    if (btnDiscardRecoveredDraft) {
+      btnDiscardRecoveredDraft.addEventListener('click', () => {
+        clearActiveDraftSession();
+        if (articleForm) articleForm.reset();
+        if (articleVisualEditor) articleVisualEditor.innerHTML = '';
+        if (articleContent) articleContent.value = '';
+        updateCoverPreview('');
+        updateWpStats();
+        showToast('Draf dibuang. Anda dapat mulai menulis artikel baru.', 'info');
+      });
+    }
+
+    if (btnKeepRecoveredDraft) {
+      btnKeepRecoveredDraft.addEventListener('click', () => {
+        if (wpDraftRecoveryBanner) wpDraftRecoveryBanner.style.display = 'none';
+        showToast('Draf aktif dilanjutkan.', 'success');
+      });
+    }
+
+    // Floating Inline Image Toolbar Listeners
+    document.querySelectorAll('.btn-img-tool[data-align]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!activeSelectedFigure) return;
+        const align = btn.getAttribute('data-align') || 'center';
+        activeSelectedFigure.classList.remove('align-left', 'align-center', 'align-right');
+        activeSelectedFigure.classList.add(`align-${align}`);
+        selectInlineFigure(activeSelectedFigure);
+        triggerAutosave();
+      });
+    });
+
+    if (btnReplaceSelectedImg && replaceInlineImgFileInput) {
+      btnReplaceSelectedImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        replaceInlineImgFileInput.click();
+      });
+
+      replaceInlineImgFileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0] && activeSelectedFigure) {
+          const file = e.target.files[0];
+          const targetImg = activeSelectedFigure.querySelector('img');
+          if (targetImg) {
+            // Pratinjau lokal instan
+            const reader = new FileReader();
+            reader.onload = (revt) => {
+              targetImg.src = revt.target.result;
+              triggerAutosave();
+              selectInlineFigure(activeSelectedFigure);
+            };
+            reader.readAsDataURL(file);
+
+            showToast('Mengganti foto...', 'info');
+
+            // Upload latar belakang
+            if (window.ACF_API && window.ACF_API.articles) {
+              window.ACF_API.articles.uploadImage(file).then(res => {
+                if (res && res.url && targetImg) {
+                  targetImg.src = res.url;
+                  triggerAutosave();
+                  showToast('Foto baru tersimpan di server!', 'success');
+                }
+              }).catch(err => {
+                console.warn('Ganti foto backend error:', err);
+              });
+            }
+          }
+        }
+        replaceInlineImgFileInput.value = '';
+      });
+    }
+
+    if (btnDeleteSelectedImg) {
+      btnDeleteSelectedImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeSelectedFigure) {
+          activeSelectedFigure.remove();
+          deselectInlineFigure();
+          updateWpStats();
+          triggerAutosave();
+          showToast('Foto telah dihapus dari tulisan.', 'info');
+        }
+      });
+    }
+
+    // Canvas click to select inline figures
+    if (articleVisualEditor) {
+      articleVisualEditor.addEventListener('click', (e) => {
+        const fig = e.target.closest('figure.wp-editor-figure');
+        if (fig) {
+          if (e.target.tagName !== 'FIGCAPTION') {
+            e.stopPropagation();
+          }
+          selectInlineFigure(fig);
+        } else {
+          deselectInlineFigure();
+        }
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.wp-content-canvas-wrap')) {
+        deselectInlineFigure();
+      }
+    });
+
+    // Peringatan sebelum menutup/merefresh jika sedang menulis artikel
+    window.addEventListener('beforeunload', (e) => {
+      if (articleModal && articleModal.classList.contains('show')) {
+        const hasContent = (articleTitle?.value.trim() || '') || (articleVisualEditor?.innerText.trim() || '');
+        if (hasContent) {
+          saveDraftToStorage();
+          e.preventDefault();
+          e.returnValue = '';
+          return '';
+        }
+      }
+    });
 
     // Live Cover Image Preview
     if (articleCover) {
       articleCover.addEventListener('input', (e) => {
         updateCoverPreview(e.target.value.trim());
+        triggerAutosave();
       });
     }
 
@@ -2783,7 +3572,15 @@
 
 
 
+    // Cegah browser berpindah halaman jika user melepaskan (drop) file gambar di luar area upload
+    window.addEventListener('dragover', (e) => e.preventDefault());
+    window.addEventListener('drop', (e) => e.preventDefault());
+
+    // Jangan refresh data otomatis saat modal editor sedang terbuka agar tulisan admin tidak terganggu
     window.addEventListener('focus', () => {
+      if (articleModal && articleModal.classList.contains('show')) {
+        return;
+      }
       loadAllData();
       renderAll();
     });

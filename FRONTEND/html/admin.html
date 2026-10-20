@@ -69,7 +69,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/admin.css?v=20261020_1">
+  <link rel="stylesheet" href="../css/admin.css?v=20261020_3">
 </head>
 <body>
 
@@ -605,6 +605,12 @@
                   <button type="button" class="wp-tool-btn" data-cmd="justifyCenter" title="Rata Tengah">
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
                   </button>
+                  <button type="button" class="wp-tool-btn" data-cmd="justifyRight" title="Rata Kanan">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/></svg>
+                  </button>
+                  <button type="button" class="wp-tool-btn" data-cmd="justifyFull" title="Rata Kanan Kiri (Justify)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                  </button>
                 </div>
 
                 <div class="wp-toolbar-divider"></div>
@@ -623,6 +629,13 @@
                   <button type="button" class="wp-tool-btn" data-cmd="strikeThrough" title="Coret (Strikethrough)">
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="12" x2="20" y2="12"/><path d="M17.5 7.5c-.8-1.5-2.5-2.5-5.5-2.5-4 0-5.5 2-5.5 3.5 0 2.5 4 3 6 3.5m4.5 4.5c0 2-2 3.5-5 3.5-4 0-6-2-6-4"/></svg>
                   </button>
+                  <div class="wp-tool-color-wrap" style="position: relative; display: inline-flex; align-items: center;">
+                    <label class="wp-tool-btn wp-tool-btn-color" for="toolbarTextColorInput" title="Warna Teks (Judul / Naskah)" style="position: relative; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;">
+                      <span style="font-weight: 800; font-size: 0.95rem; line-height: 1; color: #1E293B;">A</span>
+                      <span id="toolbarColorIndicator" style="width: 16px; height: 3px; border-radius: 2px; background: #7D2280;"></span>
+                    </label>
+                    <input type="color" id="toolbarTextColorInput" value="#7D2280" style="position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;">
+                  </div>
                 </div>
 
                 <div class="wp-toolbar-divider"></div>
@@ -826,6 +839,7 @@
                     <span>Gambar Unggulan</span>
                     <span class="wp-gb-acc-arrow">▾</span>
                   </summary>
+                  <div class="wp-gb-acc-content">
                     <!-- Live Image Preview Box -->
                     <div class="cover-preview-box wp-cover-preview-interactive" id="coverPreviewBox" title="Klik untuk memilih foto dari komputer">
                       <img id="coverPreviewImg" src="" alt="Pratinjau Sampul">
@@ -927,17 +941,34 @@
 
                 <details class="wp-gb-accordion" open>
                   <summary class="wp-gb-acc-header">
-                    <span>Warna Teks</span>
+                    <span>Warna &amp; Sorotan Teks</span>
                     <span class="wp-gb-acc-arrow">▾</span>
                   </summary>
                   <div class="wp-gb-acc-content">
-                    <label class="wp-label" style="font-size: 0.74rem;">Pilihan Warna Teks:</label>
-                    <div class="wp-gb-color-swatches">
-                      <button type="button" class="wp-color-circle" data-color="#1E293B" style="background: #1E293B;" title="Hitam"></button>
+                    <label class="wp-label" style="font-size: 0.74rem;">Warna Teks (Judul &amp; Naskah):</label>
+                    <div class="wp-gb-color-swatches" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                      <button type="button" class="wp-color-circle" data-color="#0F172A" style="background: #0F172A;" title="Hitam / Normal"></button>
                       <button type="button" class="wp-color-circle" data-color="#7D2280" style="background: #7D2280;" title="Ungu ACF"></button>
                       <button type="button" class="wp-color-circle" data-color="#0284C7" style="background: #0284C7;" title="Biru"></button>
                       <button type="button" class="wp-color-circle" data-color="#16A34A" style="background: #16A34A;" title="Hijau"></button>
                       <button type="button" class="wp-color-circle" data-color="#DC2626" style="background: #DC2626;" title="Merah"></button>
+                      <button type="button" class="wp-color-circle" data-color="#EA580C" style="background: #EA580C;" title="Oranye"></button>
+                      <button type="button" class="wp-color-circle" data-color="#9333EA" style="background: #9333EA;" title="Ungu Terang"></button>
+                      <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer; font-size: 0.72rem; color: #64748B; margin-left: 4px;" title="Pilih warna kustom">
+                        <input type="color" id="inputCustomTextColor" value="#7D2280" style="width: 24px; height: 24px; border: none; padding: 0; border-radius: 50%; cursor: pointer; background: transparent;">
+                        <span>Kustom</span>
+                      </label>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                      <label class="wp-label" style="font-size: 0.74rem;">Sorotan Latar (Highlight):</label>
+                      <div class="wp-gb-highlight-swatches" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
+                        <button type="button" class="wp-bg-circle" data-bg="#FEF08A" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #FDE047; background: #FEF08A; cursor: pointer;" title="Sorotan Kuning"></button>
+                        <button type="button" class="wp-bg-circle" data-bg="#BBF7D0" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #86EFAC; background: #BBF7D0; cursor: pointer;" title="Sorotan Hijau"></button>
+                        <button type="button" class="wp-bg-circle" data-bg="#E9D5FF" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #D8B4FE; background: #E9D5FF; cursor: pointer;" title="Sorotan Ungu"></button>
+                        <button type="button" class="wp-bg-circle" data-bg="#BAE6FD" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #7DD3FC; background: #BAE6FD; cursor: pointer;" title="Sorotan Biru"></button>
+                        <button type="button" class="wp-bg-circle btn-clear-bg" data-bg="transparent" style="padding: 2px 8px; border-radius: 9999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-size: 0.7rem; color: #64748B; cursor: pointer;" title="Hapus sorotan">✕ Bersihkan</button>
+                      </div>
                     </div>
                   </div>
                 </details>
@@ -1183,7 +1214,7 @@
   <div class="admin-toast-container" id="toastContainer"></div>
 
   <!-- JavaScript Modules -->
-  <script src="../js/api.js?v=20261020_1"></script>
-  <script src="../js/admin.js?v=20261020_1"></script>
+  <script src="../js/api.js?v=20261020_4"></script>
+  <script src="../js/admin.js?v=20261020_4"></script>
 </body>
 </html>

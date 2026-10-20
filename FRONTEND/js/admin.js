@@ -1061,7 +1061,7 @@
             <div class="article-thumbnail-cell">
               <img src="${escapeHTML(art.cover || '../assets/logo-acf/LOGO_ACF-removebg-preview.png')}" alt="Cover" class="article-thumb-img" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=200&q=80'">
               <div>
-                <div class="cell-primary" style="font-size: 0.92rem; max-width: 380px;">${escapeHTML(art.title || '-')}</div>
+                <div class="cell-primary" style="font-size: 0.92rem; max-width: 380px; ${art.title_color ? `color: ${escapeHTML(art.title_color)}; font-weight: 700;` : ''}">${escapeHTML(art.title || '-')}</div>
                 <div class="cell-sub" style="max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHTML(art.excerpt || '-')}</div>
               </div>
             </div>
@@ -1144,6 +1144,7 @@
       const nowStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const draftData = {
         title: articleTitle ? articleTitle.value : '',
+        title_color: articleTitle ? (articleTitle.style.color || '') : '',
         content: articleVisualEditor ? articleVisualEditor.innerHTML : '',
         excerpt: articleExcerpt ? articleExcerpt.value : '',
         cover: articleCover ? articleCover.value : '',
@@ -1184,7 +1185,12 @@
         return false;
       }
 
-      if (articleTitle) articleTitle.value = draft.title || '';
+      if (articleTitle) {
+        articleTitle.value = draft.title || '';
+        articleTitle.style.color = draft.title_color || '';
+        if (draft.title_color) articleTitle.setAttribute('data-color', draft.title_color);
+        else articleTitle.removeAttribute('data-color');
+      }
       if (articleVisualEditor) articleVisualEditor.innerHTML = draft.content || '';
       if (articleContent) articleContent.value = draft.content || '';
       if (articleExcerpt) articleExcerpt.value = draft.excerpt || '';
@@ -1241,9 +1247,15 @@
     const now = new Date();
     if (articleDateInput) articleDateInput.value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
-    // Reset visual editor
+    // Reset visual editor & title styling
+    if (articleTitle) {
+      articleTitle.style.color = '';
+      articleTitle.removeAttribute('data-color');
+    }
     if (articleVisualEditor) articleVisualEditor.innerHTML = '';
     if (articleContent) articleContent.value = '';
+    const chkDropCap = document.getElementById('chkDropCap');
+    if (chkDropCap) chkDropCap.checked = false;
     renderCategorySelects('artikel');
     updateWpStats();
     updateCoverPreview('');
@@ -1258,6 +1270,7 @@
     if (articleModal) {
       articleModal.classList.add('show');
       updateBodyScrollLock();
+      setTimeout(updateToolbarState, 100);
     }
   }
 
@@ -1273,7 +1286,12 @@
     if (newCategoryInputWrap) newCategoryInputWrap.style.display = 'none';
     if (newCategoryName) newCategoryName.value = '';
 
-    if (articleTitle) articleTitle.value = art.title || '';
+    if (articleTitle) {
+      articleTitle.value = art.title || '';
+      articleTitle.style.color = art.title_color || '';
+      if (art.title_color) articleTitle.setAttribute('data-color', art.title_color);
+      else articleTitle.removeAttribute('data-color');
+    }
     renderCategorySelects(art.category || 'artikel');
     if (articleCategory) articleCategory.value = art.category || 'artikel';
     if (articleAuthor) articleAuthor.value = art.author || 'Tim Redaksi ACF';
@@ -1294,6 +1312,7 @@
     if (articleModal) {
       articleModal.classList.add('show');
       updateBodyScrollLock();
+      setTimeout(updateToolbarState, 100);
     }
   }
 
@@ -1369,8 +1388,10 @@
     const now = new Date();
     const dateStr = articleDateInput?.value.trim() || `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
+    const titleColor = articleTitle ? (articleTitle.style.color || '') : '';
     const payload = {
       title,
+      title_color: titleColor,
       category,
       categoryLabel,
       author,
@@ -2550,16 +2571,106 @@
       });
     }
 
-    // Rich Text WYSIWYG Toolbar Commands
+    // Helper: Update Active State of Toolbar Buttons & Format Dropdown
+    function updateToolbarState() {
+      if (!articleVisualEditor) return;
+
+      const commands = ['bold', 'italic', 'underline', 'strikeThrough', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'insertUnorderedList', 'insertOrderedList'];
+      commands.forEach(cmd => {
+        const btn = document.querySelector(`.wp-tool-btn[data-cmd="${cmd}"]`);
+        if (btn) {
+          try {
+            const isActive = document.queryCommandState(cmd);
+            btn.classList.toggle('active', Boolean(isActive));
+          } catch(e) {}
+        }
+      });
+
+      // Synchronize Format dropdown and Drop Cap
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) {
+        let node = sel.anchorNode;
+        if (node && node.nodeType === 3) node = node.parentNode;
+        if (node && node.closest && node.closest('#articleVisualEditor')) {
+          const block = node.closest('h2, h3, h4, blockquote, .wp-callout-box, p.article-lead, p');
+          if (block && wpBlockFormat) {
+            if (block.tagName === 'H2') wpBlockFormat.value = 'h2';
+            else if (block.tagName === 'H3') wpBlockFormat.value = 'h3';
+            else if (block.tagName === 'H4') wpBlockFormat.value = 'h4';
+            else if (block.tagName === 'BLOCKQUOTE') wpBlockFormat.value = 'blockquote';
+            else if (block.classList.contains('wp-callout-box')) wpBlockFormat.value = 'callout';
+            else if (block.classList.contains('article-lead')) wpBlockFormat.value = 'lead-p';
+            else wpBlockFormat.value = 'p';
+          }
+
+          const pBlock = node.closest('p');
+          const chkDropCap = document.getElementById('chkDropCap');
+          if (chkDropCap) {
+            chkDropCap.checked = Boolean(pBlock && pBlock.classList.contains('has-drop-cap'));
+          }
+        }
+      }
+
+      // Helper convert RGB to Hex
+      function rgbToHex(color) {
+        if (!color) return '';
+        if (color.startsWith('#')) return color.toLowerCase();
+        const match = color.match(/\d+/g);
+        if (match && match.length >= 3) {
+          const r = parseInt(match[0], 10).toString(16).padStart(2, '0');
+          const g = parseInt(match[1], 10).toString(16).padStart(2, '0');
+          const b = parseInt(match[2], 10).toString(16).padStart(2, '0');
+          return `#${r}${g}${b}`.toLowerCase();
+        }
+        return color;
+      }
+
+      // Synchronize text color indicator
+      try {
+        const foreColor = document.queryCommandValue('foreColor');
+        if (foreColor) {
+          const hex = rgbToHex(foreColor);
+          const ind = document.getElementById('toolbarColorIndicator');
+          if (ind) ind.style.backgroundColor = foreColor;
+          document.querySelectorAll('.wp-color-circle').forEach(c => {
+            const dataCol = c.getAttribute('data-color');
+            c.classList.toggle('active', dataCol === hex || dataCol === foreColor);
+          });
+        }
+      } catch(e) {}
+    }
+
+    // Rich Text WYSIWYG Toolbar Commands (Mousedown prevents losing selection)
     document.querySelectorAll('.wp-tool-btn[data-cmd]').forEach(btn => {
+      btn.addEventListener('mousedown', (e) => e.preventDefault());
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const cmd = btn.getAttribute('data-cmd');
-        if (cmd) {
+        if (!cmd) return;
+
+        if (cmd === 'removeFormat') {
+          document.execCommand('removeFormat', false, null);
+          document.execCommand('unlink', false, null);
+          const sel = window.getSelection();
+          if (sel && sel.rangeCount > 0) {
+            const el = sel.anchorNode && sel.anchorNode.parentElement;
+            if (el && el.closest('#articleVisualEditor')) {
+              const target = el.closest('span, font, a, p, h2, h3, h4');
+              if (target && target.id !== 'articleVisualEditor') {
+                target.removeAttribute('style');
+                target.classList.remove('has-drop-cap', 'article-lead');
+              }
+            }
+          }
+          showToast('Format teks dibersihkan.', 'info');
+        } else {
           document.execCommand(cmd, false, null);
-          if (articleVisualEditor) articleVisualEditor.focus();
-          updateWpStats();
         }
+
+        if (articleVisualEditor) articleVisualEditor.focus();
+        updateWpStats();
+        updateToolbarState();
+        triggerAutosave();
       });
     });
 
@@ -2577,7 +2688,6 @@
         if (val === 'p') {
           document.execCommand('formatBlock', false, '<p>');
         } else if (val === 'multi-p') {
-          // Check if text is selected
           const selection = window.getSelection();
           if (selection && selection.toString().trim().length > 0) {
             const rawText = selection.toString();
@@ -2590,7 +2700,6 @@
               document.execCommand('insertHTML', false, '<p><br></p>');
             }
           } else {
-            // Insert fresh new paragraph block
             document.execCommand('insertHTML', false, '<p><br></p>');
           }
         } else if (val === 'lead-p') {
@@ -2610,22 +2719,47 @@
 
         articleVisualEditor.focus();
         updateWpStats();
-        // Reset select back to standard paragraph for next action
-        setTimeout(() => {
-          if (wpBlockFormat) wpBlockFormat.value = 'p';
-        }, 100);
+        updateToolbarState();
+        triggerAutosave();
       });
     }
 
-    // Insert Link Button
+    // Insert Link Button (Smart: preserves selection and handles collapsed cursor)
     if (btnWpInsertLink) {
+      let linkSavedRange = null;
+      btnWpInsertLink.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+          linkSavedRange = sel.getRangeAt(0).cloneRange();
+        }
+      });
+
       btnWpInsertLink.addEventListener('click', (e) => {
         e.preventDefault();
+        if (linkSavedRange && window.getSelection) {
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(linkSavedRange);
+        }
+
+        const sel = window.getSelection();
+        const hasSelection = sel && sel.rangeCount > 0 && !sel.isCollapsed && sel.toString().trim().length > 0;
+
         const url = prompt('Masukkan URL Link (contoh: https://acf.or.id):', 'https://');
         if (url && url.trim() !== '' && url !== 'https://') {
-          document.execCommand('createLink', false, url.trim());
+          const cleanUrl = url.trim();
+          if (hasSelection) {
+            document.execCommand('createLink', false, cleanUrl);
+          } else {
+            const linkHtml = `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>&nbsp;`;
+            document.execCommand('insertHTML', false, linkHtml);
+          }
           if (articleVisualEditor) articleVisualEditor.focus();
           updateWpStats();
+          updateToolbarState();
+          triggerAutosave();
+          showToast('Tautan berhasil disisipkan!', 'success');
         }
       });
     }
@@ -2638,14 +2772,35 @@
       });
     }
 
-    // Content Editable Input & Stats Tracking
+    // Content Editable Input, Selection Tracking & Stats
     if (articleVisualEditor) {
-      articleVisualEditor.addEventListener('input', updateWpStats);
-      articleVisualEditor.addEventListener('keyup', updateWpStats);
+      articleVisualEditor.addEventListener('input', () => {
+        updateWpStats();
+        updateToolbarState();
+        triggerAutosave();
+      });
+      articleVisualEditor.addEventListener('keyup', () => {
+        updateWpStats();
+        updateToolbarState();
+      });
+      articleVisualEditor.addEventListener('mouseup', () => {
+        updateWpStats();
+        updateToolbarState();
+      });
       articleVisualEditor.addEventListener('paste', () => {
-        setTimeout(updateWpStats, 50);
+        setTimeout(() => {
+          updateWpStats();
+          updateToolbarState();
+          triggerAutosave();
+        }, 50);
       });
     }
+
+    document.addEventListener('selectionchange', () => {
+      if (articleModal && articleModal.classList.contains('show')) {
+        updateToolbarState();
+      }
+    });
 
     if (articleStatusSelect) {
       articleStatusSelect.addEventListener('change', () => {
@@ -2653,12 +2808,34 @@
       });
     }
 
-    // Auto-grow Gutenberg Title Textarea
+    // Auto-grow & Focus Tracker for Gutenberg Title Textarea
+    let lastFocusedEditorTarget = 'canvas'; // 'title' | 'canvas'
+
     if (articleTitle) {
+      const syncTitleFocusState = () => {
+        lastFocusedEditorTarget = 'title';
+        const curCol = articleTitle.style.color || '#0F172A';
+        const ind = document.getElementById('toolbarColorIndicator');
+        if (ind) ind.style.backgroundColor = curCol;
+        document.querySelectorAll('.wp-color-circle').forEach(c => {
+          const cCol = c.getAttribute('data-color');
+          c.classList.toggle('active', cCol === curCol);
+        });
+      };
+
+      articleTitle.addEventListener('focus', syncTitleFocusState);
+      articleTitle.addEventListener('click', syncTitleFocusState);
+      articleTitle.addEventListener('select', syncTitleFocusState);
+
       articleTitle.addEventListener('input', () => {
         articleTitle.style.height = 'auto';
         articleTitle.style.height = articleTitle.scrollHeight + 'px';
       });
+    }
+
+    if (articleVisualEditor) {
+      articleVisualEditor.addEventListener('focus', () => { lastFocusedEditorTarget = 'canvas'; });
+      articleVisualEditor.addEventListener('click', () => { lastFocusedEditorTarget = 'canvas'; });
     }
 
     // Gutenberg Add Block Drawer Toggle
@@ -2754,35 +2931,235 @@
       });
     });
 
-    // Typography Size Pills in Blok Tab
+    // Typography Size Pills in Blok Tab (Safe replacement without surroundContents crash)
     document.querySelectorAll('.wp-gb-pill-btn[data-font-size]').forEach(btn => {
+      btn.addEventListener('mousedown', (e) => e.preventDefault());
       btn.addEventListener('click', () => {
         document.querySelectorAll('.wp-gb-pill-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const sz = btn.getAttribute('data-font-size');
-        const sizeMap = { small: '0.9rem', normal: '1.08rem', medium: '1.25rem', large: '1.5rem' };
-        if (articleVisualEditor) {
-          const sel = window.getSelection();
-          if (sel && sel.rangeCount > 0 && sel.toString().trim().length > 0) {
+        const sizeMap = { small: '0.88rem', normal: '1.08rem', medium: '1.28rem', large: '1.5rem' };
+        const chosenSize = sizeMap[sz] || '1.08rem';
+
+        if (!articleVisualEditor) return;
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && !sel.isCollapsed && sel.toString().trim().length > 0) {
+          try {
             const range = sel.getRangeAt(0);
             const span = document.createElement('span');
-            span.style.fontSize = sizeMap[sz] || '1.08rem';
-            range.surroundContents(span);
+            span.style.fontSize = chosenSize;
+            span.appendChild(range.extractContents());
+            range.insertNode(span);
+            sel.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.selectNodeContents(span);
+            sel.addRange(newRange);
+          } catch (e) {
+            document.execCommand('fontSize', false, sz === 'small' ? '2' : (sz === 'medium' ? '4' : (sz === 'large' ? '5' : '3')));
           }
+        } else {
+          // If no text is selected, apply font size to the active paragraph or block
+          let node = sel && sel.anchorNode;
+          if (node && node.nodeType === 3) node = node.parentNode;
+          const block = node && node.closest('#articleVisualEditor') && node.closest('p, h2, h3, h4, blockquote, div');
+          if (block && block.id !== 'articleVisualEditor') {
+            block.style.fontSize = chosenSize;
+          }
+        }
+
+        articleVisualEditor.focus();
+        triggerAutosave();
+        updateWpStats();
+      });
+    });
+
+    // Drop Cap Checkbox in Blok Tab
+    const chkDropCap = document.getElementById('chkDropCap');
+    if (chkDropCap) {
+      chkDropCap.addEventListener('change', () => {
+        if (!articleVisualEditor) return;
+        const sel = window.getSelection();
+        let targetP = null;
+        if (sel && sel.rangeCount > 0) {
+          let node = sel.anchorNode;
+          if (node && node.nodeType === 3) node = node.parentNode;
+          if (node && node.closest && node.closest('#articleVisualEditor')) {
+            targetP = node.closest('p');
+          }
+        }
+        if (!targetP) {
+          targetP = articleVisualEditor.querySelector('p');
+        }
+
+        if (targetP) {
+          targetP.classList.toggle('has-drop-cap', chkDropCap.checked);
+          triggerAutosave();
+          showToast(chkDropCap.checked ? 'Drop Cap diaktifkan pada paragraf.' : 'Drop Cap dinonaktifkan.', 'info');
+        } else {
+          showToast('Ketik paragraf terlebih dahulu untuk mengaktifkan Drop Cap.', 'info');
+          chkDropCap.checked = false;
+        }
+        articleVisualEditor.focus();
+      });
+    }
+
+    // ==========================================
+    // UNIFIED TEXT COLOR HANDLER (TITLE & BODY)
+    // ==========================================
+    function applyTextColor(color) {
+      if (!color) return;
+
+      // 1. Update toolbar & input indicators
+      const toolbarColorIndicator = document.getElementById('toolbarColorIndicator');
+      if (toolbarColorIndicator) toolbarColorIndicator.style.backgroundColor = color;
+
+      const toolbarInput = document.getElementById('toolbarTextColorInput');
+      if (toolbarInput && color.startsWith('#')) toolbarInput.value = color;
+
+      const customInput = document.getElementById('inputCustomTextColor');
+      if (customInput && color.startsWith('#')) customInput.value = color;
+
+      // 2. Mark active circle swatch
+      document.querySelectorAll('.wp-color-circle').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-color') === color);
+      });
+
+      // 3. TARGET: Article Title
+      if (lastFocusedEditorTarget === 'title' || document.activeElement === articleTitle) {
+        if (articleTitle) {
+          articleTitle.style.color = color;
+          articleTitle.setAttribute('data-color', color);
+          articleTitle.focus();
+          triggerAutosave();
+          showToast('Warna judul berhasil diubah!', 'success');
+          return;
+        }
+      }
+
+      // 4. TARGET: Visual Canvas (Content)
+      if (articleVisualEditor) {
+        articleVisualEditor.focus();
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && !sel.isCollapsed && sel.toString().trim().length > 0) {
+          // Ada teks yang diblok -> gunakan styleWithCSS agar inline style span dibuat
+          try {
+            document.execCommand('styleWithCSS', false, true);
+          } catch(e) {}
+          document.execCommand('foreColor', false, color);
+          // Konversi font tag menjadi span style
+          articleVisualEditor.querySelectorAll('font[color]').forEach(f => {
+            const span = document.createElement('span');
+            span.style.color = f.getAttribute('color') || color;
+            span.innerHTML = f.innerHTML;
+            f.parentNode.replaceChild(span, f);
+          });
+        } else {
+          // Tidak ada teks diblok -> warnai seluruh blok kalimat atau heading aktif
+          let node = sel && sel.anchorNode;
+          if (node && node.nodeType === 3) node = node.parentNode;
+          const block = node && node.closest('#articleVisualEditor') && node.closest('h1, h2, h3, h4, p, blockquote, div, li');
+          if (block && block.id !== 'articleVisualEditor') {
+            block.style.color = color;
+          } else {
+            // Jika berada di node langsung dalam canvas
+            let targetChild = null;
+            let curr = sel && sel.anchorNode;
+            while (curr && curr.parentNode !== articleVisualEditor) {
+              curr = curr.parentNode;
+            }
+            if (curr && curr.parentNode === articleVisualEditor) {
+              targetChild = curr;
+            }
+            if (targetChild) {
+              if (targetChild.nodeType === 3) {
+                const p = document.createElement('p');
+                p.style.color = color;
+                targetChild.parentNode.replaceChild(p, targetChild);
+                p.appendChild(targetChild);
+              } else {
+                targetChild.style.color = color;
+              }
+            } else if (articleVisualEditor.innerText.trim().length > 0) {
+              articleVisualEditor.innerHTML = `<p style="color: ${color};">${articleVisualEditor.innerHTML}</p>`;
+            } else {
+              try {
+                document.execCommand('styleWithCSS', false, true);
+              } catch(e) {}
+              document.execCommand('foreColor', false, color);
+            }
+          }
+        }
+        triggerAutosave();
+        updateToolbarState();
+        showToast('Warna teks berhasil diterapkan!', 'success');
+      }
+    }
+
+    // Contextual Toolbar Color Picker
+    const toolbarTextColorInput = document.getElementById('toolbarTextColorInput');
+    if (toolbarTextColorInput) {
+      toolbarTextColorInput.addEventListener('input', (e) => applyTextColor(e.target.value));
+      toolbarTextColorInput.addEventListener('change', (e) => applyTextColor(e.target.value));
+    }
+
+    // Color Swatches in Blok Tab (Preset Palettes)
+    document.querySelectorAll('.wp-color-circle[data-color]').forEach(btn => {
+      btn.addEventListener('mousedown', (e) => e.preventDefault());
+      btn.addEventListener('click', () => {
+        const color = btn.getAttribute('data-color');
+        if (color) applyTextColor(color);
+      });
+    });
+
+    // Custom Color Picker Input in Blok Tab
+    const inputCustomTextColor = document.getElementById('inputCustomTextColor');
+    if (inputCustomTextColor) {
+      inputCustomTextColor.addEventListener('input', (e) => applyTextColor(e.target.value));
+      inputCustomTextColor.addEventListener('change', (e) => applyTextColor(e.target.value));
+    }
+
+    // Background Highlight Swatches
+    document.querySelectorAll('.wp-bg-circle[data-bg]').forEach(btn => {
+      btn.addEventListener('mousedown', (e) => e.preventDefault());
+      btn.addEventListener('click', () => {
+        const bg = btn.getAttribute('data-bg');
+        if (bg) {
+          if (bg === 'transparent') {
+            document.execCommand('removeFormat', false, null);
+          } else {
+            try {
+              document.execCommand('hiliteColor', false, bg);
+            } catch(err) {
+              document.execCommand('backColor', false, bg);
+            }
+          }
+          if (articleVisualEditor) articleVisualEditor.focus();
+          triggerAutosave();
         }
       });
     });
 
-    // Color Swatches in Blok Tab
-    document.querySelectorAll('.wp-color-circle[data-color]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const color = btn.getAttribute('data-color');
-        if (color) {
-          document.execCommand('foreColor', false, color);
-          if (articleVisualEditor) articleVisualEditor.focus();
+    // Keyboard Shortcuts inside Editor Modal (Ctrl+S / Cmd+S: Simpan Draf, Ctrl+Enter: Terbitkan)
+    if (articleModal) {
+      articleModal.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          e.stopPropagation();
+          if (btnSaveDraft) {
+            btnSaveDraft.click();
+          }
+          return;
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          e.stopPropagation();
+          if (btnSaveArticle) {
+            btnSaveArticle.click();
+          }
+          return;
         }
       });
-    });
+    }
 
     // ==========================================
     // GAMBAR UNGGULAN (FEATURED IMAGE) LISTENERS

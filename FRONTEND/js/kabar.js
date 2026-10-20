@@ -705,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="kabar-body">
           <div>
-            <h3 class="kabar-title" style="cursor: pointer;">${escapeHTML(art.title || '-')}</h3>
+            <h3 class="kabar-title" style="cursor: pointer; ${art.title_color ? `color: ${escapeHTML(art.title_color)};` : ''}">${escapeHTML(art.title || '-')}</h3>
             <p class="kabar-excerpt">${escapeHTML(art.excerpt || '-')}</p>
             <a class="kabar-read-more" href="javascript:void(0);">read more</a>
           </div>
@@ -859,7 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="kabar-banner-badge-row">
                 <span class="section-label">Kabar Terbaru</span>
               </div>
-              <h1 class="kabar-banner-title" data-art-index="${index}" tabindex="0" role="button" title="Klik untuk membaca artikel lengkap">
+              <h1 class="kabar-banner-title" data-art-index="${index}" tabindex="0" role="button" title="Klik untuk membaca artikel lengkap" style="${art.title_color ? `color: ${escapeHTML(art.title_color)};` : ''}">
                 ${escapeHTML(art.title || 'Warta & Publikasi ACF Eduhub')}
               </h1>
               <p class="kabar-banner-excerpt">
@@ -1207,6 +1207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (modalTitle) {
       modalTitle.textContent = art.title || '';
+      modalTitle.style.color = art.title_color || '';
     }
     if (modalMeta) {
       const author = art.author || 'acforid';

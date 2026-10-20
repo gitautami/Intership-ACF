@@ -421,7 +421,7 @@ function initHomeKabar() {
         </a>
         <div class="home-kabar-body">
           <h3 class="home-kabar-title">
-            <a href="${articleUrl}">${escapeHTML(art.title || '')}</a>
+            <a href="${articleUrl}" ${art.title_color ? `style="color: ${escapeHTML(art.title_color)};"` : ''}>${escapeHTML(art.title || '')}</a>
           </h3>
           <p class="home-kabar-excerpt">
             ${escapeHTML(art.excerpt || '')}

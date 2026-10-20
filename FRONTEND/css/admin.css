@@ -1597,6 +1597,30 @@ body {
   grid-template-columns: 1fr 0px;
 }
 
+@media (max-width: 900px) {
+  .wp-gb-workspace-wrap {
+    grid-template-columns: 1fr;
+  }
+  .wp-gb-sidebar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    max-width: 90vw;
+    z-index: 40;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+  }
+  .wp-gb-workspace-wrap:not(.sidebar-collapsed) .wp-gb-sidebar {
+    transform: translateX(0);
+  }
+  .wp-gb-workspace-wrap.sidebar-collapsed .wp-gb-sidebar {
+    transform: translateX(100%);
+  }
+}
+
 /* Gutenberg Block Inserter Drawer */
 .wp-gb-block-inserter {
   position: absolute;
@@ -1737,7 +1761,147 @@ body {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
+}
+
+.wp-tool-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: #F8FAFC;
+  padding: 2px 4px;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+}
+
+.wp-tool-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.wp-tool-btn:hover {
+  background: #FAF5FF;
+  color: #7D2280;
+}
+
+.wp-tool-btn.active {
+  background: #7D2280 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 6px rgba(125, 34, 128, 0.25);
+}
+
+.wp-toolbar-divider {
+  width: 1px;
+  height: 22px;
+  background: #E2E8F0;
+  margin: 0 2px;
+}
+
+/* Format Switcher Dropdown */
+.wp-select-format-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.wp-select-format {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  color: #1E293B;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 28px 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.wp-select-format:hover {
+  background: #FAF5FF;
+  border-color: #7D2280;
+  color: #7D2280;
+}
+
+.wp-select-format:focus {
+  border-color: #7D2280;
+  box-shadow: 0 0 0 3px rgba(125, 34, 128, 0.12);
+}
+
+.wp-select-caret {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  font-size: 0.72rem;
+  color: #64748B;
+}
+
+/* Drop Cap (Huruf Pertama Paragraf Diperbesar) */
+.wp-gb-visual-canvas p.has-drop-cap::first-letter,
+.article-detail-body p.has-drop-cap::first-letter,
+p.has-drop-cap::first-letter {
+  float: left;
+  font-size: 3.5rem;
+  line-height: 0.82;
+  font-weight: 800;
+  margin-right: 0.12em;
+  margin-top: 0.06em;
+  color: #7D2280;
+  font-family: inherit;
+}
+
+.wp-color-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 0 1px #CBD5E1;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wp-color-circle:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px #7D2280;
+}
+
+.wp-color-circle.active {
+  box-shadow: 0 0 0 3px #7D2280 !important;
+  transform: scale(1.1);
+}
+
+.wp-tool-btn-color:hover {
+  background: #FAF5FF;
+}
+
+.wp-tool-btn-color:hover span:first-child {
+  color: #7D2280 !important;
+}
+
+.wp-bg-circle {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wp-bg-circle:hover {
+  transform: scale(1.15);
+}
+
+.wp-bg-circle.active {
+  box-shadow: 0 0 0 3px #7D2280 !important;
+  transform: scale(1.1);
 }
 
 /* Document Paper Sheet */

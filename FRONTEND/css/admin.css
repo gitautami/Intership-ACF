@@ -3371,3 +3371,641 @@ body.modal-open {
   transform: translateY(-1px);
 }
 
+/* ===================================================
+   5D. YOAST SEO & GOOGLE SEARCH APPEARANCE STYLES
+   =================================================== */
+.wp-gb-accordion-yoast {
+  border-top: 2px solid #FAF5FF;
+}
+
+.yoast-panel-content {
+  padding: 10px 12px 20px !important;
+  background: #FFFFFF;
+}
+
+.yoast-status-badge-dot {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* Yoast Subtabs Navigation (SEO, Keterbacaan, Schema, Sosial) */
+.yoast-subtabs-nav {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 3px !important;
+  gap: 3px !important;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+
+.yoast-subtab-btn {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding: 6px 6px !important;
+  font-size: 0.71rem !important;
+  font-weight: 600;
+  letter-spacing: -0.15px;
+  color: #475569;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.yoast-subtab-btn span {
+  white-space: nowrap;
+  font-size: 0.71rem;
+  letter-spacing: -0.15px;
+}
+
+.yoast-subtab-btn svg {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  fill: #64748B;
+  transition: fill 0.15s ease;
+}
+
+.yoast-subtab-btn:hover {
+  color: #0F172A;
+  background: #E2E8F0;
+}
+
+.yoast-subtab-btn:hover svg {
+  fill: #0F172A;
+}
+
+.yoast-subtab-btn.active {
+  background: #FFFFFF !important;
+  color: #7D2280 !important;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #CBD5E1 !important;
+}
+
+.yoast-subtab-btn.active svg {
+  fill: #7D2280 !important;
+}
+
+.subtab-dot {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.dot-green {
+  color: #16A34A !important;
+}
+
+.dot-amber {
+  color: #EA580C !important;
+}
+
+.dot-red {
+  color: #DC2626 !important;
+}
+
+/* Yoast Tab Body */
+.yoast-tab-body {
+  animation: fadeInYoast 0.2s ease-out;
+}
+
+@keyframes fadeInYoast {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form Groups & Labels */
+.yoast-field-group {
+  margin-bottom: 12px;
+}
+
+.yoast-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.yoast-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.yoast-help-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  color: #64748B;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: help;
+}
+
+.yoast-input {
+  font-size: 0.82rem;
+  padding: 7px 10px;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.yoast-textarea {
+  font-size: 0.82rem;
+  padding: 8px 10px;
+  resize: vertical;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.yoast-field-hint {
+  font-size: 0.7rem;
+  color: #64748B;
+  margin-top: 3px;
+  display: block;
+}
+
+.btn-yoast-outline {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #334155;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-yoast-outline:hover {
+  background: #FAF5FF;
+  border-color: #C4B5FD;
+  color: #7D2280;
+}
+
+/* Related Keyphrase Suggestion Chips */
+.yoast-chips-wrap {
+  background: #FAF5FF;
+  border: 1px dashed #D8B4FE;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.yoast-chips-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.yoast-suggest-chip {
+  background: #FFFFFF;
+  border: 1px solid #C4B5FD;
+  color: #6B21A8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.yoast-suggest-chip:hover {
+  background: #7D2280;
+  color: #FFFFFF;
+  border-color: #7D2280;
+}
+
+/* Yoast Collapsible Sections */
+.yoast-card-section {
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  background: #FAFBFD;
+  padding: 12px 14px;
+  margin-top: 12px;
+}
+
+.yoast-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.yoast-sec-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.yoast-sec-toggle {
+  font-size: 0.85rem;
+  color: #64748B;
+}
+
+.yoast-sec-desc {
+  font-size: 0.72rem;
+  color: #64748B;
+  margin: 4px 0 10px;
+  line-height: 1.4;
+}
+
+/* Preview As Toggle (Mobile vs Desktop) */
+.yoast-preview-mode-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+  font-size: 0.76rem;
+  color: #475569;
+}
+
+.yoast-preview-mode-label {
+  font-weight: 600;
+}
+
+.yoast-radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.yoast-radio-label input {
+  cursor: pointer;
+  accent-color: #7D2280;
+}
+
+/* ===================================================
+   GOOGLE SEARCH SNIPPET CARD PREVIEW (MOBILE & DESKTOP)
+   =================================================== */
+.google-snippet-card {
+  background: #FFFFFF;
+  border: 1px solid #DFE1E5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.08);
+  font-family: Arial, Roboto, sans-serif;
+  margin: 10px 0;
+  transition: all 0.2s ease;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  clear: both;
+}
+
+.google-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.google-card-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.google-favicon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #F1F5F9;
+  padding: 2px;
+  border: 1px solid #E2E8F0;
+}
+
+.google-brand-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.google-brand-name {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #202124;
+}
+
+.google-breadcrumb-url {
+  font-size: 0.68rem;
+  color: #475569;
+  word-break: break-all;
+}
+
+.google-card-menu-dots {
+  color: #70757A;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.google-card-title {
+  color: #1A0DAB !important;
+  font-size: 1.02rem;
+  font-weight: 500;
+  line-height: 1.35;
+  margin: 0 0 8px 0;
+  cursor: pointer;
+  word-break: break-word;
+}
+
+.google-card-title:hover {
+  text-decoration: underline;
+}
+
+.google-card-body {
+  display: flex !important;
+  gap: 12px !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.google-card-snippet-text {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: #4D5156;
+  word-break: break-word;
+}
+
+.google-snippet-date {
+  color: #70757A;
+  font-weight: 500;
+}
+
+.google-snippet-dash {
+  color: #70757A;
+}
+
+.google-card-thumb-wrap {
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0 !important;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-card-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Desktop Preview Modifications */
+.google-snippet-card.preview-desktop {
+  border-radius: 8px;
+  padding: 14px 16px;
+  max-width: 100%;
+  box-sizing: border-box !important;
+}
+
+.google-snippet-card.preview-desktop .google-card-title {
+  font-size: 1.05rem;
+}
+
+.google-snippet-card.preview-desktop .google-card-body {
+  display: flex !important;
+  gap: 12px !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+}
+
+.google-snippet-card.preview-desktop .google-card-thumb-wrap {
+  float: none !important;
+  margin: 0 !important;
+  width: 72px !important;
+  height: 72px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Action Header in SEO Title & Meta Description */
+.yoast-field-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.yoast-field-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-yoast-pill-action {
+  background: #FAF5FF;
+  border: 1px solid #DDD6FE;
+  color: #7D2280;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.15s ease;
+}
+
+.btn-yoast-pill-action:hover {
+  background: #7D2280;
+  color: #FFFFFF;
+  border-color: #7D2280;
+}
+
+/* Variable Chips */
+.yoast-variable-pills {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.yoast-var-chip {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: #334155;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.yoast-var-chip:hover {
+  background: #E2E8F0;
+  border-color: #94A3B8;
+  color: #0F172A;
+}
+
+/* Progress Bars (SEO Title & Meta Description) */
+.yoast-progress-track {
+  width: 100%;
+  height: 4px;
+  background: #E2E8F0;
+  border-radius: 9999px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.yoast-progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 9999px;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.yoast-progress-fill.bar-orange {
+  background-color: #EA580C;
+}
+
+.yoast-progress-fill.bar-green {
+  background-color: #16A34A;
+}
+
+.yoast-progress-fill.bar-red {
+  background-color: #DC2626;
+}
+
+.yoast-progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: #64748B;
+  margin-top: 3px;
+}
+
+.yoast-opt-target {
+  color: #94A3B8;
+}
+
+/* SEO Analysis Checklist */
+.yoast-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.yoast-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.74rem;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.yoast-item-dot {
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.btn-yoast-add-keyphrase {
+  background: transparent;
+  border: none;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-yoast-add-keyphrase:hover {
+  color: #7D2280;
+}
+
+.yoast-premium-pill {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FCD34D;
+  border-radius: 9999px;
+  padding: 2px 7px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+/* Social Media Preview Card */
+.social-preview-card {
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 10px;
+}
+
+.social-card-img-wrap {
+  width: 100%;
+  aspect-ratio: 1.91 / 1;
+  background: #F1F5F9;
+  overflow: hidden;
+}
+
+.social-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.social-card-info {
+  padding: 12px;
+}
+
+.social-card-domain {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.social-card-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 4px 0;
+  line-height: 1.35;
+}
+
+.social-card-desc {
+  font-size: 0.74rem;
+  color: #475569;
+  line-height: 1.4;
+}
+
+

@@ -229,6 +229,38 @@
   const btnDiscardRecoveredDraft = document.getElementById('btnDiscardRecoveredDraft');
   const btnKeepRecoveredDraft = document.getElementById('btnKeepRecoveredDraft');
 
+  // Yoast SEO & Google Search Appearance Elements
+  const accYoastSeo = document.getElementById('accYoastSeo');
+  const yoastHeaderScoreDot = document.getElementById('yoastHeaderScoreDot');
+  const yoastFocusKeyphrase = document.getElementById('yoastFocusKeyphrase');
+  const btnGetRelatedKeyphrases = document.getElementById('btnGetRelatedKeyphrases');
+  const yoastRelatedChipsWrap = document.getElementById('yoastRelatedChipsWrap');
+  const yoastRelatedChipsList = document.getElementById('yoastRelatedChipsList');
+  const googleSnippetCard = document.getElementById('googleSnippetCard');
+  const googleSnippetTitle = document.getElementById('googleSnippetTitle');
+  const googleSnippetDate = document.getElementById('googleSnippetDate');
+  const googleSnippetDesc = document.getElementById('googleSnippetDesc');
+  const googleSnippetThumbImg = document.getElementById('googleSnippetThumbImg');
+  const googlePreviewBreadcrumbSlug = document.getElementById('googlePreviewBreadcrumbSlug');
+  const btnGenerateSeoTitle = document.getElementById('btnGenerateSeoTitle');
+  const btnInsertVarSeoTitle = document.getElementById('btnInsertVarSeoTitle');
+  const yoastSeoTitle = document.getElementById('yoastSeoTitle');
+  const barSeoTitle = document.getElementById('barSeoTitle');
+  const txtSeoTitleCount = document.getElementById('txtSeoTitleCount');
+  const yoastSlug = document.getElementById('yoastSlug');
+  const btnGenerateMetaDesc = document.getElementById('btnGenerateMetaDesc');
+  const btnInsertVarMetaDesc = document.getElementById('btnInsertVarMetaDesc');
+  const yoastMetaDesc = document.getElementById('yoastMetaDesc');
+  const barMetaDesc = document.getElementById('barMetaDesc');
+  const txtMetaDescCount = document.getElementById('txtMetaDescCount');
+  const dotSeoAnalysis = document.getElementById('dotSeoAnalysis');
+  const yoastAnalysisKeyphraseSubtitle = document.getElementById('yoastAnalysisKeyphraseSubtitle');
+  const socialPreviewImg = document.getElementById('socialPreviewImg');
+  const socialPreviewTitle = document.getElementById('socialPreviewTitle');
+  const socialPreviewDesc = document.getElementById('socialPreviewDesc');
+  const yoastSchemaAuthorPreview = document.getElementById('yoastSchemaAuthorPreview');
+  const tabGbSeo = document.getElementById('tabGbSeo');
+
   // Inline Image Floating Toolbar Elements
   const wpInlineImgToolbar = document.getElementById('wpInlineImgToolbar');
   const replaceInlineImgFileInput = document.getElementById('replaceInlineImgFileInput');
@@ -1139,12 +1171,243 @@
     }, 400);
   }
 
+  // ==========================================
+  // YOAST SEO & SEARCH APPEARANCE LOGIC
+  // ==========================================
+  function slugifyText(text) {
+    return (text || '')
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function resolveSeoTemplate(template, fallback) {
+    if (!template || !template.trim()) return fallback || '';
+    const titleVal = articleTitle ? articleTitle.value.trim() : '';
+    return template
+      .replace(/%title%/gi, titleVal || 'Judul Artikel')
+      .replace(/%page%/gi, '1')
+      .replace(/%sep%/gi, '-')
+      .replace(/%sitename%/gi, 'ACF Eduhub')
+      .trim();
+  }
+
+  function updateYoastPreviews() {
+    const rawTitle = articleTitle ? articleTitle.value.trim() : '';
+    const rawKeyphrase = yoastFocusKeyphrase ? yoastFocusKeyphrase.value.trim() : '';
+    const rawSeoTitle = yoastSeoTitle ? yoastSeoTitle.value.trim() : '';
+    const rawSlug = yoastSlug ? yoastSlug.value.trim() : '';
+    const rawMetaDesc = yoastMetaDesc ? yoastMetaDesc.value.trim() : '';
+    const rawExcerpt = articleExcerpt ? articleExcerpt.value.trim() : '';
+    const rawContentText = articleVisualEditor ? (articleVisualEditor.innerText || '').trim() : '';
+    const rawCover = articleCover ? articleCover.value.trim() : (coverPreviewImg && coverPreviewImg.src ? coverPreviewImg.src : '');
+
+    // 1. Resolve Display Title for Google Snippet
+    const defaultGoogleTitle = rawTitle ? `${rawTitle} - ACF Eduhub` : 'Judul Artikel Akan Muncul di Sini - ACF Eduhub';
+    const finalGoogleTitle = rawSeoTitle ? resolveSeoTemplate(rawSeoTitle, defaultGoogleTitle) : defaultGoogleTitle;
+    if (googleSnippetTitle) googleSnippetTitle.textContent = finalGoogleTitle;
+    if (socialPreviewTitle) socialPreviewTitle.textContent = rawTitle || 'Judul Artikel ACF Eduhub';
+
+    // 2. Resolve Slug
+    let cleanSlug = '';
+    if (rawSlug) {
+      cleanSlug = slugifyText(rawSlug);
+    } else if (rawTitle) {
+      cleanSlug = slugifyText(rawTitle);
+      if (yoastSlug && yoastSlug.dataset.custom !== 'true') {
+        yoastSlug.value = cleanSlug;
+      }
+    } else {
+      cleanSlug = 'post-slug';
+    }
+    if (googlePreviewBreadcrumbSlug) googlePreviewBreadcrumbSlug.textContent = cleanSlug;
+
+    // 3. Resolve Date & Snippet Description
+    const dateVal = articleDateInput ? articleDateInput.value.trim() : '';
+    if (googleSnippetDate) googleSnippetDate.textContent = dateVal || '20 Okt 2026';
+    
+    let snippetDesc = rawMetaDesc;
+    if (!snippetDesc && rawExcerpt) snippetDesc = rawExcerpt;
+    if (!snippetDesc && rawContentText) {
+      snippetDesc = rawContentText.slice(0, 140) + '...';
+    }
+    if (!snippetDesc) {
+      snippetDesc = 'Cuplikan deskripsi artikel naskah Anda yang akan menarik pembaca ketika mencari topik ini di Google Search...';
+    }
+    if (googleSnippetDesc) googleSnippetDesc.textContent = snippetDesc;
+    if (socialPreviewDesc) socialPreviewDesc.textContent = snippetDesc;
+
+    // 4. Resolve Thumbnail Image
+    const fallbackLogo = '../assets/logo-acf/LOGO_ACF-removebg-preview.png';
+    const finalCover = rawCover && (rawCover.startsWith('http') || rawCover.startsWith('data:') || rawCover.includes('/')) ? rawCover : fallbackLogo;
+    if (googleSnippetThumbImg) googleSnippetThumbImg.src = finalCover;
+    if (socialPreviewImg) socialPreviewImg.src = finalCover;
+
+    // 5. Update Schema Author
+    if (yoastSchemaAuthorPreview && articleAuthor) {
+      yoastSchemaAuthorPreview.textContent = articleAuthor.value.trim() || 'Tim Redaksi ACF';
+    }
+
+    // 6. Character Count & Progress Bars
+    // SEO Title: Optimal 45-60 characters
+    const seoTitleLen = rawSeoTitle ? rawSeoTitle.length : (rawTitle ? rawTitle.length : 0);
+    if (txtSeoTitleCount) txtSeoTitleCount.textContent = `${seoTitleLen} karakter`;
+    if (barSeoTitle) {
+      barSeoTitle.className = 'yoast-progress-fill';
+      if (seoTitleLen === 0) {
+        barSeoTitle.style.width = '0%';
+      } else if (seoTitleLen < 35) {
+        barSeoTitle.style.width = Math.min(100, Math.round((seoTitleLen / 60) * 100)) + '%';
+        barSeoTitle.classList.add('bar-orange');
+      } else if (seoTitleLen <= 60) {
+        barSeoTitle.style.width = Math.min(100, Math.round((seoTitleLen / 60) * 100)) + '%';
+        barSeoTitle.classList.add('bar-green');
+      } else {
+        barSeoTitle.style.width = '100%';
+        barSeoTitle.classList.add('bar-red');
+      }
+    }
+
+    // Meta Description: Optimal 120-160 characters
+    const metaDescLen = rawMetaDesc ? rawMetaDesc.length : (rawExcerpt ? rawExcerpt.length : 0);
+    if (txtMetaDescCount) txtMetaDescCount.textContent = `${metaDescLen} karakter`;
+    if (barMetaDesc) {
+      barMetaDesc.className = 'yoast-progress-fill';
+      if (metaDescLen === 0) {
+        barMetaDesc.style.width = '0%';
+      } else if (metaDescLen < 80) {
+        barMetaDesc.style.width = Math.min(100, Math.round((metaDescLen / 160) * 100)) + '%';
+        barMetaDesc.classList.add('bar-orange');
+      } else if (metaDescLen <= 160) {
+        barMetaDesc.style.width = Math.min(100, Math.round((metaDescLen / 160) * 100)) + '%';
+        barMetaDesc.classList.add('bar-green');
+      } else {
+        barMetaDesc.style.width = '100%';
+        barMetaDesc.classList.add('bar-red');
+      }
+    }
+
+    // 7. SEO Analysis Checklist Evaluation
+    if (yoastAnalysisKeyphraseSubtitle) {
+      yoastAnalysisKeyphraseSubtitle.textContent = rawKeyphrase ? `Fokus: "${rawKeyphrase}"` : '(Masukkan fokus frasa kunci untuk analisis mendalam)';
+    }
+
+    const kp = rawKeyphrase.toLowerCase().trim();
+    let scoreGreen = 0;
+
+    const setCheckItem = (id, isPass, isAmber) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const dot = el.querySelector('.yoast-item-dot');
+      if (!dot) return;
+      dot.className = 'yoast-item-dot';
+      if (isPass) {
+        dot.classList.add('dot-green');
+        dot.textContent = '●';
+        scoreGreen++;
+      } else if (isAmber) {
+        dot.classList.add('dot-amber');
+        dot.textContent = '●';
+      } else {
+        dot.classList.add('dot-red');
+        dot.textContent = '●';
+      }
+    };
+
+    // Check 1: Keyphrase in Title
+    setCheckItem('chkSeoKeyphraseInTitle', kp && rawTitle.toLowerCase().includes(kp));
+
+    // Check 2: Keyphrase in SEO Title
+    setCheckItem('chkSeoKeyphraseInSeoTitle', kp && finalGoogleTitle.toLowerCase().includes(kp));
+
+    // Check 3: Keyphrase in Slug
+    setCheckItem('chkSeoKeyphraseInSlug', kp && cleanSlug.includes(slugifyText(kp)));
+
+    // Check 4: Keyphrase in Meta Description
+    setCheckItem('chkSeoKeyphraseInMeta', kp && (rawMetaDesc.toLowerCase().includes(kp) || snippetDesc.toLowerCase().includes(kp)));
+
+    // Check 5: Keyphrase in Intro Paragraph
+    const firstP = articleVisualEditor ? (articleVisualEditor.querySelector('p')?.innerText || '').toLowerCase() : '';
+    setCheckItem('chkSeoKeyphraseInIntro', kp && (firstP.includes(kp) || rawContentText.toLowerCase().slice(0, 200).includes(kp)));
+
+    // Check 6: SEO Title Length
+    const titleLenForCheck = finalGoogleTitle.length;
+    const seoTitleOptimal = (titleLenForCheck >= 35 && titleLenForCheck <= 65);
+    const seoTitleAmber = (titleLenForCheck >= 20 && titleLenForCheck <= 75);
+    setCheckItem('chkSeoTitleLength', seoTitleOptimal, seoTitleAmber);
+
+    // Check 7: Meta Description Length
+    const metaLenForCheck = snippetDesc.length;
+    const metaOptimal = (metaLenForCheck >= 80 && metaLenForCheck <= 160);
+    const metaAmber = (metaLenForCheck >= 40 && metaLenForCheck <= 200);
+    setCheckItem('chkSeoMetaLength', metaOptimal, metaAmber);
+
+    // Check 8: Cover Image Set
+    const hasCover = rawCover && rawCover !== fallbackLogo && (rawCover.startsWith('http') || rawCover.startsWith('data:') || rawCover.includes('/'));
+    setCheckItem('chkSeoCoverImage', Boolean(hasCover));
+
+    // Check 9: Content Length (word count)
+    const words = rawContentText ? rawContentText.split(/\s+/).filter(Boolean).length : 0;
+    setCheckItem('chkSeoContentLength', words >= 300, words >= 150);
+
+    // 8. Overall Badge Status Dot
+    let overallDot = '🔴';
+    if (scoreGreen >= 6) {
+      overallDot = '🟢';
+    } else if (scoreGreen >= 3) {
+      overallDot = '🟠';
+    } else {
+      overallDot = '🔴';
+    }
+
+    if (yoastHeaderScoreDot) yoastHeaderScoreDot.textContent = overallDot;
+    if (dotSeoAnalysis) dotSeoAnalysis.textContent = overallDot;
+    if (tabGbSeo) {
+      const tabDot = tabGbSeo.querySelector('span');
+      if (tabDot) {
+        tabDot.style.background = overallDot === '🟢' ? '#16A34A' : (overallDot === '🟠' ? '#EA580C' : '#DC2626');
+      }
+    }
+    const subtabDotSeo = document.getElementById('subtabDotSeo');
+    if (subtabDotSeo) {
+      subtabDotSeo.className = 'subtab-dot ' + (overallDot === '🟢' ? 'dot-green' : (overallDot === '🟠' ? 'dot-amber' : 'dot-red'));
+    }
+
+    // Readability checks
+    const chkReadParagraphLength = document.getElementById('chkReadParagraphLength');
+    if (chkReadParagraphLength) {
+      let tooLongP = false;
+      if (articleVisualEditor) {
+        articleVisualEditor.querySelectorAll('p').forEach(p => {
+          const pWords = (p.innerText || '').split(/\s+/).filter(Boolean).length;
+          if (pWords > 150) tooLongP = true;
+        });
+      }
+      const dot = chkReadParagraphLength.querySelector('.yoast-item-dot');
+      if (dot) dot.className = 'yoast-item-dot ' + (!tooLongP ? 'dot-green' : 'dot-red');
+    }
+
+    const chkReadHeadings = document.getElementById('chkReadHeadings');
+    if (chkReadHeadings) {
+      const hasHeadings = articleVisualEditor && Boolean(articleVisualEditor.querySelector('h2, h3, h4'));
+      const dot = chkReadHeadings.querySelector('.yoast-item-dot');
+      if (dot) dot.className = 'yoast-item-dot ' + (hasHeadings ? 'dot-green' : 'dot-amber');
+    }
+  }
+
   function saveDraftToStorage() {
     try {
       const nowStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const draftData = {
         title: articleTitle ? articleTitle.value : '',
         title_color: articleTitle ? (articleTitle.style.color || '') : '',
+        seo_title: yoastSeoTitle ? yoastSeoTitle.value : '',
+        focus_keyphrase: yoastFocusKeyphrase ? yoastFocusKeyphrase.value : '',
+        slug: yoastSlug ? yoastSlug.value : '',
+        meta_desc: yoastMetaDesc ? yoastMetaDesc.value : '',
         content: articleVisualEditor ? articleVisualEditor.innerHTML : '',
         excerpt: articleExcerpt ? articleExcerpt.value : '',
         cover: articleCover ? articleCover.value : '',
@@ -1198,6 +1461,14 @@
       if (articleAuthor) articleAuthor.value = draft.author || 'Tim Redaksi ACF';
       if (draft.date && articleDateInput) articleDateInput.value = draft.date;
 
+      if (draft.seo_title && yoastSeoTitle) yoastSeoTitle.value = draft.seo_title;
+      if (draft.focus_keyphrase && yoastFocusKeyphrase) yoastFocusKeyphrase.value = draft.focus_keyphrase;
+      if (draft.slug && yoastSlug) {
+        yoastSlug.value = draft.slug;
+        yoastSlug.dataset.custom = 'true';
+      }
+      if (draft.meta_desc && yoastMetaDesc) yoastMetaDesc.value = draft.meta_desc;
+
       if (draft.category && articleCategory) {
         renderCategorySelects(draft.category);
         articleCategory.value = draft.category;
@@ -1210,6 +1481,7 @@
 
       updateCoverPreview(draft.cover || '');
       updateWpStats();
+      updateYoastPreviews();
 
       if (wpDraftRecoveryBanner) {
         if (wpDraftRecoveryTime && draft.savedAt) {
@@ -1228,6 +1500,105 @@
       console.warn('Gagal memulihkan draf:', e);
       return false;
     }
+  }
+
+  // Helper: Update Active State of Toolbar Buttons & Format Dropdown
+  function updateToolbarState() {
+    if (!articleVisualEditor) return;
+
+    const commands = ['bold', 'italic', 'underline', 'strikeThrough', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'insertUnorderedList', 'insertOrderedList'];
+    commands.forEach(cmd => {
+      const btn = document.querySelector(`.wp-tool-btn[data-cmd="${cmd}"]`);
+      if (btn) {
+        try {
+          const isActive = document.queryCommandState(cmd);
+          btn.classList.toggle('active', Boolean(isActive));
+        } catch(e) {}
+      }
+    });
+
+    // Synchronize Format dropdown and Drop Cap
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      let node = sel.anchorNode;
+      if (node && node.nodeType === 3) node = node.parentNode;
+      if (node && node.closest && node.closest('#articleVisualEditor')) {
+        const block = node.closest('h2, h3, h4, blockquote, .wp-callout-box, p.article-lead, p');
+        if (block && wpBlockFormat) {
+          if (block.tagName === 'H2') wpBlockFormat.value = 'h2';
+          else if (block.tagName === 'H3') wpBlockFormat.value = 'h3';
+          else if (block.tagName === 'H4') wpBlockFormat.value = 'h4';
+          else if (block.tagName === 'BLOCKQUOTE') wpBlockFormat.value = 'blockquote';
+          else if (block.classList.contains('wp-callout-box')) wpBlockFormat.value = 'callout';
+          else if (block.classList.contains('article-lead')) wpBlockFormat.value = 'lead-p';
+          else wpBlockFormat.value = 'p';
+        }
+
+        const pBlock = node.closest('p');
+        const chkDropCap = document.getElementById('chkDropCap');
+        if (chkDropCap) {
+          chkDropCap.checked = Boolean(pBlock && pBlock.classList.contains('has-drop-cap'));
+        }
+      }
+    }
+
+    // Helper convert RGB to Hex
+    function rgbToHex(color) {
+      if (!color) return '';
+      if (color.startsWith('#')) return color.toLowerCase();
+      const match = color.match(/\d+/g);
+      if (match && match.length >= 3) {
+        const r = parseInt(match[0], 10).toString(16).padStart(2, '0');
+        const g = parseInt(match[1], 10).toString(16).padStart(2, '0');
+        const b = parseInt(match[2], 10).toString(16).padStart(2, '0');
+        return `#${r}${g}${b}`.toLowerCase();
+      }
+      return color;
+    }
+
+    // Synchronize text color indicator
+    try {
+      const foreColor = document.queryCommandValue('foreColor');
+      if (foreColor) {
+        const hex = rgbToHex(foreColor);
+        const ind = document.getElementById('toolbarColorIndicator');
+        if (ind) ind.style.backgroundColor = foreColor;
+        document.querySelectorAll('.wp-color-circle').forEach(c => {
+          const dataCol = c.getAttribute('data-color');
+          c.classList.toggle('active', dataCol === hex || dataCol === foreColor);
+        });
+      }
+    } catch(e) {}
+  }
+
+  // Yoast Subtabs Controller (SEO, Keterbacaan, Schema, Sosial)
+  const yoastTabDefs = [
+    { subtab: 'seo', btnId: 'subtabYoastSeo', paneId: 'paneYoastSeo' },
+    { subtab: 'readability', btnId: 'subtabYoastReadability', paneId: 'paneYoastReadability' },
+    { subtab: 'schema', btnId: 'subtabYoastSchema', paneId: 'paneYoastSchema' },
+    { subtab: 'social', btnId: 'subtabYoastSocial', paneId: 'paneYoastSocial' }
+  ];
+
+  function switchYoastSubtab(targetSubtab) {
+    yoastTabDefs.forEach(def => {
+      const btn = document.getElementById(def.btnId);
+      const pane = document.getElementById(def.paneId);
+      const isMatch = def.subtab === targetSubtab;
+
+      if (btn) {
+        if (isMatch) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      }
+
+      if (pane) {
+        pane.style.display = isMatch ? 'block' : 'none';
+        if (isMatch) pane.classList.add('active');
+        else pane.classList.remove('active');
+      }
+    });
   }
 
   // ==========================================
@@ -1256,9 +1627,21 @@
     if (articleContent) articleContent.value = '';
     const chkDropCap = document.getElementById('chkDropCap');
     if (chkDropCap) chkDropCap.checked = false;
+
+    // Reset Yoast SEO fields
+    if (yoastFocusKeyphrase) yoastFocusKeyphrase.value = '';
+    if (yoastSeoTitle) yoastSeoTitle.value = '';
+    if (yoastSlug) {
+      yoastSlug.value = '';
+      yoastSlug.dataset.custom = 'false';
+    }
+    if (yoastMetaDesc) yoastMetaDesc.value = '';
+    if (yoastRelatedChipsWrap) yoastRelatedChipsWrap.style.display = 'none';
+
     renderCategorySelects('artikel');
     updateWpStats();
     updateCoverPreview('');
+    updateYoastPreviews();
     if (btnSaveArticleText) btnSaveArticleText.textContent = 'Terbitkan';
 
     // Cek apakah ada draf tersimpan yang bisa dipulihkan
@@ -1270,6 +1653,7 @@
     if (articleModal) {
       articleModal.classList.add('show');
       updateBodyScrollLock();
+      switchYoastSubtab('seo');
       setTimeout(updateToolbarState, 100);
     }
   }
@@ -1299,6 +1683,16 @@
     if (articleCover) articleCover.value = art.cover || '';
     if (articleExcerpt) articleExcerpt.value = art.excerpt || '';
     
+    // Populate Yoast SEO fields
+    if (yoastFocusKeyphrase) yoastFocusKeyphrase.value = art.focus_keyphrase || '';
+    if (yoastSeoTitle) yoastSeoTitle.value = art.seo_title || '';
+    if (yoastSlug) {
+      yoastSlug.value = art.slug || slugifyText(art.title || '');
+      yoastSlug.dataset.custom = art.slug ? 'true' : 'false';
+    }
+    if (yoastMetaDesc) yoastMetaDesc.value = art.excerpt || '';
+    if (yoastRelatedChipsWrap) yoastRelatedChipsWrap.style.display = 'none';
+
     const contentHTML = art.content || art.excerpt || '';
     if (articleVisualEditor) articleVisualEditor.innerHTML = contentHTML;
     if (articleContent) articleContent.value = contentHTML;
@@ -1309,9 +1703,11 @@
 
     updateCoverPreview(art.cover || '');
     updateWpStats();
+    updateYoastPreviews();
     if (articleModal) {
       articleModal.classList.add('show');
       updateBodyScrollLock();
+      switchYoastSubtab('seo');
       setTimeout(updateToolbarState, 100);
     }
   }
@@ -1342,6 +1738,10 @@
       coverPlaceholder.style.display = 'flex';
       if (coverHoverOverlay) coverHoverOverlay.style.display = 'none';
       if (btnRemoveCoverDirect) btnRemoveCoverDirect.style.display = 'none';
+    }
+
+    if (typeof updateYoastPreviews === 'function') {
+      updateYoastPreviews();
     }
   }
 
@@ -1389,9 +1789,16 @@
     const dateStr = articleDateInput?.value.trim() || `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
     const titleColor = articleTitle ? (articleTitle.style.color || '') : '';
+    const seoTitle = yoastSeoTitle ? yoastSeoTitle.value.trim() : '';
+    const focusKeyphrase = yoastFocusKeyphrase ? yoastFocusKeyphrase.value.trim() : '';
+    const slug = yoastSlug && yoastSlug.value.trim() ? slugifyText(yoastSlug.value.trim()) : slugifyText(title);
+
     const payload = {
       title,
       title_color: titleColor,
+      seo_title: seoTitle,
+      focus_keyphrase: focusKeyphrase,
+      slug: slug,
       category,
       categoryLabel,
       author,
@@ -2571,74 +2978,7 @@
       });
     }
 
-    // Helper: Update Active State of Toolbar Buttons & Format Dropdown
-    function updateToolbarState() {
-      if (!articleVisualEditor) return;
-
-      const commands = ['bold', 'italic', 'underline', 'strikeThrough', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'insertUnorderedList', 'insertOrderedList'];
-      commands.forEach(cmd => {
-        const btn = document.querySelector(`.wp-tool-btn[data-cmd="${cmd}"]`);
-        if (btn) {
-          try {
-            const isActive = document.queryCommandState(cmd);
-            btn.classList.toggle('active', Boolean(isActive));
-          } catch(e) {}
-        }
-      });
-
-      // Synchronize Format dropdown and Drop Cap
-      const sel = window.getSelection();
-      if (sel && sel.rangeCount > 0) {
-        let node = sel.anchorNode;
-        if (node && node.nodeType === 3) node = node.parentNode;
-        if (node && node.closest && node.closest('#articleVisualEditor')) {
-          const block = node.closest('h2, h3, h4, blockquote, .wp-callout-box, p.article-lead, p');
-          if (block && wpBlockFormat) {
-            if (block.tagName === 'H2') wpBlockFormat.value = 'h2';
-            else if (block.tagName === 'H3') wpBlockFormat.value = 'h3';
-            else if (block.tagName === 'H4') wpBlockFormat.value = 'h4';
-            else if (block.tagName === 'BLOCKQUOTE') wpBlockFormat.value = 'blockquote';
-            else if (block.classList.contains('wp-callout-box')) wpBlockFormat.value = 'callout';
-            else if (block.classList.contains('article-lead')) wpBlockFormat.value = 'lead-p';
-            else wpBlockFormat.value = 'p';
-          }
-
-          const pBlock = node.closest('p');
-          const chkDropCap = document.getElementById('chkDropCap');
-          if (chkDropCap) {
-            chkDropCap.checked = Boolean(pBlock && pBlock.classList.contains('has-drop-cap'));
-          }
-        }
-      }
-
-      // Helper convert RGB to Hex
-      function rgbToHex(color) {
-        if (!color) return '';
-        if (color.startsWith('#')) return color.toLowerCase();
-        const match = color.match(/\d+/g);
-        if (match && match.length >= 3) {
-          const r = parseInt(match[0], 10).toString(16).padStart(2, '0');
-          const g = parseInt(match[1], 10).toString(16).padStart(2, '0');
-          const b = parseInt(match[2], 10).toString(16).padStart(2, '0');
-          return `#${r}${g}${b}`.toLowerCase();
-        }
-        return color;
-      }
-
-      // Synchronize text color indicator
-      try {
-        const foreColor = document.queryCommandValue('foreColor');
-        if (foreColor) {
-          const hex = rgbToHex(foreColor);
-          const ind = document.getElementById('toolbarColorIndicator');
-          if (ind) ind.style.backgroundColor = foreColor;
-          document.querySelectorAll('.wp-color-circle').forEach(c => {
-            const dataCol = c.getAttribute('data-color');
-            c.classList.toggle('active', dataCol === hex || dataCol === foreColor);
-          });
-        }
-      } catch(e) {}
-    }
+    // (updateToolbarState is defined in module scope above)
 
     // Rich Text WYSIWYG Toolbar Commands (Mousedown prevents losing selection)
     document.querySelectorAll('.wp-tool-btn[data-cmd]').forEach(btn => {
@@ -3682,13 +4022,17 @@
       btnArticleModalClose.addEventListener('click', closeArticleModal);
     }
 
-    // Autosave triggers on field inputs
+    // Autosave & Yoast previews triggers on field inputs
     if (articleTitle) {
-      articleTitle.addEventListener('input', triggerAutosave);
+      articleTitle.addEventListener('input', () => {
+        updateYoastPreviews();
+        triggerAutosave();
+      });
     }
     if (articleVisualEditor) {
       articleVisualEditor.addEventListener('input', () => {
         updateWpStats();
+        updateYoastPreviews();
         triggerAutosave();
       });
     }
@@ -3696,10 +4040,206 @@
       articleCategory.addEventListener('change', triggerAutosave);
     }
     if (articleAuthor) {
-      articleAuthor.addEventListener('input', triggerAutosave);
+      articleAuthor.addEventListener('input', () => {
+        updateYoastPreviews();
+        triggerAutosave();
+      });
     }
     if (articleExcerpt) {
-      articleExcerpt.addEventListener('input', triggerAutosave);
+      articleExcerpt.addEventListener('input', () => {
+        updateYoastPreviews();
+        triggerAutosave();
+      });
+    }
+
+    // Yoast SEO Specific Listeners
+    if (yoastFocusKeyphrase) {
+      yoastFocusKeyphrase.addEventListener('input', () => {
+        updateYoastPreviews();
+        triggerAutosave();
+      });
+    }
+
+    if (yoastSeoTitle) {
+      yoastSeoTitle.addEventListener('input', () => {
+        updateYoastPreviews();
+        triggerAutosave();
+      });
+    }
+
+    if (yoastSlug) {
+      yoastSlug.addEventListener('input', () => {
+        yoastSlug.dataset.custom = 'true';
+        updateYoastPreviews();
+        triggerAutosave();
+      });
+      yoastSlug.addEventListener('blur', () => {
+        yoastSlug.value = slugifyText(yoastSlug.value);
+        updateYoastPreviews();
+      });
+    }
+
+    if (yoastMetaDesc) {
+      yoastMetaDesc.addEventListener('input', () => {
+        updateYoastPreviews();
+        triggerAutosave();
+      });
+    }
+
+    // Preview As Device Radio (Mobile vs Desktop)
+    document.querySelectorAll('input[name="yoastPreviewDevice"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        if (googleSnippetCard) {
+          googleSnippetCard.classList.remove('preview-mobile', 'preview-desktop');
+          googleSnippetCard.classList.add(`preview-${e.target.value}`);
+        }
+      });
+    });
+
+    // Yoast Subtabs Switcher (SEO, Keterbacaan, Schema, Sosial)
+    yoastTabDefs.forEach(def => {
+      const btn = document.getElementById(def.btnId);
+      if (btn) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          switchYoastSubtab(def.subtab);
+        });
+      }
+    });
+
+    // Variable Chips in SEO Title (%title%, %page%, %sep%, %sitename%)
+    document.querySelectorAll('.yoast-var-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const v = chip.getAttribute('data-var');
+        if (yoastSeoTitle) {
+          yoastSeoTitle.value = (yoastSeoTitle.value ? yoastSeoTitle.value + ' ' : '') + v;
+          updateYoastPreviews();
+          triggerAutosave();
+          yoastSeoTitle.focus();
+        }
+      });
+    });
+
+    if (btnGenerateSeoTitle) {
+      btnGenerateSeoTitle.addEventListener('click', () => {
+        const rawTitle = articleTitle ? articleTitle.value.trim() : '';
+        if (!rawTitle) {
+          showToast('Tuliskan judul artikel terlebih dahulu!', 'info');
+          articleTitle?.focus();
+          return;
+        }
+        if (yoastSeoTitle) {
+          yoastSeoTitle.value = `${rawTitle} - ACF Eduhub`;
+          updateYoastPreviews();
+          triggerAutosave();
+          showToast('Judul SEO otomatis dibuat!', 'success');
+        }
+      });
+    }
+
+    if (btnInsertVarSeoTitle) {
+      btnInsertVarSeoTitle.addEventListener('click', () => {
+        if (yoastSeoTitle) {
+          yoastSeoTitle.value = (yoastSeoTitle.value ? yoastSeoTitle.value + ' ' : '') + '%title% %sep% %sitename%';
+          updateYoastPreviews();
+          triggerAutosave();
+          yoastSeoTitle.focus();
+        }
+      });
+    }
+
+    if (btnGenerateMetaDesc) {
+      btnGenerateMetaDesc.addEventListener('click', () => {
+        let desc = articleExcerpt ? articleExcerpt.value.trim() : '';
+        if (!desc && articleVisualEditor) {
+          desc = (articleVisualEditor.innerText || '').trim();
+        }
+        if (!desc) {
+          showToast('Tuliskan naskah atau kutipan artikel terlebih dahulu!', 'info');
+          return;
+        }
+        if (yoastMetaDesc) {
+          yoastMetaDesc.value = desc.slice(0, 150).replace(/\s+/g, ' ').trim() + (desc.length > 150 ? '...' : '');
+          updateYoastPreviews();
+          triggerAutosave();
+          showToast('Deskripsi meta otomatis dihasilkan!', 'success');
+        }
+      });
+    }
+
+    if (btnInsertVarMetaDesc) {
+      btnInsertVarMetaDesc.addEventListener('click', () => {
+        if (yoastMetaDesc) {
+          yoastMetaDesc.value = (yoastMetaDesc.value ? yoastMetaDesc.value + ' ' : '') + '%excerpt%';
+          updateYoastPreviews();
+          triggerAutosave();
+          yoastMetaDesc.focus();
+        }
+      });
+    }
+
+    // Related Keyphrase Generator
+    if (btnGetRelatedKeyphrases) {
+      btnGetRelatedKeyphrases.addEventListener('click', () => {
+        const rawTitle = articleTitle ? articleTitle.value.trim() : '';
+        const text = (articleVisualEditor ? articleVisualEditor.innerText : '') || '';
+        
+        const combined = `${rawTitle} ${text}`.replace(/[^\w\s]/g, ' ');
+        const words = combined.split(/\s+/).filter(w => w.length > 3);
+        const uniqueWords = [...new Set(words.map(w => w.toLowerCase()))];
+        
+        const suggestions = [];
+        if (rawTitle) suggestions.push(rawTitle.split(' ').slice(0, 3).join(' '));
+        if (uniqueWords[0] && uniqueWords[1]) suggestions.push(`${uniqueWords[0]} ${uniqueWords[1]}`);
+        if (uniqueWords[2] && uniqueWords[3]) suggestions.push(`${uniqueWords[2]} ${uniqueWords[3]}`);
+        suggestions.push('ACF Eduhub 2026');
+
+        if (yoastRelatedChipsList && yoastRelatedChipsWrap) {
+          yoastRelatedChipsList.innerHTML = '';
+          suggestions.filter(Boolean).forEach(s => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'yoast-suggest-chip';
+            btn.textContent = `+ ${s}`;
+            btn.addEventListener('click', () => {
+              if (yoastFocusKeyphrase) {
+                yoastFocusKeyphrase.value = s;
+                updateYoastPreviews();
+                triggerAutosave();
+                showToast(`Frasa kunci "${s}" diterapkan!`, 'success');
+              }
+            });
+            yoastRelatedChipsList.appendChild(btn);
+          });
+          yoastRelatedChipsWrap.style.display = 'block';
+        }
+      });
+    }
+
+    if (btnAddRelatedKeyphrase) {
+      btnAddRelatedKeyphrase.addEventListener('click', () => {
+        showToast('Fitur multi-keyphrase tersedia di paket Yoast Premium.', 'info');
+      });
+    }
+
+    // Sidebar SEO Tab Click Handler (Scroll to Yoast Accordion)
+    if (tabGbSeo) {
+      tabGbSeo.addEventListener('click', () => {
+        document.querySelectorAll('.wp-gb-side-tab').forEach(t => t.classList.remove('active'));
+        tabGbSeo.classList.add('active');
+        document.querySelectorAll('.wp-gb-pane').forEach(p => p.classList.remove('active'));
+        const paneGbPost = document.getElementById('paneGbPost');
+        if (paneGbPost) {
+          paneGbPost.classList.add('active');
+          if (accYoastSeo) {
+            accYoastSeo.open = true;
+            accYoastSeo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            accYoastSeo.style.outline = '2px solid #7D2280';
+            setTimeout(() => { accYoastSeo.style.outline = ''; }, 1200);
+          }
+        }
+      });
     }
 
     // Banner Pemulihan Draf

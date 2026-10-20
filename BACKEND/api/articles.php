@@ -27,10 +27,10 @@ if ($method === 'GET') {
     // Single article request
     if (!empty($id) || !empty($slug)) {
         if (!empty($id)) {
-            $stmt = $db->prepare("SELECT id, title, title_color, slug, category_slug as category, category_label as categoryLabel, author, date_display as date, cover_image as cover, excerpt, content, status, views, created_at FROM articles WHERE id = :id LIMIT 1");
+            $stmt = $db->prepare("SELECT id, title, title_color, seo_title, focus_keyphrase, slug, category_slug as category, category_label as categoryLabel, author, date_display as date, cover_image as cover, excerpt, content, status, views, created_at FROM articles WHERE id = :id LIMIT 1");
             $stmt->execute([':id' => $id]);
         } else {
-            $stmt = $db->prepare("SELECT id, title, title_color, slug, category_slug as category, category_label as categoryLabel, author, date_display as date, cover_image as cover, excerpt, content, status, views, created_at FROM articles WHERE slug = :slug LIMIT 1");
+            $stmt = $db->prepare("SELECT id, title, title_color, seo_title, focus_keyphrase, slug, category_slug as category, category_label as categoryLabel, author, date_display as date, cover_image as cover, excerpt, content, status, views, created_at FROM articles WHERE slug = :slug LIMIT 1");
             $stmt->execute([':slug' => $slug]);
         }
 
@@ -75,7 +75,7 @@ if ($method === 'GET') {
     }
 
     $whereSql = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
-    $sql = "SELECT id, title, title_color, slug, category_slug as category, category_label as categoryLabel, author, date_display as date, cover_image as cover, excerpt, content, status, views, created_at FROM articles {$whereSql} ORDER BY created_at DESC, id DESC";
+    $sql = "SELECT id, title, title_color, seo_title, focus_keyphrase, slug, category_slug as category, category_label as categoryLabel, author, date_display as date, cover_image as cover, excerpt, content, status, views, created_at FROM articles {$whereSql} ORDER BY created_at DESC, id DESC";
 
     if ($limit !== null && $limit > 0) {
         $sql .= " LIMIT {$limit} OFFSET {$offset}";
@@ -125,50 +125,55 @@ if ($method === 'POST') {
 
     // Auto Date Display
     $dateDisplay = trim($input['date'] ?? ($input['date_display'] ?? date('M j, Y')));
-    $slug = slugifyArticle($title);
-
+    $slug = !empty($input['slug']) ? slugifyArticle($input['slug']) : slugifyArticle($title);
     $titleColor = trim($input['title_color'] ?? ($input['titleColor'] ?? ''));
+    $seoTitle = trim($input['seo_title'] ?? ($input['seoTitle'] ?? ''));
+    $focusKeyphrase = trim($input['focus_keyphrase'] ?? ($input['focusKeyphrase'] ?? ''));
 
     // Pastikan kategori terdaftar di tabel categories
     $catCheck = $db->prepare("INSERT INTO categories (slug, label) VALUES (:slug, :label) ON DUPLICATE KEY UPDATE label = :label2");
     $catCheck->execute([':slug' => $categorySlug, ':label' => $categoryLabel, ':label2' => $categoryLabel]);
 
     // Insert artikel
-    $stmt = $db->prepare("INSERT INTO articles (id, title, title_color, slug, category_slug, category_label, author, date_display, cover_image, excerpt, content, status) 
-                          VALUES (:id, :title, :title_color, :slug, :cat_slug, :cat_label, :author, :date_d, :cover, :excerpt, :content, :status)
+    $stmt = $db->prepare("INSERT INTO articles (id, title, title_color, seo_title, focus_keyphrase, slug, category_slug, category_label, author, date_display, cover_image, excerpt, content, status) 
+                          VALUES (:id, :title, :title_color, :seo_title, :focus_keyphrase, :slug, :cat_slug, :cat_label, :author, :date_d, :cover, :excerpt, :content, :status)
                           ON DUPLICATE KEY UPDATE 
-                          title = VALUES(title), title_color = VALUES(title_color), slug = VALUES(slug), category_slug = VALUES(category_slug),
+                          title = VALUES(title), title_color = VALUES(title_color), seo_title = VALUES(seo_title), focus_keyphrase = VALUES(focus_keyphrase), slug = VALUES(slug), category_slug = VALUES(category_slug),
                           category_label = VALUES(category_label), author = VALUES(author), date_display = VALUES(date_display),
                           cover_image = VALUES(cover_image), excerpt = VALUES(excerpt), content = VALUES(content), status = VALUES(status)");
 
     $stmt->execute([
-        ':id'          => $id,
-        ':title'       => $title,
-        ':title_color' => $titleColor,
-        ':slug'        => $slug,
-        ':cat_slug'    => $categorySlug,
-        ':cat_label'   => $categoryLabel,
-        ':author'      => $author,
-        ':date_d'      => $dateDisplay,
-        ':cover'       => $cover,
-        ':excerpt'     => $excerpt,
-        ':content'     => $content,
-        ':status'      => $status
+        ':id'              => $id,
+        ':title'           => $title,
+        ':title_color'     => $titleColor,
+        ':seo_title'       => $seoTitle,
+        ':focus_keyphrase' => $focusKeyphrase,
+        ':slug'            => $slug,
+        ':cat_slug'        => $categorySlug,
+        ':cat_label'       => $categoryLabel,
+        ':author'          => $author,
+        ':date_d'          => $dateDisplay,
+        ':cover'           => $cover,
+        ':excerpt'         => $excerpt,
+        ':content'         => $content,
+        ':status'          => $status
     ]);
 
     jsonSuccess([
-        'id'            => $id,
-        'title'         => $title,
-        'title_color'   => $titleColor,
-        'slug'          => $slug,
-        'category'      => $categorySlug,
-        'categoryLabel' => $categoryLabel,
-        'author'        => $author,
-        'date'          => $dateDisplay,
-        'cover'         => $cover,
-        'excerpt'       => $excerpt,
-        'content'       => $content,
-        'status'        => $status
+        'id'              => $id,
+        'title'           => $title,
+        'title_color'     => $titleColor,
+        'seo_title'       => $seoTitle,
+        'focus_keyphrase' => $focusKeyphrase,
+        'slug'            => $slug,
+        'category'        => $categorySlug,
+        'categoryLabel'   => $categoryLabel,
+        'author'          => $author,
+        'date'            => $dateDisplay,
+        'cover'           => $cover,
+        'excerpt'         => $excerpt,
+        'content'         => $content,
+        'status'          => $status
     ], 'Artikel berhasil disimpan.', 201);
 }
 
@@ -192,7 +197,9 @@ if ($method === 'PUT' || $method === 'PATCH') {
 
     $title = isset($input['title']) ? trim($input['title']) : $existing['title'];
     $titleColor = isset($input['title_color']) ? trim($input['title_color']) : (isset($input['titleColor']) ? trim($input['titleColor']) : ($existing['title_color'] ?? ''));
-    $slug = !empty($title) ? slugifyArticle($title) : $existing['slug'];
+    $seoTitle = isset($input['seo_title']) ? trim($input['seo_title']) : (isset($input['seoTitle']) ? trim($input['seoTitle']) : ($existing['seo_title'] ?? ''));
+    $focusKeyphrase = isset($input['focus_keyphrase']) ? trim($input['focus_keyphrase']) : (isset($input['focusKeyphrase']) ? trim($input['focusKeyphrase']) : ($existing['focus_keyphrase'] ?? ''));
+    $slug = !empty($input['slug']) ? slugifyArticle($input['slug']) : (!empty($title) ? slugifyArticle($title) : $existing['slug']);
     $categorySlug = isset($input['category']) ? trim($input['category']) : (isset($input['category_slug']) ? trim($input['category_slug']) : $existing['category_slug']);
     $categoryLabel = isset($input['categoryLabel']) ? trim($input['categoryLabel']) : (isset($input['category_label']) ? trim($input['category_label']) : $existing['category_label']);
     $author = isset($input['author']) ? trim($input['author']) : $existing['author'];
@@ -205,6 +212,8 @@ if ($method === 'PUT' || $method === 'PATCH') {
     $upd = $db->prepare("UPDATE articles SET 
         title = :title,
         title_color = :title_color,
+        seo_title = :seo_title,
+        focus_keyphrase = :focus_keyphrase,
         slug = :slug,
         category_slug = :cat_slug,
         category_label = :cat_label,
@@ -217,32 +226,37 @@ if ($method === 'PUT' || $method === 'PATCH') {
         WHERE id = :id");
 
     $upd->execute([
-        ':title'       => $title,
-        ':title_color' => $titleColor,
-        ':slug'        => $slug,
-        ':cat_slug'    => $categorySlug,
-        ':cat_label'   => $categoryLabel,
-        ':author'      => $author,
-        ':date_d'      => $dateDisplay,
-        ':cover'       => $cover,
-        ':excerpt'   => $excerpt,
-        ':content'   => $content,
-        ':status'    => $status,
-        ':id'        => $id
+        ':title'           => $title,
+        ':title_color'     => $titleColor,
+        ':seo_title'       => $seoTitle,
+        ':focus_keyphrase' => $focusKeyphrase,
+        ':slug'            => $slug,
+        ':cat_slug'        => $categorySlug,
+        ':cat_label'       => $categoryLabel,
+        ':author'          => $author,
+        ':date_d'          => $dateDisplay,
+        ':cover'           => $cover,
+        ':excerpt'         => $excerpt,
+        ':content'         => $content,
+        ':status'          => $status,
+        ':id'              => $id
     ]);
 
     jsonSuccess([
-        'id'            => $id,
-        'title'         => $title,
-        'slug'          => $slug,
-        'category'      => $categorySlug,
-        'categoryLabel' => $categoryLabel,
-        'author'        => $author,
-        'date'          => $dateDisplay,
-        'cover'         => $cover,
-        'excerpt'       => $excerpt,
-        'content'       => $content,
-        'status'        => $status
+        'id'              => $id,
+        'title'           => $title,
+        'title_color'     => $titleColor,
+        'seo_title'       => $seoTitle,
+        'focus_keyphrase' => $focusKeyphrase,
+        'slug'            => $slug,
+        'category'        => $categorySlug,
+        'categoryLabel'   => $categoryLabel,
+        'author'          => $author,
+        'date'            => $dateDisplay,
+        'cover'           => $cover,
+        'excerpt'         => $excerpt,
+        'content'         => $content,
+        'status'          => $status
     ], 'Artikel berhasil diperbarui.');
 }
 

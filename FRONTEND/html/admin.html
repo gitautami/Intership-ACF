@@ -69,7 +69,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/admin.css?v=20261020_3">
+  <link rel="stylesheet" href="../css/admin.css?v=20261020_desktop_fix_v2">
 </head>
 <body>
 
@@ -739,13 +739,16 @@
             <!-- RIGHT SIDEBAR: GUTENBERG POST & BLOCK SETTINGS -->
             <div class="wp-editor-sidebar-col wp-gb-sidebar" id="wpGutenbergSidebar">
               
-              <!-- Gutenberg Sidebar Tab Switcher (Pos vs Blok) -->
+              <!-- Gutenberg Sidebar Tab Switcher (Pos vs Blok vs SEO) -->
               <div class="wp-gb-sidebar-tabs">
                 <button type="button" class="wp-gb-side-tab active" id="tabGbPost" data-tab-pane="paneGbPost">
                   Pos
                 </button>
                 <button type="button" class="wp-gb-side-tab" id="tabGbBlock" data-tab-pane="paneGbBlock">
                   Blok
+                </button>
+                <button type="button" class="wp-gb-side-tab" id="tabGbSeo" data-tab-pane="paneGbPost" title="Optimasi SEO & Google Search">
+                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #16A34A; margin-right: 4px;"></span>SEO
                 </button>
               </div>
 
@@ -897,7 +900,328 @@
                   </div>
                 </details>
 
-                <!-- Accordion 4: Kutipan (Excerpt) -->
+                <!-- Accordion 4: Yoast SEO & Google Search Appearance -->
+                <details class="wp-gb-accordion wp-gb-accordion-yoast" id="accYoastSeo" open>
+                  <summary class="wp-gb-acc-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span class="yoast-status-badge-dot" id="yoastHeaderScoreDot">🟢</span>
+                      <span style="font-weight: 700; color: #1E293B;">Yoast SEO &amp; Pratinjau Google</span>
+                    </div>
+                    <span class="wp-gb-acc-arrow">▾</span>
+                  </summary>
+                  <div class="wp-gb-acc-content yoast-panel-content">
+                    
+                    <!-- Yoast Subtabs Header (SEO, Keterbacaan, Schema, Sosial) -->
+                    <div class="yoast-subtabs-nav">
+                      <button type="button" class="yoast-subtab-btn active" data-subtab="seo" id="subtabYoastSeo" title="Analisis SEO">
+                        <span class="subtab-dot dot-green" id="subtabDotSeo">●</span>
+                        <span>SEO</span>
+                      </button>
+                      <button type="button" class="yoast-subtab-btn" data-subtab="readability" id="subtabYoastReadability" title="Analisis Keterbacaan Naskah">
+                        <span class="subtab-dot dot-amber" id="subtabDotReadability">●</span>
+                        <span>Keterbacaan</span>
+                      </button>
+                      <button type="button" class="yoast-subtab-btn" data-subtab="schema" id="subtabYoastSchema" title="Metadata Schema.org">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
+                        <span>Schema</span>
+                      </button>
+                      <button type="button" class="yoast-subtab-btn" data-subtab="social" id="subtabYoastSocial" title="Pratinjau Berbagi Sosial (WhatsApp / Facebook)">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+                        <span>Sosial</span>
+                      </button>
+                    </div>
+
+                    <!-- PANE 1: SEO TAB CONTENT -->
+                    <div class="yoast-tab-body active" id="paneYoastSeo">
+                      
+                      <!-- Focus Keyphrase -->
+                      <div class="yoast-field-group">
+                        <div class="yoast-label-row">
+                          <label class="yoast-label" for="yoastFocusKeyphrase">Focus keyphrase</label>
+                          <span class="yoast-help-icon" title="Frasa kunci fokus adalah topik penelusuran utama artikel ini agar mudah ditemukan di Google.">?</span>
+                        </div>
+                        <input type="text" id="yoastFocusKeyphrase" class="wp-input yoast-input" placeholder="Contoh: KH Hasan Abdullah Sahal">
+                        
+                        <div style="display: flex; gap: 8px; margin-top: 6px;">
+                          <button type="button" class="btn-yoast-outline" id="btnGetRelatedKeyphrases">
+                            Dapatkan frasa kunci terkait
+                          </button>
+                        </div>
+                        <!-- Related suggestions dropdown / chips -->
+                        <div id="yoastRelatedChipsWrap" class="yoast-chips-wrap" style="display: none; margin-top: 8px;">
+                          <span style="font-size: 0.72rem; color: #64748B;">Saran frasa kunci (klik untuk memilih):</span>
+                          <div id="yoastRelatedChipsList" class="yoast-chips-list"></div>
+                        </div>
+                      </div>
+
+                      <!-- Search Appearance Card Box -->
+                      <div class="yoast-card-section">
+                        <div class="yoast-section-header" id="headerSearchAppearance">
+                          <span class="yoast-sec-title">Search appearance</span>
+                          <span class="yoast-sec-toggle">▴</span>
+                        </div>
+                        <p class="yoast-sec-desc">Tentukan bagaimana postingan Anda muncul di hasil pencarian Google.</p>
+
+                        <!-- Preview As Toggle: Mobile vs Desktop -->
+                        <div class="yoast-preview-mode-row">
+                          <span class="yoast-preview-mode-label">Preview as:</span>
+                          <label class="yoast-radio-label">
+                            <input type="radio" name="yoastPreviewDevice" value="mobile" checked>
+                            <span>Mobile result</span>
+                          </label>
+                          <label class="yoast-radio-label">
+                            <input type="radio" name="yoastPreviewDevice" value="desktop">
+                            <span>Desktop result</span>
+                          </label>
+                        </div>
+
+                        <!-- LIVE GOOGLE SEARCH SNIPPET CARD -->
+                        <div class="google-snippet-card preview-mobile" id="googleSnippetCard">
+                          
+                          <!-- Google Header Info -->
+                          <div class="google-card-header">
+                            <div class="google-card-brand">
+                              <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF" class="google-favicon">
+                              <div class="google-brand-meta">
+                                <span class="google-brand-name">ACF Eduhub</span>
+                                <span class="google-breadcrumb-url">acf.or.id › kabar › <span id="googlePreviewBreadcrumbSlug">post-slug</span></span>
+                              </div>
+                            </div>
+                            <span class="google-card-menu-dots">⋮</span>
+                          </div>
+
+                          <!-- Clickable Blue Title -->
+                          <h3 class="google-card-title" id="googleSnippetTitle">
+                            Judul Artikel Akan Muncul di Sini - ACF Eduhub
+                          </h3>
+
+                          <!-- Snippet Body (Text + Thumbnail Image) -->
+                          <div class="google-card-body">
+                            <div class="google-card-snippet-text">
+                              <span class="google-snippet-date" id="googleSnippetDate">Sep 24, 2026</span>
+                              <span class="google-snippet-dash"> — </span>
+                              <span id="googleSnippetDesc">Cuplikan deskripsi artikel naskah Anda yang akan menarik pembaca ketika mencari topik ini di Google Search...</span>
+                            </div>
+                            <div class="google-card-thumb-wrap" id="googleThumbWrap">
+                              <img id="googleSnippetThumbImg" src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="Pratinjau Sampul Google" class="google-card-thumb">
+                            </div>
+                          </div>
+
+                        </div>
+
+                        <!-- SEO Title Input with Variables & Progress Bar -->
+                        <div class="yoast-field-group" style="margin-top: 18px;">
+                          <div class="yoast-field-header-flex">
+                            <label class="yoast-label" for="yoastSeoTitle">SEO title</label>
+                            <div class="yoast-field-actions">
+                              <button type="button" class="btn-yoast-pill-action" id="btnGenerateSeoTitle">
+                                <span class="sparkle-icon">✨</span> Generate SEO title
+                              </button>
+                              <button type="button" class="btn-yoast-pill-action" id="btnInsertVarSeoTitle">
+                                Insert variable
+                              </button>
+                            </div>
+                          </div>
+
+                          <!-- Variable Chips -->
+                          <div class="yoast-variable-pills">
+                            <button type="button" class="yoast-var-chip" data-var="%title%">Title</button>
+                            <button type="button" class="yoast-var-chip" data-var="%page%">Page</button>
+                            <button type="button" class="yoast-var-chip" data-var="%sep%">Separator</button>
+                            <button type="button" class="yoast-var-chip" data-var="%sitename%">Site title</button>
+                          </div>
+
+                          <input type="text" id="yoastSeoTitle" class="wp-input yoast-input" placeholder="Masukkan judul khusus untuk Google...">
+                          
+                          <!-- Realtime Progress Bar for SEO Title -->
+                          <div class="yoast-progress-track">
+                            <div class="yoast-progress-fill" id="barSeoTitle"></div>
+                          </div>
+                          <div class="yoast-progress-info">
+                            <span id="txtSeoTitleCount">0 karakter</span>
+                            <span class="yoast-opt-target">Optimal: 45–60 karakter</span>
+                          </div>
+                        </div>
+
+                        <!-- Slug Input Field -->
+                        <div class="yoast-field-group" style="margin-top: 14px;">
+                          <div class="yoast-label-row">
+                            <label class="yoast-label" for="yoastSlug">Slug</label>
+                            <span class="yoast-help-icon" title="Slug adalah bagian akhir URL yang spesifik mengidentifikasi halaman artikel ini.">?</span>
+                          </div>
+                          <input type="text" id="yoastSlug" class="wp-input yoast-input" placeholder="sabar-ikhlas-ridha-pesan-kiai-gontor-di-usia-100-tahun">
+                          <small class="yoast-field-hint">Otomatis diformat menjadi huruf kecil &amp; strip (kebab-case).</small>
+                        </div>
+
+                        <!-- Meta Description Input with Variables & Progress Bar -->
+                        <div class="yoast-field-group" style="margin-top: 14px;">
+                          <div class="yoast-field-header-flex">
+                            <label class="yoast-label" for="yoastMetaDesc">Meta description</label>
+                            <div class="yoast-field-actions">
+                              <button type="button" class="btn-yoast-pill-action" id="btnGenerateMetaDesc">
+                                <span class="sparkle-icon">✨</span> Generate meta description
+                              </button>
+                              <button type="button" class="btn-yoast-pill-action" id="btnInsertVarMetaDesc">
+                                Insert variable
+                              </button>
+                            </div>
+                          </div>
+
+                          <textarea id="yoastMetaDesc" class="wp-textarea yoast-textarea" rows="3" placeholder="Tulis deskripsi meta artikel yang memikat untuk hasil pencarian Google..."></textarea>
+                          
+                          <!-- Realtime Progress Bar for Meta Description -->
+                          <div class="yoast-progress-track">
+                            <div class="yoast-progress-fill" id="barMetaDesc"></div>
+                          </div>
+                          <div class="yoast-progress-info">
+                            <span id="txtMetaDescCount">0 karakter</span>
+                            <span class="yoast-opt-target">Optimal: 120–160 karakter</span>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <!-- SEO Analysis Accordion / Checklist -->
+                      <div class="yoast-card-section" style="margin-top: 14px;">
+                        <div class="yoast-section-header" id="headerSeoAnalysis">
+                          <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="yoast-status-badge-dot" id="dotSeoAnalysis">🟢</span>
+                            <span class="yoast-sec-title">SEO analysis</span>
+                          </div>
+                          <span class="yoast-sec-toggle">▴</span>
+                        </div>
+                        <div id="yoastAnalysisKeyphraseSubtitle" class="yoast-analysis-keyphrase-sub" style="font-size: 0.76rem; color: #64748B; margin-top: -4px; margin-bottom: 10px;">
+                          (Masukkan fokus frasa kunci)
+                        </div>
+
+                        <!-- SEO Checklist Items with Dynamic 🟢 / 🟠 / 🔴 Dots -->
+                        <div class="yoast-checklist" id="yoastSeoChecklist">
+                          <div class="yoast-check-item" id="chkSeoKeyphraseInTitle">
+                            <span class="yoast-item-dot dot-red">●</span>
+                            <span class="yoast-item-text">Frasa kunci pada Judul artikel</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkSeoKeyphraseInSeoTitle">
+                            <span class="yoast-item-dot dot-red">●</span>
+                            <span class="yoast-item-text">Frasa kunci pada SEO title</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkSeoKeyphraseInSlug">
+                            <span class="yoast-item-dot dot-red">●</span>
+                            <span class="yoast-item-text">Frasa kunci pada Slug / URL</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkSeoKeyphraseInMeta">
+                            <span class="yoast-item-dot dot-red">●</span>
+                            <span class="yoast-item-text">Frasa kunci pada Meta description</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkSeoKeyphraseInIntro">
+                            <span class="yoast-item-dot dot-red">●</span>
+                            <span class="yoast-item-text">Frasa kunci pada Paragraf pembuka</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkSeoTitleLength">
+                            <span class="yoast-item-dot dot-amber">●</span>
+                            <span class="yoast-item-text">Panjang Judul SEO optimal (40–60 karakter)</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkSeoMetaLength">
+                            <span class="yoast-item-dot dot-amber">●</span>
+                            <span class="yoast-item-text">Panjang Meta description optimal (120–160 karakter)</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkSeoCoverImage">
+                            <span class="yoast-item-dot dot-red">●</span>
+                            <span class="yoast-item-text">Gambar Unggulan (Cover Image) telah ditetapkan</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkSeoContentLength">
+                            <span class="yoast-item-dot dot-red">●</span>
+                            <span class="yoast-item-text">Panjang naskah (Minimal 300 kata)</span>
+                          </div>
+                        </div>
+
+                        <div class="yoast-footer-action-row" style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #F1F5F9;">
+                          <button type="button" class="btn-yoast-add-keyphrase" id="btnAddRelatedKeyphrase">
+                            + Add related keyphrase
+                          </button>
+                          <span class="yoast-premium-pill">🔒 Premium</span>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- PANE 2: READABILITY TAB CONTENT -->
+                    <div class="yoast-tab-body" id="paneYoastReadability" style="display: none;">
+                      <div class="yoast-card-section">
+                        <div class="yoast-sec-title" style="margin-bottom: 6px;">Analisis Keterbacaan Naskah</div>
+                        <p class="yoast-sec-desc">Memastikan artikel nyaman dibaca oleh khalayak umum dan siswa.</p>
+
+                        <div class="yoast-checklist" id="yoastReadabilityChecklist">
+                          <div class="yoast-check-item" id="chkReadParagraphLength">
+                            <span class="yoast-item-dot dot-green">●</span>
+                            <span class="yoast-item-text">Panjang Paragraf: Tidak ada paragraf yang melebihi batas 150 kata.</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkReadHeadings">
+                            <span class="yoast-item-dot dot-green">●</span>
+                            <span class="yoast-item-text">Distribusi Sub-Judul: Naskah memiliki heading (H2/H3) pemisah topik.</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkReadSentenceLength">
+                            <span class="yoast-item-dot dot-green">●</span>
+                            <span class="yoast-item-text">Panjang Kalimat: Kalimat terstruktur lugas dan komunikatif.</span>
+                          </div>
+                          <div class="yoast-check-item" id="chkReadReadingEase">
+                            <span class="yoast-item-dot dot-green">●</span>
+                            <span class="yoast-item-text">Skor Kemudahan Baca (Flesch Reading Ease): Baik &amp; Jelas.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- PANE 3: SCHEMA TAB CONTENT -->
+                    <div class="yoast-tab-body" id="paneYoastSchema" style="display: none;">
+                      <div class="yoast-card-section">
+                        <div class="yoast-sec-title" style="margin-bottom: 6px;">Metadata Structured Data (Schema.org)</div>
+                        <p class="yoast-sec-desc">Membantu Google memahami bahwa halaman ini adalah artikel berita/pendidikan resmi.</p>
+                        
+                        <div class="yoast-field-group">
+                          <label class="yoast-label">Tipe Halaman (Page type):</label>
+                          <select class="wp-select" id="yoastSchemaPageType" style="font-size: 0.8rem; padding: 6px 8px;">
+                            <option value="Article" selected>Article (Standar)</option>
+                            <option value="NewsArticle">NewsArticle (Berita Resmi)</option>
+                            <option value="EducationalArticle">EducationalArticle (Edukasi &amp; Pembelajaran)</option>
+                          </select>
+                        </div>
+
+                        <div class="yoast-field-group" style="margin-top: 10px;">
+                          <label class="yoast-label">Penerbit (Publisher):</label>
+                          <div style="font-size: 0.82rem; color: #1E293B; font-weight: 600;">ACF Eduhub (Yayasan Abhipraya Cendekia Femina)</div>
+                        </div>
+                        
+                        <div class="yoast-field-group" style="margin-top: 10px;">
+                          <label class="yoast-label">Penulis Terdaftar (Author):</label>
+                          <div id="yoastSchemaAuthorPreview" style="font-size: 0.82rem; color: #7D2280; font-weight: 600;">Tim Redaksi ACF</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- PANE 4: SOCIAL TAB CONTENT -->
+                    <div class="yoast-tab-body" id="paneYoastSocial" style="display: none;">
+                      <div class="yoast-card-section">
+                        <div class="yoast-sec-title" style="margin-bottom: 6px;">Pratinjau Berbagi Sosial (WhatsApp / Facebook)</div>
+                        <p class="yoast-sec-desc">Tampilan cuplikan saat tautan artikel ini dikirim lewat chat atau dibagikan ke media sosial.</p>
+
+                        <!-- Social Media Card Preview -->
+                        <div class="social-preview-card">
+                          <div class="social-card-img-wrap">
+                            <img id="socialPreviewImg" src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="Social Share Preview">
+                          </div>
+                          <div class="social-card-info">
+                            <span class="social-card-domain">ACF.OR.ID</span>
+                            <div class="social-card-title" id="socialPreviewTitle">Judul Artikel ACF Eduhub</div>
+                            <div class="social-card-desc" id="socialPreviewDesc">Deskripsi ringkas cuplikan artikel ketika dibagikan ke WhatsApp dan media sosial...</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </details>
+
+                <!-- Accordion 5: Kutipan (Excerpt) -->
                 <details class="wp-gb-accordion" open>
                   <summary class="wp-gb-acc-header">
                     <span>Kutipan</span>
@@ -1214,7 +1538,7 @@
   <div class="admin-toast-container" id="toastContainer"></div>
 
   <!-- JavaScript Modules -->
-  <script src="../js/api.js?v=20261020_4"></script>
-  <script src="../js/admin.js?v=20261020_4"></script>
+  <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
+  <script src="../js/admin.js?v=20261020_desktop_fix_v2"></script>
 </body>
 </html>

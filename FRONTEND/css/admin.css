@@ -3931,32 +3931,6 @@ body.modal-open {
   line-height: 1.2;
 }
 
-.btn-yoast-add-keyphrase {
-  background: transparent;
-  border: none;
-  color: #475569;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.btn-yoast-add-keyphrase:hover {
-  color: #7D2280;
-}
-
-.yoast-premium-pill {
-  background: #FEF3C7;
-  color: #B45309;
-  border: 1px solid #FCD34D;
-  border-radius: 9999px;
-  padding: 2px 7px;
-  font-size: 0.68rem;
-  font-weight: 700;
-}
 
 /* Social Media Preview Card */
 .social-preview-card {

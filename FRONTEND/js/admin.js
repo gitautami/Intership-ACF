@@ -4217,12 +4217,6 @@
       });
     }
 
-    if (btnAddRelatedKeyphrase) {
-      btnAddRelatedKeyphrase.addEventListener('click', () => {
-        showToast('Fitur multi-keyphrase tersedia di paket Yoast Premium.', 'info');
-      });
-    }
-
     // Sidebar SEO Tab Click Handler (Scroll to Yoast Accordion)
     if (tabGbSeo) {
       tabGbSeo.addEventListener('click', () => {

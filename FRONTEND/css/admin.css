@@ -331,6 +331,37 @@ body {
   transform: scale(1.03);
 }
 
+/* Page Badge in Topbar (Matched with Tulis Artikel button) */
+.admin-page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #7D2280 0%, #E68A00 100%);
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(125, 34, 128, 0.25);
+  letter-spacing: 0.2px;
+  transition: all 0.25s ease;
+}
+
+.admin-page-badge:hover {
+  background: linear-gradient(135deg, #9333EA 0%, #F5A623 100%);
+  box-shadow: 0 6px 16px rgba(125, 34, 128, 0.35);
+  transform: translateY(-1px);
+}
+
+.admin-page-badge svg {
+  stroke: #FFFFFF;
+  fill: none;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 /* Main Dashboard Switcher Navigation */
 .main-dashboard-nav {
   display: flex;
@@ -458,9 +489,30 @@ body {
 }
 
 .btn-outline-action:hover {
-  background: var(--admin-bg);
-  color: var(--admin-navy);
-  border-color: #CBD5E1;
+  background: #FAF5FF;
+  color: #7D2280;
+  border-color: #D8B4FE;
+}
+
+.btn-topbar-web {
+  background: linear-gradient(135deg, #F5A623 0%, #D97706 100%);
+  border: none;
+  color: #FFFFFF !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(245, 166, 35, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-topbar-web:hover {
+  background: linear-gradient(135deg, #FBBF24 0%, #F5A623 100%);
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-topbar-web svg {
+  stroke: #FFFFFF !important;
+  fill: none;
 }
 
 .btn-outline-action svg {
@@ -555,7 +607,7 @@ body {
 }
 
 .btn-create-article {
-  background: linear-gradient(135deg, var(--admin-purple) 0%, var(--admin-purple-dark) 100%);
+  background: linear-gradient(135deg, #7D2280 0%, #E68A00 100%);
   color: #FFFFFF;
   border: none;
   padding: 9px 18px;
@@ -566,13 +618,14 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 12px rgba(125, 34, 128, 0.2);
+  box-shadow: 0 4px 12px rgba(125, 34, 128, 0.25);
   transition: all 0.2s ease;
 }
 
 .btn-create-article:hover {
+  background: linear-gradient(135deg, #9333EA 0%, #F5A623 100%);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(125, 34, 128, 0.3);
+  box-shadow: 0 6px 16px rgba(125, 34, 128, 0.35);
 }
 
 .btn-create-article svg {
@@ -826,52 +879,79 @@ body {
   transition: all 0.2s ease;
 }
 
-/* 1. Filter Kategori: Sentuhan Ungu Logo ACF */
+/* 1. Filter Kategori: Solid Ungu Logo ACF */
 #filterCategoryArticle.select-filter {
-  background: #FAF5FF;
-  border: 1.5px solid #D8B4FE;
-  color: #7D2280;
+  background-color: #7D2280;
+  background-image: linear-gradient(135deg, #7D2280 0%, #5B135E 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, right 12px center;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 34px;
+  border: none;
+  color: #FFFFFF;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(125, 34, 128, 0.25);
 }
 
 #filterCategoryArticle.select-filter:hover {
-  border-color: #7D2280;
-  background: #FFFFFF;
+  background-image: linear-gradient(135deg, #9333EA 0%, #7D2280 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(125, 34, 128, 0.35);
 }
 
 #filterCategoryArticle.select-filter:focus {
-  border-color: #7D2280;
-  box-shadow: 0 0 0 3px rgba(125, 34, 128, 0.15);
-  background: #FFFFFF;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(125, 34, 128, 0.3);
 }
 
-/* 2. Filter Status: Sentuhan Kuning / Gold Logo ACF */
+#filterCategoryArticle.select-filter option {
+  background: #FFFFFF;
+  color: #1E293B;
+  font-weight: 500;
+}
+
+/* 2. Filter Status: Solid Kuning / Gold Logo ACF */
 #filterStatusArticle.select-filter {
-  background: #FFFDF5;
-  border: 1.5px solid #FCD34D;
-  color: #B45309;
+  background-color: #F5A623;
+  background-image: linear-gradient(135deg, #F5A623 0%, #D97706 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, right 12px center;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 34px;
+  border: none;
+  color: #FFFFFF;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(245, 166, 35, 0.25);
 }
 
 #filterStatusArticle.select-filter:hover {
-  border-color: #F5A623;
-  background: #FFFFFF;
+  background-image: linear-gradient(135deg, #FBBF24 0%, #F5A623 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.35);
 }
 
 #filterStatusArticle.select-filter:focus {
-  border-color: #F5A623;
-  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.18);
-  background: #FFFFFF;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.3);
 }
 
-/* 3. Tombol Kelola Kategori di Toolbar: Harmoni Kuning & Ungu Logo ACF */
+#filterStatusArticle.select-filter option {
+  background: #FFFFFF;
+  color: #1E293B;
+  font-weight: 500;
+}
+
+/* 3. Tombol Kelola Kategori di Toolbar: Solid Ungu Logo ACF */
 #btnToolbarManageCategories {
-  background: #FEF3C7;
-  border: 1.5px solid #FCD34D;
-  color: #92400E;
+  background: linear-gradient(135deg, #7D2280 0%, #5B135E 100%);
+  border: none;
+  color: #FFFFFF;
   font-weight: 600;
   border-radius: var(--radius-sm);
-  box-shadow: 0 1px 3px rgba(245, 166, 35, 0.12);
+  padding: 8px 16px;
+  box-shadow: 0 2px 8px rgba(125, 34, 128, 0.25);
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -879,16 +959,15 @@ body {
 }
 
 #btnToolbarManageCategories svg {
-  stroke: #B45309;
+  stroke: #FFFFFF;
   transition: all 0.2s ease;
 }
 
 #btnToolbarManageCategories:hover {
-  background: linear-gradient(135deg, #F5A623 0%, #D97706 100%);
-  border-color: #D97706;
+  background: linear-gradient(135deg, #9333EA 0%, #7D2280 100%);
   color: #FFFFFF;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(245, 166, 35, 0.35);
+  box-shadow: 0 4px 14px rgba(125, 34, 128, 0.35);
 }
 
 #btnToolbarManageCategories:hover svg {
@@ -1012,9 +1091,9 @@ body {
 .btn-action-preview {
   padding: 6px 11px;
   border-radius: var(--radius-sm);
-  border: 1px solid #CBD5E1;
-  background: #F8FAFC;
-  color: #334155;
+  border: 1px solid #FDE68A;
+  background: #FFFDF5;
+  color: #B45309;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
@@ -1025,9 +1104,11 @@ body {
 }
 
 .btn-action-preview:hover {
-  background: #0284C7;
+  background: #F5A623;
   color: #FFFFFF;
-  border-color: #0284C7;
+  border-color: #D97706;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(245, 166, 35, 0.25);
 }
 
 .btn-action-preview svg {
@@ -1041,9 +1122,9 @@ body {
 .btn-action-view {
   padding: 6px 12px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--admin-border);
-  background: #FFFFFF;
-  color: var(--admin-purple);
+  border: 1px solid #D8B4FE;
+  background: #FAF5FF;
+  color: #7D2280;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
@@ -1054,9 +1135,11 @@ body {
 }
 
 .btn-action-view:hover {
-  background: var(--admin-purple);
+  background: #7D2280;
   color: #FFFFFF;
-  border-color: var(--admin-purple);
+  border-color: #7D2280;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(125, 34, 128, 0.25);
 }
 
 .btn-action-view svg {
@@ -1100,6 +1183,11 @@ body {
 #tableArticles th,
 #tableArticles td {
   padding: 12px 14px;
+}
+
+#tableArticles th:last-child,
+#tableArticles td:last-child {
+  text-align: center;
 }
 
 #tableArticles .cell-primary,
@@ -3137,27 +3225,28 @@ body.modal-open {
 }
 
 .btn-sheets-dropdown {
-  background: #ECFDF5;
-  border-color: #A7F3D0;
-  color: #065F46;
+  background: linear-gradient(135deg, #7D2280 0%, #5B135E 100%);
+  border: none;
+  color: #FFFFFF !important;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(125, 34, 128, 0.25);
   transition: all 0.2s ease;
 }
 
 .btn-sheets-dropdown:hover,
 .admin-dropdown-wrap.active .btn-sheets-dropdown {
-  background: #D1FAE5;
-  border-color: #6EE7B7;
-  color: #047857;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+  background: linear-gradient(135deg, #9333EA 0%, #7D2280 100%);
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(125, 34, 128, 0.4);
+  transform: translateY(-1px);
 }
 
 .btn-sheets-dropdown svg {
-  stroke: currentColor;
+  stroke: #FFFFFF !important;
   fill: none;
   transition: transform 0.2s ease;
 }
@@ -3202,9 +3291,9 @@ body.modal-open {
   gap: 7px;
   font-size: 0.72rem;
   font-weight: 700;
-  color: #065F46;
-  background: #ECFDF5;
-  border: 1px solid #D1FAE5;
+  color: #7D2280;
+  background: #FAF5FF;
+  border: 1px solid #E9D5FF;
   border-radius: 6px;
   padding: 6px 10px;
   text-transform: uppercase;
@@ -3216,9 +3305,9 @@ body.modal-open {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #10B981;
+  background: #7D2280;
   display: inline-block;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 0 2px rgba(125, 34, 128, 0.25);
 }
 
 .dropdown-sheet-item {
@@ -3361,59 +3450,87 @@ body.modal-open {
 }
 
 .btn-sheet-header-btn {
-  border-color: #A7F3D0;
-  color: #065F46;
-  background: #ECFDF5;
+  background: linear-gradient(135deg, #7D2280 0%, #5B135E 100%);
+  border: none;
+  color: #FFFFFF !important;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(125, 34, 128, 0.25);
+  transition: all 0.2s ease;
 }
 
 .btn-sheet-header-btn:hover {
-  background: #D1FAE5;
-  border-color: #6EE7B7;
-  color: #047857;
+  background: linear-gradient(135deg, #9333EA 0%, #7D2280 100%);
+  color: #FFFFFF !important;
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(125, 34, 128, 0.4);
+}
+
+.btn-sheet-header-btn svg {
+  stroke: #FFFFFF !important;
+  fill: none;
 }
 
 .btn-kabar-header-btn {
-  border-color: #BAE6FD;
-  color: #0369A1;
-  background: #F0F9FF;
+  background: linear-gradient(135deg, #F5A623 0%, #D97706 100%);
+  border: none;
+  color: #FFFFFF !important;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(245, 166, 35, 0.25);
+  transition: all 0.2s ease;
 }
 
 .btn-kabar-header-btn:hover {
-  background: #E0F2FE;
-  border-color: #7DD3FC;
-  color: #0284C7;
+  background: linear-gradient(135deg, #FBBF24 0%, #F5A623 100%);
+  color: #FFFFFF !important;
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.4);
+}
+
+.btn-kabar-header-btn svg {
+  stroke: #FFFFFF !important;
+  fill: none;
 }
 
 .btn-cat-header-btn {
-  border-color: #FDE68A;
-  color: #B45309;
-  background: #FFFBEB;
+  background: linear-gradient(135deg, #7D2280 0%, #5B135E 100%);
+  border: none;
+  color: #FFFFFF !important;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(125, 34, 128, 0.25);
+  transition: all 0.2s ease;
 }
 
 .btn-cat-header-btn:hover {
-  background: #FEF3C7;
-  border-color: #FCD34D;
-  color: #92400E;
+  background: linear-gradient(135deg, #9333EA 0%, #7D2280 100%);
+  color: #FFFFFF !important;
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(125, 34, 128, 0.4);
+}
+
+.btn-cat-header-btn svg {
+  stroke: #FFFFFF !important;
+  fill: none;
 }
 
 .btn-wp-header-btn {
-  border-color: #C7D2FE;
-  color: #3730A3;
-  background: #EEF2FF;
+  background: linear-gradient(135deg, #F5A623 0%, #D97706 100%);
+  border: none;
+  color: #FFFFFF !important;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(245, 166, 35, 0.25);
+  transition: all 0.2s ease;
 }
 
 .btn-wp-header-btn:hover {
-  background: #E0E7FF;
-  border-color: #A5B4FC;
-  color: #1E40AF;
+  background: linear-gradient(135deg, #FBBF24 0%, #F5A623 100%);
+  color: #FFFFFF !important;
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.4);
+}
+
+.btn-wp-header-btn svg {
+  stroke: #FFFFFF !important;
+  fill: none;
 }
 
 /* Metric Sheet Cards */
@@ -3762,16 +3879,28 @@ body.modal-open {
   transform: translateY(-1px);
 }
 
-.sheet-card-mitra .btn-copy-sheet-link:hover {
+.sheet-card-mitra .btn-copy-sheet-link {
   background: #FAF5FF;
-  border-color: #C084FC;
+  border-color: #D8B4FE;
   color: #7D2280;
 }
 
-.sheet-card-relawan .btn-copy-sheet-link:hover {
-  background: #FFFBEB;
-  border-color: #FCD34D;
+.sheet-card-mitra .btn-copy-sheet-link:hover {
+  background: #F3E8FF;
+  border-color: #7D2280;
+  color: #5B135E;
+}
+
+.sheet-card-relawan .btn-copy-sheet-link {
+  background: #FFFDF5;
+  border-color: #FDE68A;
   color: #B45309;
+}
+
+.sheet-card-relawan .btn-copy-sheet-link:hover {
+  background: #FEF3C7;
+  border-color: #F5A623;
+  color: #78350F;
 }
 
 /* ===================================================
@@ -4449,16 +4578,18 @@ body.modal-open {
   font-size: 0.82rem;
   font-weight: 600;
   color: #FFFFFF;
-  background: var(--admin-purple);
-  border: 1px solid var(--admin-purple);
+  background: linear-gradient(135deg, #7D2280 0%, #E68A00 100%);
+  border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(125, 34, 128, 0.25);
 }
 
 .btn-preview-direct-edit:hover {
-  background: var(--admin-purple-dark);
-  border-color: var(--admin-purple-dark);
+  background: linear-gradient(135deg, #9333EA 0%, #F5A623 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(125, 34, 128, 0.35);
 }
 
 .article-preview-modal-body {

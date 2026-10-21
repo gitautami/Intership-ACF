@@ -1127,7 +1127,7 @@
           <td>
             <span class="status-badge ${statusBadgeClass}">${statusBadgeText}</span>
           </td>
-          <td style="text-align: right; white-space: nowrap;">
+          <td style="text-align: center; white-space: nowrap;">
             <button type="button" class="btn-action-preview btn-preview-article" data-id="${art.id}" style="margin-right: 6px;" title="Lihat preview tampilan artikel">
               <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               <span>Preview</span>

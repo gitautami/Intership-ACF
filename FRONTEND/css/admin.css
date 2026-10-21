@@ -587,6 +587,33 @@ body {
   flex-wrap: wrap;
 }
 
+/* Samakan ukuran kotak seluruh tombol aksi di header (Spreadsheet, Kabar, Kategori, WordPress, Tulis Artikel) */
+.header-action-buttons .btn-outline-action,
+.header-action-buttons .btn-create-article {
+  height: 42px;
+  min-height: 42px;
+  width: 230px;
+  min-width: 230px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  line-height: 1;
+  box-sizing: border-box;
+  border-radius: var(--radius-sm, 8px);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.header-action-buttons svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
 .btn-sync {
   background: var(--admin-purple);
   color: #FFFFFF;
@@ -610,14 +637,9 @@ body {
   background: linear-gradient(135deg, #7D2280 0%, #E68A00 100%);
   color: #FFFFFF;
   border: none;
-  padding: 9px 18px;
-  border-radius: var(--radius-sm);
-  font-size: 0.88rem;
+  font-size: 0.83rem;
   font-weight: 600;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
   box-shadow: 0 4px 12px rgba(125, 34, 128, 0.25);
   transition: all 0.2s ease;
 }

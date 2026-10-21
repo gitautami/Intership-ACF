@@ -3137,9 +3137,9 @@ body.modal-open {
 }
 
 .btn-sheets-dropdown {
-  background: #FFFFFF;
-  border-color: #CBD5E1;
-  color: #1E293B;
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+  color: #065F46;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -3148,22 +3148,34 @@ body.modal-open {
   transition: all 0.2s ease;
 }
 
-.btn-sheets-dropdown:hover {
-  border-color: #7D2280;
-  color: #7D2280;
-  background: #FAF5FF;
+.btn-sheets-dropdown:hover,
+.admin-dropdown-wrap.active .btn-sheets-dropdown {
+  background: #D1FAE5;
+  border-color: #6EE7B7;
+  color: #047857;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.btn-sheets-dropdown svg {
+  stroke: currentColor;
+  fill: none;
+  transition: transform 0.2s ease;
+}
+
+.admin-dropdown-wrap.active .sheets-dropdown-chevron {
+  transform: rotate(180deg);
 }
 
 .admin-dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 280px;
+  min-width: 290px;
   background: #FFFFFF;
-  border: 1px solid var(--admin-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-float);
-  padding: 8px;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md, 12px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  padding: 10px;
   z-index: 1000;
   display: none;
   animation: dropdownFadeIn 0.2s ease-out;
@@ -3185,12 +3197,28 @@ body.modal-open {
 }
 
 .dropdown-header-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--admin-slate-light);
+  color: #065F46;
+  background: #ECFDF5;
+  border: 1px solid #D1FAE5;
+  border-radius: 6px;
+  padding: 6px 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 6px 10px 4px;
+  margin-bottom: 6px;
+}
+
+.sheet-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
 }
 
 .dropdown-sheet-item {
@@ -3198,15 +3226,107 @@ body.modal-open {
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 8px);
   text-decoration: none;
-  color: var(--admin-text-main);
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-.dropdown-sheet-item:hover {
-  background: #F8FAFC;
-  transform: translateX(2px);
+/* Item Mitra: Ungu Logo ACF */
+.sheet-item-mitra {
+  background: #FAF5FF;
+  border: 1px solid #E9D5FF;
+  margin-bottom: 8px;
+}
+
+.sheet-item-mitra .sheet-icon-mitra {
+  background: #F3E8FF;
+  border: 1px solid #D8B4FE;
+  box-shadow: 0 2px 5px rgba(125, 34, 128, 0.1);
+}
+
+.sheet-item-mitra strong {
+  color: #7D2280;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.sheet-item-mitra span {
+  color: #9333EA;
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.sheet-item-mitra svg {
+  stroke: #7D2280;
+  opacity: 0.75;
+  transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
+.sheet-item-mitra:hover {
+  background: #F3E8FF;
+  border-color: #C084FC;
+  transform: translateX(3px);
+  box-shadow: 0 4px 12px rgba(125, 34, 128, 0.12);
+}
+
+.sheet-item-mitra:hover strong {
+  color: #5B135E;
+}
+
+.sheet-item-mitra:hover svg {
+  stroke: #5B135E;
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+/* Item Relawan: Kuning / Emas Logo ACF */
+.sheet-item-relawan {
+  background: #FFFDF5;
+  border: 1px solid #FDE68A;
+}
+
+.sheet-item-relawan .sheet-icon-relawan {
+  background: #FEF3C7;
+  border: 1px solid #FCD34D;
+  box-shadow: 0 2px 5px rgba(245, 166, 35, 0.1);
+}
+
+.sheet-item-relawan strong {
+  color: #B45309;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.sheet-item-relawan span {
+  color: #B45309;
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.sheet-item-relawan svg {
+  stroke: #B45309;
+  opacity: 0.75;
+  transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
+.sheet-item-relawan:hover {
+  background: #FEF3C7;
+  border-color: #FBBF24;
+  transform: translateX(3px);
+  box-shadow: 0 4px 12px rgba(245, 166, 35, 0.15);
+}
+
+.sheet-item-relawan:hover strong {
+  color: #78350F;
+}
+
+.sheet-item-relawan:hover svg {
+  stroke: #78350F;
+  opacity: 1;
+  transform: translate(2px, -2px);
 }
 
 .dropdown-sheet-icon {
@@ -3218,14 +3338,11 @@ body.modal-open {
   justify-content: center;
   font-size: 1rem;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
-.sheet-icon-mitra {
-  background: #F3E8FF;
-}
-
-.sheet-icon-relawan {
-  background: #FEF3C7;
+.dropdown-sheet-item:hover .dropdown-sheet-icon {
+  transform: scale(1.08);
 }
 
 .dropdown-sheet-text {
@@ -3236,26 +3353,11 @@ body.modal-open {
 }
 
 .dropdown-sheet-text strong {
-  font-size: 0.85rem;
-  color: var(--admin-navy);
   line-height: 1.3;
 }
 
 .dropdown-sheet-text span {
-  font-size: 0.74rem;
-  color: var(--admin-slate-light);
-}
-
-.dropdown-sheet-item svg {
-  stroke: var(--admin-slate-light);
-  opacity: 0.7;
-  transition: transform 0.2s ease;
-}
-
-.dropdown-sheet-item:hover svg {
-  stroke: var(--admin-purple);
-  opacity: 1;
-  transform: translate(2px, -2px);
+  margin-top: 2px;
 }
 
 .btn-sheet-header-btn {

@@ -69,7 +69,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/admin.css?v=20261021_button_colors_v10">
+  <link rel="stylesheet" href="../css/admin.css?v=20261021_dropdown_mitra_relawan_v12">
 </head>
 <body>
 
@@ -159,13 +159,16 @@
 
         <div class="admin-dropdown-wrap" id="sheetsDropdownWrap">
           <button type="button" class="btn-outline-action btn-sheets-dropdown" id="btnSheetsDropdown" title="Akses Google Spreadsheet Form Mitra & Relawan" aria-expanded="false">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="#7D2280"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 8h-4.5V9H18v2zm-4.5 2H18v2h-4.5v-2zm-2-4H7V9h4.5v2zm0 2v2H7v-2h4.5zM5 5h14v2H5V5zm0 14v-2h14v2H5z"/></svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
             <span>Spreadsheet Form</span>
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="sheets-dropdown-chevron"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="admin-dropdown-menu" id="sheetsDropdownMenu">
-            <div class="dropdown-header-label">Google Spreadsheet Data</div>
-            <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=178961551#gid=178961551" target="_blank" rel="noopener noreferrer" class="dropdown-sheet-item">
+            <div class="dropdown-header-label">
+              <span class="sheet-indicator-dot"></span>
+              <span>Google Spreadsheet Data</span>
+            </div>
+            <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=178961551#gid=178961551" target="_blank" rel="noopener noreferrer" class="dropdown-sheet-item sheet-item-mitra">
               <span class="dropdown-sheet-icon sheet-icon-mitra">🤝</span>
               <div class="dropdown-sheet-text">
                 <strong>Data Form Jadi Mitra</strong>
@@ -173,7 +176,7 @@
               </div>
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
             </a>
-            <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=551297265#gid=551297265" target="_blank" rel="noopener noreferrer" class="dropdown-sheet-item">
+            <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=551297265#gid=551297265" target="_blank" rel="noopener noreferrer" class="dropdown-sheet-item sheet-item-relawan">
               <span class="dropdown-sheet-icon sheet-icon-relawan">✨</span>
               <div class="dropdown-sheet-text">
                 <strong>Data Form Jadi Relawan</strong>

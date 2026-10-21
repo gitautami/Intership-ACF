@@ -3064,11 +3064,11 @@ body.modal-open {
 }
 
 .sheet-icon-mitra {
-  background: #DCFCE7;
+  background: #F3E8FF;
 }
 
 .sheet-icon-relawan {
-  background: #E0F2FE;
+  background: #FEF3C7;
 }
 
 .dropdown-sheet-text {
@@ -3199,8 +3199,8 @@ body.modal-open {
   margin-bottom: 28px;
   box-shadow: var(--shadow-subtle);
   position: relative;
-  background-image: radial-gradient(circle at top right, rgba(16, 185, 129, 0.04), transparent 40%),
-                    radial-gradient(circle at bottom left, rgba(2, 132, 199, 0.04), transparent 40%);
+  background-image: radial-gradient(circle at top right, rgba(125, 34, 128, 0.05), transparent 45%),
+                    radial-gradient(circle at bottom left, rgba(245, 166, 35, 0.05), transparent 45%);
 }
 
 .spreadsheet-hub-header {
@@ -3226,8 +3226,8 @@ body.modal-open {
   width: 44px;
   height: 44px;
   border-radius: var(--radius-md);
-  background: #ECFDF5;
-  border: 1px solid #D1FAE5;
+  background: #FAF5FF;
+  border: 1px solid #E9D5FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3293,12 +3293,28 @@ body.modal-open {
   transform: translateY(-2px);
 }
 
+/* 1. Jadi Mitra: Tema Ungu Khas Logo ACF (#7D2280) */
+.sheet-card-mitra {
+  background: #FAF5FF;
+  border: 1px solid #E9D5FF;
+}
+
 .sheet-card-mitra:hover {
-  border-color: #86EFAC;
+  background: #FFFFFF;
+  border-color: #A855F7;
+  box-shadow: 0 10px 25px rgba(125, 34, 128, 0.12);
+}
+
+/* 2. Relawan: Tema Kuning / Gold Khas Logo ACF (#F5A623) */
+.sheet-card-relawan {
+  background: #FFFDF5;
+  border: 1px solid #FED7AA;
 }
 
 .sheet-card-relawan:hover {
-  border-color: #7DD3FC;
+  background: #FFFFFF;
+  border-color: #F59E0B;
+  box-shadow: 0 10px 25px rgba(245, 166, 35, 0.15);
 }
 
 .sheet-card-top {
@@ -3320,16 +3336,18 @@ body.modal-open {
   font-weight: 700;
 }
 
+/* Badge Mitra: Ungu */
 .badge-mitra {
-  background: #ECFDF5;
-  color: #065F46;
-  border: 1px solid #A7F3D0;
+  background: #F3E8FF;
+  color: #7D2280;
+  border: 1px solid #D8B4FE;
 }
 
+/* Badge Relawan: Kuning */
 .badge-relawan {
-  background: #F0F9FF;
-  color: #0369A1;
-  border: 1px solid #BAE6FD;
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
 }
 
 .badge-dot {
@@ -3347,6 +3365,16 @@ body.modal-open {
   padding: 2px 8px;
   border-radius: 4px;
   border: 1px solid #E2E8F0;
+}
+
+.sheet-card-mitra .sheet-tab-name {
+  border-color: #E9D5FF;
+  color: #7D2280;
+}
+
+.sheet-card-relawan .sheet-tab-name {
+  border-color: #FED7AA;
+  color: #B45309;
 }
 
 .sheet-card-title {
@@ -3388,24 +3416,27 @@ body.modal-open {
   transition: all 0.2s ease;
 }
 
+/* Tombol Buka Spreadsheet Mitra: Gradien Ungu Logo ACF */
 .btn-sheet-open-mitra {
-  background: linear-gradient(135deg, #0F9D58 0%, #0B8043 100%);
+  background: linear-gradient(135deg, #7D2280 0%, #5B135E 100%);
 }
 
 .btn-sheet-open-mitra:hover {
-  background: linear-gradient(135deg, #10B981 0%, #0F9D58 100%);
+  background: linear-gradient(135deg, #9B389E 0%, #7D2280 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(15, 157, 88, 0.3);
+  box-shadow: 0 4px 14px rgba(125, 34, 128, 0.35);
 }
 
+/* Tombol Buka Spreadsheet Relawan: Gradien Kuning/Emas Logo ACF */
 .btn-sheet-open-relawan {
-  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  background: linear-gradient(135deg, #F5A623 0%, #D97706 100%);
+  color: #FFFFFF;
 }
 
 .btn-sheet-open-relawan:hover {
-  background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
+  background: linear-gradient(135deg, #FBBF24 0%, #F5A623 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.35);
 }
 
 .btn-copy-sheet-link {
@@ -3428,6 +3459,18 @@ body.modal-open {
   border-color: #94A3B8;
   color: var(--admin-navy);
   transform: translateY(-1px);
+}
+
+.sheet-card-mitra .btn-copy-sheet-link:hover {
+  background: #FAF5FF;
+  border-color: #C084FC;
+  color: #7D2280;
+}
+
+.sheet-card-relawan .btn-copy-sheet-link:hover {
+  background: #FFFBEB;
+  border-color: #FCD34D;
+  color: #B45309;
 }
 
 /* ===================================================

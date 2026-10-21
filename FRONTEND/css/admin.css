@@ -3272,6 +3272,48 @@ body.modal-open {
   transform: translateY(-1px);
 }
 
+.btn-kabar-header-btn {
+  border-color: #BAE6FD;
+  color: #0369A1;
+  background: #F0F9FF;
+  font-weight: 600;
+}
+
+.btn-kabar-header-btn:hover {
+  background: #E0F2FE;
+  border-color: #7DD3FC;
+  color: #0284C7;
+  transform: translateY(-1px);
+}
+
+.btn-cat-header-btn {
+  border-color: #FDE68A;
+  color: #B45309;
+  background: #FFFBEB;
+  font-weight: 600;
+}
+
+.btn-cat-header-btn:hover {
+  background: #FEF3C7;
+  border-color: #FCD34D;
+  color: #92400E;
+  transform: translateY(-1px);
+}
+
+.btn-wp-header-btn {
+  border-color: #C7D2FE;
+  color: #3730A3;
+  background: #EEF2FF;
+  font-weight: 600;
+}
+
+.btn-wp-header-btn:hover {
+  background: #E0E7FF;
+  border-color: #A5B4FC;
+  color: #1E40AF;
+  transform: translateY(-1px);
+}
+
 /* Metric Sheet Cards */
 .metric-sheet-card {
   text-decoration: none;

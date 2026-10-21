@@ -378,7 +378,30 @@ body {
 .admin-topbar-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+}
+
+.admin-topbar-actions .admin-dropdown-wrap {
+  display: inline-flex;
+}
+
+/* Samakan ukuran tombol aksi di navbar (Spreadsheet Form, Lihat Web, Keluar) */
+.admin-topbar-actions .btn-outline-action {
+  height: 40px;
+  width: 170px;
+  min-width: 170px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1;
+  box-sizing: border-box;
+  border-radius: var(--radius-sm, 8px);
+  white-space: nowrap;
+  text-decoration: none;
 }
 
 .admin-user-info {
@@ -2883,6 +2906,16 @@ body.modal-open {
   .admin-user-info {
     display: none;
   }
+  .admin-topbar-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .admin-topbar-actions .admin-dropdown-wrap,
+  .admin-topbar-actions .btn-outline-action {
+    width: auto;
+    min-width: 120px;
+    flex: 1 1 auto;
+  }
 }
 
 /* ===================================================
@@ -3076,9 +3109,9 @@ body.modal-open {
 }
 
 .btn-sheets-dropdown:hover {
-  border-color: #0F9D58;
-  color: #0F9D58;
-  background: #F0FDF4;
+  border-color: #7D2280;
+  color: #7D2280;
+  background: #FAF5FF;
 }
 
 .admin-dropdown-menu {

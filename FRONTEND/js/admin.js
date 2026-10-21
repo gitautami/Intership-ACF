@@ -193,6 +193,23 @@
   const categoryListContainer = document.getElementById('categoryListContainer');
   const catModalTotalCount = document.getElementById('catModalTotalCount');
 
+  // Article Preview Modal Elements
+  const articlePreviewModal = document.getElementById('articlePreviewModal');
+  const btnCloseArticlePreview = document.getElementById('btnCloseArticlePreview');
+  const btnCloseArticlePreviewFooter = document.getElementById('btnCloseArticlePreviewFooter');
+  const btnPreviewEditDirect = document.getElementById('btnPreviewEditDirect');
+  const btnPreviewEditDirectFooter = document.getElementById('btnPreviewEditDirectFooter');
+  const previewArticleStatusBadge = document.getElementById('previewArticleStatusBadge');
+  const previewArticleCategory = document.getElementById('previewArticleCategory');
+  const previewArticleAuthor = document.getElementById('previewArticleAuthor');
+  const previewArticleDate = document.getElementById('previewArticleDate');
+  const previewArticleTitle = document.getElementById('previewArticleTitle');
+  const previewArticleExcerpt = document.getElementById('previewArticleExcerpt');
+  const previewArticleCoverWrap = document.getElementById('previewArticleCoverWrap');
+  const previewArticleCoverImg = document.getElementById('previewArticleCoverImg');
+  const previewArticleContent = document.getElementById('previewArticleContent');
+  const previewArticleId = document.getElementById('previewArticleId');
+
   // Article Modal & WordPress Studio Elements
   const articleModal = document.getElementById('articleModal');
   const articleForm = document.getElementById('articleForm');
@@ -1093,8 +1110,8 @@
             <div class="article-thumbnail-cell">
               <img src="${escapeHTML(art.cover || '../assets/logo-acf/LOGO_ACF-removebg-preview.png')}" alt="Cover" class="article-thumb-img" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=200&q=80'">
               <div>
-                <div class="cell-primary" style="font-size: 0.92rem; max-width: 380px; ${art.title_color ? `color: ${escapeHTML(art.title_color)}; font-weight: 700;` : ''}">${escapeHTML(art.title || '-')}</div>
-                <div class="cell-sub" style="max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHTML(art.excerpt || '-')}</div>
+                <div class="cell-primary" style="font-size: 0.92rem; max-width: 250px; ${art.title_color ? `color: ${escapeHTML(art.title_color)}; font-weight: 700;` : ''}">${escapeHTML(art.title || '-')}</div>
+                <div class="cell-sub" style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHTML(art.excerpt || '-')}</div>
               </div>
             </div>
           </td>
@@ -1111,11 +1128,15 @@
             <span class="status-badge ${statusBadgeClass}">${statusBadgeText}</span>
           </td>
           <td style="text-align: right; white-space: nowrap;">
-            <button type="button" class="btn-action-view btn-edit-article" data-id="${art.id}" style="margin-right: 6px;">
+            <button type="button" class="btn-action-preview btn-preview-article" data-id="${art.id}" style="margin-right: 6px;" title="Lihat preview tampilan artikel">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>Preview</span>
+            </button>
+            <button type="button" class="btn-action-view btn-edit-article" data-id="${art.id}" style="margin-right: 6px;" title="Edit artikel ini">
               <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               <span>Edit</span>
             </button>
-            <button type="button" class="btn-action-delete btn-delete-article" data-id="${art.id}">
+            <button type="button" class="btn-action-delete btn-delete-article" data-id="${art.id}" title="Hapus artikel">
               <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
               <span>Hapus</span>
             </button>
@@ -1655,6 +1676,111 @@
       updateBodyScrollLock();
       switchYoastSubtab('seo');
       setTimeout(updateToolbarState, 100);
+    }
+  }
+
+  /* ===================================================
+     ARTICLE PREVIEW MODAL LOGIC
+     =================================================== */
+  let currentPreviewArticleId = null;
+
+  function openPreviewArticleModal(id) {
+    const art = dataArticles.find(a => String(a.id) === String(id));
+    if (!art) {
+      showToast('Data artikel tidak ditemukan.', 'error');
+      return;
+    }
+
+    currentPreviewArticleId = art.id;
+
+    // Status Badge
+    const isDraft = (art.status === 'Draf');
+    if (previewArticleStatusBadge) {
+      previewArticleStatusBadge.textContent = isDraft ? 'Draf' : 'Terpublikasi';
+      previewArticleStatusBadge.className = isDraft 
+        ? 'preview-badge-status preview-status-draf' 
+        : 'preview-badge-status preview-status-terbit';
+    }
+
+    // Category
+    if (previewArticleCategory) {
+      previewArticleCategory.textContent = art.categoryLabel || getCategoryLabel(art.category);
+    }
+
+    // Author & Date
+    if (previewArticleAuthor) {
+      previewArticleAuthor.textContent = art.author || 'Tim Redaksi ACF';
+    }
+    if (previewArticleDate) {
+      previewArticleDate.textContent = art.date || '-';
+    }
+
+    // Title & Color
+    if (previewArticleTitle) {
+      previewArticleTitle.textContent = art.title || 'Tanpa Judul';
+      if (art.title_color) {
+        previewArticleTitle.style.color = art.title_color;
+      } else {
+        previewArticleTitle.style.color = '';
+      }
+    }
+
+    // Excerpt
+    if (previewArticleExcerpt) {
+      if (art.excerpt && art.excerpt.trim()) {
+        previewArticleExcerpt.textContent = art.excerpt.trim();
+        previewArticleExcerpt.style.display = 'block';
+      } else {
+        previewArticleExcerpt.style.display = 'none';
+      }
+    }
+
+    // Cover Image
+    if (previewArticleCoverImg && previewArticleCoverWrap) {
+      const coverUrl = (art.cover || '').trim();
+      if (coverUrl) {
+        previewArticleCoverImg.src = coverUrl;
+        previewArticleCoverWrap.style.display = 'block';
+      } else {
+        previewArticleCoverWrap.style.display = 'none';
+      }
+    }
+
+    // Prose / Full Content
+    if (previewArticleContent) {
+      let contentHtml = (art.content && art.content.trim()) ? art.content : '';
+      if (!contentHtml && art.excerpt && art.excerpt.trim()) {
+        contentHtml = `<p>${escapeHTML(art.excerpt)}</p>`;
+      }
+      if (!contentHtml) {
+        contentHtml = '<p style="color: #94A3B8; font-style: italic;">Belum ada isi konten artikel yang ditulis.</p>';
+      }
+      previewArticleContent.innerHTML = contentHtml;
+    }
+
+    // Article ID
+    if (previewArticleId) {
+      previewArticleId.textContent = art.id || '-';
+    }
+
+    if (articlePreviewModal) {
+      articlePreviewModal.classList.add('show');
+      updateBodyScrollLock();
+    }
+  }
+
+  function closePreviewArticleModal() {
+    if (articlePreviewModal) {
+      articlePreviewModal.classList.remove('show');
+      updateBodyScrollLock();
+    }
+  }
+
+  function handlePreviewEditDirect() {
+    if (currentPreviewArticleId) {
+      const targetId = currentPreviewArticleId;
+      closePreviewArticleModal();
+      openEditArticleModal(targetId);
     }
   }
 
@@ -4435,6 +4561,14 @@
         return;
       }
 
+      // 1.5. Preview Article Button
+      const btnPreview = e.target.closest('.btn-preview-article');
+      if (btnPreview) {
+        const id = btnPreview.getAttribute('data-id');
+        if (id) openPreviewArticleModal(id);
+        return;
+      }
+
       // 2. Edit Article Button
       const btnEdit = e.target.closest('.btn-edit-article');
       if (btnEdit) {
@@ -4469,6 +4603,26 @@
         if (e.target === detailModal) closeDetailModal();
       });
     }
+
+    // Close & Actions for Article Preview Modal
+    if (btnCloseArticlePreview) btnCloseArticlePreview.addEventListener('click', closePreviewArticleModal);
+    if (btnCloseArticlePreviewFooter) btnCloseArticlePreviewFooter.addEventListener('click', closePreviewArticleModal);
+    if (btnPreviewEditDirect) btnPreviewEditDirect.addEventListener('click', handlePreviewEditDirect);
+    if (btnPreviewEditDirectFooter) btnPreviewEditDirectFooter.addEventListener('click', handlePreviewEditDirect);
+    if (articlePreviewModal) {
+      articlePreviewModal.addEventListener('click', (e) => {
+        if (e.target === articlePreviewModal) closePreviewArticleModal();
+      });
+    }
+
+    // Keyboard Shortcut (ESC to close preview modal)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        if (articlePreviewModal && articlePreviewModal.classList.contains('show')) {
+          closePreviewArticleModal();
+        }
+      }
+    });
 
     // Export CSV
     if (btnExportCSV) {

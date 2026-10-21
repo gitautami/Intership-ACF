@@ -368,6 +368,30 @@
     renderAll();
   }
 
+  function showLoginSuccessAlert(adminName) {
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'Login Berhasil!',
+        html: `Selamat datang kembali di <b>Portal Admin ACF Eduhub</b>, <strong style="color: #7D2280;">${escapeHTML(adminName)}</strong>!<br><span style="font-size: 0.88rem; color: #64748B;">Sesi admin Anda telah aktif.</span>`,
+        icon: 'success',
+        timer: 1800,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Masuk ke Dashboard',
+        customClass: {
+          popup: 'acf-swal-popup',
+          confirmButton: 'btn-swal-confirm'
+        },
+        buttonsStyling: false
+      }).then(() => {
+        showDashboard();
+      });
+    } else {
+      showToast('Selamat datang, ' + adminName + '!', 'success');
+      showDashboard();
+    }
+  }
+
   async function handleLogin(e) {
     if (e) {
       e.preventDefault();
@@ -382,8 +406,7 @@
         if (res && res.success) {
           sessionStorage.setItem('acf_admin_session', 'active');
           if (loginAlert) loginAlert.classList.remove('show');
-          showToast('Selamat datang, ' + (res.data?.user?.full_name || 'Administrator') + '!', 'success');
-          showDashboard();
+          showLoginSuccessAlert(res.data?.user?.full_name || 'Administrator');
           return;
         }
       }
@@ -394,11 +417,23 @@
     if (user === ADMIN_CREDENTIALS.username && pass === ADMIN_CREDENTIALS.password) {
       sessionStorage.setItem('acf_admin_session', 'active');
       if (loginAlert) loginAlert.classList.remove('show');
-      showToast('Selamat datang, Administrator!', 'success');
-      showDashboard();
+      showLoginSuccessAlert('Administrator');
     } else {
       if (loginAlertText) loginAlertText.textContent = 'Username atau kata sandi tidak valid!';
       if (loginAlert) loginAlert.classList.add('show');
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: 'Login Gagal',
+          html: 'Username atau kata sandi yang Anda masukkan tidak valid.<br><span style="font-size: 0.88rem; color: #64748B;">Pastikan data login Anda sudah benar.</span>',
+          icon: 'error',
+          confirmButtonText: 'Coba Lagi',
+          customClass: {
+            popup: 'acf-swal-popup',
+            confirmButton: 'btn-swal-gold'
+          },
+          buttonsStyling: false
+        });
+      }
       if (adminPassword) {
         adminPassword.value = '';
         adminPassword.focus();
@@ -407,18 +442,58 @@
   }
 
   async function handleLogout() {
-    if (confirm('Apakah Anda yakin ingin keluar dari Portal Admin?')) {
-      try {
-        if (window.ACF_API && window.ACF_API.auth) {
-          await window.ACF_API.auth.logout();
+    if (typeof Swal !== 'undefined') {
+      const result = await Swal.fire({
+        title: 'Konfirmasi Keluar',
+        html: 'Apakah Anda yakin ingin mengakhiri sesi dan keluar dari <b>Portal Admin ACF Eduhub</b>?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Keluar',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        customClass: {
+          popup: 'acf-swal-popup',
+          confirmButton: 'btn-swal-confirm',
+          cancelButton: 'btn-swal-cancel'
+        },
+        buttonsStyling: false
+      });
+
+      if (!result.isConfirmed) {
+        return;
+      }
+    } else {
+      if (!confirm('Apakah Anda yakin ingin keluar dari Portal Admin?')) {
+        return;
+      }
+    }
+
+    try {
+      if (window.ACF_API && window.ACF_API.auth) {
+        await window.ACF_API.auth.logout();
+      }
+    } catch (_) {}
+
+    sessionStorage.removeItem('acf_admin_session');
+    if (adminUsername) adminUsername.value = '';
+    if (adminPassword) adminPassword.value = '';
+    if (loginAlert) loginAlert.classList.remove('show');
+    showLogin();
+
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'Berhasil Keluar',
+        html: 'Anda telah keluar dari sesi admin dengan aman.<br><span style="font-size: 0.88rem; color: #64748B;">Terima kasih atas dedikasi Anda di ACF Eduhub!</span>',
+        icon: 'success',
+        timer: 1800,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        customClass: {
+          popup: 'acf-swal-popup'
         }
-      } catch (_) {}
-      sessionStorage.removeItem('acf_admin_session');
-      adminUsername.value = '';
-      adminPassword.value = '';
-      loginAlert.classList.remove('show');
+      });
+    } else {
       showToast('Anda telah keluar dari sesi admin.', 'info');
-      showLogin();
     }
   }
 

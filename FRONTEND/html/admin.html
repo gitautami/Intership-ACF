@@ -69,7 +69,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/admin.css?v=20261021_center_aksi_v16">
+  <link rel="stylesheet" href="../css/admin.css?v=20261021_swal_acf_v18">
 </head>
 <body>
 
@@ -1613,7 +1613,13 @@
   <div class="admin-toast-container" id="toastContainer"></div>
 
   <!-- JavaScript Modules -->
+  <script src="../js/sweetalert2.all.min.js"></script>
+  <script>
+    if (typeof Swal === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"><\/script>');
+    }
+  </script>
   <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
-  <script src="../js/admin.js?v=20261021_center_aksi_v4"></script>
+  <script src="../js/admin.js?v=20261021_swal_auth_v6"></script>
 </body>
 </html>

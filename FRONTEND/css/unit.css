@@ -3326,7 +3326,7 @@ a.sj-school-location:hover svg.sj-loc-pin {
   height: 20px;
 }
 
-/* Modal Body - Tampilan Brosur Lebih Besar & Bebas Toolbar Browser */
+/* Modal Body - Viewer PDF Asli Langsung di Dalam Modal */
 .sj-brosur-body {
   position: relative;
   flex: 1;
@@ -3336,183 +3336,26 @@ a.sj-school-location:hover svg.sj-loc-pin {
   overflow: hidden;
 }
 
-.sj-brosur-scroll-stage {
+.sj-brosur-pdf-container {
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 24px 20px;
+  flex: 1;
+  min-height: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  scroll-behavior: smooth;
-}
-
-/* Custom Scrollbar */
-.sj-brosur-scroll-stage::-webkit-scrollbar {
-  width: 8px;
-}
-
-.sj-brosur-scroll-stage::-webkit-scrollbar-track {
-  background: rgba(20, 8, 34, 0.8);
-}
-
-.sj-brosur-scroll-stage::-webkit-scrollbar-thumb {
-  background: rgba(245, 166, 35, 0.4);
-  border-radius: 4px;
-}
-
-.sj-brosur-scroll-stage::-webkit-scrollbar-thumb:hover {
-  background: rgba(245, 166, 35, 0.7);
-}
-
-.sj-brosur-pages-wrap {
-  width: 100%;
-  max-width: 1160px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-}
-
-.sj-brosur-page-item {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sj-brosur-page-label {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 12px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #E2E8F0;
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-.sj-brosur-page-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 14px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.2);
-  background: #FFFFFF;
-}
-
-/* ==========================================================================
-   PENDING NOTICE MODAL (SEKOLAH TANPA PDF)
-   ========================================================================== */
-.sj-pending-dialog {
-  max-width: 480px;
-  height: auto;
-  max-height: 90vh;
-  padding: 32px 28px;
-  border-radius: 20px;
-  background: #180B26;
-  border: 1.5px solid rgba(125, 34, 128, 0.4);
-}
-
-.sj-pending-content {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  background: #140822;
 }
 
-.sj-pending-close {
-  position: absolute;
-  top: -12px;
-  right: -8px;
-}
-
-.sj-pending-icon-wrap {
-  width: 62px;
-  height: 62px;
-  border-radius: 16px;
-  background: rgba(125, 34, 128, 0.2);
-  border: 1px solid rgba(125, 34, 128, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #F5A623;
-  margin-bottom: 16px;
-}
-
-.sj-pending-icon-wrap svg {
-  width: 30px;
-  height: 30px;
-}
-
-.sj-pending-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 6px;
-  background: rgba(245, 166, 35, 0.15);
-  border: 1px solid rgba(245, 166, 35, 0.3);
-  color: #F5A623;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.sj-pending-title {
-  margin: 0 0 10px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #FFFFFF;
-}
-
-.sj-pending-title span {
-  color: #F5A623;
-}
-
-.sj-pending-desc {
-  margin: 0 0 24px;
-  font-size: 0.88rem;
-  color: #94A3B8;
-  line-height: 1.6;
-}
-
-.sj-pending-actions {
+.sj-brosur-pdf-frame {
   width: 100%;
+  height: 100%;
+  min-height: 100%;
+  border: none;
+  display: block;
+  background: #140822;
 }
 
-.sj-pending-wa-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 12px 20px;
-  background: #25D366;
-  color: #FFFFFF !important;
-  font-size: 0.92rem;
-  font-weight: 700;
-  border-radius: 12px;
-  text-decoration: none;
-  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
-  transition: all 0.2s ease;
-}
 
-.sj-pending-wa-btn:hover {
-  background: #20BD5A;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
-}
-
-.sj-pending-wa-btn svg {
-  width: 20px;
-  height: 20px;
-}
 
 /* ==========================================================================
    RESPONSIVE STYLES FOR BROSUR MODAL

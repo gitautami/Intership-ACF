@@ -134,8 +134,8 @@ function initInfiniteGallerySlider(config) {
     if (!dotsContainer) return;
     const dots = dotsContainer.querySelectorAll('.sj-gallery-dot');
     const realIndex = ((currentIndex % realCount) + realCount) % realCount;
-    const activeDotIndex = realCount <= 10 
-      ? realIndex 
+    const activeDotIndex = realCount <= 10
+      ? realIndex
       : Math.min(maxDots - 1, Math.floor((realIndex / realCount) * maxDots));
 
     dots.forEach((dot, idx) => {

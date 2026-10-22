@@ -1,7 +1,7 @@
 /**
  * ACF EDUHUB — Unit Pendidikan Interactions
  */
-document.addEventListener('DOMContentLoaded', () => {
+function initUnitPage() {
   // Smooth jump to hash if present
   if (window.location.hash) {
     const target = document.querySelector(window.location.hash);
@@ -45,7 +45,16 @@ document.addEventListener('DOMContentLoaded', () => {
     modalPrevId: 'sdsLightboxPrev',
     modalNextId: 'sdsLightboxNext'
   });
-});
+
+  // 3. Initialize Galeri / Brosur Sekolah Juara Modal
+  initSekolahJuaraBrosurModal();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initUnitPage);
+} else {
+  initUnitPage();
+}
 
 /**
  * Reusable Infinite Loop Carousel & Lightbox for Unit Pendidikan Galleries
@@ -353,3 +362,154 @@ function initInfiniteGallerySlider(config) {
     }, { passive: true });
   }
 }
+
+/**
+ * Interactive Brochure Viewer Modal for Sekolah Juara
+ */
+function initSekolahJuaraBrosurModal() {
+  const modal = document.getElementById('sjBrosurModal');
+  if (!modal) return;
+
+  const backdrop = document.getElementById('sjBrosurBackdrop');
+  const closeBtn = document.getElementById('sjBrosurCloseBtn');
+  const downloadBtn = document.getElementById('sjBrosurDownloadBtn');
+  const titleEl = document.getElementById('sjBrosurTitle');
+  const subtitleEl = document.getElementById('sjBrosurSubtitle');
+  const pagesWrap = document.getElementById('sjBrosurPagesWrap');
+  const scrollStage = document.getElementById('sjBrosurScrollStage');
+
+  // Pending Modal elements
+  const pendingModal = document.getElementById('sjBrosurPendingModal');
+  const pendingBackdrop = document.getElementById('sjBrosurPendingBackdrop');
+  const pendingCloseBtn = document.getElementById('sjBrosurPendingClose');
+  const pendingSchoolName = document.getElementById('sjBrosurPendingSchool');
+  const pendingWaBtn = document.getElementById('sjBrosurPendingWa');
+
+  function openBrosur(btn) {
+    const rawImages = btn.getAttribute('data-brosur-images');
+    const fileUrl = btn.getAttribute('data-brosur-file');
+    const fileName = btn.getAttribute('data-brosur-name') || 'Brosur Sekolah Juara.pdf';
+    const schoolName = btn.getAttribute('data-school-name') || 'Sekolah Juara';
+    const location = btn.getAttribute('data-school-location') || '';
+    const year = btn.getAttribute('data-brosur-year') || '2027/2028';
+
+    if (!fileUrl && !rawImages) {
+      // Pending modal for schools without PDF yet
+      if (pendingModal) {
+        if (pendingSchoolName) pendingSchoolName.textContent = schoolName;
+        const waLink = btn.getAttribute('data-school-wa') || 'https://wa.me/6285179797661';
+        if (pendingWaBtn) {
+          pendingWaBtn.setAttribute('href', waLink);
+          pendingWaBtn.setAttribute('title', `Hubungi Panitia PPDB ${schoolName} via WhatsApp`);
+        }
+        pendingModal.classList.add('active');
+        pendingModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      return;
+    }
+
+    if (titleEl) titleEl.textContent = `Brosur PPDB ${schoolName}`;
+    if (subtitleEl) subtitleEl.textContent = `${location ? location + ' • ' : ''}Tahun Ajaran ${year} — Unit Pendidikan ACF Eduhub`;
+
+    // Fitur Download berupa Button
+    if (downloadBtn && fileUrl) {
+      downloadBtn.setAttribute('href', fileUrl);
+      downloadBtn.setAttribute('download', fileName);
+      downloadBtn.setAttribute('title', `Unduh Dokumen Brosur PDF (${schoolName})`);
+    }
+
+    // Render Halaman Brosur Lebih Besar & Bebas Toolbar Browser
+    if (pagesWrap) {
+      pagesWrap.innerHTML = '';
+      let images = [];
+      if (rawImages) {
+        try {
+          images = JSON.parse(rawImages);
+        } catch (e) {
+          images = [];
+        }
+      }
+
+      if (images && images.length > 0) {
+        images.forEach((imgSrc, idx) => {
+          const item = document.createElement('div');
+          item.className = 'sj-brosur-page-item';
+
+          const label = document.createElement('div');
+          label.className = 'sj-brosur-page-label';
+          label.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>Halaman ${idx + 1} dari ${images.length}</span>`;
+
+          const img = document.createElement('img');
+          img.src = imgSrc;
+          img.alt = `Brosur ${schoolName} Halaman ${idx + 1}`;
+          img.className = 'sj-brosur-page-img';
+          img.loading = 'lazy';
+
+          item.appendChild(label);
+          item.appendChild(img);
+          pagesWrap.appendChild(item);
+        });
+      } else if (fileUrl) {
+        // Fallback langsung ke PDF
+        pagesWrap.innerHTML = `<iframe src="${fileUrl}#toolbar=0&navpanes=0&view=FitH" class="sj-brosur-page-img" style="width:100%;height:80vh;border:none;" title="Dokumen Brosur ${schoolName}"></iframe>`;
+      }
+    }
+
+    if (scrollStage) {
+      scrollStage.scrollTop = 0;
+    }
+
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeBrosur() {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    if (pagesWrap) {
+      pagesWrap.innerHTML = '';
+    }
+    document.body.style.overflow = '';
+  }
+
+  function closePending() {
+    if (pendingModal) {
+      pendingModal.classList.remove('active');
+      pendingModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Bind click handlers to all card brochure buttons
+  const brosurButtons = document.querySelectorAll('.sj-btn-brosur');
+  brosurButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openBrosur(btn);
+    });
+  });
+
+  // Close triggers
+  if (closeBtn) closeBtn.addEventListener('click', closeBrosur);
+  if (backdrop) backdrop.addEventListener('click', closeBrosur);
+
+  if (pendingCloseBtn) pendingCloseBtn.addEventListener('click', closePending);
+  if (pendingBackdrop) pendingBackdrop.addEventListener('click', closePending);
+
+  // Keyboard navigation (Esc to close)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (modal.classList.contains('active')) closeBrosur();
+      if (pendingModal && pendingModal.classList.contains('active')) closePending();
+    }
+  });
+
+  // Expose global methods for inline or direct callers
+  window.openSekolahJuaraBrosur = openBrosur;
+  window.closeSekolahJuaraBrosur = closeBrosur;
+  window.closeSekolahJuaraPending = closePending;
+}
+
+

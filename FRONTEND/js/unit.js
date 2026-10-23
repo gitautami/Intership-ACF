@@ -399,11 +399,12 @@ function initSekolahJuaraBrosurModal() {
       downloadBtn.setAttribute('title', `Unduh Dokumen Brosur PDF (${schoolName})`);
     }
 
-    // Embed Dokumen PDF Asli langsung ke dalam modal (tanpa pemisah halaman)
+    // Embed Dokumen PDF Asli langsung ke dalam modal
     if (pagesWrap) {
+      const safeUrl = encodeURI(fileUrl);
       pagesWrap.innerHTML = `
         <iframe 
-          src="${fileUrl}#view=FitH" 
+          src="${safeUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH" 
           class="sj-brosur-pdf-frame" 
           title="Dokumen PDF Brosur ${schoolName}">
         </iframe>

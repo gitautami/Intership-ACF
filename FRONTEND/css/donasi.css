@@ -546,12 +546,12 @@
 .btn-wa-confirm-global {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   background: #25D366;
   color: #FFFFFF !important;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  padding: 7px 16px;
+  padding: 8px 18px;
   border-radius: 9999px;
   text-decoration: none;
   box-shadow: 0 3px 10px rgba(37, 211, 102, 0.28);
@@ -564,8 +564,12 @@
   box-shadow: 0 5px 14px rgba(37, 211, 102, 0.4);
 }
 
+.btn-wa-confirm-global .btn-wa-icon,
 .btn-wa-confirm-global svg {
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
+  display: block;
 }
 
 @media (max-width: 900px) {

@@ -585,13 +585,21 @@
   }
 }
 
-.btn-modal-wa svg {
-  width: 22px;
-  height: 22px;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  fill: none;
+.btn-modal-wa svg,
+.btn-modal-wa img,
+.btn-modal-wa .modal-wa-icon {
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
+  display: block;
+}
+
+.form-contact-pill img,
+.form-contact-pill .pill-wa-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: block;
 }
 
 .btn-modal-wa:hover {

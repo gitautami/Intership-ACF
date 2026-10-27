@@ -404,16 +404,7 @@
             </div>
           </div>
 
-          <div class="metric-card metric-green">
-            <div class="metric-icon-wrap">
-              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </div>
-            <div class="metric-info">
-              <span class="metric-label">Status Integrasi</span>
-              <span class="metric-value" style="font-size: 1.2rem; color: #16A34A;">Live Connected</span>
-              <span class="metric-meta">Sinkron Google Sheets</span>
-            </div>
-          </div>
+
 
         </div>
 
@@ -553,7 +544,7 @@
           </div>
 
           <!-- Panel: Data Relawan -->
-          <div class="tab-content-panel" id="tabRelawan" style="display: none;">
+          <div class="tab-content-panel" id="tabRelawan">
             <div class="table-toolbar">
               <div class="search-box-wrap">
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -2092,12 +2083,12 @@
   <!-- ==========================================
        MODAL: DETAIL DATA FORM (MITRA / RELAWAN)
        ========================================== -->
-  <div class="modal-overlay" id="detailModal">
-    <div class="modal-dialog" style="max-width: 680px;">
+  <div class="admin-modal-backdrop" id="detailModal">
+    <div class="admin-modal-box" style="max-width: 680px;">
       <div class="modal-header">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <h3 id="modalTitle" style="font-size: 1.15rem; font-weight: 700; color: #1E293B; margin: 0;">Detail Pendaftaran</h3>
-          <span class="sheet-badge-type badge-mitra" id="modalTypeBadge" style="font-size: 0.75rem;">Mitra Program</span>
+          <h3 class="modal-header-title" id="modalTitle" style="margin: 0;">Detail Pendaftaran</h3>
+          <span class="modal-header-tag" id="modalTypeBadge">Mitra Program</span>
         </div>
         <button type="button" class="modal-close-btn" id="btnModalClose" title="Tutup">
           <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -2106,7 +2097,7 @@
       <div class="modal-body" id="modalBody">
         <!-- Injected via openDetailModal -->
       </div>
-      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid #E2E8F0; background: #FFFFFF;">
+      <div class="modal-footer">
         <button type="button" class="btn-cancel" id="btnModalCloseFooter" style="padding: 9px 18px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; color: #475569;">Tutup</button>
         <div id="modalActions" style="display: flex; gap: 8px;">
           <!-- Injected via JS -->
@@ -2126,7 +2117,7 @@
     }
   </script>
   <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
-  <script src="../js/admin.js?v=20261027_hide_sheets_btn_v3"></script>
+  <script src="../js/admin.js?v=20261027_tab_fix_v5"></script>
 
 
 

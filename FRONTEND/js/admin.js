@@ -730,6 +730,26 @@
         viewDashboardPrograms.classList.remove('active');
       }
       if (sheetsDropdownWrap) sheetsDropdownWrap.style.display = 'inline-flex';
+
+      const allTabPanels = document.querySelectorAll('.tab-content-panel');
+      const curTab = activeTab || 'tabMitra';
+      allTabPanels.forEach(p => {
+        if (p.id === curTab) {
+          p.classList.add('active');
+          p.style.display = 'block';
+        } else {
+          p.classList.remove('active');
+          p.style.display = 'none';
+        }
+      });
+      document.querySelectorAll('.tabs-navigation .tab-btn').forEach(b => {
+        if (b.getAttribute('data-tab') === curTab) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+
       renderTableMitra();
       renderTableRelawan();
       updateMetricCards();
@@ -4976,17 +4996,25 @@
     }
 
     // Tabs Switcher (Forms Dashboard)
-    tabBtns.forEach(btn => {
+    const formTabBtns = document.querySelectorAll('.tabs-navigation .tab-btn');
+    const formTabPanels = document.querySelectorAll('.tab-content-panel');
+    formTabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const targetTab = btn.getAttribute('data-tab');
         activeTab = targetTab;
 
-        tabBtns.forEach(b => b.classList.remove('active'));
-        tabPanels.forEach(p => p.classList.remove('active'));
+        formTabBtns.forEach(b => b.classList.remove('active'));
+        formTabPanels.forEach(p => {
+          p.classList.remove('active');
+          p.style.display = 'none';
+        });
 
         btn.classList.add('active');
         const targetPanel = document.getElementById(targetTab);
-        if (targetPanel) targetPanel.classList.add('active');
+        if (targetPanel) {
+          targetPanel.classList.add('active');
+          targetPanel.style.display = 'block';
+        }
       });
     });
 

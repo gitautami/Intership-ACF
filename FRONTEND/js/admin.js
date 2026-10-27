@@ -225,12 +225,9 @@
   const btnCancelProgramModal = document.getElementById('btnCancelProgramModal');
   const programForm = document.getElementById('programForm');
   const programEditId = document.getElementById('programEditId');
-  const programCategorySelect = document.getElementById('programCategorySelect');
+  const programCategoryInput = document.getElementById('programCategoryInput');
+  const listCategoryOptions = document.getElementById('listCategoryOptions');
   const programDivisi = document.getElementById('programDivisi');
-  const newCategoryFieldsWrap = document.getElementById('newCategoryFieldsWrap');
-  const newCategoryNum = document.getElementById('newCategoryNum');
-  const newCategoryTitle = document.getElementById('newCategoryTitle');
-  const newCategoryDesc = document.getElementById('newCategoryDesc');
   const programTitle = document.getElementById('programTitle');
   const programQuote = document.getElementById('programQuote');
   const programBuktiKapasitas = document.getElementById('programBuktiKapasitas');
@@ -3386,24 +3383,14 @@
       }
     }
 
-    // 2. Populate modal category select
-    if (programCategorySelect) {
-      const currentVal = programCategorySelect.value;
-      programCategorySelect.innerHTML = '';
+    // 2. Populate modal category datalist
+    if (listCategoryOptions) {
+      listCategoryOptions.innerHTML = '';
       categories.forEach(c => {
         const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = `${c.num}. ${c.title}`;
-        programCategorySelect.appendChild(opt);
+        opt.value = c.title;
+        listCategoryOptions.appendChild(opt);
       });
-      const newOpt = document.createElement('option');
-      newOpt.value = '__NEW__';
-      newOpt.textContent = '+ Tambah Kategori Baru...';
-      programCategorySelect.appendChild(newOpt);
-
-      if (currentVal && (categories.some(c => c.id === currentVal) || currentVal === '__NEW__')) {
-        programCategorySelect.value = currentVal;
-      }
     }
   }
 
@@ -3578,15 +3565,6 @@
   function updateProgramLivePreview() {
     if (!programLivePreviewContainer) return;
 
-    let catTitle = '';
-    const selectedCatVal = programCategorySelect?.value;
-    if (selectedCatVal === '__NEW__') {
-      catTitle = newCategoryTitle?.value || 'Kategori Baru';
-    } else {
-      const catMeta = getProgramCategoryMeta(selectedCatVal);
-      catTitle = catMeta.title;
-    }
-
     const progData = {
       title: programTitle?.value.trim() || 'Nama Program Baru',
       divisi: programDivisi?.value.trim() || 'Divisi Penanggung Jawab',
@@ -3612,7 +3590,7 @@
     if (programEditId) programEditId.value = '';
 
     // Reset fields
-    if (programCategorySelect) programCategorySelect.value = 'kategori-1';
+    if (programCategoryInput) programCategoryInput.value = '';
     if (programDivisi) programDivisi.value = '';
     if (programTitle) programTitle.value = '';
     if (programQuote) programQuote.value = '';
@@ -3624,8 +3602,6 @@
     if (programCoverPreviewImg) programCoverPreviewImg.src = '../assets/unit-pendidikan/Sekolah Juara.jpg';
     if (programActionText) programActionText.value = 'Jadi Mitra Program';
     if (programActionLink) programActionLink.value = 'jadi-mitra-program.html';
-
-    if (newCategoryFieldsWrap) newCategoryFieldsWrap.style.display = 'none';
 
     updateProgramLivePreview();
     modal.classList.add('show');
@@ -3643,17 +3619,9 @@
     if (btnSaveProgramText) btnSaveProgramText.textContent = 'Perbarui Program';
     if (programEditId) programEditId.value = prog.id;
 
-    if (programCategorySelect) {
-      if (Array.from(programCategorySelect.options).some(o => o.value === prog.categoryId)) {
-        programCategorySelect.value = prog.categoryId;
-        if (newCategoryFieldsWrap) newCategoryFieldsWrap.style.display = 'none';
-      } else {
-        programCategorySelect.value = '__NEW__';
-        if (newCategoryFieldsWrap) newCategoryFieldsWrap.style.display = 'block';
-        if (newCategoryNum) newCategoryNum.value = prog.categoryNum || '';
-        if (newCategoryTitle) newCategoryTitle.value = prog.categoryTitle || '';
-        if (newCategoryDesc) newCategoryDesc.value = prog.categoryDesc || '';
-      }
+    if (programCategoryInput) {
+      const catMeta = getProgramCategoryMeta(prog.categoryId, prog.categoryTitle);
+      programCategoryInput.value = catMeta.title || prog.categoryTitle || '';
     }
 
     if (programDivisi) programDivisi.value = prog.divisi || '';
@@ -3706,35 +3674,47 @@
       return;
     }
 
-    let categoryId = programCategorySelect?.value;
+    const rawCat = programCategoryInput?.value.trim();
+    if (!rawCat) {
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Kategori Belum Diisi',
+          text: 'Harap masukkan Kategori Induk program.',
+          confirmButtonText: 'OK',
+          customClass: { popup: 'acf-swal-popup', confirmButton: 'btn-swal-confirm' },
+          buttonsStyling: false
+        });
+      } else {
+        alert('Harap isi Kategori Induk.');
+      }
+      return;
+    }
+
+    const cleanedCat = rawCat.replace(/^\d+[\.\-\s]+/, '').trim() || rawCat;
+    const existingCat = DEFAULT_PROGRAM_CATEGORIES.find(c => c.title.toLowerCase() === cleanedCat.toLowerCase()) ||
+                        dataPrograms.find(p => (p.categoryTitle || '').toLowerCase() === cleanedCat.toLowerCase());
+
+    let categoryId = '';
     let categoryNum = 1;
-    let categoryTitle = '';
+    let categoryTitle = cleanedCat;
     let categoryDesc = '';
 
-    if (categoryId === '__NEW__') {
-      const customTitle = newCategoryTitle?.value.trim();
-      if (!customTitle) {
-        if (typeof Swal !== 'undefined') {
-          Swal.fire({
-            icon: 'warning',
-            title: 'Kategori Belum Diisi',
-            text: 'Harap masukkan Judul Kategori Baru.',
-            confirmButtonText: 'OK',
-            customClass: { popup: 'acf-swal-popup', confirmButton: 'btn-swal-confirm' },
-            buttonsStyling: false
-          });
-        }
-        return;
-      }
-      categoryId = 'kategori-' + Date.now();
-      categoryNum = parseInt(newCategoryNum?.value, 10) || (dataPrograms.length + 1);
-      categoryTitle = customTitle;
-      categoryDesc = newCategoryDesc?.value.trim() || '';
+    if (existingCat) {
+      categoryId = existingCat.categoryId || existingCat.id;
+      categoryNum = existingCat.categoryNum || existingCat.num || 1;
+      categoryTitle = existingCat.categoryTitle || existingCat.title || cleanedCat;
+      categoryDesc = existingCat.categoryDesc || existingCat.desc || '';
     } else {
-      const catMeta = getProgramCategoryMeta(categoryId);
-      categoryNum = catMeta.num;
-      categoryTitle = catMeta.title;
-      categoryDesc = catMeta.desc;
+      const slug = cleanedCat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      categoryId = 'kategori-' + (slug || Date.now());
+      const maxNum = Math.max(
+        ...DEFAULT_PROGRAM_CATEGORIES.map(c => c.num || 1),
+        ...dataPrograms.map(p => p.categoryNum || 1),
+        6
+      );
+      categoryNum = maxNum + 1;
+      categoryDesc = '';
     }
 
     const editId = programEditId?.value.trim();
@@ -4010,26 +3990,11 @@
       programForm.addEventListener('submit', handleSaveProgram);
     }
 
-    // Category Select change listener
-    if (programCategorySelect) {
-      programCategorySelect.addEventListener('change', () => {
-        if (newCategoryFieldsWrap) {
-          if (programCategorySelect.value === '__NEW__') {
-            newCategoryFieldsWrap.style.display = 'block';
-          } else {
-            newCategoryFieldsWrap.style.display = 'none';
-          }
-        }
-        updateProgramLivePreview();
-      });
-    }
-
     // Realtime live preview input listeners
     const livePreviewInputEls = [
-      programTitle, programDivisi, programQuote,
+      programCategoryInput, programTitle, programDivisi, programQuote,
       programBuktiKapasitas, programKebutuhanDukungan,
-      programMetric, programCoverUrlInput, programActionText, programActionLink,
-      newCategoryTitle
+      programMetric, programCoverUrlInput, programActionText, programActionLink
     ];
     livePreviewInputEls.forEach(el => {
       if (el) {

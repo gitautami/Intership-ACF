@@ -69,7 +69,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/admin.css?v=20261027_program_mgr_v2">
+  <link rel="stylesheet" href="../css/admin.css?v=20261027_program_mgr_v7">
   <link rel="stylesheet" href="../css/program.css">
 </head>
 <body>
@@ -1770,16 +1770,8 @@
           <!-- Section 1: Kategori & Divisi -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
             <div class="form-group" style="margin: 0;">
-              <label for="programCategorySelect" class="form-label">Kategori Induk <span class="required-star">*</span></label>
-              <select id="programCategorySelect" class="form-control" required>
-                <option value="kategori-1">1. Keberlanjutan Unit Pendidikan</option>
-                <option value="kategori-2">2. Tanggap Bencana & Pemulihan</option>
-                <option value="kategori-3">3. Kesejahteraan Ekosistem Sekolah</option>
-                <option value="kategori-4">4. Kemanusiaan Internasional</option>
-                <option value="kategori-5">5. Forum & Advokasi Pendidikan</option>
-                <option value="kategori-6">6. Kepemimpinan & Manajemen Sekolah</option>
-                <option value="__NEW__">+ Tambah Kategori Baru...</option>
-              </select>
+              <label for="programCategoryInput" class="form-label">Kategori Induk <span class="required-star">*</span></label>
+              <input type="text" id="programCategoryInput" class="form-control" placeholder="Contoh: Keberlanjutan Unit Pendidikan" required>
             </div>
 
             <div class="form-group" style="margin: 0;">
@@ -1792,25 +1784,6 @@
                 <option value="ACF Educare (Donasi Pendidikan)">
                 <option value="Guruverse.ID & ACF Educare (lintas-divisi)">
               </datalist>
-            </div>
-          </div>
-
-          <!-- Dynamic New Category Fields -->
-          <div id="newCategoryFieldsWrap" style="display: none; background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 12px; padding: 14px 16px; margin-bottom: 18px;">
-            <div style="font-weight: 700; color: #7D2280; font-size: 0.88rem; margin-bottom: 8px;">Detail Kategori Baru</div>
-            <div style="display: grid; grid-template-columns: 90px 1fr; gap: 12px; margin-bottom: 10px;">
-              <div class="form-group" style="margin: 0;">
-                <label for="newCategoryNum" class="form-label">Nomor</label>
-                <input type="number" id="newCategoryNum" class="form-control" min="1" placeholder="7">
-              </div>
-              <div class="form-group" style="margin: 0;">
-                <label for="newCategoryTitle" class="form-label">Judul Kategori</label>
-                <input type="text" id="newCategoryTitle" class="form-control" placeholder="Contoh: Inovasi Pendidikan Digital">
-              </div>
-            </div>
-            <div class="form-group" style="margin: 0;">
-              <label for="newCategoryDesc" class="form-label">Deskripsi Singkat Kategori</label>
-              <textarea id="newCategoryDesc" class="form-control" rows="2" placeholder="Jelaskan tujuan dan cakupan program dalam kategori ini..."></textarea>
             </div>
           </div>
 
@@ -1906,9 +1879,9 @@
         <!-- Modal Footer -->
         <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #E2E8F0; display: flex; justify-content: flex-end; gap: 10px; background: #FFFFFF;">
           <button type="button" class="btn-outline-action" id="btnCancelProgramModal" onclick="window.closeProgramModal()">Batal</button>
-          <button type="submit" class="btn-create-article" id="btnSaveProgram">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            <span id="btnSaveProgramText">Simpan Program</span>
+          <button type="submit" class="btn-modal-save-program" id="btnSaveProgram">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span id="btnSaveProgramText">Simpan & Publikasikan</span>
           </button>
         </div>
       </form>
@@ -1942,7 +1915,7 @@
     }
   </script>
   <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
-  <script src="../js/admin.js?v=20261027_program_mgr_v3"></script>
+  <script src="../js/admin.js?v=20261027_program_mgr_v7"></script>
 
 
 

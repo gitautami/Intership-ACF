@@ -38,6 +38,114 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ----------------------------------------------------------------------------
   // ----------------------------------------------------------------------------
+  // Auto-Select Program Berdasarkan URL Query Parameter (?program=... / ?fokus=...)
+  // ----------------------------------------------------------------------------
+  function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function handlePreselectedProgram() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const rawProgram = urlParams.get('program') || urlParams.get('fokus') || urlParams.get('p') || '';
+      if (!rawProgram) return;
+
+      const cleanQuery = decodeURIComponent(rawProgram).trim();
+      if (!cleanQuery) return;
+
+      const normalize = (s) => String(s || '')
+        .toLowerCase()
+        .replace(/[\u2013\u2014-]/g, ' ')
+        .replace(/[^\w\s]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const normQuery = normalize(cleanQuery);
+      const checkboxes = Array.from(document.querySelectorAll('input[name="fokusProgram"]'));
+      let matchedCheckbox = null;
+
+      // 1. Exact match / normalized exact match
+      matchedCheckbox = checkboxes.find(cb => normalize(cb.value) === normQuery);
+
+      // 2. Contains match (either checkbox contains query or query contains checkbox)
+      if (!matchedCheckbox) {
+        matchedCheckbox = checkboxes.find(cb => {
+          const normVal = normalize(cb.value);
+          return normVal.includes(normQuery) || normQuery.includes(normVal);
+        });
+      }
+
+      // 3. Keyword matching jika query panjang
+      if (!matchedCheckbox) {
+        const keywords = normQuery.split(' ').filter(w => w.length > 3);
+        if (keywords.length > 0) {
+          matchedCheckbox = checkboxes.find(cb => {
+            const normVal = normalize(cb.value);
+            return keywords.some(k => normVal.includes(k));
+          });
+        }
+      }
+
+      const grid = document.querySelector('.pill-checkbox-grid');
+      let finalTitle = cleanQuery;
+
+      if (matchedCheckbox) {
+        matchedCheckbox.checked = true;
+        matchedCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+        finalTitle = matchedCheckbox.value;
+
+        const parentItem = matchedCheckbox.closest('.pill-checkbox-item');
+        if (parentItem) {
+          parentItem.classList.add('program-auto-selected');
+        }
+      } else if (grid) {
+        // Jika program baru/kustom yang dibuat melalui portal admin dan belum ada di checkbox default
+        const newLabel = document.createElement('label');
+        newLabel.className = 'pill-checkbox-item program-auto-selected';
+        newLabel.innerHTML = `
+          <input type="checkbox" name="fokusProgram" value="${escapeHTML(cleanQuery)}" checked>
+          <span class="pill-checkbox-label">${escapeHTML(cleanQuery)}</span>
+        `;
+        grid.appendChild(newLabel);
+      }
+
+      // Tampilkan banner notifikasi bahwa program telah terpilih otomatis
+      if (grid && finalTitle) {
+        let alertBanner = document.getElementById('preselectedProgramBanner');
+        if (!alertBanner) {
+          alertBanner = document.createElement('div');
+          alertBanner.id = 'preselectedProgramBanner';
+          alertBanner.className = 'program-selected-banner';
+          grid.parentNode.insertBefore(alertBanner, grid);
+        }
+        alertBanner.innerHTML = `
+          <span class="banner-badge"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" style="display:inline; vertical-align:-1px;"><polyline points="20 6 9 17 4 12"/></svg> Terpilih Otomatis</span>
+          <span>Program pilihan Anda: <strong>${escapeHTML(finalTitle)}</strong> telah otomatis tercentang di bawah.</span>
+        `;
+      }
+
+      // Scroll halus ke formulir agar user langsung fokus pada isian form
+      setTimeout(() => {
+        const targetElement = document.getElementById('preselectedProgramBanner') || document.querySelector('.pill-checkbox-grid') || document.getElementById('formMitraProgram');
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
+
+    } catch (err) {
+      console.warn('Gagal memproses pre-selected program:', err);
+    }
+  }
+
+  handlePreselectedProgram();
+
+  // ----------------------------------------------------------------------------
   // 1. Dynamic Toggle untuk Opsi "Lainnya"
   // ----------------------------------------------------------------------------
   const jenisInstansiSelect = document.getElementById('jenisInstansi');

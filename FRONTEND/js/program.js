@@ -175,6 +175,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Render Programs dynamically from localStorage
+  function getMitraActionLink(prg) {
+    const base = prg.actionLink || 'jadi-mitra-program.html';
+    if (base.includes('jadi-mitra-program') || base.includes('form-mitra')) {
+      const cleanUrl = base.split('#')[0];
+      const sep = cleanUrl.includes('?') ? '&' : '?';
+      if (!cleanUrl.includes('program=')) {
+        return `${cleanUrl}${sep}program=${encodeURIComponent(prg.title || '')}#formMitraProgram`;
+      }
+      return `${cleanUrl}#formMitraProgram`;
+    }
+    return base;
+  }
+
   function renderDynamicPrograms() {
     if (!programContainer) return;
 
@@ -269,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
                           <span class="metric-bullet"></span>
                           <span>${prg.metric || 'Program Aktif ACF'}</span>
                         </div>
-                        <a href="${prg.actionLink || 'jadi-mitra-program.html'}" class="btn-jadi-mitra-program">
+                        <a href="${getMitraActionLink(prg)}" class="btn-jadi-mitra-program">
                           ${prg.actionText || 'Jadi Mitra Program'} <span class="arrow-icon">&rarr;</span>
                         </a>
                       </div>

@@ -373,10 +373,79 @@ function initSekolahJuaraBrosurModal() {
   const backdrop = document.getElementById('sjBrosurBackdrop');
   const closeBtn = document.getElementById('sjBrosurCloseBtn');
   const downloadBtn = document.getElementById('sjBrosurDownloadBtn');
+  const shareBtn = document.getElementById('sjBrosurShareBtn');
+  const sharePopover = document.getElementById('sjBrosurSharePopover');
+  const sharePopoverClose = document.getElementById('sjSharePopoverClose');
+  const shareUrlInput = document.getElementById('sjShareUrlInput');
+  const shareCopyBtn = document.getElementById('sjShareCopyBtn');
+  const shareCopyBtnText = document.getElementById('sjShareCopyBtnText');
+  const shareWaBtn = document.getElementById('sjShareWaBtn');
+  const shareIgBtn = document.getElementById('sjShareIgBtn');
+  const shareNativeBtn = document.getElementById('sjShareNativeBtn');
+  const shareToast = document.getElementById('sjShareToast');
   const titleEl = document.getElementById('sjBrosurTitle');
   const subtitleEl = document.getElementById('sjBrosurSubtitle');
   const pagesWrap = document.getElementById('sjBrosurPagesWrap');
-  const scrollStage = document.getElementById('sjBrosurScrollStage');
+
+  let currentBrosurData = null;
+
+  function closeSharePopover() {
+    if (sharePopover) {
+      sharePopover.classList.remove('active');
+      sharePopover.setAttribute('aria-hidden', 'true');
+    }
+    if (shareBtn) {
+      shareBtn.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  function copyShareLink() {
+    if (!currentBrosurData) return;
+    const textToCopy = currentBrosurData.shareUrl;
+
+    const showFeedback = () => {
+      if (shareToast) {
+        shareToast.classList.add('show');
+        setTimeout(() => {
+          if (shareToast) shareToast.classList.remove('show');
+        }, 2200);
+      }
+      if (shareCopyBtnText) {
+        shareCopyBtnText.textContent = 'Tersalin!';
+        setTimeout(() => {
+          if (shareCopyBtnText) shareCopyBtnText.textContent = 'Salin';
+        }, 2000);
+      }
+      const shareBtnText = document.getElementById('sjBrosurShareBtnText');
+      if (shareBtnText && shareBtn) {
+        shareBtn.classList.add('copied');
+        shareBtnText.innerHTML = '✓ Disalin!';
+        setTimeout(() => {
+          if (shareBtn) shareBtn.classList.remove('copied');
+          if (shareBtnText) shareBtnText.innerHTML = 'Bagikan<span class="sj-brosur-btn-text-extra"> Link</span>';
+        }, 2000);
+      }
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(textToCopy).then(showFeedback).catch(() => {
+        fallbackCopy(textToCopy, showFeedback);
+      });
+    } else {
+      fallbackCopy(textToCopy, showFeedback);
+    }
+  }
+
+  function fallbackCopy(text, callback) {
+    if (shareUrlInput) {
+      shareUrlInput.select();
+      shareUrlInput.setSelectionRange(0, 99999);
+      try {
+        document.execCommand('copy');
+        if (callback) callback();
+      } catch (e) {}
+    }
+  }
 
   function openBrosur(btn) {
     if (!btn || btn.classList.contains('disabled') || btn.disabled) return;
@@ -388,6 +457,7 @@ function initSekolahJuaraBrosurModal() {
     const schoolName = btn.getAttribute('data-school-name') || 'Sekolah Juara';
     const location = btn.getAttribute('data-school-location') || '';
     const year = btn.getAttribute('data-brosur-year') || '2027/2028';
+    const slug = btn.getAttribute('data-brosur-slug') || (btn.id ? btn.id.replace(/^btnBrosur/i, '').toLowerCase() : 'batam');
 
     if (titleEl) titleEl.textContent = `Brosur PPDB ${schoolName}`;
     if (subtitleEl) subtitleEl.textContent = `${location ? location + ' • ' : ''}Tahun Ajaran ${year} — Unit Pendidikan ACF Eduhub`;
@@ -397,6 +467,45 @@ function initSekolahJuaraBrosurModal() {
       downloadBtn.setAttribute('href', fileUrl);
       downloadBtn.setAttribute('download', fileName);
       downloadBtn.setAttribute('title', `Unduh Dokumen Brosur PDF (${schoolName})`);
+    }
+
+    // Bangun URL Share Link yang saat dibuka langsung menampilkan brosur ini
+    let finalShareUrl = '';
+    let directPdfUrl = '';
+    try {
+      const shareUrl = new URL(window.location.href);
+      shareUrl.searchParams.set('brosur', slug);
+      shareUrl.hash = '';
+      finalShareUrl = shareUrl.href;
+      directPdfUrl = new URL(fileUrl, window.location.href).href;
+    } catch (e) {
+      finalShareUrl = `${window.location.pathname}?brosur=${encodeURIComponent(slug)}`;
+      directPdfUrl = fileUrl;
+    }
+
+    currentBrosurData = {
+      fileUrl,
+      fileName,
+      schoolName,
+      location,
+      year,
+      slug,
+      shareUrl: finalShareUrl,
+      directPdfUrl
+    };
+
+    if (shareUrlInput) shareUrlInput.value = finalShareUrl;
+    if (shareWaBtn) {
+      const waText = encodeURIComponent(`Lihat Brosur PPDB ${schoolName} (${year}) - ACF Eduhub:
+${finalShareUrl}`);
+      shareWaBtn.setAttribute('href', `https://api.whatsapp.com/send?text=${waText}`);
+    }
+
+    // Update history state secara halus tanpa me-reload halaman
+    if (window.history && window.history.replaceState) {
+      try {
+        window.history.replaceState({ brosur: slug }, '', finalShareUrl);
+      } catch (e) {}
     }
 
     // Embed Dokumen PDF Asli langsung ke dalam modal
@@ -411,19 +520,117 @@ function initSekolahJuaraBrosurModal() {
       `;
     }
 
+    closeSharePopover();
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
 
   function closeBrosur() {
+    closeSharePopover();
     modal.classList.remove('active');
     modal.setAttribute('aria-hidden', 'true');
     if (pagesWrap) {
       pagesWrap.innerHTML = '';
     }
     document.body.style.overflow = '';
+
+    // Kembalikan URL bersih jika ditutup
+    if (window.history && window.history.replaceState) {
+      try {
+        const cleanUrl = new URL(window.location.href);
+        if (cleanUrl.searchParams.has('brosur')) {
+          cleanUrl.searchParams.delete('brosur');
+          window.history.replaceState(null, '', cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+        }
+      } catch (e) {}
+    }
   }
+
+  // Handle Share Button & Popover Events (hanya membuka popover, tidak langsung menyalin)
+  if (shareBtn) {
+    shareBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!sharePopover) return;
+      const isClosed = !sharePopover.classList.contains('active');
+      if (isClosed) {
+        sharePopover.classList.add('active');
+        sharePopover.setAttribute('aria-hidden', 'false');
+        shareBtn.setAttribute('aria-expanded', 'true');
+      } else {
+        closeSharePopover();
+      }
+    });
+  }
+
+  if (shareCopyBtn) {
+    shareCopyBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      copyShareLink();
+    });
+  }
+
+  if (sharePopoverClose) {
+    sharePopoverClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeSharePopover();
+    });
+  }
+
+  if (sharePopover) {
+    sharePopover.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  // Handle Instagram share
+  if (shareIgBtn) {
+    shareIgBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!currentBrosurData) return;
+      copyShareLink();
+      if (shareToast) {
+        shareToast.textContent = '✓ Link disalin! Membuka Instagram...';
+        shareToast.classList.add('show');
+        setTimeout(() => {
+          if (shareToast) {
+            shareToast.classList.remove('show');
+            shareToast.textContent = '✓ Link brosur berhasil disalin!';
+          }
+        }, 2500);
+      }
+      setTimeout(() => {
+        window.open('https://www.instagram.com/', '_blank');
+      }, 350);
+    });
+  }
+
+  // Handle Lainnya (Native Web Share / Fallback Copy)
+  if (shareNativeBtn) {
+    shareNativeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!currentBrosurData) return;
+      if (navigator.share) {
+        navigator.share({
+          title: `Brosur PPDB ${currentBrosurData.schoolName}`,
+          text: `Lihat Brosur PPDB ${currentBrosurData.schoolName} (${currentBrosurData.year}) - ACF Eduhub:
+${currentBrosurData.shareUrl}`,
+          url: currentBrosurData.shareUrl
+        }).catch(() => {});
+      } else {
+        copyShareLink();
+      }
+    });
+  }
+
+  // Close share popover when clicking outside
+  document.addEventListener('click', (e) => {
+    if (sharePopover && sharePopover.classList.contains('active')) {
+      if (!sharePopover.contains(e.target) && e.target !== shareBtn && !shareBtn.contains(e.target)) {
+        closeSharePopover();
+      }
+    }
+  });
 
   // Bind click handlers to all brochure buttons
   const brosurButtons = document.querySelectorAll('.sj-btn-brosur');
@@ -432,7 +639,6 @@ function initSekolahJuaraBrosurModal() {
       e.preventDefault();
       const fileUrl = btn.getAttribute('data-brosur-file');
       if (!fileUrl) {
-        // Sekolah yang belum ada brosurnya: jangan isi apa-apa / tidak memicu modal
         return;
       }
       openBrosur(btn);
@@ -445,14 +651,66 @@ function initSekolahJuaraBrosurModal() {
 
   // Keyboard navigation (Esc to close)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      closeBrosur();
+    if (e.key === 'Escape') {
+      if (sharePopover && sharePopover.classList.contains('active')) {
+        closeSharePopover();
+      } else if (modal.classList.contains('active')) {
+        closeBrosur();
+      }
     }
   });
+
+  // Auto-open brochure if URL contains parameter ?brosur=... or hash #brosur-...
+  function checkUrlAndOpenBrosur() {
+    let param = '';
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      param = urlParams.get('brosur') || urlParams.get('brochure');
+    } catch (e) {}
+
+    if (!param && window.location.hash) {
+      const hash = window.location.hash.replace(/^#/, '');
+      if (hash.startsWith('brosur=')) {
+        param = hash.replace('brosur=', '');
+      } else if (hash.startsWith('brosur-')) {
+        param = hash.replace('brosur-', '');
+      }
+    }
+
+    if (!param) return;
+    const cleanParam = decodeURIComponent(param).trim().toLowerCase();
+
+    let matchedBtn = null;
+    brosurButtons.forEach(btn => {
+      const slug = (btn.getAttribute('data-brosur-slug') || '').toLowerCase();
+      const btnId = (btn.id || '').toLowerCase();
+      const schoolName = (btn.getAttribute('data-school-name') || '').toLowerCase();
+
+      if (slug && slug === cleanParam) {
+        matchedBtn = btn;
+      } else if (btnId && (btnId === cleanParam || btnId === `btnbrosur${cleanParam}`)) {
+        matchedBtn = btn;
+      } else if (schoolName && schoolName.includes(cleanParam)) {
+        matchedBtn = btn;
+      }
+    });
+
+    if (matchedBtn && matchedBtn.getAttribute('data-brosur-file')) {
+      setTimeout(() => {
+        try {
+          matchedBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch (e) {}
+        openBrosur(matchedBtn);
+      }, 350);
+    }
+  }
 
   // Expose global methods for inline or direct callers
   window.openSekolahJuaraBrosur = openBrosur;
   window.closeSekolahJuaraBrosur = closeBrosur;
+
+  // Run deep-link check
+  checkUrlAndOpenBrosur();
 }
 
 

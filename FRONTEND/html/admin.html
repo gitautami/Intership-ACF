@@ -70,6 +70,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/admin.css?v=20261021_equal_btn_sizes_v19">
+  <link rel="stylesheet" href="../css/program.css">
 </head>
 <body>
 
@@ -141,9 +142,17 @@
           <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="admin-brand-logo">
         </div>
 
-        <div class="admin-page-badge">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-          <span>Upload & Manajemen Kabar</span>
+        <!-- Dual Dashboard Switcher: Kabar & Program Layanan -->
+        <div class="admin-nav-switcher">
+          <button type="button" class="admin-nav-tab active" id="btnNavArticles" title="Kelola Publikasi Kabar & Berita">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            <span>Kabar / Artikel</span>
+          </button>
+          <button type="button" class="admin-nav-tab" id="btnNavPrograms" title="Kelola Program Layanan Pendidikan">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
+            <span>Program Layanan</span>
+            <span class="admin-nav-pill-count" id="badgeNavProgramsCount">7</span>
+          </button>
         </div>
       </div>
 
@@ -401,6 +410,142 @@
             <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
             <div class="empty-table-title">Belum ada artikel yang cocok</div>
             <p style="font-size: 0.85rem;">Klik tombol <strong>Tulis Artikel (WordPress Editor)</strong> untuk mempublikasikan artikel pertama Anda.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           MANAJEMEN PROGRAM LAYANAN PENDIDIKAN
+           ============================================================ -->
+      <section class="dashboard-view-section" id="viewDashboardPrograms" style="display: none;">
+        
+        <!-- Page Header & Action Controls -->
+        <div class="dashboard-header-row">
+          <div>
+            <h2 class="page-title">Manajemen Program Layanan</h2>
+            <p class="page-subtitle">Kelola, tambahkan, dan publikasikan program layanan ACF Eduhub. Program berstatus <strong>Terbit</strong> otomatis tampil di halaman publik dengan layout seragam.</p>
+          </div>
+
+          <div class="header-action-buttons">
+            <a href="program-layanan.html" target="_blank" class="btn-outline-action btn-kabar-header-btn" title="Buka halaman publik Program Layanan di tab baru">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+              <span>Lihat Halaman Program</span>
+            </a>
+
+            <button type="button" class="btn-outline-action" id="btnResetProgramsDefault" title="Kembalikan data ke 7 program bawaan sistem">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Reset Default</span>
+            </button>
+
+            <button type="button" class="btn-create-article" id="btnOpenCreateProgramModal">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Buat Program Baru</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Grid -->
+        <div class="metric-grid">
+          
+          <div class="metric-card metric-purple">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Total Program</span>
+              <span class="metric-value" id="countTotalPrograms">7</span>
+              <span class="metric-meta">Terdaftar di sistem</span>
+            </div>
+          </div>
+
+          <div class="metric-card metric-teal">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Program Terbit</span>
+              <span class="metric-value" id="countPublishedPrograms">7</span>
+              <span class="metric-meta">Tampil di halaman publik</span>
+            </div>
+          </div>
+
+          <div class="metric-card metric-gold">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Program Draf</span>
+              <span class="metric-value" id="countDraftPrograms">0</span>
+              <span class="metric-meta">Belum dipublikasikan</span>
+            </div>
+          </div>
+
+          <div class="metric-card metric-purple">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Kategori Induk</span>
+              <span class="metric-value" id="countCategoriesPrograms">6</span>
+              <span class="metric-meta">Kategori program aktif</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Table Container -->
+        <div class="data-table-container">
+          
+          <div class="table-toolbar">
+            <div class="search-input-wrap">
+              <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" id="searchProgramInput" class="form-control table-search-input" placeholder="Cari judul program, divisi, atau deskripsi...">
+            </div>
+
+            <div class="filter-controls-wrap">
+              <div class="custom-select-wrap">
+                <select id="filterProgramCategory" class="form-select filter-select">
+                  <option value="all">Semua Kategori Induk</option>
+                </select>
+              </div>
+
+              <div class="custom-select-wrap">
+                <select id="filterProgramStatus" class="form-select filter-select">
+                  <option value="all">Semua Status</option>
+                  <option value="Terbit">Terbit (Publik)</option>
+                  <option value="Draf">Draf</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">No</th>
+                  <th style="width: 80px;">Foto</th>
+                  <th>Nama Program & Divisi</th>
+                  <th>Kategori Induk</th>
+                  <th>Metrik Utama</th>
+                  <th style="width: 100px;">Status</th>
+                  <th style="width: 130px; text-align: center;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyPrograms">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-table-state" id="emptyPrograms" style="display: none;">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
+            <div class="empty-table-title">Belum ada program yang cocok</div>
+            <p style="font-size: 0.85rem;">Klik tombol <strong>Buat Program Baru</strong> untuk menambahkan program layanan pendidikan pertama.</p>
           </div>
 
         </div>
@@ -1620,6 +1765,192 @@
     }
   </script>
   <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
-  <script src="../js/admin.js?v=20261021_swal_auth_v6"></script>
+  <script src="../js/admin.js?v=20261027_program_mgr_v1"></script>
+
+  <!-- ==========================================
+       MODAL: FORM BUAT / EDIT PROGRAM LAYANAN
+       ========================================== -->
+  <div class="admin-modal-backdrop" id="programModal" style="display: none;">
+    <div class="admin-modal-box" style="max-width: 860px; max-height: 90vh; display: flex; flex-direction: column;">
+      
+      <!-- Modal Header -->
+      <div class="modal-header" style="padding: 18px 24px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="background: rgba(125, 34, 128, 0.1); color: #7D2280; font-size: 0.76rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">Program Layanan</span>
+          <h3 class="modal-title" id="programModalTitle" style="font-size: 1.15rem; font-weight: 700; color: #1E293B; margin: 0;">Buat Program Layanan Baru</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btnCloseProgramModal" aria-label="Tutup form program" style="background: transparent; border: none; font-size: 1.5rem; color: #94A3B8; cursor: pointer;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Form) -->
+      <form id="programForm" autocomplete="off" style="overflow-y: auto; flex: 1;">
+        <div class="modal-body" style="padding: 24px;">
+          
+          <input type="hidden" id="programEditId" value="">
+
+          <!-- Section 1: Kategori & Divisi -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+            <div class="form-group" style="margin: 0;">
+              <label for="programCategorySelect" class="form-label">Kategori Induk <span class="required-star">*</span></label>
+              <select id="programCategorySelect" class="form-control" required>
+                <option value="kategori-1">1. Keberlanjutan Unit Pendidikan</option>
+                <option value="kategori-2">2. Tanggap Bencana & Pemulihan</option>
+                <option value="kategori-3">3. Kesejahteraan Ekosistem Sekolah</option>
+                <option value="kategori-4">4. Kemanusiaan Internasional</option>
+                <option value="kategori-5">5. Forum & Advokasi Pendidikan</option>
+                <option value="kategori-6">6. Kepemimpinan & Manajemen Sekolah</option>
+                <option value="__NEW__">+ Tambah Kategori Baru...</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label for="programDivisi" class="form-label">Divisi Penanggung Jawab <span class="required-star">*</span></label>
+              <input type="text" id="programDivisi" class="form-control" list="listDivisiOptions" placeholder="Contoh: Sekolah Juara / Guruverse.ID" required>
+              <datalist id="listDivisiOptions">
+                <option value="Sekolah Juara">
+                <option value="Sekolah Daya Setara">
+                <option value="Guruverse.ID">
+                <option value="ACF Educare (Donasi Pendidikan)">
+                <option value="Guruverse.ID & ACF Educare (lintas-divisi)">
+              </datalist>
+            </div>
+          </div>
+
+          <!-- Dynamic New Category Fields -->
+          <div id="newCategoryFieldsWrap" style="display: none; background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 12px; padding: 14px 16px; margin-bottom: 18px;">
+            <div style="font-weight: 700; color: #7D2280; font-size: 0.88rem; margin-bottom: 8px;">Detail Kategori Baru</div>
+            <div style="display: grid; grid-template-columns: 90px 1fr; gap: 12px; margin-bottom: 10px;">
+              <div class="form-group" style="margin: 0;">
+                <label for="newCategoryNum" class="form-label">Nomor</label>
+                <input type="number" id="newCategoryNum" class="form-control" min="1" placeholder="7">
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label for="newCategoryTitle" class="form-label">Judul Kategori</label>
+                <input type="text" id="newCategoryTitle" class="form-control" placeholder="Contoh: Inovasi Pendidikan Digital">
+              </div>
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label for="newCategoryDesc" class="form-label">Deskripsi Singkat Kategori</label>
+              <textarea id="newCategoryDesc" class="form-control" rows="2" placeholder="Jelaskan tujuan dan cakupan program dalam kategori ini..."></textarea>
+            </div>
+          </div>
+
+          <!-- Section 2: Judul Program & Deskripsi Kutipan -->
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label for="programTitle" class="form-label">Nama / Judul Program <span class="required-star">*</span></label>
+            <input type="text" id="programTitle" class="form-control" placeholder="Masukkan nama program lengkap..." required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label for="programQuote" class="form-label">Deskripsi / Ringkasan Program (Kotak Kutipan Emas) <span class="required-star">*</span></label>
+            <textarea id="programQuote" class="form-control" rows="3" placeholder="Jelaskan esensi, sasaran, dan misi program ini secara ringkas..." required></textarea>
+            <small style="color: #64748B; font-size: 0.78rem;">Teks ini akan ditampilkan di dalam kotak bergaris emas khas layout Program Layanan.</small>
+          </div>
+
+          <!-- Section 3: Bukti Kapasitas & Kebutuhan Dukungan -->
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label for="programBuktiKapasitas" class="form-label">Bukti Kapasitas ACF</label>
+            <textarea id="programBuktiKapasitas" class="form-control" rows="2" placeholder="Contoh: Mengelola 10 cabang Sekolah Juara di berbagai wilayah Indonesia..."></textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label for="programKebutuhanDukungan" class="form-label">Kebutuhan Dukungan Mitra</label>
+            <input type="text" id="programKebutuhanDukungan" class="form-control" placeholder="Contoh: Dana operasional, Beasiswa pendidikan, In-kind (sarana belajar)">
+          </div>
+
+          <!-- Section 4: Metrik Utama & Status -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+            <div class="form-group" style="margin: 0;">
+              <label for="programMetric" class="form-label">Metrik Capaian Singkat <span class="required-star">*</span></label>
+              <input type="text" id="programMetric" class="form-control" placeholder="Contoh: 10 Sekolah Juara di Indonesia / 150 Warga Belajar" required>
+              <small style="color: #64748B; font-size: 0.78rem;">Muncul di footer kartu program di samping titik kuning.</small>
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label for="programStatus" class="form-label">Status Publikasi <span class="required-star">*</span></label>
+              <select id="programStatus" class="form-control" required>
+                <option value="Terbit">Terbit (Langsung tampil di website)</option>
+                <option value="Draf">Draf (Simpan internal, belum tampil)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 5: Foto Cover Program -->
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label class="form-label">Foto / Sampul Program <span class="required-star">*</span></label>
+            
+            <div style="display: flex; gap: 16px; align-items: flex-start;">
+              <div id="programCoverPreviewWrap" style="width: 140px; height: 95px; border-radius: 10px; border: 1px solid #CBD5E1; overflow: hidden; background: #F1F5F9; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <img id="programCoverPreviewImg" src="../assets/unit-pendidikan/Sekolah Juara.jpg" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;">
+              </div>
+
+              <div style="flex: 1;">
+                <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                  <label class="btn-outline-action" style="cursor: pointer; margin: 0; padding: 7px 14px; font-size: 0.82rem;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    <span>Pilih File Foto</span>
+                    <input type="file" id="programCoverFileInput" accept="image/*" style="display: none;">
+                  </label>
+                  <button type="button" class="btn-outline-action" id="btnResetProgramCover" style="padding: 7px 12px; font-size: 0.82rem;">Gunakan Default</button>
+                </div>
+                <input type="text" id="programCoverUrlInput" class="form-control" placeholder="Atau ketik path gambar (contoh: ../assets/unit-pendidikan/Sekolah Juara.jpg)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 6: Tombol Aksi Kemitraan -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+            <div class="form-group" style="margin: 0;">
+              <label for="programActionText" class="form-label">Teks Tombol Aksi</label>
+              <input type="text" id="programActionText" class="form-control" value="Jadi Mitra Program">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label for="programActionLink" class="form-label">Tautan Tombol Aksi</label>
+              <input type="text" id="programActionLink" class="form-control" value="jadi-mitra-program.html">
+            </div>
+          </div>
+
+          <!-- Section 7: Live Card Preview -->
+          <div style="border-top: 1px solid #E2E8F0; padding-top: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-weight: 700; color: #1E293B; font-size: 0.88rem;">Pratinjau Kartu di Website (Real-time Preview):</span>
+              <span style="font-size: 0.78rem; color: #7D2280; font-weight: 600;">Sesuai Layout Publik</span>
+            </div>
+            
+            <div id="programLivePreviewContainer" style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 16px;">
+              <!-- Realtime card preview -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #E2E8F0; display: flex; justify-content: flex-end; gap: 10px; background: #FFFFFF;">
+          <button type="button" class="btn-outline-action" id="btnCancelProgramModal">Batal</button>
+          <button type="submit" class="btn-create-article" id="btnSaveProgram">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span id="btnSaveProgramText">Simpan Program</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: PRATINJAU PROGRAM DETAIL
+       ========================================== -->
+  <div class="admin-modal-backdrop" id="programPreviewModal" style="display: none;">
+    <div class="admin-modal-box" style="max-width: 820px;">
+      <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+        <h4 style="margin: 0; font-size: 1rem; color: #1E293B;">Pratinjau Program Layanan</h4>
+        <button type="button" class="btn-modal-close" id="btnCloseProgramPreview" style="background: transparent; border: none; font-size: 1.4rem; color: #94A3B8; cursor: pointer;">&times;</button>
+      </div>
+      <div class="modal-body" id="programPreviewModalBody" style="padding: 24px; background: #F8FAFC;">
+        <!-- Injected card preview -->
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

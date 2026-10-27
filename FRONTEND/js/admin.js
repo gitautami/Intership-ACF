@@ -198,6 +198,200 @@
   const btnCloseArticlePreview = document.getElementById('btnCloseArticlePreview');
   const btnCloseArticlePreviewFooter = document.getElementById('btnCloseArticlePreviewFooter');
   const btnPreviewEditDirect = document.getElementById('btnPreviewEditDirect');
+
+  // Program Layanan Elements
+  const btnNavPrograms = document.getElementById('btnNavPrograms');
+  const badgeNavProgramsCount = document.getElementById('badgeNavProgramsCount');
+  const viewDashboardPrograms = document.getElementById('viewDashboardPrograms');
+
+  const countTotalPrograms = document.getElementById('countTotalPrograms');
+  const countPublishedPrograms = document.getElementById('countPublishedPrograms');
+  const countDraftPrograms = document.getElementById('countDraftPrograms');
+  const countCategoriesPrograms = document.getElementById('countCategoriesPrograms');
+
+  const searchProgramInput = document.getElementById('searchProgramInput');
+  const filterProgramCategory = document.getElementById('filterProgramCategory');
+  const filterProgramStatus = document.getElementById('filterProgramStatus');
+  const programsTableBody = document.getElementById('tbodyPrograms') || document.getElementById('programsTableBody');
+  const emptyPrograms = document.getElementById('emptyPrograms');
+
+  const btnResetProgramsDefault = document.getElementById('btnResetProgramsDefault');
+  const btnOpenCreateProgramModal = document.getElementById('btnOpenCreateProgramModal');
+
+  // Program Modal Elements
+  const programModal = document.getElementById('programModal');
+  const programModalTitle = document.getElementById('programModalTitle');
+  const btnCloseProgramModal = document.getElementById('btnCloseProgramModal');
+  const btnCancelProgramModal = document.getElementById('btnCancelProgramModal');
+  const programForm = document.getElementById('programForm');
+  const programEditId = document.getElementById('programEditId');
+  const programCategorySelect = document.getElementById('programCategorySelect');
+  const programDivisi = document.getElementById('programDivisi');
+  const newCategoryFieldsWrap = document.getElementById('newCategoryFieldsWrap');
+  const newCategoryNum = document.getElementById('newCategoryNum');
+  const newCategoryTitle = document.getElementById('newCategoryTitle');
+  const newCategoryDesc = document.getElementById('newCategoryDesc');
+  const programTitle = document.getElementById('programTitle');
+  const programQuote = document.getElementById('programQuote');
+  const programBuktiKapasitas = document.getElementById('programBuktiKapasitas');
+  const programKebutuhanDukungan = document.getElementById('programKebutuhanDukungan');
+  const programMetric = document.getElementById('programMetric');
+  const programStatus = document.getElementById('programStatus');
+  const programCoverPreviewImg = document.getElementById('programCoverPreviewImg');
+  const programCoverFileInput = document.getElementById('programCoverFileInput');
+  const programCoverUrlInput = document.getElementById('programCoverUrlInput');
+  const btnResetProgramCover = document.getElementById('btnResetProgramCover');
+  const programActionText = document.getElementById('programActionText');
+  const programActionLink = document.getElementById('programActionLink');
+  const programLivePreviewContainer = document.getElementById('programLivePreviewContainer');
+  const btnSaveProgram = document.getElementById('btnSaveProgram');
+  const btnSaveProgramText = document.getElementById('btnSaveProgramText');
+
+  // Program Preview Modal Elements
+  const programPreviewModal = document.getElementById('programPreviewModal');
+  const btnCloseProgramPreview = document.getElementById('btnCloseProgramPreview');
+  const programPreviewModalBody = document.getElementById('programPreviewModalBody');
+
+  // Program State & Default Data
+  let dataPrograms = [];
+
+  const DEFAULT_PROGRAM_CATEGORIES = [
+    { id: 'kategori-1', num: 1, title: 'Keberlanjutan Unit Pendidikan', desc: 'Penguatan kelembagaan dan pendanaan mandiri untuk memastikan sekolah-sekolah di wilayah prasejahtera dapat beroperasi secara berkelanjutan dengan kualitas prima.' },
+    { id: 'kategori-2', num: 2, title: 'Tanggap Bencana & Pemulihan', desc: 'Respons cepat terintegrasi mencakup dukungan psikososial anak, pelatihan psikososial guru terdampak, hingga bantuan dasar pangan, sandang, dan hunian darurat.' },
+    { id: 'kategori-3', num: 3, title: 'Kesejahteraan Ekosistem Sekolah', desc: 'Dukungan terpadu berkelanjutan bagi guru honorer, tenaga penunjang, dan keluarga prasejahtera di sekitar lingkungan sekolah sepanjang tahun.' },
+    { id: 'kategori-4', num: 4, title: 'Kemanusiaan Internasional', desc: 'Penyaluran bantuan kemanusiaan dan kebutuhan dasar bagi anak-anak di wilayah krisis serta konflik global.' },
+    { id: 'kategori-5', num: 5, title: 'Forum & Advokasi Pendidikan', desc: 'Membangun ruang diskursus kebijakan, publikasi riset implementasi di lapangan, dan advokasi arah tren pendidikan nasional.' },
+    { id: 'kategori-6', num: 6, title: 'Kepemimpinan & Manajemen Sekolah', desc: 'Layanan konsultasi dan pendampingan manajemen sekolah, strategi SPMB/PPDB, serta studi kelayakan pendirian unit pendidikan.' }
+  ];
+
+  const DEFAULT_PROGRAMS_DATA = [
+    {
+      id: 'PRG-01',
+      categoryId: 'kategori-1',
+      categoryNum: 1,
+      categoryTitle: 'Keberlanjutan Unit Pendidikan',
+      categoryDesc: 'Penguatan kelembagaan dan pendanaan mandiri untuk memastikan sekolah-sekolah di wilayah prasejahtera dapat beroperasi secara berkelanjutan dengan kualitas prima.',
+      divisi: 'Sekolah Juara',
+      title: 'Program Beasiswa & Keberlanjutan Sekolah Juara',
+      cover: '../assets/unit-pendidikan/Sekolah Juara.jpg',
+      quote: 'Mendukung operasional dan penyediaan fasilitas belajar Sekolah Juara agar akses pendidikan formal berkualitas tetap 100% bebas biaya (gratis) bagi anak-anak dhuafa dan keluarga prasejahtera berprestasi.',
+      buktiKapasitas: 'Mengelola 10 cabang Sekolah Juara di berbagai wilayah Indonesia dengan layanan pendidikan 100% bebas biaya sejak ACF mengelola langsung jaringan ini pada 2023.',
+      kebutuhanDukungan: 'Dana operasional, Beasiswa pendidikan, In-kind (sarana belajar)',
+      metric: '10 Sekolah Juara di Indonesia',
+      actionLink: 'jadi-mitra-program.html',
+      actionText: 'Jadi Mitra Program',
+      status: 'Terbit',
+      createdAt: '2026-01-01'
+    },
+    {
+      id: 'PRG-02',
+      categoryId: 'kategori-1',
+      categoryNum: 1,
+      categoryTitle: 'Keberlanjutan Unit Pendidikan',
+      categoryDesc: 'Penguatan kelembagaan dan pendanaan mandiri untuk memastikan sekolah-sekolah di wilayah prasejahtera dapat beroperasi secara berkelanjutan dengan kualitas prima.',
+      divisi: 'Sekolah Daya Setara',
+      title: 'Kesejahteraan Guru & Operasional Sekolah Daya Setara',
+      cover: '../assets/unit-pendidikan/Sekolah Daya Setara (1).JPG',
+      quote: 'Mendukung kesejahteraan tutor/guru dan kebutuhan operasional PKBM Sekolah Daya Setara — seluruh 150 warga belajar yang dilayani saat ini adalah penerima beasiswa penuh, menjadikan dukungan mitra krusial bagi keberlangsungan layanan yang ada.',
+      buktiKapasitas: 'Melayani 150 warga belajar (100% beasiswa, tanpa siswa reguler berbayar) di beberapa titik PKBM (Lembang, Ngamprah, Pangandaran, Sukabumi, Indramayu, Jayapura).',
+      kebutuhanDukungan: 'Dana sebagian, In-kind',
+      metric: '150 Warga Belajar (100% Beasiswa)',
+      actionLink: 'jadi-mitra-program.html',
+      actionText: 'Jadi Mitra Program',
+      status: 'Terbit',
+      createdAt: '2026-01-02'
+    },
+    {
+      id: 'PRG-03',
+      categoryId: 'kategori-2',
+      categoryNum: 2,
+      categoryTitle: 'Tanggap Bencana & Pemulihan',
+      categoryDesc: 'Respons cepat terintegrasi mencakup dukungan psikososial anak, pelatihan psikososial guru terdampak, hingga bantuan dasar pangan, sandang, dan hunian darurat.',
+      divisi: 'Guruverse.ID & ACF Educare (lintas-divisi)',
+      title: 'Layanan Pascabencana',
+      cover: '../assets/layanan-program/IMG_6436.jpg',
+      quote: 'Respons pascabencana yang terintegrasi — mencakup dukungan psikososial untuk anak-anak korban, pelatihan psikososial untuk guru di lokasi terdampak, serta penyaluran bantuan dasar berupa pangan, sandang, dan papan/hunian sementara.',
+      buktiKapasitas: '100 guru terlatih di Aceh Tamiang; respons darurat dan sekolah darurat sedang berjalan di Flores NTT pascagempa Agustus 2026, berkolaborasi dengan Sharing Happiness.',
+      kebutuhanDukungan: 'Dana penuh, In-kind (pangan, sandang, papan)',
+      metric: '100 Guru Terlatih & Respons Flores NTT',
+      actionLink: 'jadi-mitra-program.html',
+      actionText: 'Jadi Mitra Program',
+      status: 'Terbit',
+      createdAt: '2026-01-03'
+    },
+    {
+      id: 'PRG-04',
+      categoryId: 'kategori-3',
+      categoryNum: 3,
+      categoryTitle: 'Kesejahteraan Ekosistem Sekolah',
+      categoryDesc: 'Dukungan terpadu berkelanjutan bagi guru honorer, tenaga penunjang, dan keluarga prasejahtera di sekitar lingkungan sekolah sepanjang tahun.',
+      divisi: 'ACF Educare (Donasi Pendidikan)',
+      title: 'Kesejahteraan Ekosistem Sekolah',
+      cover: '../assets/donasi/Kado Lebaran Penjaga Sekolah.jpg',
+      quote: 'Dukungan berkelanjutan bagi tenaga yang menopang ekosistem sekolah — guru honorer, penjaga sekolah, dan keluarga prasejahtera di lingkungan sekolah. Ramadhan menjadi salah satu momentum kampanye, bukan satu-satunya waktu penyaluran.',
+      buktiKapasitas: 'Ramadhan 2026 — 345 paket tersalur di 21 wilayah untuk guru honorer, penjaga sekolah, dan keluarga dhuafa.',
+      kebutuhanDukungan: 'Dana penuh, In-kind',
+      metric: '345 Paket Tersalur (21 Wilayah)',
+      actionLink: 'jadi-mitra-program.html',
+      actionText: 'Jadi Mitra Program',
+      status: 'Terbit',
+      createdAt: '2026-01-04'
+    },
+    {
+      id: 'PRG-05',
+      categoryId: 'kategori-4',
+      categoryNum: 4,
+      categoryTitle: 'Kemanusiaan Internasional',
+      categoryDesc: 'Penyaluran bantuan kemanusiaan dan kebutuhan dasar bagi anak-anak di wilayah krisis serta konflik global.',
+      divisi: 'ACF Educare (Donasi Pendidikan)',
+      title: 'Bantuan Kemanusiaan Internasional',
+      cover: '../assets/layanan-program/IMG_6442.jpg',
+      quote: 'Penyaluran bantuan dasar bagi anak-anak di wilayah konflik, dihimpun dari keluarga besar ACF Eduhub dan donatur publik.',
+      buktiKapasitas: 'Tahap 1 (1 September 2026) — makanan hangat untuk 260 anak di 2 shelter pengungsian Gaza, bekerja sama dengan Baitul Mal Muamalat.',
+      kebutuhanDukungan: 'Dana penuh',
+      metric: 'Makanan Hangat 260 Anak (Gaza)',
+      actionLink: 'jadi-mitra-program.html',
+      actionText: 'Jadi Mitra Program',
+      status: 'Terbit',
+      createdAt: '2026-01-05'
+    },
+    {
+      id: 'PRG-06',
+      categoryId: 'kategori-5',
+      categoryNum: 5,
+      categoryTitle: 'Forum & Advokasi Pendidikan',
+      categoryDesc: 'Membangun ruang diskursus kebijakan, publikasi riset implementasi di lapangan, dan advokasi arah tren pendidikan nasional.',
+      divisi: 'Guruverse.ID',
+      title: 'Education Outlook — Forum Tahunan Pendidikan',
+      cover: '../assets/layanan-program/Web Banner Education Maret 2026-03.jpg',
+      quote: 'Forum hybrid tahunan yang menghadirkan pembuat kebijakan, akademisi, dan praktisi pendidikan untuk membahas arah dan tren pendidikan nasional.',
+      buktiKapasitas: 'Edisi 2026 digelar hybrid di Bandung, 6 Desember 2025, dihadiri perwakilan Kemendikdasmen, DPR RI Komisi X, dan UPI, diikuti ratusan pendidik.',
+      kebutuhanDukungan: 'Dana sebagian (sponsorship), In-kind (venue, media)',
+      metric: 'Edisi 2026 Hybrid Bandung',
+      actionLink: 'jadi-mitra-program.html',
+      actionText: 'Jadi Mitra Program',
+      status: 'Terbit',
+      createdAt: '2026-01-06'
+    },
+    {
+      id: 'PRG-07',
+      categoryId: 'kategori-6',
+      categoryNum: 6,
+      categoryTitle: 'Kepemimpinan & Manajemen Sekolah',
+      categoryDesc: 'Layanan konsultasi dan pendampingan manajemen sekolah, strategi SPMB/PPDB, serta studi kelayakan pendirian unit pendidikan.',
+      divisi: 'Guruverse.ID',
+      title: 'Konsultasi & Pendampingan Manajemen Sekolah',
+      cover: '../assets/layanan-program/Workshop SPMB.jpg',
+      quote: 'Layanan konsultasi fleksibel bagi sekolah atau yayasan lain — mencakup manajemen sekolah, strategi PPDB/SPMB, hingga studi kelayakan (feasibility study) pendirian atau pengembangan sekolah. Tim yang menangani menyesuaikan kebutuhan spesifik klien.',
+      buktiKapasitas: 'Pernah dijalankan lewat Ceria Training Center (Bengkel Manajemen Sekolah & SPMB), didukung pengalaman langsung ACF mengelola jaringan 10 Sekolah Juara dan 7 Sekolah Daya Setara.',
+      kebutuhanDukungan: 'Jasa konsultasi berbayar (revenue line ACF, di bawah Guruverse.ID)',
+      metric: 'Pengalaman 10 Sekolah Juara & 7 Sekolah Daya Setara',
+      actionLink: 'jadi-mitra-program.html',
+      actionText: 'Jadi Mitra Program',
+      status: 'Terbit',
+      createdAt: '2026-01-07'
+    }
+  ];
   const btnPreviewEditDirectFooter = document.getElementById('btnPreviewEditDirectFooter');
   const previewArticleStatusBadge = document.getElementById('previewArticleStatusBadge');
   const previewArticleCategory = document.getElementById('previewArticleCategory');
@@ -499,18 +693,62 @@
 
   function switchDashboardView(viewId) {
     activeDashboard = viewId;
-    if (viewId === 'viewDashboardForms') {
+    if (viewId === 'viewDashboardPrograms') {
+      if (btnNavPrograms) btnNavPrograms.classList.add('active');
+      if (btnNavArticles) btnNavArticles.classList.remove('active');
+      if (btnNavForms) btnNavForms.classList.remove('active');
+
+      if (viewDashboardPrograms) {
+        viewDashboardPrograms.style.display = 'block';
+        viewDashboardPrograms.classList.add('active');
+      }
+      if (viewDashboardArticles) {
+        viewDashboardArticles.style.display = 'none';
+        viewDashboardArticles.classList.remove('active');
+      }
+      if (viewDashboardForms) {
+        viewDashboardForms.style.display = 'none';
+        viewDashboardForms.classList.remove('active');
+      }
+      renderTablePrograms();
+      updateProgramMetrics();
+    } else if (viewId === 'viewDashboardForms') {
       if (btnNavForms) btnNavForms.classList.add('active');
       if (btnNavArticles) btnNavArticles.classList.remove('active');
-      if (viewDashboardForms) viewDashboardForms.classList.add('active');
-      if (viewDashboardArticles) viewDashboardArticles.classList.remove('active');
+      if (btnNavPrograms) btnNavPrograms.classList.remove('active');
+
+      if (viewDashboardForms) {
+        viewDashboardForms.style.display = 'block';
+        viewDashboardForms.classList.add('active');
+      }
+      if (viewDashboardArticles) {
+        viewDashboardArticles.style.display = 'none';
+        viewDashboardArticles.classList.remove('active');
+      }
+      if (viewDashboardPrograms) {
+        viewDashboardPrograms.style.display = 'none';
+        viewDashboardPrograms.classList.remove('active');
+      }
       renderTableMitra();
       renderTableRelawan();
     } else {
-      if (btnNavForms) btnNavForms.classList.remove('active');
+      // Default to viewDashboardArticles
       if (btnNavArticles) btnNavArticles.classList.add('active');
-      if (viewDashboardForms) viewDashboardForms.classList.remove('active');
-      if (viewDashboardArticles) viewDashboardArticles.classList.add('active');
+      if (btnNavForms) btnNavForms.classList.remove('active');
+      if (btnNavPrograms) btnNavPrograms.classList.remove('active');
+
+      if (viewDashboardArticles) {
+        viewDashboardArticles.style.display = 'block';
+        viewDashboardArticles.classList.add('active');
+      }
+      if (viewDashboardForms) {
+        viewDashboardForms.style.display = 'none';
+        viewDashboardForms.classList.remove('active');
+      }
+      if (viewDashboardPrograms) {
+        viewDashboardPrograms.style.display = 'none';
+        viewDashboardPrograms.classList.remove('active');
+      }
       renderTableArticles();
     }
   }
@@ -936,6 +1174,7 @@
         }
       });
 
+      loadProgramsData();
       renderCategorySelects();
       renderAll();
 
@@ -975,6 +1214,8 @@
     renderTableMitra();
     renderTableRelawan();
     renderTableArticles();
+    renderTablePrograms();
+    updateProgramMetrics();
   }
 
   function updateMetricCards() {
@@ -3067,6 +3308,596 @@
   }
 
   /* ===================================================
+     8.5. PROGRAM LAYANAN MANAGEMENT ENGINE
+     =================================================== */
+  function loadProgramsData() {
+    try {
+      const stored = localStorage.getItem('acf_programs_data');
+      if (stored) {
+        dataPrograms = JSON.parse(stored);
+      }
+    } catch (e) {
+      dataPrograms = [];
+    }
+
+    if (!Array.isArray(dataPrograms) || dataPrograms.length === 0) {
+      dataPrograms = JSON.parse(JSON.stringify(DEFAULT_PROGRAMS_DATA));
+      saveProgramsData();
+    }
+
+    populateProgramCategoryOptions();
+    updateProgramMetrics();
+  }
+
+  function saveProgramsData() {
+    try {
+      localStorage.setItem('acf_programs_data', JSON.stringify(dataPrograms));
+    } catch (e) {
+      console.error('Gagal menyimpan program ke localStorage:', e);
+    }
+    updateProgramMetrics();
+  }
+
+  function updateProgramMetrics() {
+    const total = dataPrograms.length;
+    const published = dataPrograms.filter(p => p.status === 'Terbit').length;
+    const draft = total - published;
+
+    const uniqueCats = new Set(dataPrograms.map(p => p.categoryId || 'kategori-1'));
+    const catCount = uniqueCats.size || DEFAULT_PROGRAM_CATEGORIES.length;
+
+    if (countTotalPrograms) countTotalPrograms.textContent = total;
+    if (countPublishedPrograms) countPublishedPrograms.textContent = published;
+    if (countDraftPrograms) countDraftPrograms.textContent = draft;
+    if (countCategoriesPrograms) countCategoriesPrograms.textContent = catCount;
+    if (badgeNavProgramsCount) badgeNavProgramsCount.textContent = total;
+  }
+
+  function populateProgramCategoryOptions() {
+    // Kumpulkan seluruh kategori yang ada
+    const catMap = new Map();
+    DEFAULT_PROGRAM_CATEGORIES.forEach(c => catMap.set(c.id, c));
+    dataPrograms.forEach(p => {
+      const cid = p.categoryId || 'kategori-1';
+      if (!catMap.has(cid)) {
+        catMap.set(cid, {
+          id: cid,
+          num: p.categoryNum || (catMap.size + 1),
+          title: (p.categoryTitle || '').replace(/\s*\(\d+\s*Program\)/i, '').trim(),
+          desc: p.categoryDesc || ''
+        });
+      }
+    });
+
+    const categories = Array.from(catMap.values()).sort((a, b) => (a.num || 0) - (b.num || 0));
+
+    // 1. Populate filter dropdown di tabel
+    if (filterProgramCategory) {
+      const currentVal = filterProgramCategory.value;
+      filterProgramCategory.innerHTML = '<option value="all">Semua Kategori Induk</option>';
+      categories.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.num}. ${c.title}`;
+        filterProgramCategory.appendChild(opt);
+      });
+      if (currentVal && categories.some(c => c.id === currentVal)) {
+        filterProgramCategory.value = currentVal;
+      }
+    }
+
+    // 2. Populate modal category select
+    if (programCategorySelect) {
+      const currentVal = programCategorySelect.value;
+      programCategorySelect.innerHTML = '';
+      categories.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.num}. ${c.title}`;
+        programCategorySelect.appendChild(opt);
+      });
+      const newOpt = document.createElement('option');
+      newOpt.value = '__NEW__';
+      newOpt.textContent = '+ Tambah Kategori Baru...';
+      programCategorySelect.appendChild(newOpt);
+
+      if (currentVal && (categories.some(c => c.id === currentVal) || currentVal === '__NEW__')) {
+        programCategorySelect.value = currentVal;
+      }
+    }
+  }
+
+  function getProgramCategoryMeta(categoryId) {
+    const found = DEFAULT_PROGRAM_CATEGORIES.find(c => c.id === categoryId);
+    if (found) return found;
+    const prog = dataPrograms.find(p => p.categoryId === categoryId);
+    if (prog) {
+      return {
+        id: prog.categoryId,
+        num: prog.categoryNum || 1,
+        title: prog.categoryTitle || 'Kategori Program',
+        desc: prog.categoryDesc || ''
+      };
+    }
+    return {
+      id: categoryId,
+      num: 1,
+      title: 'Kategori Program',
+      desc: ''
+    };
+  }
+
+  // Render Table Program Layanan
+  function renderTablePrograms() {
+    if (!programsTableBody) return;
+
+    const query = (searchProgramInput?.value || '').toLowerCase().trim();
+    const catFilter = filterProgramCategory?.value || 'all';
+    const statusFilter = filterProgramStatus?.value || 'all';
+
+    const filtered = dataPrograms.filter(prog => {
+      const matchQuery = !query ||
+        (prog.title || '').toLowerCase().includes(query) ||
+        (prog.divisi || '').toLowerCase().includes(query) ||
+        (prog.quote || '').toLowerCase().includes(query) ||
+        (prog.metric || '').toLowerCase().includes(query);
+
+      const matchCat = catFilter === 'all' || prog.categoryId === catFilter;
+      const matchStatus = statusFilter === 'all' || prog.status === statusFilter;
+
+      return matchQuery && matchCat && matchStatus;
+    });
+
+    programsTableBody.innerHTML = '';
+
+    if (filtered.length === 0) {
+      if (emptyPrograms) emptyPrograms.style.display = 'block';
+    } else {
+      if (emptyPrograms) emptyPrograms.style.display = 'none';
+
+      filtered.forEach((prog, idx) => {
+        const isDraft = (prog.status === 'Draf');
+        const catMeta = getProgramCategoryMeta(prog.categoryId);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight: 600; color: #64748B; text-align: center;">${idx + 1}</td>
+          <td style="width: 70px;">
+            <img src="${escapeHTML(prog.cover || '../assets/unit-pendidikan/Sekolah Juara.jpg')}" alt="Cover" class="program-table-thumb" onerror="this.src='../assets/unit-pendidikan/Sekolah Juara.jpg'">
+          </td>
+          <td>
+            <div style="font-weight: 700; color: #1E293B; font-size: 0.94rem; margin-bottom: 2px;">
+              ${escapeHTML(prog.title || '-')}
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <span class="program-table-divisi-badge">Divisi: ${escapeHTML(prog.divisi || '-')}</span>
+              <span style="font-size: 0.78rem; color: #64748B;">ID: ${escapeHTML(prog.id || '-')}</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #64748B; margin-top: 4px; line-height: 1.4; max-width: 480px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              ${escapeHTML(prog.quote || '')}
+            </div>
+          </td>
+          <td>
+            <span class="program-table-cat-badge">
+              ${catMeta.num}. ${escapeHTML(catMeta.title)}
+            </span>
+          </td>
+          <td>
+            <div style="font-size: 0.84rem; font-weight: 600; color: #1E293B;">
+              ${escapeHTML(prog.metric || '-')}
+            </div>
+            <div style="font-size: 0.76rem; color: #64748B;">
+              ${escapeHTML(prog.kebutuhanDukungan || '-')}
+            </div>
+          </td>
+          <td>
+            <button type="button" class="${isDraft ? 'badge-program-draf' : 'badge-program-terbit'}" onclick="window.handleToggleProgramStatusDirect('${prog.id}')" title="Klik untuk mengubah status (Terbit / Draf)" style="cursor: pointer; border: none;">
+              ${isDraft ? 'Draf' : 'Terbit'}
+            </button>
+          </td>
+          <td>
+            <div class="row-action-btns" style="display: flex; gap: 6px; justify-content: flex-end;">
+              <button type="button" class="btn-table-action" onclick="window.handlePreviewProgramDirect('${prog.id}')" title="Lihat Pratinjau Lengkap">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+              <button type="button" class="btn-table-action" onclick="window.handleEditProgramDirect('${prog.id}')" title="Edit Program">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button type="button" class="btn-table-action action-delete" onclick="window.handleDeleteProgramDirect('${prog.id}')" title="Hapus Program">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </td>
+        `;
+        programsTableBody.appendChild(tr);
+      });
+    }
+  }
+
+  // Generate Exact Card HTML for Live Preview & Public Layout
+  function renderProgramCardHTML(prog) {
+    const title = escapeHTML(prog.title || 'Judul Program Layanan');
+    const divisi = escapeHTML(prog.divisi || 'Divisi Program');
+    const quote = escapeHTML(prog.quote || 'Ringkasan penjelasan program layanan...');
+    const cover = escapeHTML(prog.cover || '../assets/unit-pendidikan/Sekolah Juara.jpg');
+    const bukti = escapeHTML(prog.buktiKapasitas || '');
+    const kebutuhan = escapeHTML(prog.kebutuhanDukungan || '');
+    const metric = escapeHTML(prog.metric || 'Metrik Program');
+    const actionText = escapeHTML(prog.actionText || 'Jadi Mitra Program');
+    const actionLink = escapeHTML(prog.actionLink || 'jadi-mitra-program.html');
+
+    return `
+      <article class="program-detail-card visible" style="margin: 0; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
+        <div class="program-card-img-wrap">
+          <img src="${cover}" alt="${title}" class="program-card-img" onerror="this.src='../assets/unit-pendidikan/Sekolah Juara.jpg'">
+        </div>
+        <div class="program-card-content">
+          <div class="program-card-header-meta">
+            <span class="program-divisi-tag">Divisi: ${divisi}</span>
+          </div>
+          <h4 style="font-size: 1.25rem; font-weight: 700; color: #1E293B; margin-bottom: 12px; line-height: 1.35;">${title}</h4>
+          <div class="program-quote-box" style="margin-bottom: 14px;">
+            <p style="margin: 0; font-size: 0.9rem; line-height: 1.6; color: #334155;">${quote}</p>
+          </div>
+          <div class="program-meta-list" style="margin-bottom: 16px;">
+            ${bukti ? `
+              <div class="program-meta-item">
+                <span class="program-meta-label">Bukti Kapasitas:</span>
+                <span class="program-meta-val">${bukti}</span>
+              </div>
+            ` : ''}
+            ${kebutuhan ? `
+              <div class="program-meta-item">
+                <span class="program-meta-label">Kebutuhan Dukungan:</span>
+                <span class="program-meta-val">${kebutuhan}</span>
+              </div>
+            ` : ''}
+          </div>
+          <div class="program-card-footer">
+            <div class="program-metric-item">
+              <span class="metric-bullet"></span>
+              <span style="font-weight: 600; color: #1E293B; font-size: 0.88rem;">${metric}</span>
+            </div>
+            <a href="${actionLink}" class="btn-jadi-mitra-program" onclick="return false;">
+              <span>${actionText}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  // Update Live Preview Inside Modal
+  function updateProgramLivePreview() {
+    if (!programLivePreviewContainer) return;
+
+    let catTitle = '';
+    const selectedCatVal = programCategorySelect?.value;
+    if (selectedCatVal === '__NEW__') {
+      catTitle = newCategoryTitle?.value || 'Kategori Baru';
+    } else {
+      const catMeta = getProgramCategoryMeta(selectedCatVal);
+      catTitle = catMeta.title;
+    }
+
+    const progData = {
+      title: programTitle?.value.trim() || 'Nama Program Baru',
+      divisi: programDivisi?.value.trim() || 'Divisi Penanggung Jawab',
+      quote: programQuote?.value.trim() || 'Ringkasan dan misi program ini...',
+      buktiKapasitas: programBuktiKapasitas?.value.trim() || '',
+      kebutuhanDukungan: programKebutuhanDukungan?.value.trim() || '',
+      metric: programMetric?.value.trim() || 'Capaian Program',
+      cover: programCoverUrlInput?.value.trim() || '../assets/unit-pendidikan/Sekolah Juara.jpg',
+      actionText: programActionText?.value.trim() || 'Jadi Mitra Program',
+      actionLink: programActionLink?.value.trim() || 'jadi-mitra-program.html'
+    };
+
+    programLivePreviewContainer.innerHTML = renderProgramCardHTML(progData);
+  }
+
+  // Modal Open/Close
+  function openCreateProgramModal() {
+    if (!programModal) return;
+
+    if (programModalTitle) programModalTitle.textContent = 'Buat Program Layanan Baru';
+    if (btnSaveProgramText) btnSaveProgramText.textContent = 'Simpan & Publikasikan';
+    if (programEditId) programEditId.value = '';
+
+    // Reset fields
+    if (programCategorySelect) programCategorySelect.value = 'kategori-1';
+    if (programDivisi) programDivisi.value = '';
+    if (programTitle) programTitle.value = '';
+    if (programQuote) programQuote.value = '';
+    if (programBuktiKapasitas) programBuktiKapasitas.value = '';
+    if (programKebutuhanDukungan) programKebutuhanDukungan.value = '';
+    if (programMetric) programMetric.value = '';
+    if (programStatus) programStatus.value = 'Terbit';
+    if (programCoverUrlInput) programCoverUrlInput.value = '../assets/unit-pendidikan/Sekolah Juara.jpg';
+    if (programCoverPreviewImg) programCoverPreviewImg.src = '../assets/unit-pendidikan/Sekolah Juara.jpg';
+    if (programActionText) programActionText.value = 'Jadi Mitra Program';
+    if (programActionLink) programActionLink.value = 'jadi-mitra-program.html';
+
+    if (newCategoryFieldsWrap) newCategoryFieldsWrap.style.display = 'none';
+
+    updateProgramLivePreview();
+    programModal.style.display = 'flex';
+  }
+
+  function openEditProgramModal(id) {
+    if (!programModal) return;
+
+    const prog = dataPrograms.find(p => p.id === id);
+    if (!prog) return;
+
+    if (programModalTitle) programModalTitle.textContent = 'Edit Program Layanan';
+    if (btnSaveProgramText) btnSaveProgramText.textContent = 'Perbarui Program';
+    if (programEditId) programEditId.value = prog.id;
+
+    if (programCategorySelect) {
+      if (Array.from(programCategorySelect.options).some(o => o.value === prog.categoryId)) {
+        programCategorySelect.value = prog.categoryId;
+        if (newCategoryFieldsWrap) newCategoryFieldsWrap.style.display = 'none';
+      } else {
+        programCategorySelect.value = '__NEW__';
+        if (newCategoryFieldsWrap) newCategoryFieldsWrap.style.display = 'block';
+        if (newCategoryNum) newCategoryNum.value = prog.categoryNum || '';
+        if (newCategoryTitle) newCategoryTitle.value = prog.categoryTitle || '';
+        if (newCategoryDesc) newCategoryDesc.value = prog.categoryDesc || '';
+      }
+    }
+
+    if (programDivisi) programDivisi.value = prog.divisi || '';
+    if (programTitle) programTitle.value = prog.title || '';
+    if (programQuote) programQuote.value = prog.quote || '';
+    if (programBuktiKapasitas) programBuktiKapasitas.value = prog.buktiKapasitas || '';
+    if (programKebutuhanDukungan) programKebutuhanDukungan.value = prog.kebutuhanDukungan || '';
+    if (programMetric) programMetric.value = prog.metric || '';
+    if (programStatus) programStatus.value = prog.status || 'Terbit';
+    if (programCoverUrlInput) programCoverUrlInput.value = prog.cover || '';
+    if (programCoverPreviewImg) programCoverPreviewImg.src = prog.cover || '../assets/unit-pendidikan/Sekolah Juara.jpg';
+    if (programActionText) programActionText.value = prog.actionText || 'Jadi Mitra Program';
+    if (programActionLink) programActionLink.value = prog.actionLink || 'jadi-mitra-program.html';
+
+    updateProgramLivePreview();
+    programModal.style.display = 'flex';
+  }
+
+  function closeProgramModal() {
+    if (programModal) programModal.style.display = 'none';
+  }
+
+  // Handle Form Submit (Save / Edit)
+  async function handleSaveProgram(e) {
+    if (e) e.preventDefault();
+
+    const title = programTitle?.value.trim();
+    const divisi = programDivisi?.value.trim();
+    const quote = programQuote?.value.trim();
+    const metric = programMetric?.value.trim();
+
+    if (!title || !divisi || !quote || !metric) {
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Field Belum Lengkap',
+          text: 'Harap lengkapi Judul, Divisi, Deskripsi Kutipan, dan Metrik Program.',
+          confirmButtonText: 'OK',
+          customClass: { popup: 'acf-swal-popup', confirmButton: 'btn-swal-confirm' },
+          buttonsStyling: false
+        });
+      } else {
+        alert('Harap lengkapi semua field bertanda bintang (*).');
+      }
+      return;
+    }
+
+    let categoryId = programCategorySelect?.value;
+    let categoryNum = 1;
+    let categoryTitle = '';
+    let categoryDesc = '';
+
+    if (categoryId === '__NEW__') {
+      const customTitle = newCategoryTitle?.value.trim();
+      if (!customTitle) {
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Kategori Belum Diisi',
+            text: 'Harap masukkan Judul Kategori Baru.',
+            confirmButtonText: 'OK',
+            customClass: { popup: 'acf-swal-popup', confirmButton: 'btn-swal-confirm' },
+            buttonsStyling: false
+          });
+        }
+        return;
+      }
+      categoryId = 'kategori-' + Date.now();
+      categoryNum = parseInt(newCategoryNum?.value, 10) || (dataPrograms.length + 1);
+      categoryTitle = customTitle;
+      categoryDesc = newCategoryDesc?.value.trim() || '';
+    } else {
+      const catMeta = getProgramCategoryMeta(categoryId);
+      categoryNum = catMeta.num;
+      categoryTitle = catMeta.title;
+      categoryDesc = catMeta.desc;
+    }
+
+    const editId = programEditId?.value.trim();
+    const isEdit = Boolean(editId);
+
+    const programObj = {
+      id: isEdit ? editId : ('PRG-' + String(Date.now()).slice(-6)),
+      categoryId,
+      categoryNum,
+      categoryTitle,
+      categoryDesc,
+      divisi,
+      title,
+      cover: programCoverUrlInput?.value.trim() || '../assets/unit-pendidikan/Sekolah Juara.jpg',
+      quote,
+      buktiKapasitas: programBuktiKapasitas?.value.trim() || '',
+      kebutuhanDukungan: programKebutuhanDukungan?.value.trim() || '',
+      metric,
+      actionText: programActionText?.value.trim() || 'Jadi Mitra Program',
+      actionLink: programActionLink?.value.trim() || 'jadi-mitra-program.html',
+      status: programStatus?.value || 'Terbit',
+      updatedAt: new Date().toISOString()
+    };
+
+    if (isEdit) {
+      const index = dataPrograms.findIndex(p => p.id === editId);
+      if (index !== -1) {
+        programObj.createdAt = dataPrograms[index].createdAt || new Date().toISOString();
+        dataPrograms[index] = programObj;
+      }
+    } else {
+      programObj.createdAt = new Date().toISOString();
+      dataPrograms.push(programObj);
+    }
+
+    saveProgramsData();
+    populateProgramCategoryOptions();
+    renderTablePrograms();
+    closeProgramModal();
+
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        icon: 'success',
+        title: isEdit ? 'Program Diperbarui' : 'Program Berhasil Dibuat',
+        html: `Program <strong>${escapeHTML(title)}</strong> berhasil disimpan.<br>Status: <strong>${programObj.status}</strong> ${programObj.status === 'Terbit' ? '(Tampil di Halaman Publik)' : '(Tersimpan sebagai Draf)'}.`,
+        confirmButtonText: 'Selesai',
+        customClass: { popup: 'acf-swal-popup', confirmButton: 'btn-swal-confirm' },
+        buttonsStyling: false
+      });
+    } else {
+      showToast('Program berhasil disimpan.', 'success');
+    }
+  }
+
+  // Handle Delete Program
+  async function handleDeleteProgram(id) {
+    const prog = dataPrograms.find(p => p.id === id);
+    if (!prog) return;
+
+    if (typeof Swal !== 'undefined') {
+      const res = await Swal.fire({
+        title: 'Hapus Program Layanan?',
+        html: `Apakah Anda yakin ingin menghapus program <strong>"${escapeHTML(prog.title)}"</strong>?<br><small style="color: #64748B;">Program yang dihapus tidak akan ditampilkan lagi di halaman program layanan publik.</small>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        customClass: {
+          popup: 'acf-swal-popup',
+          confirmButton: 'btn-swal-confirm btn-swal-danger',
+          cancelButton: 'btn-swal-cancel'
+        },
+        buttonsStyling: false
+      });
+
+      if (!res.isConfirmed) return;
+    }
+
+    dataPrograms = dataPrograms.filter(p => p.id !== id);
+    saveProgramsData();
+    populateProgramCategoryOptions();
+    renderTablePrograms();
+
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        icon: 'success',
+        title: 'Program Dihapus',
+        text: 'Program layanan berhasil dihapus dari sistem.',
+        timer: 1600,
+        showConfirmButton: false,
+        customClass: { popup: 'acf-swal-popup' }
+      });
+    } else {
+      showToast('Program berhasil dihapus.', 'info');
+    }
+  }
+
+  // Quick Toggle Status
+  function handleToggleProgramStatus(id) {
+    const prog = dataPrograms.find(p => p.id === id);
+    if (!prog) return;
+
+    prog.status = (prog.status === 'Terbit') ? 'Draf' : 'Terbit';
+    saveProgramsData();
+    renderTablePrograms();
+
+    showToast(`Status program "${prog.title.substring(0, 24)}..." diubah ke ${prog.status}.`, 'info');
+  }
+
+  // Reset to 7 Default Programs
+  async function handleResetProgramsDefault() {
+    if (typeof Swal !== 'undefined') {
+      const res = await Swal.fire({
+        title: 'Reset Program ke Bawaan?',
+        html: 'Tindakan ini akan mengembalikan daftar program ke <strong>7 Program Bawaan Sistem</strong> dan membatalkan perubahan yang belum tersinkronisasi.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Reset Default',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        customClass: {
+          popup: 'acf-swal-popup',
+          confirmButton: 'btn-swal-confirm',
+          cancelButton: 'btn-swal-cancel'
+        },
+        buttonsStyling: false
+      });
+
+      if (!res.isConfirmed) return;
+    }
+
+    dataPrograms = JSON.parse(JSON.stringify(DEFAULT_PROGRAMS_DATA));
+    saveProgramsData();
+    populateProgramCategoryOptions();
+    renderTablePrograms();
+
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil Direset',
+        text: 'Data program telah dikembalikan ke 7 program default.',
+        timer: 1800,
+        showConfirmButton: false,
+        customClass: { popup: 'acf-swal-popup' }
+      });
+    }
+  }
+
+  // Open Preview Modal
+  function openProgramPreviewModal(id) {
+    const prog = dataPrograms.find(p => p.id === id);
+    if (!prog || !programPreviewModal || !programPreviewModalBody) return;
+
+    programPreviewModalBody.innerHTML = renderProgramCardHTML(prog);
+    programPreviewModal.style.display = 'flex';
+  }
+
+  function closeProgramPreviewModal() {
+    if (programPreviewModal) programPreviewModal.style.display = 'none';
+  }
+
+  // Global helper bindings for onclick in table rows
+  window.handleToggleProgramStatusDirect = function(id) {
+    handleToggleProgramStatus(id);
+  };
+  window.handlePreviewProgramDirect = function(id) {
+    openProgramPreviewModal(id);
+  };
+  window.handleEditProgramDirect = function(id) {
+    openEditProgramModal(id);
+  };
+  window.handleDeleteProgramDirect = function(id) {
+    handleDeleteProgram(id);
+  };
+
+  /* ===================================================
      9. EVENT LISTENERS
      =================================================== */
   function setupEventListeners() {
@@ -3121,6 +3952,111 @@
     }
     if (btnNavArticles) {
       btnNavArticles.addEventListener('click', () => switchDashboardView('viewDashboardArticles'));
+    }
+    if (btnNavPrograms) {
+      btnNavPrograms.addEventListener('click', () => switchDashboardView('viewDashboardPrograms'));
+    }
+
+    // Program Layanan Listeners
+    if (searchProgramInput) {
+      searchProgramInput.addEventListener('input', renderTablePrograms);
+    }
+    if (filterProgramCategory) {
+      filterProgramCategory.addEventListener('change', renderTablePrograms);
+    }
+    if (filterProgramStatus) {
+      filterProgramStatus.addEventListener('change', renderTablePrograms);
+    }
+    if (btnResetProgramsDefault) {
+      btnResetProgramsDefault.addEventListener('click', handleResetProgramsDefault);
+    }
+    if (btnOpenCreateProgramModal) {
+      btnOpenCreateProgramModal.addEventListener('click', openCreateProgramModal);
+    }
+    if (btnCloseProgramModal) {
+      btnCloseProgramModal.addEventListener('click', closeProgramModal);
+    }
+    if (btnCancelProgramModal) {
+      btnCancelProgramModal.addEventListener('click', closeProgramModal);
+    }
+    if (programForm) {
+      programForm.addEventListener('submit', handleSaveProgram);
+    }
+
+    // Category Select change listener
+    if (programCategorySelect) {
+      programCategorySelect.addEventListener('change', () => {
+        if (newCategoryFieldsWrap) {
+          if (programCategorySelect.value === '__NEW__') {
+            newCategoryFieldsWrap.style.display = 'block';
+          } else {
+            newCategoryFieldsWrap.style.display = 'none';
+          }
+        }
+        updateProgramLivePreview();
+      });
+    }
+
+    // Realtime live preview input listeners
+    const livePreviewInputEls = [
+      programTitle, programDivisi, programQuote,
+      programBuktiKapasitas, programKebutuhanDukungan,
+      programMetric, programCoverUrlInput, programActionText, programActionLink,
+      newCategoryTitle
+    ];
+    livePreviewInputEls.forEach(el => {
+      if (el) {
+        el.addEventListener('input', updateProgramLivePreview);
+      }
+    });
+
+    // Program cover file upload
+    if (programCoverFileInput) {
+      programCoverFileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+          showToast('Harap pilih file gambar (JPG, PNG, WebP).', 'warning');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const base64 = evt.target.result;
+          if (programCoverUrlInput) programCoverUrlInput.value = base64;
+          if (programCoverPreviewImg) programCoverPreviewImg.src = base64;
+          updateProgramLivePreview();
+          showToast('Foto program berhasil dimuat.', 'info');
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Reset program cover button
+    if (btnResetProgramCover) {
+      btnResetProgramCover.addEventListener('click', () => {
+        const defaultCover = '../assets/unit-pendidikan/Sekolah Juara.jpg';
+        if (programCoverUrlInput) programCoverUrlInput.value = defaultCover;
+        if (programCoverPreviewImg) programCoverPreviewImg.src = defaultCover;
+        if (programCoverFileInput) programCoverFileInput.value = '';
+        updateProgramLivePreview();
+      });
+    }
+
+    // Program Preview Modal Close
+    if (btnCloseProgramPreview) {
+      btnCloseProgramPreview.addEventListener('click', closeProgramPreviewModal);
+    }
+    if (programPreviewModal) {
+      programPreviewModal.addEventListener('click', (e) => {
+        if (e.target === programPreviewModal) closeProgramPreviewModal();
+      });
+    }
+    if (programModal) {
+      programModal.addEventListener('click', (e) => {
+        if (e.target === programModal) closeProgramModal();
+      });
     }
 
     // Google Spreadsheet Dropdown Toggle

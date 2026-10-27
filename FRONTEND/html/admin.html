@@ -181,6 +181,22 @@
       </div>
     </header>
 
+    <!-- Pre-render Active View Script (Mencegah kedipan saat refresh) -->
+    <script>
+      (function() {
+        try {
+          var h = (window.location.hash || '').toLowerCase();
+          var v = (h === '#program' || h === '#programs') ? 'viewDashboardPrograms' :
+                  (h === '#data-form' || h === '#forms' || h === '#mitra' || h === '#relawan') ? 'viewDashboardForms' :
+                  (h === '#kabar' || h === '#artikel') ? 'viewDashboardArticles' :
+                  localStorage.getItem('acf_admin_active_view');
+          if (v && v !== 'viewDashboardArticles') {
+            document.write('<style id="preRenderViewStyle">#viewDashboardArticles{display:none!important}#' + v + '{display:block!important}</style>');
+          }
+        } catch(e) {}
+      })();
+    </script>
+
     <!-- Main Content Area -->
     <main class="admin-main-content">
       
@@ -2082,7 +2098,7 @@
     }
   </script>
   <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
-  <script src="../js/admin.js?v=20261027_clean_topbar_v6"></script>
+  <script src="../js/admin.js?v=20261027_persist_view_v7"></script>
 
 
 

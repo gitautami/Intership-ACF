@@ -127,8 +127,32 @@
   let dataArticles = [];
   let dataCategories = [];
   let currentWpFetchedPosts = [];
-  let activeTab = 'tabMitra';
-  let activeDashboard = 'viewDashboardArticles';
+  // Persistence Helpers (Menjaga halaman yang sedang aktif agar tidak kembali ke default saat di-refresh)
+  function getInitialDashboardView() {
+    try {
+      const hash = (window.location.hash || '').toLowerCase();
+      if (hash === '#program' || hash === '#programs') return 'viewDashboardPrograms';
+      if (hash === '#data-form' || hash === '#forms' || hash === '#mitra' || hash === '#relawan') return 'viewDashboardForms';
+      if (hash === '#kabar' || hash === '#artikel') return 'viewDashboardArticles';
+
+      const saved = localStorage.getItem('acf_admin_active_view');
+      if (saved === 'viewDashboardPrograms' || saved === 'viewDashboardForms' || saved === 'viewDashboardArticles') {
+        return saved;
+      }
+    } catch (e) {}
+    return 'viewDashboardArticles';
+  }
+
+  function getInitialFormTab() {
+    try {
+      const saved = localStorage.getItem('acf_admin_active_form_tab');
+      if (saved === 'tabMitra' || saved === 'tabRelawan') return saved;
+    } catch (e) {}
+    return 'tabMitra';
+  }
+
+  let activeTab = getInitialFormTab();
+  let activeDashboard = getInitialDashboardView();
 
   // DOM Elements - Auth
   const loginScreen = document.getElementById('loginScreen');
@@ -557,6 +581,7 @@
     }
     loadAllData();
     renderAll();
+    switchDashboardView(activeDashboard);
   }
 
   function showLoginSuccessAlert(adminName) {
@@ -690,6 +715,18 @@
 
   function switchDashboardView(viewId) {
     activeDashboard = viewId;
+    try {
+      localStorage.setItem('acf_admin_active_view', viewId);
+      let hash = '#kabar';
+      if (viewId === 'viewDashboardPrograms') hash = '#program';
+      else if (viewId === 'viewDashboardForms') hash = '#data-form';
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, null, hash);
+      }
+      const preStyle = document.getElementById('preRenderViewStyle');
+      if (preStyle) preStyle.remove();
+    } catch (e) {}
+
     if (viewId === 'viewDashboardPrograms') {
       if (btnNavPrograms) btnNavPrograms.classList.add('active');
       if (btnNavArticles) btnNavArticles.classList.remove('active');
@@ -1234,6 +1271,7 @@
     renderTableArticles();
     renderTablePrograms();
     updateProgramMetrics();
+    switchDashboardView(activeDashboard);
   }
 
   function updateMetricCards() {
@@ -4983,6 +5021,9 @@
       btn.addEventListener('click', () => {
         const targetTab = btn.getAttribute('data-tab');
         activeTab = targetTab;
+        try {
+          localStorage.setItem('acf_admin_active_form_tab', targetTab);
+        } catch (e) {}
 
         formTabBtns.forEach(b => b.classList.remove('active'));
         formTabPanels.forEach(p => {
@@ -5671,6 +5712,14 @@
       }
       loadAllData();
       renderAll();
+    });
+
+    // Sinkronisasi perpindahan halaman saat tombol Back/Forward browser diklik
+    window.addEventListener('hashchange', () => {
+      const targetView = getInitialDashboardView();
+      if (targetView && targetView !== activeDashboard) {
+        switchDashboardView(targetView);
+      }
     });
   }
 

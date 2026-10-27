@@ -146,6 +146,8 @@
   const btnNavArticles = document.getElementById('btnNavArticles');
   const viewDashboardForms = document.getElementById('viewDashboardForms');
   const viewDashboardArticles = document.getElementById('viewDashboardArticles');
+  const sheetsDropdownWrap = document.getElementById('sheetsDropdownWrap');
+  const btnSheetsDropdown = document.getElementById('btnSheetsDropdown');
 
   // Dashboard 1 (Forms) Elements
   const countMitraEl = document.getElementById('countMitra');
@@ -707,6 +709,7 @@
         viewDashboardForms.style.display = 'none';
         viewDashboardForms.classList.remove('active');
       }
+      if (sheetsDropdownWrap) sheetsDropdownWrap.style.display = 'none';
       renderTablePrograms();
       updateProgramMetrics();
     } else if (viewId === 'viewDashboardForms') {
@@ -726,8 +729,10 @@
         viewDashboardPrograms.style.display = 'none';
         viewDashboardPrograms.classList.remove('active');
       }
+      if (sheetsDropdownWrap) sheetsDropdownWrap.style.display = 'inline-flex';
       renderTableMitra();
       renderTableRelawan();
+      updateMetricCards();
     } else {
       // Default to viewDashboardArticles
       if (btnNavArticles) btnNavArticles.classList.add('active');
@@ -746,6 +751,7 @@
         viewDashboardPrograms.style.display = 'none';
         viewDashboardPrograms.classList.remove('active');
       }
+      if (sheetsDropdownWrap) sheetsDropdownWrap.style.display = 'none';
       renderTableArticles();
     }
   }
@@ -4052,8 +4058,6 @@
     }
 
     // Google Spreadsheet Dropdown Toggle
-    const sheetsDropdownWrap = document.getElementById('sheetsDropdownWrap');
-    const btnSheetsDropdown = document.getElementById('btnSheetsDropdown');
     if (sheetsDropdownWrap && btnSheetsDropdown) {
       btnSheetsDropdown.addEventListener('click', (e) => {
         e.stopPropagation();

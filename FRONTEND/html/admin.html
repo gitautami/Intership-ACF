@@ -142,11 +142,15 @@
           <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="admin-brand-logo">
         </div>
 
-        <!-- Dual Dashboard Switcher: Kabar & Program Layanan -->
+        <!-- Triple Dashboard Switcher: Kabar, Formulir, & Program Layanan -->
         <div class="admin-nav-switcher">
           <button type="button" class="admin-nav-tab active" id="btnNavArticles" title="Kelola Publikasi Kabar & Berita">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
             <span>Kabar / Artikel</span>
+          </button>
+          <button type="button" class="admin-nav-tab" id="btnNavForms" title="Kelola Data Form Jadi Mitra & Relawan">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>Data Form Mitra & Relawan</span>
           </button>
           <button type="button" class="admin-nav-tab" id="btnNavPrograms" title="Kelola Program Layanan Pendidikan">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
@@ -166,7 +170,7 @@
           </div>
         </div>
 
-        <div class="admin-dropdown-wrap" id="sheetsDropdownWrap">
+        <div class="admin-dropdown-wrap" id="sheetsDropdownWrap" style="display: none;">
           <button type="button" class="btn-outline-action btn-sheets-dropdown" id="btnSheetsDropdown" title="Akses Google Spreadsheet Form Mitra & Relawan" aria-expanded="false">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
             <span>Spreadsheet Form</span>
@@ -221,14 +225,10 @@
         <div class="dashboard-header-row">
           <div>
             <h2 class="page-title">Manajemen & Publikasi Kabar</h2>
-            <p class="page-subtitle">Upload artikel baru, kelola publikasi berita ACF Eduhub, dan akses data respon formulir.</p>
+            <p class="page-subtitle">Upload artikel baru, kelola publikasi berita ACF Eduhub, dan arsip kabar edukasi.</p>
           </div>
 
           <div class="header-action-buttons">
-            <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=178961551#gid=178961551" target="_blank" rel="noopener noreferrer" class="btn-outline-action btn-sheet-header-btn" title="Buka Google Spreadsheet Data Mitra & Relawan">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
-              <span>Spreadsheet Form</span>
-            </a>
 
             <a href="kabar.html" target="_blank" class="btn-outline-action btn-kabar-header-btn" title="Lihat halaman kabar publik">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
@@ -274,6 +274,144 @@
               <span class="metric-label">Kategori Kabar ⚙️</span>
               <span class="metric-value" id="countArticleCategories">5</span>
               <span class="metric-meta">Klik untuk kelola & hapus &rarr;</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Article List Table Container -->
+        <div class="data-table-container">
+          
+          <!-- Toolbar (Search & Filter) -->
+          <div class="table-toolbar">
+            <div class="search-box-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="searchArticle" class="search-input" placeholder="Cari judul artikel, topik, penulis...">
+            </div>
+
+            <div class="toolbar-filters" style="display: flex; gap: 8px; align-items: center;">
+              <select id="filterCategoryArticle" class="select-filter">
+                <option value="all">Semua Kategori</option>
+                <option value="kabar-sekolah-daya-setara">Artikel Sekolah Daya Setara</option>
+                <option value="kabar-sekolah-juara">Artikel Sekolah Juara</option>
+                <option value="artikel">Artikel Pendidikan</option>
+                <option value="liputan">Liputan Lapangan</option>
+                <option value="vokasi">Program Vokasi</option>
+                <option value="opini">Kolaborasi & Opini</option>
+              </select>
+
+              <select id="filterStatusArticle" class="select-filter">
+                <option value="all">Semua Status</option>
+                <option value="Terbit">🟢 Terpublikasi</option>
+                <option value="Draf">🟡 Draf</option>
+              </select>
+
+              <button type="button" class="btn-outline-action" id="btnToolbarManageCategories" title="Kelola & Hapus Kategori" style="padding: 7px 12px; font-size: 0.82rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                <span>Kelola Kategori</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Articles -->
+          <div class="responsive-table-wrapper">
+            <table class="admin-table" id="tableArticles">
+              <thead>
+                <tr>
+                  <th>Artikel & Judul</th>
+                  <th>Kategori</th>
+                  <th>Penulis / Redaksi</th>
+                  <th>Tanggal Publikasi</th>
+                  <th>Status</th>
+                  <th style="text-align: center;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyArticles">
+                <!-- Diisi via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State Articles -->
+          <div class="empty-table-state" id="emptyArticles" style="display: none;">
+            <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            <div class="empty-table-title">Belum ada artikel yang cocok</div>
+            <p style="font-size: 0.85rem;">Klik tombol <strong>Tulis Artikel (WordPress Editor)</strong> untuk mempublikasikan artikel pertama Anda.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           DEDICATED SECTION: KELOLA DATA FORM JADI MITRA & RELAWAN
+           ============================================================ -->
+      <section class="dashboard-view-section" id="viewDashboardForms" style="display: none;">
+        
+        <!-- Page Header & Action Controls -->
+        <div class="dashboard-header-row">
+          <div>
+            <h2 class="page-title">Kelola Data Form Mitra & Relawan</h2>
+            <p class="page-subtitle">Akses dan kelola seluruh respon formulir pendaftaran <strong>Jadi Mitra</strong> dan <strong>Jadi Relawan</strong> yang terhubung ke Google Spreadsheet.</p>
+          </div>
+
+          <div class="header-action-buttons">
+            <a href="https://docs.google.com/spreadsheets/d/1W83sA-Tz-YrTe53Y4zuvV4ucdB198pQDR0gZn6_KfZU/edit?gid=178961551#gid=178961551" target="_blank" rel="noopener noreferrer" class="btn-outline-action btn-sheet-header-btn" title="Buka Google Spreadsheet Data Mitra & Relawan di tab baru">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+              <span>Buka Google Spreadsheet</span>
+            </a>
+
+            <button type="button" class="btn-outline-action" id="btnExportCSV" title="Unduh data tabel aktif sebagai file CSV">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="metric-grid">
+          
+          <div class="metric-card metric-purple">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Respon Jadi Mitra</span>
+              <span class="metric-value" id="countMitra">0</span>
+              <span class="metric-meta">Kemitraan Lembaga / Perusahaan</span>
+            </div>
+          </div>
+
+          <div class="metric-card metric-gold">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Pendaftar Relawan</span>
+              <span class="metric-value" id="countRelawan">0</span>
+              <span class="metric-meta">Relawan Edukasi & Pengajar</span>
+            </div>
+          </div>
+
+          <div class="metric-card metric-blue">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Menunggu Follow-up</span>
+              <span class="metric-value" id="countPending">0</span>
+              <span class="metric-meta">Perlu ditindaklanjuti</span>
+            </div>
+          </div>
+
+          <div class="metric-card metric-green">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Status Integrasi</span>
+              <span class="metric-value" style="font-size: 1.2rem; color: #16A34A;">Live Connected</span>
+              <span class="metric-meta">Sinkron Google Sheets</span>
             </div>
           </div>
 
@@ -352,64 +490,111 @@
           </div>
         </div>
 
-        <!-- Article List Table Container -->
-        <div class="data-table-container">
-          
-          <!-- Toolbar (Search & Filter) -->
-          <div class="table-toolbar">
-            <div class="search-box-wrap">
-              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="searchArticle" class="search-input" placeholder="Cari judul artikel, topik, penulis...">
+
+        <!-- Interactive Data Tables Container -->
+        <div class="data-table-container" style="margin-top: 24px;">
+          <!-- Tabs Navigation: Mitra & Relawan -->
+          <div class="tabs-navigation">
+            <button type="button" class="tab-btn active" data-tab="tabMitra" id="tabBtnMitra">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Respon Jadi Mitra</span>
+              <span class="tab-count-badge" id="badgeTabMitra">0</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="tabRelawan" id="tabBtnRelawan">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span>Respon Jadi Relawan</span>
+              <span class="tab-count-badge" id="badgeTabRelawan">0</span>
+            </button>
+          </div>
+
+          <!-- Panel: Data Mitra -->
+          <div class="tab-content-panel active" id="tabMitra">
+            <div class="table-toolbar">
+              <div class="search-box-wrap">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="searchMitra" class="search-input" placeholder="Cari lembaga, PIC, email, nomor WA...">
+              </div>
+              <div class="toolbar-filters" style="display: flex; gap: 8px; align-items: center;">
+                <select id="filterStatusMitra" class="select-filter">
+                  <option value="all">Semua Status</option>
+                  <option value="Menunggu">Menunggu</option>
+                  <option value="Sudah Dihubungi">Sudah Dihubungi</option>
+                  <option value="Diterima">Diterima</option>
+                  <option value="Arsip">Arsip</option>
+                </select>
+              </div>
             </div>
 
-            <div class="toolbar-filters" style="display: flex; gap: 8px; align-items: center;">
-              <select id="filterCategoryArticle" class="select-filter">
-                <option value="all">Semua Kategori</option>
-                <option value="kabar-sekolah-daya-setara">Artikel Sekolah Daya Setara</option>
-                <option value="kabar-sekolah-juara">Artikel Sekolah Juara</option>
-                <option value="artikel">Artikel Pendidikan</option>
-                <option value="liputan">Liputan Lapangan</option>
-                <option value="vokasi">Program Vokasi</option>
-                <option value="opini">Kolaborasi & Opini</option>
-              </select>
+            <div class="responsive-table-wrapper">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Waktu Masuk</th>
+                    <th>Instansi / Lembaga</th>
+                    <th>Nama PIC</th>
+                    <th>Kontak PIC</th>
+                    <th>Fokus Program</th>
+                    <th>Bentuk Dukungan</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyMitra"></tbody>
+              </table>
+            </div>
 
-              <select id="filterStatusArticle" class="select-filter">
-                <option value="all">Semua Status</option>
-                <option value="Terbit">🟢 Terpublikasi</option>
-                <option value="Draf">🟡 Draf</option>
-              </select>
-
-              <button type="button" class="btn-outline-action" id="btnToolbarManageCategories" title="Kelola & Hapus Kategori" style="padding: 7px 12px; font-size: 0.82rem;">
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                <span>Kelola Kategori</span>
-              </button>
+            <div class="empty-table-state" id="emptyMitra" style="display: none;">
+              <div class="sheet-main-icon" style="margin: 0 auto 12px; width: 48px; height: 48px; background: #F3E8FF; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="#7D2280"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div class="empty-table-title">Belum ada respon formulir mitra</div>
+              <p style="font-size: 0.85rem; color: #64748B;">Data respon baru dari formulir Jadi Mitra di website akan otomatis muncul di sini.</p>
             </div>
           </div>
 
-          <!-- Table Articles -->
-          <div class="responsive-table-wrapper">
-            <table class="admin-table" id="tableArticles">
-              <thead>
-                <tr>
-                  <th>Artikel & Judul</th>
-                  <th>Kategori</th>
-                  <th>Penulis / Redaksi</th>
-                  <th>Tanggal Publikasi</th>
-                  <th>Status</th>
-                  <th style="text-align: center;">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="tbodyArticles">
-                <!-- Diisi via JavaScript -->
-              </tbody>
-            </table>
-          </div>
+          <!-- Panel: Data Relawan -->
+          <div class="tab-content-panel" id="tabRelawan" style="display: none;">
+            <div class="table-toolbar">
+              <div class="search-box-wrap">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="searchRelawan" class="search-input" placeholder="Cari nama relawan, email, domisili...">
+              </div>
+              <div class="toolbar-filters" style="display: flex; gap: 8px; align-items: center;">
+                <select id="filterStatusRelawan" class="select-filter">
+                  <option value="all">Semua Status</option>
+                  <option value="Menunggu">Menunggu</option>
+                  <option value="Sudah Dihubungi">Sudah Dihubungi</option>
+                  <option value="Diterima">Diterima</option>
+                  <option value="Arsip">Arsip</option>
+                </select>
+              </div>
+            </div>
 
-          <!-- Empty State Articles -->
-          <div class="empty-table-state" id="emptyArticles" style="display: none;">
-            <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-            <div class="empty-table-title">Belum ada artikel yang cocok</div>
-            <p style="font-size: 0.85rem;">Klik tombol <strong>Tulis Artikel (WordPress Editor)</strong> untuk mempublikasikan artikel pertama Anda.</p>
+            <div class="responsive-table-wrapper">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Waktu Masuk</th>
+                    <th>Nama Relawan</th>
+                    <th>Kontak Relawan</th>
+                    <th>Domisili / Profesi</th>
+                    <th>Peran Diminati</th>
+                    <th>Komitmen</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyRelawan"></tbody>
+              </table>
+            </div>
+
+            <div class="empty-table-state" id="emptyRelawan" style="display: none;">
+              <div class="sheet-main-icon" style="margin: 0 auto 12px; width: 48px; height: 48px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="#D97706"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <div class="empty-table-title">Belum ada pendaftaran relawan</div>
+              <p style="font-size: 0.85rem; color: #64748B;">Data respon baru dari formulir Jadi Relawan di website akan otomatis muncul di sini.</p>
+            </div>
           </div>
 
         </div>
@@ -1904,6 +2089,32 @@
     </div>
   </div>
 
+  <!-- ==========================================
+       MODAL: DETAIL DATA FORM (MITRA / RELAWAN)
+       ========================================== -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h3 id="modalTitle" style="font-size: 1.15rem; font-weight: 700; color: #1E293B; margin: 0;">Detail Pendaftaran</h3>
+          <span class="sheet-badge-type badge-mitra" id="modalTypeBadge" style="font-size: 0.75rem;">Mitra Program</span>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnModalClose" title="Tutup">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Injected via openDetailModal -->
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid #E2E8F0; background: #FFFFFF;">
+        <button type="button" class="btn-cancel" id="btnModalCloseFooter" style="padding: 9px 18px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; color: #475569;">Tutup</button>
+        <div id="modalActions" style="display: flex; gap: 8px;">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div class="admin-toast-container" id="toastContainer"></div>
 
@@ -1915,7 +2126,7 @@
     }
   </script>
   <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
-  <script src="../js/admin.js?v=20261027_program_mgr_v7"></script>
+  <script src="../js/admin.js?v=20261027_hide_sheets_btn_v3"></script>
 
 
 

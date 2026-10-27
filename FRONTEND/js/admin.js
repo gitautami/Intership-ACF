@@ -146,8 +146,6 @@
   const btnNavArticles = document.getElementById('btnNavArticles');
   const viewDashboardForms = document.getElementById('viewDashboardForms');
   const viewDashboardArticles = document.getElementById('viewDashboardArticles');
-  const sheetsDropdownWrap = document.getElementById('sheetsDropdownWrap');
-  const btnSheetsDropdown = document.getElementById('btnSheetsDropdown');
 
   // Dashboard 1 (Forms) Elements
   const countMitraEl = document.getElementById('countMitra');
@@ -709,7 +707,6 @@
         viewDashboardForms.style.display = 'none';
         viewDashboardForms.classList.remove('active');
       }
-      if (sheetsDropdownWrap) sheetsDropdownWrap.style.display = 'none';
       renderTablePrograms();
       updateProgramMetrics();
     } else if (viewId === 'viewDashboardForms') {
@@ -729,7 +726,6 @@
         viewDashboardPrograms.style.display = 'none';
         viewDashboardPrograms.classList.remove('active');
       }
-      if (sheetsDropdownWrap) sheetsDropdownWrap.style.display = 'inline-flex';
 
       const allTabPanels = document.querySelectorAll('.tab-content-panel');
       const curTab = activeTab || 'tabMitra';
@@ -771,7 +767,6 @@
         viewDashboardPrograms.style.display = 'none';
         viewDashboardPrograms.classList.remove('active');
       }
-      if (sheetsDropdownWrap) sheetsDropdownWrap.style.display = 'none';
       renderTableArticles();
     }
   }
@@ -4077,21 +4072,7 @@
       });
     }
 
-    // Google Spreadsheet Dropdown Toggle
-    if (sheetsDropdownWrap && btnSheetsDropdown) {
-      btnSheetsDropdown.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isActive = sheetsDropdownWrap.classList.toggle('active');
-        btnSheetsDropdown.setAttribute('aria-expanded', isActive ? 'true' : 'false');
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!sheetsDropdownWrap.contains(e.target)) {
-          sheetsDropdownWrap.classList.remove('active');
-          btnSheetsDropdown.setAttribute('aria-expanded', 'false');
-        }
-      });
-    }
+    // Google Spreadsheet Dropdown Toggle (removed from navbar)
 
     // Copy Google Spreadsheet Link to Clipboard
     document.querySelectorAll('.btn-copy-sheet-link').forEach(btn => {

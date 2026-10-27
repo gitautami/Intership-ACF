@@ -434,7 +434,7 @@
               <span>Lihat Halaman Program</span>
             </a>
 
-            <button type="button" class="btn-create-article" id="btnOpenCreateProgramModal">
+            <button type="button" class="btn-create-article" id="btnOpenCreateProgramModal" onclick="window.openCreateProgramModal()">
               <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
               <span>Buat Program Baru</span>
             </button>
@@ -1746,23 +1746,10 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div class="admin-toast-container" id="toastContainer"></div>
-
-  <!-- JavaScript Modules -->
-  <script src="../js/sweetalert2.all.min.js"></script>
-  <script>
-    if (typeof Swal === 'undefined') {
-      document.write('<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"><\/script>');
-    }
-  </script>
-  <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
-  <script src="../js/admin.js?v=20261027_program_mgr_v2"></script>
-
   <!-- ==========================================
        MODAL: FORM BUAT / EDIT PROGRAM LAYANAN
        ========================================== -->
-  <div class="admin-modal-backdrop" id="programModal" style="display: none;">
+  <div class="admin-modal-backdrop" id="programModal">
     <div class="admin-modal-box" style="max-width: 860px; max-height: 90vh; display: flex; flex-direction: column;">
       
       <!-- Modal Header -->
@@ -1771,7 +1758,7 @@
           <span style="background: rgba(125, 34, 128, 0.1); color: #7D2280; font-size: 0.76rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">Program Layanan</span>
           <h3 class="modal-title" id="programModalTitle" style="font-size: 1.15rem; font-weight: 700; color: #1E293B; margin: 0;">Buat Program Layanan Baru</h3>
         </div>
-        <button type="button" class="btn-modal-close" id="btnCloseProgramModal" aria-label="Tutup form program" style="background: transparent; border: none; font-size: 1.5rem; color: #94A3B8; cursor: pointer;">&times;</button>
+        <button type="button" class="btn-modal-close" id="btnCloseProgramModal" onclick="window.closeProgramModal()" aria-label="Tutup form program" style="background: transparent; border: none; font-size: 1.5rem; color: #94A3B8; cursor: pointer;">&times;</button>
       </div>
 
       <!-- Modal Body (Form) -->
@@ -1918,7 +1905,7 @@
 
         <!-- Modal Footer -->
         <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #E2E8F0; display: flex; justify-content: flex-end; gap: 10px; background: #FFFFFF;">
-          <button type="button" class="btn-outline-action" id="btnCancelProgramModal">Batal</button>
+          <button type="button" class="btn-outline-action" id="btnCancelProgramModal" onclick="window.closeProgramModal()">Batal</button>
           <button type="submit" class="btn-create-article" id="btnSaveProgram">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             <span id="btnSaveProgramText">Simpan Program</span>
@@ -1932,17 +1919,32 @@
   <!-- ==========================================
        MODAL: PRATINJAU PROGRAM DETAIL
        ========================================== -->
-  <div class="admin-modal-backdrop" id="programPreviewModal" style="display: none;">
+  <div class="admin-modal-backdrop" id="programPreviewModal">
     <div class="admin-modal-box" style="max-width: 820px;">
       <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
         <h4 style="margin: 0; font-size: 1rem; color: #1E293B;">Pratinjau Program Layanan</h4>
-        <button type="button" class="btn-modal-close" id="btnCloseProgramPreview" style="background: transparent; border: none; font-size: 1.4rem; color: #94A3B8; cursor: pointer;">&times;</button>
+        <button type="button" class="btn-modal-close" id="btnCloseProgramPreview" onclick="window.closeProgramPreviewModal()" style="background: transparent; border: none; font-size: 1.4rem; color: #94A3B8; cursor: pointer;">&times;</button>
       </div>
       <div class="modal-body" id="programPreviewModalBody" style="padding: 24px; background: #F8FAFC;">
         <!-- Injected card preview -->
       </div>
     </div>
   </div>
+
+  <!-- Toast Container -->
+  <div class="admin-toast-container" id="toastContainer"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="../js/sweetalert2.all.min.js"></script>
+  <script>
+    if (typeof Swal === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"><\/script>');
+    }
+  </script>
+  <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
+  <script src="../js/admin.js?v=20261027_program_mgr_v3"></script>
+
+
 
 </body>
 </html>

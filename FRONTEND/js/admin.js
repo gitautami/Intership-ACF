@@ -3604,7 +3604,8 @@
 
   // Modal Open/Close
   function openCreateProgramModal() {
-    if (!programModal) return;
+    const modal = programModal || document.getElementById('programModal');
+    if (!modal) return;
 
     if (programModalTitle) programModalTitle.textContent = 'Buat Program Layanan Baru';
     if (btnSaveProgramText) btnSaveProgramText.textContent = 'Simpan & Publikasikan';
@@ -3627,11 +3628,13 @@
     if (newCategoryFieldsWrap) newCategoryFieldsWrap.style.display = 'none';
 
     updateProgramLivePreview();
-    programModal.style.display = 'flex';
+    modal.classList.add('show');
+    updateBodyScrollLock();
   }
 
   function openEditProgramModal(id) {
-    if (!programModal) return;
+    const modal = programModal || document.getElementById('programModal');
+    if (!modal) return;
 
     const prog = dataPrograms.find(p => p.id === id);
     if (!prog) return;
@@ -3666,11 +3669,16 @@
     if (programActionLink) programActionLink.value = prog.actionLink || 'jadi-mitra-program.html';
 
     updateProgramLivePreview();
-    programModal.style.display = 'flex';
+    modal.classList.add('show');
+    updateBodyScrollLock();
   }
 
   function closeProgramModal() {
-    if (programModal) programModal.style.display = 'none';
+    const modal = programModal || document.getElementById('programModal');
+    if (modal) {
+      modal.classList.remove('show');
+      updateBodyScrollLock();
+    }
   }
 
   // Handle Form Submit (Save / Edit)
@@ -3879,15 +3887,28 @@
   // Open Preview Modal
   function openProgramPreviewModal(id) {
     const prog = dataPrograms.find(p => p.id === id);
-    if (!prog || !programPreviewModal || !programPreviewModalBody) return;
+    const modal = programPreviewModal || document.getElementById('programPreviewModal');
+    const modalBody = programPreviewModalBody || document.getElementById('programPreviewModalBody');
+    if (!prog || !modal || !modalBody) return;
 
-    programPreviewModalBody.innerHTML = renderProgramCardHTML(prog);
-    programPreviewModal.style.display = 'flex';
+    modalBody.innerHTML = renderProgramCardHTML(prog);
+    modal.classList.add('show');
+    updateBodyScrollLock();
   }
 
   function closeProgramPreviewModal() {
-    if (programPreviewModal) programPreviewModal.style.display = 'none';
+    const modal = programPreviewModal || document.getElementById('programPreviewModal');
+    if (modal) {
+      modal.classList.remove('show');
+      updateBodyScrollLock();
+    }
   }
+
+  // Expose global window helpers
+  window.openCreateProgramModal = openCreateProgramModal;
+  window.closeProgramModal = closeProgramModal;
+  window.openProgramPreviewModal = openProgramPreviewModal;
+  window.closeProgramPreviewModal = closeProgramPreviewModal;
 
   // Global helper bindings for onclick in table rows
   window.handleToggleProgramStatusDirect = function(id) {
@@ -5632,11 +5653,19 @@
       });
     }
 
-    // Keyboard Shortcut (ESC to close preview modal)
+    // Keyboard Shortcut (ESC to close preview modal & program modal)
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' || e.key === 'Esc') {
         if (articlePreviewModal && articlePreviewModal.classList.contains('show')) {
           closePreviewArticleModal();
+        }
+        const pModal = document.getElementById('programModal');
+        if (pModal && pModal.classList.contains('show')) {
+          closeProgramModal();
+        }
+        const pPrevModal = document.getElementById('programPreviewModal');
+        if (pPrevModal && pPrevModal.classList.contains('show')) {
+          closeProgramPreviewModal();
         }
       }
     });

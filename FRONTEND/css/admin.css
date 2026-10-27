@@ -1052,8 +1052,9 @@ body {
   transition: all 0.2s ease;
 }
 
-/* 1. Filter Kategori: Solid Ungu Logo ACF */
-#filterCategoryArticle.select-filter {
+/* 1. Filter Kategori: Solid Ungu Logo ACF (Artikel & Program) */
+#filterCategoryArticle.select-filter,
+#filterProgramCategory.select-filter {
   background-color: #7D2280;
   background-image: linear-gradient(135deg, #7D2280 0%, #5B135E 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat, no-repeat;
@@ -1067,25 +1068,29 @@ body {
   box-shadow: 0 2px 8px rgba(125, 34, 128, 0.25);
 }
 
-#filterCategoryArticle.select-filter:hover {
+#filterCategoryArticle.select-filter:hover,
+#filterProgramCategory.select-filter:hover {
   background-image: linear-gradient(135deg, #9333EA 0%, #7D2280 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(125, 34, 128, 0.35);
 }
 
-#filterCategoryArticle.select-filter:focus {
+#filterCategoryArticle.select-filter:focus,
+#filterProgramCategory.select-filter:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(125, 34, 128, 0.3);
 }
 
-#filterCategoryArticle.select-filter option {
+#filterCategoryArticle.select-filter option,
+#filterProgramCategory.select-filter option {
   background: #FFFFFF;
   color: #1E293B;
   font-weight: 500;
 }
 
-/* 2. Filter Status: Solid Kuning / Gold Logo ACF */
-#filterStatusArticle.select-filter {
+/* 2. Filter Status: Solid Kuning / Gold Logo ACF (Artikel & Program) */
+#filterStatusArticle.select-filter,
+#filterProgramStatus.select-filter {
   background-color: #F5A623;
   background-image: linear-gradient(135deg, #F5A623 0%, #D97706 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat, no-repeat;
@@ -1099,18 +1104,21 @@ body {
   box-shadow: 0 2px 8px rgba(245, 166, 35, 0.25);
 }
 
-#filterStatusArticle.select-filter:hover {
+#filterStatusArticle.select-filter:hover,
+#filterProgramStatus.select-filter:hover {
   background-image: linear-gradient(135deg, #FBBF24 0%, #F5A623 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(245, 166, 35, 0.35);
 }
 
-#filterStatusArticle.select-filter:focus {
+#filterStatusArticle.select-filter:focus,
+#filterProgramStatus.select-filter:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.3);
 }
 
-#filterStatusArticle.select-filter option {
+#filterStatusArticle.select-filter option,
+#filterProgramStatus.select-filter option {
   background: #FFFFFF;
   color: #1E293B;
   font-weight: 500;

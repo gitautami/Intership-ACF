@@ -69,7 +69,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/admin.css?v=20261021_equal_btn_sizes_v19">
+  <link rel="stylesheet" href="../css/admin.css?v=20261027_program_mgr_v2">
   <link rel="stylesheet" href="../css/program.css">
 </head>
 <body>
@@ -498,45 +498,42 @@
         <!-- Table Container -->
         <div class="data-table-container">
           
+          <!-- Toolbar (Search & Filter) -->
           <div class="table-toolbar">
-            <div class="search-input-wrap">
-              <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-              <input type="text" id="searchProgramInput" class="form-control table-search-input" placeholder="Cari judul program, divisi, atau deskripsi...">
+            <div class="search-box-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="searchProgramInput" class="search-input" placeholder="Cari judul program, divisi, atau deskripsi...">
             </div>
 
-            <div class="filter-controls-wrap">
-              <div class="custom-select-wrap">
-                <select id="filterProgramCategory" class="form-select filter-select">
-                  <option value="all">Semua Kategori Induk</option>
-                </select>
-              </div>
+            <div class="toolbar-filters" style="display: flex; gap: 8px; align-items: center;">
+              <select id="filterProgramCategory" class="select-filter">
+                <option value="all">Semua Kategori Induk</option>
+              </select>
 
-              <div class="custom-select-wrap">
-                <select id="filterProgramStatus" class="form-select filter-select">
-                  <option value="all">Semua Status</option>
-                  <option value="Terbit">Terbit (Publik)</option>
-                  <option value="Draf">Draf</option>
-                </select>
-              </div>
+              <select id="filterProgramStatus" class="select-filter">
+                <option value="all">Semua Status</option>
+                <option value="Terbit">🟢 Terpublikasi</option>
+                <option value="Draf">🟡 Draf</option>
+              </select>
             </div>
           </div>
 
-          <!-- Table -->
-          <div class="table-responsive">
-            <table class="admin-table">
+          <!-- Table Programs -->
+          <div class="responsive-table-wrapper">
+            <table class="admin-table" id="tablePrograms">
               <thead>
                 <tr>
-                  <th style="width: 50px;">No</th>
-                  <th style="width: 80px;">Foto</th>
+                  <th style="width: 50px; text-align: center;">No</th>
+                  <th style="width: 90px;">Foto</th>
                   <th>Nama Program & Divisi</th>
                   <th>Kategori Induk</th>
-                  <th>Metrik Utama</th>
-                  <th style="width: 100px;">Status</th>
-                  <th style="width: 130px; text-align: center;">Aksi</th>
+                  <th>Metrik Capaian</th>
+                  <th style="width: 130px; text-align: center;">Status</th>
+                  <th style="width: 220px; text-align: center;">Aksi</th>
                 </tr>
               </thead>
               <tbody id="tbodyPrograms">
-                <!-- Dynamically populated -->
+                <!-- Diisi via JavaScript -->
               </tbody>
             </table>
           </div>
@@ -1765,7 +1762,7 @@
     }
   </script>
   <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
-  <script src="../js/admin.js?v=20261027_program_mgr_v1"></script>
+  <script src="../js/admin.js?v=20261027_program_mgr_v2"></script>
 
   <!-- ==========================================
        MODAL: FORM BUAT / EDIT PROGRAM LAYANAN

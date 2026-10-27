@@ -3429,7 +3429,8 @@
 
   // Render Table Program Layanan
   function renderTablePrograms() {
-    if (!programsTableBody) return;
+    const tbody = document.getElementById('tbodyPrograms') || document.getElementById('programsTableBody');
+    if (!tbody) return;
 
     const query = (searchProgramInput?.value || '').toLowerCase().trim();
     const catFilter = filterProgramCategory?.value || 'all';
@@ -3443,12 +3444,12 @@
         (prog.metric || '').toLowerCase().includes(query);
 
       const matchCat = catFilter === 'all' || prog.categoryId === catFilter;
-      const matchStatus = statusFilter === 'all' || prog.status === statusFilter;
+      const matchStatus = statusFilter === 'all' || (prog.status || 'Terbit') === statusFilter;
 
       return matchQuery && matchCat && matchStatus;
     });
 
-    programsTableBody.innerHTML = '';
+    tbody.innerHTML = '';
 
     if (filtered.length === 0) {
       if (emptyPrograms) emptyPrograms.style.display = 'block';
@@ -3457,59 +3458,64 @@
 
       filtered.forEach((prog, idx) => {
         const isDraft = (prog.status === 'Draf');
+        const statusBadgeClass = isDraft ? 'status-menunggu status-badge-draf' : 'status-diterima status-badge-terbit';
+        const statusBadgeText = isDraft ? 'Draf' : 'Terpublikasi';
         const catMeta = getProgramCategoryMeta(prog.categoryId);
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td style="font-weight: 600; color: #64748B; text-align: center;">${idx + 1}</td>
-          <td style="width: 70px;">
-            <img src="${escapeHTML(prog.cover || '../assets/unit-pendidikan/Sekolah Juara.jpg')}" alt="Cover" class="program-table-thumb" onerror="this.src='../assets/unit-pendidikan/Sekolah Juara.jpg'">
+          <td>
+            <div class="article-thumbnail-cell" style="gap: 10px;">
+              <img src="${escapeHTML(prog.cover || '../assets/unit-pendidikan/Sekolah Juara.jpg')}" alt="Cover" class="article-thumb-img" style="width: 72px; height: 50px; border-radius: 8px; object-fit: cover;" onerror="this.src='../assets/unit-pendidikan/Sekolah Juara.jpg'">
+            </div>
           </td>
           <td>
-            <div style="font-weight: 700; color: #1E293B; font-size: 0.94rem; margin-bottom: 2px;">
+            <div class="cell-primary" style="font-size: 0.92rem; font-weight: 700; color: #1E293B; margin-bottom: 3px;">
               ${escapeHTML(prog.title || '-')}
             </div>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
               <span class="program-table-divisi-badge">Divisi: ${escapeHTML(prog.divisi || '-')}</span>
               <span style="font-size: 0.78rem; color: #64748B;">ID: ${escapeHTML(prog.id || '-')}</span>
             </div>
-            <div style="font-size: 0.8rem; color: #64748B; margin-top: 4px; line-height: 1.4; max-width: 480px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+            <div class="cell-sub" style="margin-top: 4px; line-height: 1.4; max-width: 440px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #64748B;">
               ${escapeHTML(prog.quote || '')}
             </div>
           </td>
           <td>
-            <span class="program-table-cat-badge">
+            <span class="article-cat-tag">
               ${catMeta.num}. ${escapeHTML(catMeta.title)}
             </span>
           </td>
           <td>
-            <div style="font-size: 0.84rem; font-weight: 600; color: #1E293B;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #1E293B;">
               ${escapeHTML(prog.metric || '-')}
             </div>
-            <div style="font-size: 0.76rem; color: #64748B;">
+            <div style="font-size: 0.76rem; color: #64748B; margin-top: 2px;">
               ${escapeHTML(prog.kebutuhanDukungan || '-')}
             </div>
           </td>
-          <td>
-            <button type="button" class="${isDraft ? 'badge-program-draf' : 'badge-program-terbit'}" onclick="window.handleToggleProgramStatusDirect('${prog.id}')" title="Klik untuk mengubah status (Terbit / Draf)" style="cursor: pointer; border: none;">
-              ${isDraft ? 'Draf' : 'Terbit'}
+          <td style="text-align: center;">
+            <span class="status-badge ${statusBadgeClass}" onclick="window.handleToggleProgramStatusDirect('${prog.id}')" title="Klik untuk mengubah status (Terbit / Draf)" style="cursor: pointer; user-select: none;">
+              ${statusBadgeText}
+            </span>
+          </td>
+          <td style="text-align: center; white-space: nowrap;">
+            <button type="button" class="btn-action-preview" onclick="window.handlePreviewProgramDirect('${prog.id}')" style="margin-right: 6px;" title="Lihat pratinjau kartu program">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>Preview</span>
+            </button>
+            <button type="button" class="btn-action-view" onclick="window.handleEditProgramDirect('${prog.id}')" style="margin-right: 6px;" title="Edit data program ini">
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span>Edit</span>
+            </button>
+            <button type="button" class="btn-action-delete" onclick="window.handleDeleteProgramDirect('${prog.id}')" title="Hapus program">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <span>Hapus</span>
             </button>
           </td>
-          <td>
-            <div class="row-action-btns" style="display: flex; gap: 6px; justify-content: flex-end;">
-              <button type="button" class="btn-table-action" onclick="window.handlePreviewProgramDirect('${prog.id}')" title="Lihat Pratinjau Lengkap">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-              <button type="button" class="btn-table-action" onclick="window.handleEditProgramDirect('${prog.id}')" title="Edit Program">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              </button>
-              <button type="button" class="btn-table-action action-delete" onclick="window.handleDeleteProgramDirect('${prog.id}')" title="Hapus Program">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              </button>
-            </div>
-          </td>
         `;
-        programsTableBody.appendChild(tr);
+        tbody.appendChild(tr);
       });
     }
   }

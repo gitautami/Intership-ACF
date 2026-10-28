@@ -4,10 +4,11 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. General Scroll Reveal animations
-  // We exclude elements inside #dampak-kredibilitas from the one-time general observer
-  // so that #dampak-kredibilitas has its own fully repeatable scroll lifecycle.
+  // We exclude elements inside #dampak-kredibilitas and #unit-pendidikan
+  // so that those sections have their own fully repeatable scroll lifecycles.
   const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger');
   const dampakSection = document.getElementById('dampak-kredibilitas');
+  const unitSection = document.getElementById('unit-pendidikan');
 
   if (revealElements.length > 0 && 'IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver((entries) => {
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     revealElements.forEach(el => {
       if (dampakSection && dampakSection.contains(el)) return;
+      if (unitSection && unitSection.contains(el)) return;
       revealObserver.observe(el);
     });
   } else {

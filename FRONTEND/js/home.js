@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMitraSlider();
   initHomeKabar();
   initHomeKerjasama();
+  initHomeUnitPendidikan();
 });
 
 function initHeroSlider() {
@@ -552,5 +553,66 @@ function initHomeKerjasama() {
     observer.observe(grid);
   } else {
     triggerKerjasamaAnimation();
+  }
+}
+
+
+/**
+ * Unit Pendidikan Homepage Interactive Staggered Entrance & Looping Wave Animation
+ */
+function initHomeUnitPendidikan() {
+  const section = document.getElementById('unit-pendidikan');
+  if (!section) return;
+
+  const grid = section.querySelector('.units-grid');
+  const cards = section.querySelectorAll('.unit-card');
+  const header = section.querySelector('.section-header');
+  if (cards.length === 0) return;
+
+  let timeouts = [];
+
+  function triggerUnitAnimation() {
+    resetUnitAnimation();
+    if (header) header.classList.add('visible');
+    if (grid) grid.classList.add('is-visible');
+
+    cards.forEach((card, index) => {
+      const t = setTimeout(() => {
+        card.classList.add('animate-in', 'visible');
+        // Setelah animasi masuk selesai, aktifkan siklus efek gelombang berulang
+        const loopT = setTimeout(() => {
+          card.classList.add('is-looping');
+        }, 850);
+        timeouts.push(loopT);
+      }, (index * 170) + 90);
+      timeouts.push(t);
+    });
+  }
+
+  function resetUnitAnimation() {
+    timeouts.forEach(t => clearTimeout(t));
+    timeouts = [];
+    if (header) header.classList.remove('visible');
+    if (grid) grid.classList.remove('is-visible');
+    cards.forEach(card => {
+      card.classList.remove('animate-in', 'visible', 'is-looping');
+    });
+  }
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          triggerUnitAnimation();
+        } else {
+          // Reset saat scroll keluar agar animasi selalu berjalan ulang saat di-scroll kembali
+          resetUnitAnimation();
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    observer.observe(section);
+  } else {
+    triggerUnitAnimation();
   }
 }

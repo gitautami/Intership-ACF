@@ -404,9 +404,11 @@ function initHomeKabar() {
 
     container.innerHTML = '';
 
-    latestArticles.forEach(art => {
+    latestArticles.forEach((art, index) => {
       const articleEl = document.createElement('article');
-      articleEl.className = 'home-kabar-card reveal visible';
+      // Set transitionDelay berjenjang agar kartu masuk satu-persatu
+      articleEl.className = 'home-kabar-card';
+      articleEl.style.transitionDelay = `${(index * 180) + 100}ms`;
 
       const coverSrc = art.cover || '../assets/logo-acf/LOGO_ACF-removebg-preview.png';
       const catClass = (art.category || 'artikel').toLowerCase().replace(/\s+/g, '-');
@@ -416,6 +418,7 @@ function initHomeKabar() {
       articleEl.innerHTML = `
         <a href="${articleUrl}" class="home-kabar-img-link" aria-label="Baca ${escapeHTML(art.title || '')}">
           <div class="home-kabar-img-wrap">
+            <span class="home-kabar-tag ${escapeHTML(catClass)}">${escapeHTML(catLabel)}</span>
             <img src="${escapeHTML(coverSrc)}" alt="${escapeHTML(art.title || 'Kabar ACF')}" class="home-kabar-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80'">
           </div>
         </a>
@@ -436,6 +439,57 @@ function initHomeKabar() {
       `;
 
       container.appendChild(articleEl);
+    });
+
+    // Pemicu animasi masuk berurutan saat scroll ke bagian Kabar
+    setupKabarIntersection();
+  }
+
+  let staggerTimeouts = [];
+
+  function setupKabarIntersection() {
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            triggerStaggerAnimation();
+          } else {
+            // Reset saat user scroll menjauh agar bisa berulang masuk satu per satu setiap kali di-scroll
+            resetStaggerAnimation();
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      observer.observe(container);
+    } else {
+      triggerStaggerAnimation();
+    }
+  }
+
+  function resetStaggerAnimation() {
+    staggerTimeouts.forEach(t => clearTimeout(t));
+    staggerTimeouts = [];
+    container.classList.remove('is-visible');
+    const cards = container.querySelectorAll('.home-kabar-card');
+    cards.forEach(card => {
+      card.classList.remove('animate-in', 'visible', 'is-looping');
+    });
+  }
+
+  function triggerStaggerAnimation() {
+    resetStaggerAnimation();
+    container.classList.add('is-visible');
+    const cards = container.querySelectorAll('.home-kabar-card');
+    cards.forEach((card, i) => {
+      const t = setTimeout(() => {
+        card.classList.add('animate-in', 'visible');
+        // Setelah animasi masuk selesai, aktifkan siklus efek gelombang berulang
+        const loopT = setTimeout(() => {
+          card.classList.add('is-looping');
+        }, 850);
+        staggerTimeouts.push(loopT);
+      }, (i * 200) + 80);
+      staggerTimeouts.push(t);
     });
   }
 

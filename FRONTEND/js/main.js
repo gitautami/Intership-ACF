@@ -4,11 +4,16 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. General Scroll Reveal animations
-  // We exclude elements inside #dampak-kredibilitas and #unit-pendidikan
-  // so that those sections have their own fully repeatable scroll lifecycles.
+  // We exclude elements inside interactive sections with dedicated repeat lifecycles:
+  // - #dampak-kredibilitas (homepage stats)
+  // - #unit-pendidikan (homepage units)
+  // - #program-layanan-preview (homepage programs)
+  // - #dampak / .compact-stats-section (cerita kami stats)
   const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger');
-  const dampakSection = document.getElementById('dampak-kredibilitas');
+  const homeDampakSection = document.getElementById('dampak-kredibilitas');
   const unitSection = document.getElementById('unit-pendidikan');
+  const programSection = document.getElementById('program-layanan-preview');
+  const ceritaDampakSection = document.getElementById('dampak') || document.querySelector('.compact-stats-section');
 
   if (revealElements.length > 0 && 'IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver((entries) => {
@@ -23,20 +28,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     revealElements.forEach(el => {
-      if (dampakSection && dampakSection.contains(el)) return;
+      if (homeDampakSection && homeDampakSection.contains(el)) return;
       if (unitSection && unitSection.contains(el)) return;
+      if (programSection && programSection.contains(el)) return;
+      if (ceritaDampakSection && ceritaDampakSection.contains(el)) return;
       revealObserver.observe(el);
     });
   } else {
     revealElements.forEach(el => el.classList.add('visible'));
   }
 
-  // 2. Dampak & Kredibilitas Repeatable Scroll Animation & Counter
-  if (dampakSection && 'IntersectionObserver' in window) {
-    const statsGrid = dampakSection.querySelector('.home-stats-grid-6');
-    const statCards = dampakSection.querySelectorAll('.home-stat-card');
-    const statNumbers = dampakSection.querySelectorAll('.stat-number[data-count]');
-    const sectionReveals = dampakSection.querySelectorAll('.reveal');
+  // 2. Reusable Repeatable Counter Animation Controller
+  function setupStatsCounter({ section, containerSelector, itemSelector, threshold = 0.2 }) {
+    if (!section || !('IntersectionObserver' in window)) return;
+
+    const container = containerSelector ? section.querySelector(containerSelector) : null;
+    const items = itemSelector ? section.querySelectorAll(itemSelector) : [];
+    const statNumbers = section.querySelectorAll('.stat-number[data-count]');
+    const sectionReveals = section.querySelectorAll('.reveal');
     let activeAnimationFrames = [];
 
     const animateNumber = (el, target, duration = 1250) => {
@@ -44,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const step = (now) => {
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        // easeOutCubic curve
         const ease = 1 - Math.pow(1 - progress, 3);
         const currentVal = Math.round(ease * target);
 
@@ -61,65 +69,79 @@ document.addEventListener('DOMContentLoaded', () => {
       activeAnimationFrames.push(rafId);
     };
 
-    const resetDampak = () => {
-      // Cancel active animation frames
+    const resetStats = () => {
       activeAnimationFrames.forEach(id => cancelAnimationFrame(id));
       activeAnimationFrames = [];
 
-      // Reset numbers to 0
       statNumbers.forEach(el => {
         el.textContent = '0';
       });
 
-      // Remove active states
-      if (statsGrid) statsGrid.classList.remove('is-active');
-      statCards.forEach(card => card.classList.remove('pop-in'));
+      if (container) container.classList.remove('is-active');
+      items.forEach(card => card.classList.remove('pop-in'));
       sectionReveals.forEach(el => el.classList.remove('visible'));
     };
 
-    const triggerDampak = () => {
-      // 1. Reveal section elements
+    const triggerStats = () => {
       sectionReveals.forEach(el => el.classList.add('visible'));
+      if (container) container.classList.add('is-active');
 
-      // 2. Activate stats grid
-      if (statsGrid) statsGrid.classList.add('is-active');
-
-      // 3. Stagger stat card pop-in
-      statCards.forEach((card, index) => {
+      items.forEach((card, index) => {
         card.style.transitionDelay = `${index * 60}ms`;
         card.classList.add('pop-in');
       });
 
-      // 4. Start counting up smoothly
       statNumbers.forEach(el => {
         const target = parseInt(el.dataset.count, 10);
         if (!isNaN(target)) {
-          animateNumber(el, target, 1300);
+          animateNumber(el, target, 1250);
         }
       });
     };
 
-    const dampakObserver = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          triggerDampak();
+          triggerStats();
         } else {
-          resetDampak();
+          resetStats();
         }
       });
     }, {
-      threshold: 0.18,
+      threshold,
       rootMargin: '0px 0px -30px 0px'
     });
 
-    dampakObserver.observe(dampakSection);
-  } else {
-    // Fallback if not on index or IntersectionObserver unavailable
+    observer.observe(section);
+  }
+
+  // A. Initialize Homepage Dampak & Kredibilitas Stats
+  if (homeDampakSection) {
+    setupStatsCounter({
+      section: homeDampakSection,
+      containerSelector: '.home-stats-grid-6',
+      itemSelector: '.home-stat-card',
+      threshold: 0.18
+    });
+  }
+
+  // B. Initialize Cerita Kami (kisah-kami.html) Dampak Nyata Stats
+  if (ceritaDampakSection) {
+    setupStatsCounter({
+      section: ceritaDampakSection,
+      containerSelector: '.compact-stats-strip',
+      itemSelector: '.compact-stat-item',
+      threshold: 0.2
+    });
+  }
+
+  // C. Fallback for non-IntersectionObserver browsers
+  if (!('IntersectionObserver' in window)) {
     const fallbackNumbers = document.querySelectorAll('.stat-number[data-count]');
     fallbackNumbers.forEach(el => {
       const target = parseInt(el.dataset.count, 10);
       if (!isNaN(target)) el.textContent = target.toLocaleString('id-ID');
     });
-    document.querySelectorAll('.home-stat-card').forEach(c => c.classList.add('pop-in'));
+    document.querySelectorAll('.home-stat-card, .compact-stat-item').forEach(c => c.classList.add('pop-in'));
   }
 });

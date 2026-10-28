@@ -3366,7 +3366,7 @@
   /* ===================================================
      8.5. PROGRAM LAYANAN MANAGEMENT ENGINE
      =================================================== */
-  function loadProgramsData() {
+  async function loadProgramsData() {
     try {
       const stored = localStorage.getItem('acf_programs_data');
       if (stored) {
@@ -3383,6 +3383,23 @@
 
     populateProgramCategoryOptions();
     updateProgramMetrics();
+    renderTablePrograms();
+
+    // Sinkronisasi data langsung dengan MySQL Backend API jika server tersedia
+    if (window.ACF_API && window.ACF_API.programs) {
+      try {
+        const serverPrograms = await window.ACF_API.programs.getAll();
+        if (Array.isArray(serverPrograms) && serverPrograms.length > 0) {
+          dataPrograms = serverPrograms;
+          saveProgramsData();
+          populateProgramCategoryOptions();
+          updateProgramMetrics();
+          renderTablePrograms();
+        }
+      } catch (err) {
+        console.warn('Sinkronisasi program dari MySQL offline/gagal, tetap menggunakan data lokal:', err);
+      }
+    }
   }
 
   function saveProgramsData() {
@@ -3798,6 +3815,22 @@
       updatedAt: new Date().toISOString()
     };
 
+    // Simpan ke MySQL Backend API jika aktif
+    if (window.ACF_API && window.ACF_API.programs) {
+      try {
+        if (isEdit) {
+          await window.ACF_API.programs.update(editId, programObj);
+        } else {
+          const created = await window.ACF_API.programs.create(programObj);
+          if (created && created.id) {
+            programObj.id = created.id;
+          }
+        }
+      } catch (apiErr) {
+        console.warn('Gagal menyimpan program ke database MySQL, tersimpan di lokal:', apiErr);
+      }
+    }
+
     if (isEdit) {
       const index = dataPrograms.findIndex(p => p.id === editId);
       if (index !== -1) {
@@ -3853,6 +3886,14 @@
       if (!res.isConfirmed) return;
     }
 
+    if (window.ACF_API && window.ACF_API.programs) {
+      try {
+        await window.ACF_API.programs.delete(id);
+      } catch (err) {
+        console.warn('Gagal menghapus program dari database MySQL:', err);
+      }
+    }
+
     dataPrograms = dataPrograms.filter(p => p.id !== id);
     saveProgramsData();
     populateProgramCategoryOptions();
@@ -3873,13 +3914,22 @@
   }
 
   // Quick Toggle Status
-  function handleToggleProgramStatus(id) {
+  async function handleToggleProgramStatus(id) {
     const prog = dataPrograms.find(p => p.id === id);
     if (!prog) return;
 
-    prog.status = (prog.status === 'Terbit') ? 'Draf' : 'Terbit';
+    const newStatus = (prog.status === 'Terbit') ? 'Draf' : 'Terbit';
+    prog.status = newStatus;
     saveProgramsData();
     renderTablePrograms();
+
+    if (window.ACF_API && window.ACF_API.programs) {
+      try {
+        await window.ACF_API.programs.toggleStatus(id, newStatus);
+      } catch (err) {
+        console.warn('Gagal mengubah status program di server:', err);
+      }
+    }
 
     showToast(`Status program "${prog.title.substring(0, 24)}..." diubah ke ${prog.status}.`, 'info');
   }

@@ -3183,3 +3183,52 @@ CREATE TABLE IF NOT EXISTS `donations_prayers` (
   `program_target` VARCHAR(100) DEFAULT 'Umum',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------------------------
+-- 7. TABEL: programs (Program Layanan Edukasi & Sosial ACF)
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `programs` (
+  `id` VARCHAR(50) NOT NULL PRIMARY KEY,
+  `category_id` VARCHAR(50) NOT NULL DEFAULT 'kategori-1',
+  `category_num` INT NOT NULL DEFAULT 1,
+  `category_title` VARCHAR(150) NOT NULL DEFAULT 'Keberlanjutan Unit Pendidikan',
+  `category_desc` TEXT NULL,
+  `divisi` VARCHAR(150) NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `cover` TEXT NULL,
+  `quote` TEXT NOT NULL,
+  `bukti_kapasitas` TEXT NULL,
+  `kebutuhan_dukungan` TEXT NULL,
+  `metric` VARCHAR(255) NOT NULL,
+  `action_link` VARCHAR(255) NOT NULL DEFAULT 'jadi-mitra-program.html',
+  `action_text` VARCHAR(100) NOT NULL DEFAULT 'Jadi Mitra Program',
+  `status` ENUM('Terbit', 'Draf') DEFAULT 'Terbit',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_program_category` (`category_id`),
+  INDEX `idx_program_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `programs` (`id`, `category_id`, `category_num`, `category_title`, `category_desc`, `divisi`, `title`, `cover`, `quote`, `bukti_kapasitas`, `kebutuhan_dukungan`, `metric`, `action_link`, `action_text`, `status`, `created_at`) VALUES
+('PRG-01', 'kategori-1', 1, 'Keberlanjutan Unit Pendidikan', 'Penguatan kelembagaan dan pendanaan mandiri untuk memastikan sekolah-sekolah di wilayah prasejahtera dapat beroperasi secara berkelanjutan dengan kualitas prima.', 'Sekolah Juara', 'Program Beasiswa & Keberlanjutan Sekolah Juara', '../assets/unit-pendidikan/Sekolah Juara.jpg', 'Mendukung operasional dan penyediaan fasilitas belajar Sekolah Juara agar akses pendidikan formal berkualitas tetap 100% bebas biaya (gratis) bagi anak-anak dhuafa dan keluarga prasejahtera berprestasi.', 'Mengelola 10 cabang Sekolah Juara di berbagai wilayah Indonesia dengan layanan pendidikan 100% bebas biaya sejak ACF mengelola langsung jaringan ini pada 2023.', 'Dana operasional, Beasiswa pendidikan, In-kind (sarana belajar)', '10 Sekolah Juara di Indonesia', 'jadi-mitra-program.html', 'Jadi Mitra Program', 'Terbit', '2026-01-01 00:00:00'),
+('PRG-02', 'kategori-1', 1, 'Keberlanjutan Unit Pendidikan', 'Penguatan kelembagaan dan pendanaan mandiri untuk memastikan sekolah-sekolah di wilayah prasejahtera dapat beroperasi secara berkelanjutan dengan kualitas prima.', 'Sekolah Daya Setara', 'Kesejahteraan Guru & Operasional Sekolah Daya Setara', '../assets/unit-pendidikan/Sekolah Daya Setara (1).JPG', 'Mendukung kesejahteraan tutor/guru dan kebutuhan operasional PKBM Sekolah Daya Setara — seluruh 150 warga belajar yang dilayani saat ini adalah penerima beasiswa penuh, menjadikan dukungan mitra krusial bagi keberlangsungan layanan yang ada.', 'Melayani 150 warga belajar (100% beasiswa, tanpa siswa reguler berbayar) di beberapa titik PKBM (Lembang, Ngamprah, Pangandaran, Sukabumi, Indramayu, Jayapura).', 'Dana sebagian, In-kind', '150 Warga Belajar (100% Beasiswa)', 'jadi-mitra-program.html', 'Jadi Mitra Program', 'Terbit', '2026-01-02 00:00:00'),
+('PRG-03', 'kategori-2', 2, 'Tanggap Bencana & Pemulihan', 'Respons cepat terintegrasi mencakup dukungan psikososial anak, pelatihan psikososial guru terdampak, hingga bantuan dasar pangan, sandang, dan hunian darurat.', 'Guruverse.ID & ACF Educare (lintas-divisi)', 'Layanan Pascabencana', '../assets/layanan-program/IMG_6436.jpg', 'Respons pascabencana yang terintegrasi — mencakup dukungan psikososial untuk anak-anak korban, pelatihan psikososial untuk guru di lokasi terdampak, serta penyaluran bantuan dasar berupa pangan, sandang, dan papan/hunian sementara.', '100 guru terlatih di Aceh Tamiang; respons darurat dan sekolah darurat sedang berjalan di Flores NTT pascagempa Agustus 2026, berkolaborasi dengan Sharing Happiness.', 'Dana penuh, In-kind (pangan, sandang, papan)', '100 Guru Terlatih & Respons Flores NTT', 'jadi-mitra-program.html', 'Jadi Mitra Program', 'Terbit', '2026-01-03 00:00:00'),
+('PRG-04', 'kategori-3', 3, 'Kesejahteraan Ekosistem Sekolah', 'Dukungan terpadu berkelanjutan bagi guru honorer, tenaga penunjang, dan keluarga prasejahtera di sekitar lingkungan sekolah sepanjang tahun.', 'ACF Educare (Donasi Pendidikan)', 'Kesejahteraan Ekosistem Sekolah', '../assets/donasi/Kado Lebaran Penjaga Sekolah.jpg', 'Dukungan berkelanjutan bagi tenaga yang menopang ekosistem sekolah — guru honorer, penjaga sekolah, dan keluarga prasejahtera di lingkungan sekolah. Ramadhan menjadi salah satu momentum kampanye, bukan satu-satunya waktu penyaluran.', 'Ramadhan 2026 — 345 paket tersalur di 21 wilayah untuk guru honorer, penjaga sekolah, dan keluarga dhuafa.', 'Dana penuh, In-kind', '345 Paket Tersalur (21 Wilayah)', 'jadi-mitra-program.html', 'Jadi Mitra Program', 'Terbit', '2026-01-04 00:00:00'),
+('PRG-05', 'kategori-4', 4, 'Kemanusiaan Internasional', 'Penyaluran bantuan kemanusiaan dan kebutuhan dasar bagi anak-anak di wilayah krisis serta konflik global.', 'ACF Educare (Donasi Pendidikan)', 'Bantuan Kemanusiaan Internasional', '../assets/layanan-program/IMG_6442.jpg', 'Penyaluran bantuan dasar bagi anak-anak di wilayah konflik, dihimpun dari keluarga besar ACF Eduhub dan donatur publik.', 'Tahap 1 (1 September 2026) — makanan hangat untuk 260 anak di 2 shelter pengungsian Gaza, bekerja sama dengan Baitul Mal Muamalat.', 'Dana penuh', 'Makanan Hangat 260 Anak (Gaza)', 'jadi-mitra-program.html', 'Jadi Mitra Program', 'Terbit', '2026-01-05 00:00:00'),
+('PRG-06', 'kategori-5', 5, 'Forum & Advokasi Pendidikan', 'Membangun ruang diskursus kebijakan, publikasi riset implementasi di lapangan, dan advokasi arah tren pendidikan nasional.', 'Guruverse.ID', 'Education Outlook — Forum Tahunan Pendidikan', '../assets/layanan-program/Web Banner Education Maret 2026-03.jpg', 'Forum hybrid tahunan yang menghadirkan pembuat kebijakan, akademisi, dan praktisi pendidikan untuk membahas arah dan tren pendidikan nasional.', 'Edisi 2026 digelar hybrid di Bandung, 6 Desember 2025, dihadiri perwakilan Kemendikdasmen, DPR RI Komisi X, dan UPI, diikuti ratusan pendidik.', 'Dana sebagian (sponsorship), In-kind (venue, media)', 'Edisi 2026 Hybrid Bandung', 'jadi-mitra-program.html', 'Jadi Mitra Program', 'Terbit', '2026-01-06 00:00:00'),
+('PRG-07', 'kategori-6', 6, 'Kepemimpinan & Manajemen Sekolah', 'Layanan konsultasi dan pendampingan manajemen sekolah, strategi SPMB/PPDB, serta studi kelayakan pendirian unit pendidikan.', 'Guruverse.ID', 'Konsultasi & Pendampingan Manajemen Sekolah', '../assets/layanan-program/Workshop SPMB.jpg', 'Layanan konsultasi fleksibel bagi sekolah atau yayasan lain — mencakup manajemen sekolah, strategi PPDB/SPMB, hingga studi kelayakan (feasibility study) pendirian atau pengembangan sekolah. Tim yang menangani menyesuaikan kebutuhan spesifik klien.', 'Pernah dijalankan lewat Ceria Training Center (Bengkel Manajemen Sekolah & SPMB), didukung pengalaman langsung ACF mengelola jaringan 10 Sekolah Juara dan 7 Sekolah Daya Setara.', 'Jasa konsultasi berbayar (revenue line ACF, di bawah Guruverse.ID)', 'Pengalaman 10 Sekolah Juara & 7 Sekolah Daya Setara', 'jadi-mitra-program.html', 'Jadi Mitra Program', 'Terbit', '2026-01-07 00:00:00')
+ON DUPLICATE KEY UPDATE
+  `category_id` = VALUES(`category_id`),
+  `category_num` = VALUES(`category_num`),
+  `category_title` = VALUES(`category_title`),
+  `category_desc` = VALUES(`category_desc`),
+  `divisi` = VALUES(`divisi`),
+  `title` = VALUES(`title`),
+  `cover` = VALUES(`cover`),
+  `quote` = VALUES(`quote`),
+  `bukti_kapasitas` = VALUES(`bukti_kapasitas`),
+  `kebutuhan_dukungan` = VALUES(`kebutuhan_dukungan`),
+  `metric` = VALUES(`metric`),
+  `action_link` = VALUES(`action_link`),
+  `action_text` = VALUES(`action_text`),
+  `status` = VALUES(`status`);

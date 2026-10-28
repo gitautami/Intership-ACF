@@ -188,16 +188,31 @@ document.addEventListener('DOMContentLoaded', () => {
     return base;
   }
 
-  function renderDynamicPrograms() {
+  async function renderDynamicPrograms() {
     if (!programContainer) return;
 
     let programs = null;
-    try {
-      const stored = localStorage.getItem('acf_programs_data');
-      if (stored) {
-        programs = JSON.parse(stored);
+
+    // Sinkronisasi data real-time dari MySQL Backend API jika online
+    if (window.ACF_API && window.ACF_API.programs) {
+      try {
+        const serverPrograms = await window.ACF_API.programs.getAll({ status: 'Terbit' });
+        if (Array.isArray(serverPrograms) && serverPrograms.length > 0) {
+          programs = serverPrograms;
+        }
+      } catch (err) {
+        console.warn('Program API offline, fallback ke cache lokal:', err);
       }
-    } catch (e) {}
+    }
+
+    if (!programs) {
+      try {
+        const stored = localStorage.getItem('acf_programs_data');
+        if (stored) {
+          programs = JSON.parse(stored);
+        }
+      } catch (e) {}
+    }
 
     // Inisialisasi awal ke localStorage jika belum ada data
     if (!programs || !Array.isArray(programs) || programs.length === 0) {

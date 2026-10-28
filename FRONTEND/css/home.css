@@ -967,37 +967,152 @@
 }
 
 /* =============================================
-   8. DONASI SECTION (BANNER CARD DRAF KONTEN)
+   8. DONASI SECTION (COOL ANIMATIONS & POLISH)
    ============================================= */
 .home-donasi-section {
-  padding: 60px 0;
+  padding: 68px 0;
   background-color: #F8FAFC;
+  position: relative;
 }
 
 .donasi-banner-card {
-  background: linear-gradient(135deg, #240C2B 0%, #16061B 50%, #2F1138 100%);
-  border: 1px solid rgba(245, 166, 35, 0.25);
-  border-radius: 26px;
-  padding: 40px 46px;
+  background: linear-gradient(135deg, #1E0724 0%, #110316 45%, #2B0D33 100%);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+  border-radius: 28px;
+  padding: 44px 50px;
   color: #FFFFFF;
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   align-items: center;
-  gap: 40px;
+  gap: 42px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 18px 48px rgba(36, 12, 43, 0.26);
+  box-shadow: 0 20px 50px rgba(30, 7, 36, 0.38), 0 0 26px rgba(245, 166, 35, 0.12);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+  animation: cardGlowPulse 6s ease-in-out infinite alternate;
 }
 
-.donasi-banner-card::after {
-  content: '';
+.donasi-banner-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 65px rgba(30, 7, 36, 0.48), 0 0 35px rgba(245, 166, 35, 0.24);
+}
+
+@keyframes cardGlowPulse {
+  0% {
+    border-color: rgba(245, 166, 35, 0.28);
+    box-shadow: 0 20px 50px rgba(30, 7, 36, 0.35), 0 0 16px rgba(245, 166, 35, 0.08);
+  }
+  50% {
+    border-color: rgba(245, 166, 35, 0.5);
+    box-shadow: 0 24px 60px rgba(30, 7, 36, 0.45), 0 0 32px rgba(245, 166, 35, 0.22);
+  }
+  100% {
+    border-color: rgba(225, 29, 72, 0.35);
+    box-shadow: 0 22px 55px rgba(30, 7, 36, 0.4), 0 0 25px rgba(168, 85, 247, 0.18);
+  }
+}
+
+/* 1. Ambient Glowing Moving Orbs (Aurora Effect) */
+.donasi-ambient-glow {
   position: absolute;
-  top: -40%;
-  right: -15%;
-  width: 480px;
-  height: 480px;
-  background: radial-gradient(circle, rgba(245, 166, 35, 0.16) 0%, rgba(125, 34, 128, 0.18) 45%, transparent 70%);
+  inset: 0;
   pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.donasi-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(65px);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+.donasi-orb-1 {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.28) 0%, rgba(217, 119, 6, 0.12) 60%, transparent 80%);
+  top: -15%;
+  right: -10%;
+  animation: orbFloat1 9s ease-in-out infinite alternate;
+}
+
+.donasi-orb-2 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(162, 28, 175, 0.32) 0%, rgba(125, 34, 128, 0.15) 55%, transparent 75%);
+  bottom: -20%;
+  left: -5%;
+  animation: orbFloat2 11s ease-in-out infinite alternate;
+}
+
+.donasi-orb-3 {
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.22) 0%, transparent 70%);
+  top: 40%;
+  left: 45%;
+  animation: orbFloat3 8s ease-in-out infinite alternate;
+}
+
+@keyframes orbFloat1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-45px, 35px) scale(1.12); }
+  100% { transform: translate(-20px, 60px) scale(0.95); }
+}
+
+@keyframes orbFloat2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(55px, -30px) scale(1.15); }
+  100% { transform: translate(30px, -50px) scale(0.98); }
+}
+
+@keyframes orbFloat3 {
+  0% { transform: translate(0, 0) scale(0.9); opacity: 0.3; }
+  50% { transform: translate(-25px, -20px) scale(1.2); opacity: 0.6; }
+  100% { transform: translate(20px, 25px) scale(1); opacity: 0.4; }
+}
+
+/* 2. Floating Gentle Particles (Hearts & Sparkles) */
+.donasi-particles-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.donasi-particle {
+  position: absolute;
+  font-size: 1rem;
+  color: #F5A623;
+  opacity: 0;
+  user-select: none;
+  animation: particleFloatDrift 6.5s infinite linear;
+}
+
+.donasi-particle.p-1 { left: 12%; bottom: 15%; font-size: 1.1rem; animation-delay: 0s; color: #FDA4AF; }
+.donasi-particle.p-2 { left: 32%; bottom: 20%; font-size: 0.85rem; animation-delay: 1.8s; color: #FDE047; }
+.donasi-particle.p-3 { left: 52%; bottom: 10%; font-size: 0.95rem; animation-delay: 3.5s; color: #F472B6; }
+.donasi-particle.p-4 { left: 78%; bottom: 25%; font-size: 0.8rem; animation-delay: 2.2s; color: #FBBF24; }
+.donasi-particle.p-5 { left: 90%; bottom: 18%; font-size: 1.05rem; animation-delay: 4.8s; color: #FB7185; }
+
+@keyframes particleFloatDrift {
+  0% {
+    transform: translateY(0) scale(0.8) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.65;
+  }
+  80% {
+    opacity: 0.65;
+  }
+  100% {
+    transform: translateY(-85px) scale(1.15) rotate(20deg);
+    opacity: 0;
+  }
 }
 
 .donasi-banner-content {
@@ -1005,12 +1120,13 @@
   position: relative;
 }
 
+/* Badge Tag with Pulsing Heart */
 .donasi-badge-tag {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(245, 166, 35, 0.15);
-  border: 1px solid rgba(245, 166, 35, 0.35);
+  background: rgba(245, 166, 35, 0.16);
+  border: 1px solid rgba(245, 166, 35, 0.42);
   color: #F5A623;
   font-size: 0.78rem;
   font-weight: 800;
@@ -1019,6 +1135,14 @@
   text-transform: uppercase;
   letter-spacing: 0.8px;
   margin-bottom: 14px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.15);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.donasi-badge-tag:hover {
+  transform: scale(1.04);
+  background: rgba(245, 166, 35, 0.24);
 }
 
 .donasi-badge-tag svg {
@@ -1027,6 +1151,33 @@
   fill: currentColor;
 }
 
+.pulse-heart {
+  animation: heartBeatPulse 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  transform-origin: center;
+}
+
+@keyframes heartBeatPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(245, 166, 35, 0));
+  }
+  14% {
+    transform: scale(1.28);
+    filter: drop-shadow(0 0 6px rgba(245, 166, 35, 0.85));
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.18);
+    filter: drop-shadow(0 0 4px rgba(245, 166, 35, 0.6));
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+/* Title with Shimmer Text Highlight */
 .donasi-banner-title {
   color: #FFFFFF;
   font-size: clamp(1.75rem, 2.8vw, 2.25rem);
@@ -1034,6 +1185,21 @@
   margin: 0 0 14px;
   letter-spacing: -0.5px;
   line-height: 1.25;
+}
+
+.donasi-highlight-text {
+  background: linear-gradient(90deg, #F5A623 0%, #FFD166 25%, #FB7185 55%, #F5A623 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShineSweep 5s linear infinite;
+  display: inline-block;
+  text-shadow: 0 0 20px rgba(245, 166, 35, 0.2);
+}
+
+@keyframes textShineSweep {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 .donasi-draf-lead {
@@ -1044,11 +1210,19 @@
   padding: 2px 0;
 }
 
+/* Flowing Accent Bar */
 .donasi-accent-bar {
   width: 4px;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #F5A623 0%, #D97706 100%);
+  background: linear-gradient(180deg, #F5A623 0%, #E11D48 50%, #9333EA 100%);
+  background-size: 100% 250%;
   border-radius: 4px;
+  animation: accentFlow 3.8s ease-in-out infinite alternate;
+}
+
+@keyframes accentFlow {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 0% 100%; }
 }
 
 .donasi-lead-text {
@@ -1061,7 +1235,7 @@
 }
 
 .donasi-banner-desc {
-  color: #94A3B8;
+  color: #A3B3C9;
   font-size: 0.9rem;
   line-height: 1.68;
   margin: 0;
@@ -1079,16 +1253,30 @@
   position: relative;
 }
 
+/* Floating Card with Shimmer Reflection */
 .donasi-media-thumb {
   position: relative;
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;
-  border-radius: 18px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 2px solid rgba(245, 166, 35, 0.35);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+  border: 2px solid rgba(245, 166, 35, 0.42);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 20px rgba(245, 166, 35, 0.12);
   background: #16061B;
+  animation: mediaLevitate 6s ease-in-out infinite;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+@keyframes mediaLevitate {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 20px rgba(245, 166, 35, 0.12);
+  }
+  50% {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 44px rgba(0, 0, 0, 0.55), 0 0 28px rgba(245, 166, 35, 0.22);
+  }
 }
 
 .donasi-media-img {
@@ -1097,11 +1285,27 @@
   object-fit: cover;
   object-position: center 20%;
   display: block;
-  transition: transform 0.45s ease;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .donasi-banner-card:hover .donasi-media-img {
-  transform: scale(1.06);
+  transform: scale(1.08);
+}
+
+/* Periodic Light Sweep across Media Thumb */
+.donasi-media-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.24) 48%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.24) 52%, transparent 70%);
+  background-size: 260% 100%;
+  animation: shimmerSweep 5.5s infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes shimmerSweep {
+  0% { background-position: 200% 0; }
+  30%, 100% { background-position: -200% 0; }
 }
 
 .donasi-media-badge {
@@ -1110,57 +1314,108 @@
   left: 12px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(22, 6, 27, 0.88);
-  backdrop-filter: blur(8px);
+  gap: 7px;
+  background: rgba(18, 5, 22, 0.88);
+  backdrop-filter: blur(10px);
   color: #F5A623;
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-pill);
-  border: 1px solid rgba(245, 166, 35, 0.4);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(245, 166, 35, 0.45);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  z-index: 3;
+}
+
+.pulse-heart-mini {
+  animation: heartBeatPulse 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite 0.5s;
+  transform-origin: center;
 }
 
 .donasi-banner-action {
   width: 100%;
 }
 
+/* Vibrant CTA Button with Shimmer Wave & Breathing Glow Halo */
 .btn-lihat-donasi {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  background: #7D2280;
+  background: linear-gradient(135deg, #7D2280 0%, #A21CAF 50%, #BD1E82 100%);
   color: #FFFFFF !important;
   font-size: 0.98rem;
   font-weight: 700;
-  padding: 13px 26px;
+  padding: 14px 28px;
   border-radius: var(--radius-pill);
   text-decoration: none;
-  box-shadow: 0 6px 20px rgba(125, 34, 128, 0.45);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   width: 100%;
   text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(125, 34, 128, 0.5), 0 0 16px rgba(245, 166, 35, 0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: btnGlowBreath 3.2s ease-in-out infinite;
+}
+
+@keyframes btnGlowBreath {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(125, 34, 128, 0.45), 0 0 12px rgba(245, 166, 35, 0.15);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 12px 30px rgba(162, 28, 175, 0.65), 0 0 24px rgba(245, 166, 35, 0.35);
+    transform: scale(1.012);
+  }
 }
 
 .btn-lihat-donasi:hover {
-  background: #96289A;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(125, 34, 128, 0.6);
+  background: linear-gradient(135deg, #96289A 0%, #C026D3 50%, #DB2777 100%);
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 14px 34px rgba(162, 28, 175, 0.75), 0 0 28px rgba(245, 166, 35, 0.45);
 }
 
-.btn-lihat-donasi svg {
+.btn-lihat-donasi:active {
+  transform: translateY(0) scale(0.99) !important;
+}
+
+/* Light Beam Sweep Across CTA Button */
+.btn-shimmer-sweep {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+  transform: skewX(-25deg);
+  animation: btnLightSweep 3.6s infinite;
+  pointer-events: none;
+}
+
+@keyframes btnLightSweep {
+  0%, 35% { left: -100%; }
+  65%, 100% { left: 200%; }
+}
+
+.btn-arrow-icon {
   width: 17px;
   height: 17px;
   stroke: #FFFFFF;
   stroke-width: 2.5;
   fill: none;
   transition: transform 0.25s ease;
+  animation: arrowNudge 1.8s ease-in-out infinite;
 }
 
-.btn-lihat-donasi:hover svg {
-  transform: translateX(4px);
+@keyframes arrowNudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+.btn-lihat-donasi:hover .btn-arrow-icon {
+  animation: none;
+  transform: translateX(6px);
 }
 
 /* =============================================

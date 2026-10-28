@@ -1131,7 +1131,8 @@ body.sidebar-open {
 .floating-whatsapp-btn {
     position: fixed;
     bottom: 28px;
-    right: 28px;
+    left: 28px;
+    right: auto;
     width: 60px;
     height: 60px;
     background: #25D366;
@@ -1166,9 +1167,10 @@ body.sidebar-open {
 
 .floating-whatsapp-tooltip {
     position: absolute;
-    right: 70px;
+    left: 70px;
+    right: auto;
     top: 50%;
-    transform: translateY(-50%) translateX(10px);
+    transform: translateY(-50%) translateX(-10px);
     background: #0F172A;
     color: #FFFFFF;
     font-size: 0.82rem;
@@ -1187,12 +1189,13 @@ body.sidebar-open {
 .floating-whatsapp-tooltip::after {
     content: '';
     position: absolute;
-    right: -5px;
+    left: -5px;
+    right: auto;
     top: 50%;
     transform: translateY(-50%);
-    border-width: 5px 0 5px 6px;
+    border-width: 5px 6px 5px 0;
     border-style: solid;
-    border-color: transparent transparent transparent #0F172A;
+    border-color: transparent #0F172A transparent transparent;
 }
 
 .floating-whatsapp-btn:hover .floating-whatsapp-tooltip {
@@ -1204,7 +1207,8 @@ body.sidebar-open {
 @media (max-width: 640px) {
     .floating-whatsapp-btn {
         bottom: 20px;
-        right: 20px;
+        left: 20px;
+        right: auto;
         width: 52px;
         height: 52px;
     }

@@ -645,6 +645,13 @@
   border-radius: 20px;
   padding: 28px 18px;
   box-shadow: 0 10px 32px rgba(125, 34, 128, 0.07);
+  position: relative;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.home-stats-grid-6.is-active {
+  border-color: rgba(125, 34, 128, 0.22);
+  box-shadow: 0 16px 40px rgba(125, 34, 128, 0.11), 0 2px 10px rgba(245, 166, 35, 0.08);
 }
 
 .home-stat-card {
@@ -652,14 +659,26 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 6px 4px;
+  padding: 8px 6px;
   border-right: 1px solid #F1F5F9;
   position: relative;
-  transition: transform 0.25s ease;
+  opacity: 0;
+  transform: translateY(22px) scale(0.92);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s ease,
+              box-shadow 0.25s ease;
+  border-radius: 14px;
+}
+
+.home-stat-card.pop-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .home-stat-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(125, 34, 128, 0.03);
 }
 
 .home-stat-card:last-child {
@@ -675,10 +694,50 @@
   align-items: center;
   justify-content: center;
   letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.home-stat-card.pop-in .home-stat-number {
+  animation: numberPopGlow 0.6s ease-out;
+}
+
+@keyframes numberPopGlow {
+  0% {
+    transform: scale(0.85);
+    filter: drop-shadow(0 0 0 rgba(125, 34, 128, 0));
+  }
+  60% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 8px rgba(125, 34, 128, 0.22));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(125, 34, 128, 0));
+  }
 }
 
 .home-stat-number.gold-accent {
   color: #F5A623;
+}
+
+.home-stat-card.pop-in .home-stat-number.gold-accent {
+  animation: goldPopGlow 0.6s ease-out;
+}
+
+@keyframes goldPopGlow {
+  0% {
+    transform: scale(0.85);
+    filter: drop-shadow(0 0 0 rgba(245, 166, 35, 0));
+  }
+  60% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px rgba(245, 166, 35, 0.32));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(245, 166, 35, 0));
+  }
 }
 
 .home-stat-label {

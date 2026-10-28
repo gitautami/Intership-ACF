@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroSlider();
   initMitraSlider();
   initHomeKabar();
+  initHomeKerjasama();
 });
 
 function initHeroSlider() {
@@ -498,4 +499,58 @@ function initHomeKabar() {
 
 }
 
+/**
+ * Kerjasama Homepage Interactive Staggered Entrance & Looping Wave Animation
+ */
+function initHomeKerjasama() {
+  const grid = document.getElementById('homeKerjasamaGrid') || document.querySelector('.kerjasama-cards-grid');
+  if (!grid) return;
 
+  const cards = grid.querySelectorAll('.kerjasama-card-box');
+  if (cards.length === 0) return;
+
+  let timeouts = [];
+
+  function triggerKerjasamaAnimation() {
+    resetKerjasamaAnimation();
+    grid.classList.add('is-visible');
+
+    cards.forEach((card, index) => {
+      const t = setTimeout(() => {
+        card.classList.add('animate-in', 'visible');
+        // Setelah animasi masuk selesai, aktifkan siklus efek gelombang berulang
+        const loopT = setTimeout(() => {
+          card.classList.add('is-looping');
+        }, 900);
+        timeouts.push(loopT);
+      }, (index * 220) + 100);
+      timeouts.push(t);
+    });
+  }
+
+  function resetKerjasamaAnimation() {
+    timeouts.forEach(t => clearTimeout(t));
+    timeouts = [];
+    grid.classList.remove('is-visible');
+    cards.forEach(card => {
+      card.classList.remove('animate-in', 'visible', 'is-looping');
+    });
+  }
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          triggerKerjasamaAnimation();
+        } else {
+          // Reset saat scroll menjauh agar animasi masuk satu per satu berulang setiap kali di-scroll
+          resetKerjasamaAnimation();
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    observer.observe(grid);
+  } else {
+    triggerKerjasamaAnimation();
+  }
+}

@@ -69,31 +69,96 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 36px;
   margin-top: 30px;
+  position: relative;
 }
 
+/* Staggered Sliding Entrance Animations for Kerjasama Cards */
 .kerjasama-card-box {
   background: #FFFFFF;
   border: 1.5px solid #E2E8F0;
-  border-radius: 22px;
+  border-radius: 24px;
   padding: 0;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   position: relative;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s ease,
+              box-shadow 0.35s ease;
+  will-change: opacity, transform;
 }
 
+/* Card 1: Slide in from bottom-left */
+.kerjasama-cards-grid .kerjasama-card-box:nth-child(1) {
+  transform: translateX(-48px) translateY(42px) scale(0.95);
+  transition-delay: 0.08s;
+}
+
+/* Card 2: Slide in from bottom-right */
+.kerjasama-cards-grid .kerjasama-card-box:nth-child(2) {
+  transform: translateX(48px) translateY(42px) scale(0.95);
+  transition-delay: 0.28s;
+}
+
+/* Active Entrance Trigger */
+.kerjasama-card-box.animate-in,
+.kerjasama-card-box.visible,
+.kerjasama-cards-grid.is-visible .kerjasama-card-box {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+}
+
+/* Continuous Recurring Ambient Wave Cycle (Berulang terus menerus) */
+.kerjasama-card-box#mitra-program.is-looping {
+  animation: mitraGlowWave 5.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.kerjasama-card-box#relawan.is-looping {
+  animation: relawanGlowWave 5.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation-delay: 2.8s;
+}
+
+@keyframes mitraGlowWave {
+  0%, 40%, 100% {
+    transform: translateY(0) scale(1);
+    border-color: #E2E8F0;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  }
+  20% {
+    transform: translateY(-8px) scale(1.015);
+    border-color: rgba(125, 34, 128, 0.45);
+    box-shadow: 0 22px 48px rgba(125, 34, 128, 0.16), 0 0 20px rgba(125, 34, 128, 0.1);
+  }
+}
+
+@keyframes relawanGlowWave {
+  0%, 40%, 100% {
+    transform: translateY(0) scale(1);
+    border-color: #E2E8F0;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  }
+  20% {
+    transform: translateY(-8px) scale(1.015);
+    border-color: rgba(245, 166, 35, 0.55);
+    box-shadow: 0 22px 48px rgba(245, 166, 35, 0.2), 0 0 24px rgba(245, 166, 35, 0.12);
+  }
+}
+
+/* Hover State - Pauses loop and elevates card gracefully */
 .kerjasama-card-box:hover {
-  transform: translateY(-6px);
-  border-color: rgba(125, 34, 128, 0.4);
-  box-shadow: 0 20px 45px rgba(125, 34, 128, 0.12);
+  animation-play-state: paused !important;
+  transform: translateY(-10px) scale(1.02) !important;
+  border-color: rgba(125, 34, 128, 0.48) !important;
+  box-shadow: 0 24px 52px rgba(125, 34, 128, 0.2) !important;
 }
 
 .kerjasama-card-box#relawan:hover {
-  border-color: rgba(245, 166, 35, 0.5);
-  box-shadow: 0 20px 45px rgba(245, 166, 35, 0.18);
+  border-color: rgba(245, 166, 35, 0.6) !important;
+  box-shadow: 0 24px 52px rgba(245, 166, 35, 0.24) !important;
 }
 
 /* Image Container Inside Card */
@@ -272,6 +337,10 @@
     grid-template-columns: 1fr;
     gap: 28px;
   }
+  .kerjasama-cards-grid .kerjasama-card-box:nth-child(1),
+  .kerjasama-cards-grid .kerjasama-card-box:nth-child(2) {
+    transform: translateY(38px) scale(0.96);
+  }
 }
 
 @media (max-width: 768px) {
@@ -323,4 +392,99 @@
     width: calc(100% - 32px) !important;
     box-sizing: border-box !important;
   }
+}
+
+/* Diagonal Light Sweep Across Card Image */
+.kerjasama-img-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.32) 50%, transparent 65%);
+  background-size: 260% 100%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.kerjasama-card-box.is-looping .kerjasama-img-shimmer {
+  animation: imgShimmerSweep 5.6s infinite;
+}
+
+.kerjasama-card-box#relawan.is-looping .kerjasama-img-shimmer {
+  animation-delay: 2.8s;
+}
+
+@keyframes imgShimmerSweep {
+  0% {
+    opacity: 0;
+    background-position: 200% 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  26% {
+    opacity: 0;
+    background-position: -200% 0;
+  }
+  100% {
+    opacity: 0;
+    background-position: -200% 0;
+  }
+}
+
+/* Button Shimmer Beam & Arrow Nudge */
+.btn-kerjasama-action {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-kerjasama-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+
+.kerjasama-card-box.is-looping .btn-kerjasama-shimmer {
+  animation: btnKerjasamaSweep 5.6s infinite;
+}
+
+.kerjasama-card-box#relawan.is-looping .btn-kerjasama-shimmer {
+  animation-delay: 2.8s;
+}
+
+@keyframes btnKerjasamaSweep {
+  0%, 15% { left: -100%; }
+  35%, 100% { left: 200%; }
+}
+
+.btn-arrow-svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  fill: none;
+  transition: transform 0.25s ease;
+}
+
+.kerjasama-card-box.is-looping .btn-arrow-svg {
+  animation: btnArrowNudge 5.6s infinite;
+}
+
+.kerjasama-card-box#relawan.is-looping .btn-arrow-svg {
+  animation-delay: 2.8s;
+}
+
+@keyframes btnArrowNudge {
+  0%, 40%, 100% { transform: translateX(0); }
+  20% { transform: translateX(5px); }
+}
+
+.btn-kerjasama-action:hover .btn-arrow-svg {
+  animation: none;
+  transform: translateX(6px);
 }

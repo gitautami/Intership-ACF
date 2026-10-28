@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/navbar.css?v=31">
   <link rel="stylesheet" href="../css/home.css?v=4">
-  <link rel="stylesheet" href="../css/kerjasama.css?v=5">
+  <link rel="stylesheet" href="../css/kerjasama.css?v=6">
 </head>
 <body>
 
@@ -749,12 +749,13 @@
           </p>
         </div>
 
-        <div class="kerjasama-cards-grid">
+        <div class="kerjasama-cards-grid" id="homeKerjasamaGrid">
           
-          <!-- Mitra Program -->
-          <div class="kerjasama-card-box reveal" id="mitra-program">
+          <!-- Mitra Program (Slide in from Bottom-Left) -->
+          <div class="kerjasama-card-box" id="mitra-program">
             <div class="kerjasama-card-img-wrap">
               <img src="../assets/form-kerjasama/Kemitraan 2.jpg" alt="Jadi Mitra Program ACF Eduhub" class="kerjasama-card-img" loading="lazy">
+              <div class="kerjasama-img-shimmer" aria-hidden="true"></div>
               <div class="kerjasama-img-badge">Kemitraan CSR & Lembaga</div>
             </div>
 
@@ -766,15 +767,17 @@
             </div>
 
             <a href="jadi-mitra-program.html" class="btn-kerjasama-action">
+              <span class="btn-kerjasama-shimmer" aria-hidden="true"></span>
               <span>Hubungi Tim Kemitraan</span>
-              <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <svg class="btn-arrow-svg" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </div>
 
-          <!-- Relawan -->
-          <div class="kerjasama-card-box reveal" id="relawan">
+          <!-- Relawan (Slide in from Bottom-Right) -->
+          <div class="kerjasama-card-box" id="relawan">
             <div class="kerjasama-card-img-wrap">
               <img src="../assets/homepage/Banner 2.jpg" alt="Jadi Relawan Sahabat Eduhub" class="kerjasama-card-img" loading="lazy">
+              <div class="kerjasama-img-shimmer" aria-hidden="true"></div>
               <div class="kerjasama-img-badge gold">Sahabat Eduhub Volunteer</div>
             </div>
 
@@ -786,8 +789,9 @@
             </div>
 
             <a href="jadi-relawan.html" class="btn-kerjasama-action gold-btn">
+              <span class="btn-kerjasama-shimmer" aria-hidden="true"></span>
               <span>Daftar Sahabat Eduhub</span>
-              <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <svg class="btn-arrow-svg" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </div>
 
@@ -1332,7 +1336,7 @@
   <!-- ========== JAVASCRIPT FILES (Separated per module) ========== -->
   <script src="../js/navbar.js?v=12"></script>
   <script src="../js/api.js?v=20261002_3"></script>
-  <script src="../js/home.js?v=20261028_loop_v2"></script>
+  <script src="../js/home.js?v=20261028_kerjasama_v3"></script>
   <script src="../js/main.js"></script>
 </body>
 </html>

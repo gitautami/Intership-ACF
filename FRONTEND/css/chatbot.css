@@ -32,7 +32,8 @@
   border-radius: 50%;
   background: var(--cherry-primary);
   color: #FFFFFF;
-  border: none;
+  border: 2.5px solid var(--cherry-accent);
+  box-sizing: border-box;
   box-shadow: 0 6px 20px rgba(125, 34, 128, 0.45), 0 2px 6px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
@@ -48,12 +49,22 @@
 .cherry-trigger-btn:hover {
   transform: scale(1.1) translateY(-3px);
   background: var(--cherry-primary-hover);
-  box-shadow: 0 10px 28px rgba(125, 34, 128, 0.55), 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-color: #FBBF24;
+  box-shadow: 0 10px 28px rgba(125, 34, 128, 0.55), 0 0 16px rgba(245, 166, 35, 0.45);
   color: #FFFFFF;
 }
 
 .cherry-trigger-btn:active {
   transform: scale(0.95);
+}
+
+.cherry-icon-dot {
+  fill: var(--cherry-primary);
+  transition: fill 0.25s ease;
+}
+
+.cherry-trigger-btn:hover .cherry-icon-dot {
+  fill: var(--cherry-primary-hover);
 }
 
 /* Trigger Icon Switching (Chat Icon vs Close 'X' Icon) */

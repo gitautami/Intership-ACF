@@ -461,13 +461,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!document.querySelector('link[href*="chatbot.css"]')) {
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
-                link.href = prefix + '/css/chatbot.css?v=9';
+                link.href = prefix + '/css/chatbot.css?v=10';
                 document.head.appendChild(link);
             }
             
             // Inject JS
             const script = document.createElement('script');
-            script.src = prefix + '/js/chatbot.js?v=9';
+            script.src = prefix + '/js/chatbot.js?v=10';
             document.body.appendChild(script);
         }
     };

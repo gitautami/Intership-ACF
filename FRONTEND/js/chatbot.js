@@ -444,10 +444,13 @@ Gaya Komunikasi:
     root.innerHTML = `
       <!-- Floating Trigger Button -->
       <button type="button" class="cherry-trigger-btn" id="cherryTriggerBtn" aria-label="Buka Chat AI Cherry" title="Tanya Cherry AI">
-        <!-- Chat Bubble Icon -->
+        <!-- Chat Bubble Icon with 3 Dots -->
         <span class="cherry-btn-icon icon-chat">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="#FFFFFF">
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 2H4C2.34 2 1 3.34 1 5V15C1 16.66 2.34 18 4 18H6V22L10.5 18H20C21.66 18 23 16.66 23 15V5C23 3.34 21.66 2 20 2Z" fill="#FFFFFF"/>
+            <circle cx="7.5" cy="10" r="1.6" class="cherry-icon-dot"/>
+            <circle cx="12" cy="10" r="1.6" class="cherry-icon-dot"/>
+            <circle cx="16.5" cy="10" r="1.6" class="cherry-icon-dot"/>
           </svg>
         </span>
         <!-- Close Icon -->

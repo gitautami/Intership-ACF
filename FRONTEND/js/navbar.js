@@ -456,18 +456,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!document.getElementById('cherryChatbotRoot') && !document.querySelector('script[src*="chatbot.js"]')) {
             const isInsideHtmlDir = window.location.pathname.includes('/html/') || window.location.pathname.endsWith('.html');
             const prefix = isInsideHtmlDir ? '..' : '.';
-            
+
             // Inject CSS
             if (!document.querySelector('link[href*="chatbot.css"]')) {
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
-                link.href = prefix + '/css/chatbot.css?v=10';
+                link.href = prefix + '/css/chatbot.css?v=12';
                 document.head.appendChild(link);
             }
-            
+
             // Inject JS
             const script = document.createElement('script');
-            script.src = prefix + '/js/chatbot.js?v=10';
+            script.src = prefix + '/js/chatbot.js?v=12';
             document.body.appendChild(script);
         }
     };

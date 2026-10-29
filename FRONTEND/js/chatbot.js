@@ -465,42 +465,34 @@ Gaya Komunikasi:
       <!-- Chat Modal Window -->
       <div class="cherry-chat-window ${savedSize}" id="cherryChatWindow" role="dialog" aria-modal="true" aria-label="Jendela Chat Cherry">
         <!-- Header -->
-        <div class="cherry-header">
+        <div class="cherry-header cherry-chat-header">
           <div class="cherry-header-left">
-            <div class="cherry-avatar-box">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="#FFFFFF">
+            <div class="cherry-header-avatar">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="#7D2280">
                 <circle cx="8" cy="15" r="4"/>
                 <circle cx="16" cy="15" r="4"/>
-                <path d="M8 11c1-4 4-7 8-9" stroke="#F5A623" stroke-width="2" fill="none"/>
+                <path d="M8 11c1-4 4-7 8-9" stroke="#F5A623" stroke-width="2.5" fill="none" stroke-linecap="round"/>
               </svg>
             </div>
-            <div class="cherry-header-info">
-              <div class="cherry-title-row">
-                <span class="cherry-bot-name">Cherry</span>
+            <div class="cherry-header-meta">
+              <div class="cherry-header-title">
+                <span class="cherry-name">Cherry</span>
                 <span class="cherry-badge-acf">ACF AI</span>
               </div>
-              <div class="cherry-subtitle">AI Assistant</div>
+              <div class="cherry-header-sub">AI Assistant</div>
             </div>
           </div>
 
           <div class="cherry-header-actions">
             <!-- Size Toggle (S, M, L) -->
-            <div class="cherry-size-toggle" title="Ubah Ukuran Jendela Chat">
+            <div class="cherry-size-switcher cherry-size-toggle" title="Ubah Ukuran Jendela Chat">
               <button type="button" class="cherry-size-btn ${savedSize === 'size-s' ? 'active' : ''}" data-size="size-s">S</button>
               <button type="button" class="cherry-size-btn ${savedSize === 'size-m' ? 'active' : ''}" data-size="size-m">M</button>
               <button type="button" class="cherry-size-btn ${savedSize === 'size-l' ? 'active' : ''}" data-size="size-l">L</button>
             </div>
 
-            <!-- API Key Setup Button -->
-            <button type="button" class="cherry-key-btn" id="cherryKeyBtn" title="Atur Google Gemini API Key">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="7.5" cy="15.5" r="5.5"/>
-                <path d="m21 2-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/>
-              </svg>
-            </button>
-
             <!-- Close Window Button -->
-            <button type="button" class="cherry-close-btn" id="cherryCloseBtn" aria-label="Tutup Chat">
+            <button type="button" class="cherry-close-btn cherry-minimize-btn" id="cherryCloseBtn" aria-label="Tutup Chat" title="Tutup Chat">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -575,7 +567,6 @@ Gaya Komunikasi:
     const chatInput = document.getElementById('cherryInput');
     const quickChips = document.getElementById('cherryQuickChips');
     const sizeButtons = root.querySelectorAll('.cherry-size-btn');
-    const keyBtn = document.getElementById('cherryKeyBtn');
 
     // Toggle Chat Window
     function toggleChat(forceOpen) {
@@ -595,28 +586,6 @@ Gaya Komunikasi:
 
     triggerBtn.addEventListener('click', () => toggleChat());
     closeBtn.addEventListener('click', () => toggleChat(false));
-
-    // Handle Gemini API Key Dialog
-    if (keyBtn) {
-      keyBtn.addEventListener('click', () => {
-        const currentKey = localStorage.getItem(STORAGE_KEY_API) || '';
-        const promptMsg = currentKey
-          ? 'Google Gemini API Key saat ini terpasang.\n\nKosongkan lalu tekan OK jika ingin menghapus key:'
-          : 'Masukkan Google Gemini API Key (gratis dari Google AI Studio) untuk mengaktifkan AI generatif langsung di browser:';
-        
-        const inputKey = window.prompt(promptMsg, currentKey);
-        if (inputKey !== null) {
-          const trimmed = inputKey.trim();
-          if (trimmed) {
-            localStorage.setItem(STORAGE_KEY_API, trimmed);
-            appendMessage('bot', '✅ **Google Gemini API Key berhasil dipasang!**\n\nCherry sekarang terhubung langsung dengan kecerdasan Google Gemini AI.');
-          } else {
-            localStorage.removeItem(STORAGE_KEY_API);
-            appendMessage('bot', 'ℹ️ **Mode Pengetahuan Resmi Aktif.**\n\nAPI Key telah dibersihkan. Cherry menjawab menggunakan basis pengetahuan lengkap ACF Eduhub.');
-          }
-        }
-      });
-    }
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {

@@ -38,8 +38,11 @@ Warna identitasmu dan ACF Eduhub adalah Ungu (#7D2280) dan Kuning Emas (#F5A623)
 
 Tentang ACF Eduhub:
 - Yayasan sosial pendidikan yang sudah 10+ tahun berdedikasi memutus rantai kemiskinan di Indonesia melalui pendidikan gratis & berkualitas bagi dhuafa.
-- Mengelola 17 Unit Pendidikan Aktif: 10 Sekolah Juara (HANYA jenjang Sekolah Dasar / SD Juara bebas biaya 100% untuk yatim & dhuafa prasejahtera, TIDAK ADA SMP atau SMA/SMK di Sekolah Juara) dan 7 PKBM Sekolah Daya Setara (pendidikan kesetaraan Paket A, B, C dan vokasi mandiri).
-- PENTING: Jika pengguna menanyakan tentang jenjang atau tingkat Sekolah Juara, tegaskan bahwa Sekolah Juara HANYA ada jenjang SD (Sekolah Dasar). Jenjang lanjutan SMP dan SMA dikelola melalui unit PKBM Sekolah Daya Setara (Paket B dan Paket C).
+- Mengelola 17 Unit Pendidikan Aktif: 10 Sekolah Juara (HANYA jenjang Sekolah Dasar / SD Juara; Sekolah Juara TIDAK GRATIS / memiliki biaya pendidikan) dan 7 PKBM Sekolah Daya Setara (pendidikan kesetaraan Paket A, B, C dan vokasi mandiri).
+- PENTING:
+  1. Sekolah Juara HANYA ada jenjang SD (Sekolah Dasar), TIDAK ADA jenjang SMP maupun SMA/SMK.
+  2. Sekolah Juara TIDAK GRATIS. Jika ditanya apakah gratis atau ditanya biaya sekolah, tegaskan bahwa Sekolah Juara tidak gratis dan memiliki biaya pendidikan, serta arahkan untuk konfirmasi rincian biaya ke admin WhatsApp +62 851-7979-7661.
+  3. Jangan menampilkan teks '*(Catatan: ...)*' pada akhir jawaban.
 - Mengelola Guruverse.ID (pelatihan 2.000+ guru di berbagai penjuru Indonesia).
 - 4 Pilar Program: Keberlanjutan Unit Pendidikan, Pemberdayaan Berbasis Sekolah, Kemanusiaan Internasional, dan Bantuan Langsung Berkelanjutan.
 - Kantor Pusat: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275.
@@ -49,7 +52,7 @@ Tentang ACF Eduhub:
 Gaya Komunikasi:
 - Berbicaralah dengan sangat ramah, hangat, komunikatif, solutif, dan NYAMBUNG dengan pertanyaan pengguna.
 - Jika pengguna bertanya 'cara donasi', berikan langkah-langkah praktis dan metode transfernya.
-- Jika pengguna bertanya biaya sekolah, tegaskan bahwa Sekolah Juara 100% GRATIS untuk yatim dan dhuafa.
+- Jika pengguna bertanya biaya sekolah atau apakah gratis, tegaskan bahwa Sekolah Juara TIDAK GRATIS dan memiliki biaya pendidikan.
 - Format teks dengan rapi dan gunakan emoji yang pas.
 EOT;
 
@@ -119,14 +122,14 @@ function getSmartFallbackReply($query) {
         preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|p|tes|test|assalamu[\'"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i', $q) ||
         in_array($q, ['halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'p'])
     ) {
-        return "Halo! 👋 Senang bisa menyapa Anda. Saya **Cherry**, asisten virtual resmi ACF Eduhub.\n\nAda yang bisa Cherry bantu seputar Sekolah Juara yang gratis, cara donasi, program beasiswa, atau informasi lainnya hari ini? 😊";
+        return "Halo! 👋 Senang bisa menyapa Anda. Saya **Cherry**, asisten virtual resmi ACF Eduhub.\n\nAda yang bisa Cherry bantu seputar Sekolah Juara (SD), program pendidikan, cara donasi, atau informasi lainnya hari ini? 😊";
     }
 
     // 7. BIAYA SEKOLAH / APAKAH GRATIS?
     if (strpos($q, 'biaya') !== false || strpos($q, 'bayar') !== false || strpos($q, 'gratis') !== false || strpos($q, 'spp') !== false || strpos($q, 'uang sekolah') !== false || strpos($q, 'uang gedung') !== false || strpos($q, 'tarif') !== false) {
-        return "✨ **Pendidikan di Sekolah Juara 100% GRATIS!**\n\n" .
-               "Anak-anak yatim dan dhuafa tidak dipungut biaya sepeser pun, bebas dari uang SPP bulanan, uang gedung/pangkal, seragam, sepatu, hingga buku pelajaran dan nutrisi sarapan.\n\n" .
-               "Seluruh biaya didanai penuh oleh beasiswa ACF Eduhub berkat dukungan para donatur dan mitra program kami.";
+        return "🏫 **Informasi Biaya Pendidikan di Sekolah Juara**:\n\n" .
+               "Sekolah Juara **tidak gratis**. Sekolah Juara merupakan jaringan sekolah formal jenjang SD (Sekolah Dasar) berkualitas binaan ACF Eduhub dengan biaya pendidikan terjangkau.\n\n" .
+               "Untuk rincian lengkap mengenai biaya formulir pendaftaran, uang pangkal, SPP bulanan, maupun informasi beasiswa khusus, silakan hubungi narahubung kami di WhatsApp **+62 851-7979-7661**.";
     }
 
     // 8. CARA DAFTAR SEKOLAH JUARA / SYARAT MASUK / PPDB
@@ -134,7 +137,7 @@ function getSmartFallbackReply($query) {
         (strpos($q, 'cara') !== false || strpos($q, 'gimana') !== false || strpos($q, 'syarat') !== false || strpos($q, 'daftar') !== false || strpos($q, 'masuk') !== false || strpos($q, 'ppdb') !== false) &&
         (strpos($q, 'sekolah') !== false || strpos($q, 'juara') !== false || strpos($q, 'siswa') !== false || strpos($q, 'anak') !== false)
     ) {
-        return "📝 **Cara & Syarat Pendaftaran Siswa Sekolah Juara (100% Gratis)**:\n\n" .
+        return "📝 **Cara & Syarat Pendaftaran Siswa Sekolah Juara (SD)**:\n\n" .
                "**1. Kriteria Calon Siswa**:\n" .
                "• Anak yatim, piatu, atau berasal dari keluarga dhuafa prasejahtera.\n" .
                "• Memiliki semangat tinggi untuk belajar.\n\n" .
@@ -184,7 +187,7 @@ function getSmartFallbackReply($query) {
         (strpos($q, 'berapa') !== false || strpos($q, 'da berapa') !== false || strpos($q, 'jumlah') !== false || strpos($q, 'total') !== false || strpos($q, 'sebaran') !== false || strpos($q, 'cabang') !== false) &&
         (strpos($q, 'sekolah') !== false || strpos($q, 'juara') !== false || strpos($q, 'sd') !== false)
     ) {
-        return "🏫 **Sekolah Juara memiliki total 10 unit**, dan seluruhnya adalah jenjang **Sekolah Dasar (SD Juara)** yang 100% GRATIS untuk anak-anak yatim dan dhuafa:\n\n" .
+        return "🏫 **Sekolah Juara memiliki total 10 unit**, dan seluruhnya adalah jenjang **Sekolah Dasar (SD Juara)** binaan ACF Eduhub:\n\n" .
                "1. SD Juara Batam\n" .
                "2. SD Juara Cilegon\n" .
                "3. SD Juara Jakarta Barat\n" .
@@ -194,8 +197,7 @@ function getSmartFallbackReply($query) {
                "7. SD Juara AL Hikmah Jayapura\n" .
                "8. SD Juara Semarang\n" .
                "9. SD Juara Surabaya\n" .
-               "10. SD Juara AL Hakim Tangerang\n\n" .
-               "*(Catatan: Sekolah Juara HANYA ada jenjang SD saja. Untuk jenjang lanjutan seperti setara SMP & SMA dilayani melalui unit PKBM Sekolah Daya Setara).*";
+               "10. SD Juara AL Hakim Tangerang";
     }
 
     // 10.6 JENJANG / TINGKAT / SMP / SMK / HANYA SD
@@ -204,15 +206,14 @@ function getSmartFallbackReply($query) {
         (strpos($q, 'sekolah') !== false || strpos($q, 'juara') !== false || strpos($q, 'pendidikan') !== false)
     ) {
         return "ℹ️ **Jenjang Pendidikan di Sekolah Juara**:\n\n" .
-               "Sekolah Juara **HANYA ada jenjang Sekolah Dasar (SD)** yaitu 10 unit SD Juara bebas biaya 100% bagi dhuafa & yatim.\n\n" .
+               "Sekolah Juara **HANYA ada jenjang Sekolah Dasar (SD)** yaitu 10 unit SD Juara binaan ACF Eduhub.\n\n" .
                "Di Sekolah Juara **tidak ada jenjang SMP maupun SMK/SMA**. Namun bagi yang memerlukan jenjang lanjutan (setara SMP / Paket B dan setara SMA / Paket C serta vokasi mandiri), ACF Eduhub memfasilitasinya melalui unit **PKBM Sekolah Daya Setara**.";
     }
 
     // 11. APA ITU SEKOLAH JUARA
     if (strpos($q, 'sekolah juara') !== false || (strpos($q, 'juara') !== false && (strpos($q, 'apa') !== false || strpos($q, 'tentang') !== false || strpos($q, 'itu') !== false))) {
-        return "🏆 **Sekolah Juara** adalah jaringan 10 unit **Sekolah Dasar (SD Juara)** formal berkualitas bebas biaya (gratis 100%) yang dikelola oleh ACF Eduhub untuk mendidik anak-anak dhuafa dan yatim di Indonesia.\n\n" .
-               "Sekolah Juara memadukan kurikulum nasional dengan pembinaan akhlak mulia melalui Kurikulum Langit, kepemimpinan (*leadership*), kewirausahaan, serta kecintaan terhadap Al-Qur'an.\n\n" .
-               "*(Catatan: Sekolah Juara HANYA khusus jenjang SD saja. Jenjang SMP dan SMA sederajat diselenggarakan melalui unit PKBM Sekolah Daya Setara).*";
+        return "🏆 **Sekolah Juara** adalah jaringan 10 unit **Sekolah Dasar (SD Juara)** formal berkualitas yang dikelola oleh ACF Eduhub untuk mendidik generasi penerus bangsa.\n\n" .
+               "Sekolah Juara memadukan kurikulum nasional dengan pembinaan akhlak mulia melalui Kurikulum Langit, kepemimpinan (*leadership*), kewirausahaan, serta kecintaan terhadap Al-Qur'an.";
     }
 
     // 12. APA ITU SEKOLAH DAYA SETARA / PKBM
@@ -273,7 +274,7 @@ function getSmartFallbackReply($query) {
     // 20. DEFAULT NATURAL NYAMBUNG
     return "Terima kasih atas pertanyaannya! 😊 Mengenai **" . htmlspecialchars($raw, ENT_QUOTES, 'UTF-8') . "**, Cherry siap bantu jelaskan lebih dalam. Anda bisa menanyakan hal spesifik seputar:\n\n" .
            "• 💖 **Cara Donasi & Metode Pembayaran**\n" .
-           "• 🏫 **Pendaftaran Sekolah Juara (Gratis 100%)**\n" .
+           "• 🏫 **Pendaftaran Sekolah Juara (SD)**\n" .
            "• 📚 **4 Pilar Program Layanan Pendidikan**\n" .
            "• 🤝 **Kerjasama Mitra CSR & Relawan**\n" .
            "• 📍 **Alamat Kantor Bandung & Kontak WhatsApp**\n\n" .

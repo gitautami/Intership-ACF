@@ -653,3 +653,60 @@
     border-radius: 16px;
   }
 }
+
+/* ==========================================================================
+   HIGH-CONTRAST BUBBLE TYPOGRAPHY (OVERRIDE GLOBAL P & TEXT STYLES)
+   ========================================================================== */
+.cherry-msg-row.user .cherry-bubble,
+.cherry-msg-row.user .cherry-bubble p,
+.cherry-msg-row.user .cherry-bubble span,
+.cherry-msg-row.user .cherry-bubble div {
+  color: #FFFFFF !important;
+  font-weight: 400;
+}
+
+.cherry-msg-row.user .cherry-bubble strong {
+  color: #FFFFFF !important;
+  font-weight: 700;
+}
+
+.cherry-msg-row.user .cherry-bubble a {
+  color: #FDE047 !important;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.cherry-msg-row.user .cherry-msg-time {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 0.72rem;
+  margin-top: 4px;
+}
+
+.cherry-msg-row.bot .cherry-bubble,
+.cherry-msg-row.bot .cherry-bubble p,
+.cherry-msg-row.bot .cherry-bubble span,
+.cherry-msg-row.bot .cherry-bubble div {
+  color: #1E293B !important;
+}
+
+.cherry-msg-row.bot .cherry-bubble strong {
+  color: #7D2280 !important;
+  font-weight: 600;
+}
+
+.cherry-msg-row.bot .cherry-bubble a {
+  color: #7D2280 !important;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.cherry-msg-row.bot .cherry-msg-time {
+  color: #64748B !important;
+  font-size: 0.72rem;
+  margin-top: 4px;
+}
+
+.cherry-welcome-item,
+.cherry-welcome-item span {
+  color: #334155 !important;
+}

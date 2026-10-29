@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ACF EDUHUB - Navigation Controller (Navbar & Sidebar Drawer)
  */
 
@@ -461,13 +461,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!document.querySelector('link[href*="chatbot.css"]')) {
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
-                link.href = prefix + '/css/chatbot.css?v=12';
+                link.href = prefix + '/css/chatbot.css?v=14';
                 document.head.appendChild(link);
             }
 
             // Inject JS
             const script = document.createElement('script');
-            script.src = prefix + '/js/chatbot.js?v=12';
+            script.src = prefix + '/js/chatbot.js?v=14';
             document.body.appendChild(script);
         }
     };

@@ -1,0 +1,676 @@
+/* ==========================================================================
+   ACF EDUHUB — CHERRY AI CHATBOT STYLES
+   Theme: ACF Purple (#7D2280, #5B135E) & ACF Gold/Yellow (#F5A623, #FBBF24)
+   ========================================================================== */
+
+:root {
+  --cherry-primary: #7D2280;
+  --cherry-primary-dark: #58105B;
+  --cherry-primary-hover: #68176B;
+  --cherry-primary-light: #9B2C9F;
+  --cherry-accent: #F5A623;
+  --cherry-accent-hover: #D98A0E;
+  --cherry-accent-glow: rgba(245, 166, 35, 0.45);
+  --cherry-bg-light: #F8FAFC;
+  --cherry-card-bg: #FFFFFF;
+  --cherry-border: #E2E8F0;
+  --cherry-text-dark: #1E293B;
+  --cherry-text-muted: #64748B;
+  --cherry-radius: 20px;
+}
+
+/* ==========================================================================
+   1. FLOATING TRIGGER BUTTON (ROUND, BOTTOM-RIGHT, EXACT MIRROR OF WHATSAPP)
+   ========================================================================== */
+.cherry-trigger-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  left: auto;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--cherry-primary);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 6px 20px rgba(125, 34, 128, 0.45), 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  outline: none;
+  padding: 0;
+  text-decoration: none;
+}
+
+.cherry-trigger-btn:hover {
+  transform: scale(1.1) translateY(-3px);
+  background: var(--cherry-primary-hover);
+  box-shadow: 0 10px 28px rgba(125, 34, 128, 0.55), 0 4px 10px rgba(0, 0, 0, 0.2);
+  color: #FFFFFF;
+}
+
+.cherry-trigger-btn:active {
+  transform: scale(0.95);
+}
+
+/* Trigger Icon Switching (Chat Icon vs Close 'X' Icon) */
+.cherry-trigger-btn .cherry-icon-chat,
+.cherry-trigger-btn .cherry-icon-close {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+  fill: currentColor;
+}
+
+.cherry-trigger-btn .cherry-icon-close {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.7);
+}
+
+.cherry-trigger-btn.active .cherry-icon-chat {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.7);
+}
+
+.cherry-trigger-btn.active .cherry-icon-close {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* Tooltip on Hover (Matching WhatsApp Tooltip) */
+.cherry-trigger-tooltip {
+  position: absolute;
+  right: 70px;
+  white-space: nowrap;
+  background: #1E293B;
+  color: #FFFFFF;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.25s ease;
+  letter-spacing: 0.3px;
+}
+
+.cherry-trigger-tooltip::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #1E293B;
+}
+
+.cherry-trigger-btn:hover .cherry-trigger-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   2. CHAT MODAL CONTAINER & RESIZING (S / M / L)
+   ========================================================================== */
+.cherry-chat-window {
+  position: fixed;
+  right: 28px;
+  bottom: 98px;
+  width: 385px;
+  height: 560px;
+  background: var(--cherry-card-bg);
+  border-radius: var(--cherry-radius);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22), 0 4px 16px rgba(125, 34, 128, 0.12);
+  border: 1px solid rgba(125, 34, 128, 0.12);
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  overflow: hidden;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  opacity: 0;
+  transform: scale(0.92) translateY(20px);
+  transform-origin: bottom right;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cherry-chat-window.active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+/* Size Switcher Variants */
+/* S: Small */
+.cherry-chat-window.size-s {
+  width: 330px;
+  height: 480px;
+}
+.cherry-chat-window.size-s .cherry-chat-body {
+  font-size: 0.84rem;
+}
+
+/* M: Medium (Default) */
+.cherry-chat-window.size-m {
+  width: 385px;
+  height: 560px;
+}
+.cherry-chat-window.size-m .cherry-chat-body {
+  font-size: 0.91rem;
+}
+
+/* L: Large */
+.cherry-chat-window.size-l {
+  width: 440px;
+  height: 640px;
+}
+.cherry-chat-window.size-l .cherry-chat-body {
+  font-size: 0.98rem;
+}
+
+/* ==========================================================================
+   3. CHAT HEADER (DEEP PURPLE + GOLD + S/M/L CONTROLS)
+   ========================================================================== */
+.cherry-chat-header {
+  background: linear-gradient(135deg, var(--cherry-primary) 0%, var(--cherry-primary-dark) 100%);
+  color: #FFFFFF;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid rgba(245, 166, 35, 0.25);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.cherry-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cherry-header-avatar {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--cherry-accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.cherry-avatar-svg {
+  width: 26px;
+  height: 26px;
+}
+
+.cherry-online-dot {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 11px;
+  height: 11px;
+  background: #10B981;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #10B981;
+}
+
+.cherry-header-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.cherry-header-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cherry-badge-acf {
+  font-size: 0.65rem;
+  background: var(--cherry-accent);
+  color: #1E293B;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cherry-header-sub {
+  font-size: 0.74rem;
+  color: #E2E8F0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.cherry-sub-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cherry-accent);
+  display: inline-block;
+}
+
+/* Size Switcher Buttons (S / M / L) */
+.cherry-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cherry-size-switcher {
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  padding: 3px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  gap: 2px;
+}
+
+.cherry-size-btn {
+  border: none;
+  background: transparent;
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.cherry-size-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.cherry-size-btn.active {
+  background: var(--cherry-accent);
+  color: #1E293B;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cherry-minimize-btn {
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  opacity: 0.8;
+}
+
+.cherry-minimize-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   4. CHAT BODY & MESSAGE BUBBLES
+   ========================================================================== */
+.cherry-chat-body {
+  flex: 1;
+  background: var(--cherry-bg-light);
+  padding: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+.cherry-chat-body::-webkit-scrollbar {
+  width: 5px;
+}
+.cherry-chat-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cherry-chat-body::-webkit-scrollbar-thumb {
+  background: rgba(125, 34, 128, 0.2);
+  border-radius: 10px;
+}
+.cherry-chat-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 34, 128, 0.4);
+}
+
+/* Message Wrapper */
+.cherry-msg-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  animation: cherryFadeSlide 0.25s ease-out forwards;
+}
+
+@keyframes cherryFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cherry-msg-row.user {
+  justify-content: flex-end;
+}
+
+.cherry-msg-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1.5px solid var(--cherry-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2px;
+}
+
+/* Bubble Styling */
+.cherry-bubble {
+  max-width: 82%;
+  padding: 12px 16px;
+  line-height: 1.55;
+  word-wrap: break-word;
+  position: relative;
+}
+
+/* Assistant Bubble (Cherry) */
+.cherry-msg-row.bot .cherry-bubble {
+  background: var(--cherry-card-bg);
+  color: var(--cherry-text-dark);
+  border-radius: 18px 18px 18px 4px;
+  border: 1px solid var(--cherry-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* User Bubble */
+.cherry-msg-row.user .cherry-bubble {
+  background: linear-gradient(135deg, var(--cherry-primary) 0%, var(--cherry-primary-light) 100%);
+  color: #FFFFFF;
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 3px 12px rgba(125, 34, 128, 0.3);
+}
+
+/* Welcome List Styling */
+.cherry-welcome-list {
+  margin: 10px 0 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.cherry-welcome-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  color: #334155;
+}
+
+/* Markdown Formatted Elements */
+.cherry-bubble p {
+  margin: 0 0 8px 0;
+}
+.cherry-bubble p:last-child {
+  margin-bottom: 0;
+}
+.cherry-bubble strong {
+  font-weight: 600;
+  color: var(--cherry-primary);
+}
+.cherry-msg-row.user .cherry-bubble strong {
+  color: #FFFFFF;
+}
+.cherry-bubble ul, .cherry-bubble ol {
+  margin: 6px 0;
+  padding-left: 20px;
+}
+.cherry-bubble li {
+  margin-bottom: 4px;
+}
+.cherry-bubble a {
+  color: var(--cherry-primary);
+  text-decoration: underline;
+  font-weight: 500;
+}
+.cherry-msg-row.user .cherry-bubble a {
+  color: #FEF08A;
+}
+
+/* Timestamp & Status */
+.cherry-msg-time {
+  font-size: 0.65rem;
+  color: var(--cherry-text-muted);
+  margin-top: 4px;
+  display: block;
+}
+.cherry-msg-row.user .cherry-msg-time {
+  color: rgba(255, 255, 255, 0.7);
+  text-align: right;
+}
+
+/* Typing Indicator */
+.cherry-typing-bubble {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 14px;
+  background: #FFFFFF;
+  border-radius: 18px 18px 18px 4px;
+  border: 1px solid var(--cherry-border);
+  width: fit-content;
+}
+
+.cherry-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cherry-primary);
+  animation: cherryBounce 1.4s infinite ease-in-out both;
+}
+
+.cherry-dot:nth-child(1) { animation-delay: -0.32s; }
+.cherry-dot:nth-child(2) { animation-delay: -0.16s; background: var(--cherry-accent); }
+.cherry-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes cherryBounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   5. QUICK SUGGESTION CHIPS (BOTTOM OF CHAT BODY)
+   ========================================================================== */
+.cherry-quick-chips-wrapper {
+  padding: 8px 16px 4px 16px;
+  background: var(--cherry-bg-light);
+  border-top: 1px solid rgba(226, 232, 240, 0.7);
+  flex-shrink: 0;
+}
+
+.cherry-quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cherry-chip {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.cherry-chip:hover {
+  background: var(--cherry-primary);
+  color: #FFFFFF;
+  border-color: var(--cherry-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(125, 34, 128, 0.2);
+}
+
+.cherry-chip:active {
+  transform: scale(0.96);
+}
+
+/* ==========================================================================
+   6. INPUT FOOTER BAR
+   ========================================================================== */
+.cherry-chat-footer {
+  background: #FFFFFF;
+  padding: 10px 14px 14px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--cherry-border);
+  flex-shrink: 0;
+}
+
+.cherry-input-box {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cherry-input {
+  width: 100%;
+  background: #F1F5F9;
+  border: 1.5px solid transparent;
+  border-radius: 24px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: var(--cherry-text-dark);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.cherry-input::placeholder {
+  color: #94A3B8;
+}
+
+.cherry-input:focus {
+  background: #FFFFFF;
+  border-color: var(--cherry-primary);
+  box-shadow: 0 0 0 3px rgba(125, 34, 128, 0.12);
+}
+
+.cherry-send-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--cherry-primary);
+  color: #FFFFFF;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 3px 10px rgba(125, 34, 128, 0.35);
+  flex-shrink: 0;
+}
+
+.cherry-send-btn:hover {
+  background: var(--cherry-accent);
+  color: #1E293B;
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px var(--cherry-accent-glow);
+}
+
+.cherry-send-btn:active {
+  transform: scale(0.92);
+}
+
+.cherry-send-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  transform: translateX(1px);
+}
+
+/* ==========================================================================
+   7. RESPONSIVE MEDIA QUERIES (MOBILE) - EXACT MIRROR OF WHATSAPP
+   ========================================================================== */
+@media (max-width: 640px) {
+  .cherry-trigger-btn {
+    bottom: 20px;
+    right: 20px;
+    left: auto;
+    width: 52px;
+    height: 52px;
+  }
+
+  .cherry-trigger-btn .cherry-icon-chat,
+  .cherry-trigger-btn .cherry-icon-close {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .cherry-trigger-tooltip {
+    display: none;
+  }
+  
+  .cherry-chat-window,
+  .cherry-chat-window.size-s,
+  .cherry-chat-window.size-m,
+  .cherry-chat-window.size-l {
+    right: 14px;
+    bottom: 82px;
+    width: calc(100vw - 28px);
+    max-width: 420px;
+    height: calc(100vh - 110px);
+    max-height: 540px;
+    border-radius: 16px;
+  }
+}

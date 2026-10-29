@@ -207,6 +207,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(waAnchor);
     }
 
+    // 6b. Auto-load Cherry AI Chatbot (ACF Virtual Assistant)
+    if (!document.querySelector('link[href*="chatbot.css"]')) {
+        const chatCss = document.createElement('link');
+        chatCss.rel = 'stylesheet';
+        chatCss.href = '../css/chatbot.css?v=2';
+        document.head.appendChild(chatCss);
+    }
+    if (!window.CherryChatbotInitialized && !document.querySelector('script[src*="chatbot.js"]')) {
+        const chatScript = document.createElement('script');
+        chatScript.src = '../js/chatbot.js?v=2';
+        chatScript.defer = true;
+        document.body.appendChild(chatScript);
+    }
+
     // ============================================================
     // 7. BILINGUAL TRANSLATION CONTROLLER (INDONESIAN <-> ENGLISH)
     // ============================================================

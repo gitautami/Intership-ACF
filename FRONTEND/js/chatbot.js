@@ -1,6 +1,7 @@
 /**
  * ACF EDUHUB — CHATBOT "CHERRY"
- * AI Assistant powered by Google Gemini API & ACF Core Knowledge Base
+ * Asisten AI Virtual Cerdas & Ramah khas ACF Eduhub
+ * Warna Identitas: Ungu (#7D2280) & Kuning Emas (#F5A623)
  */
 
 (function () {
@@ -10,7 +11,7 @@
   if (window.CherryChatbotInitialized) return;
   window.CherryChatbotInitialized = true;
 
-  // Configuration & State
+  // Storage Keys
   const STORAGE_SIZE_KEY = 'cherry_chat_size';
   const STORAGE_KEY_API = 'cherry_gemini_api_key';
   let chatHistory = [];
@@ -51,73 +52,316 @@
     return '../../BACKEND/api/chat.php';
   }
 
-  // ACF Knowledge Base for instant client-side responses (if server/network offline)
+  // Panggilan langsung ke Google Gemini API dari browser
+  async function callGeminiClientSide(userText, apiKey) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const systemPrompt = `Kamu adalah "Cherry", asisten virtual AI resmi dan representasi ramah dari yayasan pendidikan ACF Eduhub.
+Warna identitasmu dan ACF adalah Ungu (#7D2280) dan Kuning Emas (#F5A623).
+
+Tentang ACF Eduhub:
+- Yayasan sosial pendidikan yang sudah 10+ tahun berdedikasi memutus rantai kemiskinan di Indonesia melalui pendidikan gratis & bermutu bagi dhuafa.
+- Mengelola 17 Unit Pendidikan Aktif: 10 Sekolah Juara (sekolah formal gratis 100% untuk yatim & dhuafa prasejahtera) dan 7 PKBM Sekolah Daya Setara (pendidikan kesetaraan Paket A, B, C dan vokasi mandiri).
+- Mengelola Guruverse.ID (pelatihan 2.000+ guru di pelosok Indonesia).
+- 4 Pilar Program: Keberlanjutan Unit Pendidikan, Pemberdayaan Berbasis Sekolah, Kemanusiaan Internasional, dan Bantuan Langsung Berkelanjutan.
+- Kantor Pusat: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275.
+- Kontak Telepon / WhatsApp: +62 851-7979-7661 | Email: welcome@acf.or.id.
+- Akuntabilitas: Opini audit Wajar Tanpa Pengecualian (WTP) sejak 2024.
+
+Gaya Komunikasi:
+- Berbicaralah dengan sangat ramah, hangat, komunikatif, solutif, dan NYAMBUNG dengan pertanyaan pengguna.
+- Jika pengguna bertanya 'cara donasi', jelaskan langkah-langkah praktis cara menyalurkan donasi.
+- Jika pengguna bertanya biaya sekolah, tegaskan bahwa Sekolah Juara 100% GRATIS untuk yatim dan dhuafa.
+- Format teks dengan rapi dan gunakan emoji yang pas.`;
+
+    const contents = [];
+    chatHistory.slice(-6).forEach(turn => {
+      contents.push({
+        role: turn.role === 'user' ? 'user' : 'model',
+        parts: [{ text: turn.text }]
+      });
+    });
+
+    const promptWithContext = contents.length === 0 
+      ? `${systemPrompt}\n\nPertanyaan pengguna: ${userText}`
+      : userText;
+
+    contents.push({
+      role: 'user',
+      parts: [{ text: promptWithContext }]
+    });
+
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: contents,
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 800
+        }
+      })
+    });
+
+    if (!res.ok) throw new Error(`Gemini client error ${res.status}`);
+    const data = await res.json();
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!reply) throw new Error('Empty reply from Gemini');
+    return reply.trim();
+  }
+
+  /**
+   * Conversational Brain: Sangat responsif, cerdas, dan nyambung dengan semua perkataan user
+   */
   function getLocalKnowledgeReply(query) {
-    const q = query.toLowerCase();
+    const raw = (query || '').trim();
+    const q = raw.toLowerCase();
 
-    if (q.includes('siapa') || q.includes('nama') || q.includes('bot') || q.includes('cherry')) {
-      return "Halo! 😊 Saya **Cherry**, asisten virtual AI resmi dari **ACF Eduhub**! Saya siap menemani dan menjawab segala pertanyaan Anda mengenai program pendidikan, unit sekolah, donasi, hingga kemitraan.";
+    // 1. CARA DONASI / MAU DONASI / LANGKAH BERDONASI
+    if (
+      (q.includes('cara') || q.includes('gimana') || q.includes('bagaimana') || q.includes('langkah') || q.includes('alur') || q.includes('mau') || q.includes('pengen') || q.includes('ingin') || q.includes('bisa') || q.includes('tata cara') || q.includes('prosedur')) &&
+      (q.includes('donasi') || q.includes('transfer') || q.includes('sedekah') || q.includes('infaq') || q.includes('rekening') || q.includes('bayar') || q.includes('nyumbang'))
+    ) {
+      return "💖 **Cara Menyalurkan Donasi di ACF Eduhub**:\n\n" +
+             "1. Buka halaman [Donasi](donasi.html) di website ini (atau klik menu **Donasi**).\n" +
+             "2. Pilih program yang ingin Anda dukung (contoh: *Beasiswa Sekolah Juara*, *Nutrisi & Sarapan Siswa*, atau *Fasilitas Belajar*).\n" +
+             "3. Masukkan nominal donasi dan lengkapi data diri Anda.\n" +
+             "4. Pilih metode pembayaran yang diinginkan (Transfer Bank BCA, Mandiri, BRI, BSI, Virtual Account, atau QRIS / E-Wallet Gopay, OVO, ShopeePay, DANA).\n" +
+             "5. Selesaikan pembayaran, dan tanda terima resmi donasi akan langsung dikirimkan.\n\n" +
+             "Anda juga bisa transfer langsung atau konfirmasi lewat WhatsApp admin di **+62 851-7979-7661**. Terima kasih banyak atas kebaikan Anda! 😊";
     }
 
-    if (q.includes('sekolah') || q.includes('unit') || q.includes('juara') || q.includes('daya setara') || q.includes('guruverse')) {
-      return "🏫 **Unit Pendidikan ACF Eduhub**:\n\n" +
-             "1. **Sekolah Juara (10 Unit)**: Sekolah formal gratis (SD/SMP/SMA) berakreditasi baik bagi 1.662+ anak yatim & dhuafa prasejahtera.\n" +
-             "2. **PKBM Sekolah Daya Setara (7 Unit)**: Pendidikan non-formal kesetaraan (Paket A, B, C) serta vokasi kecakapan kerja mandiri.\n" +
-             "3. **Guruverse.ID**: Ekosistem pemberdayaan dan sertifikasi lebih dari 2.000+ guru di berbagai daerah Indonesia.\n\n" +
-             "Ada yang ingin Anda tanyakan lebih lanjut tentang pendaftaran atau lokasi?";
+    // 2. METODE PEMBAYARAN / REKENING DONASI / BANK APA SAJA
+    if (
+      q.includes('rekening') || q.includes('no rek') || q.includes('nomor rekening') ||
+      ((q.includes('bank') || q.includes('transfer') || q.includes('pembayaran') || q.includes('metode')) && (q.includes('donasi') || q.includes('bca') || q.includes('mandiri') || q.includes('bri') || q.includes('bsi') || q.includes('qris')))
+    ) {
+      return "💳 **Metode Pembayaran & Rekening Donasi ACF Eduhub**:\n\n" +
+             "Anda dapat berdonasi secara praktis melalui:\n" +
+             "• **QRIS Instan**: Scan via BCA Mobile, Livin Mandiri, GoPay, OVO, Dana, ShopeePay, atau LinkAja.\n" +
+             "• **Transfer Bank**: Tersedia Bank Mandiri, BCA, BRI, dan Bank Syariah Indonesia (BSI) atas nama **Yayasan Amal Khair Yasmin / ACF Eduhub**.\n" +
+             "• **Virtual Account (VA)**: Otomatis terverifikasi saat berdonasi di halaman [Donasi](donasi.html).\n\n" +
+             "Butuh bantuan transfer manual atau kwitansi? Hubungi WhatsApp kami di **+62 851-7979-7661** ya!";
     }
 
-    if (q.includes('program') || q.includes('layanan') || q.includes('kemanusiaan') || q.includes('beasiswa')) {
-      return "📚 **4 Pilar Program Layanan ACF Eduhub**:\n\n" +
-             "1. **Keberlanjutan Unit Pendidikan**: Dukungan kuota beasiswa & operasional Sekolah Juara.\n" +
-             "2. **Pemberdayaan Berbasis Sekolah**: Program kantin sehat, green school, dan literasi digital anak.\n" +
-             "3. **Kemanusiaan Internasional**: Penyaluran bantuan bagi anak-anak di daerah bencana & krisis kemanusiaan.\n" +
-             "4. **Bantuan Langsung Berkelanjutan**: Distribusi paket nutrisi gizi, seragam, dan buku paket belajar.\n\n" +
-             "Semua program ini dapat Anda eksplorasi di menu **Program Layanan**!";
+    // 3. KEAMANAN / LAPORAN AUDIT / WTP
+    if (q.includes('aman') || q.includes('terpercaya') || q.includes('audit') || q.includes('wtp') || q.includes('laporan keuangan') || q.includes('transparan') || q.includes('bukti donasi')) {
+      return "🛡️ **Donasi Anda 100% Aman & Terpercaya**:\n\n" +
+             "ACF Eduhub adalah yayasan resmi berbadan hukum yang telah berkiprah 10+ tahun. Laporan keuangan yayasan diaudit secara berkala oleh Kantor Akuntan Publik independen dan berhasil meraih predikat tertinggi **WTP (Wajar Tanpa Pengecualian)** sejak 2024.\n\n" +
+             "Setiap dana disalurkan langsung untuk operasional sekolah gratis, beasiswa, dan nutrisi siswa prasejahtera.";
     }
 
-    if (q.includes('mitra') || q.includes('kerjasama') || q.includes('csr') || q.includes('sponsor') || q.includes('kolaborasi')) {
-      return "🤝 **Kerjasama Kemitraan CSR & Program**:\n\n" +
-             "ACF Eduhub membuka kolaborasi dengan korporasi, institusi, dan yayasan untuk mewujudkan program CSR berdampak jangka panjang, beasiswa binaan, maupun sarana belajar.\n\n" +
-             "Pengajuan kemitraan dapat langsung dilakukan melalui formulir di halaman **Jadi Mitra Program** (`form-mitra.html`). Tim kami akan segera menghubungi Anda!";
-    }
-
-    if (q.includes('relawan') || q.includes('volunteer') || q.includes('sahabat')) {
-      return "🙋‍♀️ **Gabung Sahabat Eduhub (Relawan)**:\n\n" +
-             "Kami menyambut hangat para relawan yang ingin berbagi ilmu, menjadi mentor, fasilitator kelas, maupun dokumentator kegiatan. Pendaftaran relawan dibuka di halaman **Jadi Relawan** (`form-relawan.html`).";
-    }
-
-    if (q.includes('donasi') || q.includes('donatur') || q.includes('infaq') || q.includes('sedekah') || q.includes('rekening') || q.includes('transfer')) {
+    // 4. DONASI UMUM / INFAQ / SEDEKAH
+    if (q === 'donasi' || q.includes('donasi') || q.includes('infaq') || q.includes('sedekah') || q.includes('donatur')) {
       return "💖 **Donasi Pendidikan ACF Eduhub**:\n\n" +
-             "Donasi Anda disalurkan secara aman dan transparan untuk subsidi SPP, seragam, sepatu, dan gizi sarapan siswa prasejahtera. Laporan keuangan kami diaudit dengan opini **WTP (Wajar Tanpa Pengecualian)** sejak 2024.\n\n" +
-             "Anda bisa menyalurkan donasi langsung melalui halaman **Donasi** (`donasi.html`).";
+             "Setiap rupiah donasi Anda membantu membiayai sekolah, seragam, buku, dan nutrisi siswa dhuafa di 10 Sekolah Juara dan 7 PKBM Daya Setara.\n\n" +
+             "• Ingin berdonasi sekarang? Buka halaman [Donasi](donasi.html).\n" +
+             "• Ingin tahu cara dan alur transfernya? Ketik **'cara donasi'** dan Cherry siap jelaskan langkah-langkahnya! 😊";
     }
 
-    if (q.includes('alamat') || q.includes('lokasi') || q.includes('kontak') || q.includes('telepon') || q.includes('wa') || q.includes('whatsapp') || q.includes('email')) {
-      return "📍 **Kontak & Lokasi Kantor ACF Eduhub**:\n\n" +
-             "🏢 **Alamat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n" +
+    // 5. KEINGINAN BERTANYA (aku mau tanya nih, mau nanya dong, dll)
+    if (
+      q.match(/^(aku\s+)?(mau|pengen|bisa|boleh)\s+(tanya|nanya|bertanya)/i) ||
+      q.match(/^(tanya|nanya)\s+(dong|nih|ya|aja|sesuatu)/i) ||
+      q.match(/^(bisa\s+(bantu|tolong)|tolong\s+bantu)/i) ||
+      q === 'tanya' || q === 'nanya'
+    ) {
+      return "Boleh banget! Mau tanya tentang apa nih? 😊\n\nSilakan langsung ketik pertanyaannya, Cherry siap bantu jelaskan seputar:\n" +
+             "• 🏫 Sekolah Juara (biaya gratis 100%, syarat daftar, kurikulum)\n" +
+             "• 💖 Cara Donasi & metode transfer\n" +
+             "• 🤝 Cara jadi Mitra CSR atau Relawan\n" +
+             "• 📍 Alamat kantor pusat Bandung & kontak WhatsApp admin";
+    }
+
+    // 6. SAPAAN / GREETINGS (halo, hallo, hai, hei, p, assalamualaikum, dll)
+    if (
+      q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|p|tes|test|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i) ||
+      ['halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'p'].includes(q)
+    ) {
+      return "Halo! 👋 Senang bisa menyapa Anda. Saya **Cherry**, asisten virtual resmi ACF Eduhub.\n\nAda yang bisa Cherry bantu seputar Sekolah Juara yang gratis, cara donasi, program beasiswa, atau informasi lainnya hari ini? 😊";
+    }
+
+    // 7. BIAYA SEKOLAH / APAKAH GRATIS?
+    if (q.includes('biaya') || q.includes('bayar') || q.includes('gratis') || q.includes('spp') || q.includes('uang sekolah') || q.includes('uang gedung') || q.includes('tarif')) {
+      return "✨ **Pendidikan di Sekolah Juara 100% GRATIS!**\n\n" +
+             "Anak-anak yatim dan dhuafa tidak dipungut biaya sepeser pun, bebas dari uang SPP bulanan, uang gedung/pangkal, seragam, sepatu, hingga buku pelajaran dan nutrisi sarapan.\n\n" +
+             "Seluruh biaya didanai penuh oleh beasiswa ACF Eduhub berkat dukungan para donatur dan mitra program kami.";
+    }
+
+    // 8. CARA DAFTAR SEKOLAH JUARA / SYARAT MASUK / PPDB
+    if (
+      (q.includes('cara') || q.includes('gimana') || q.includes('syarat') || q.includes('langkah') || q.includes('alur') || q.includes('daftar') || q.includes('masuk') || q.includes('ppdb')) &&
+      (q.includes('sekolah') || q.includes('juara') || q.includes('siswa') || q.includes('anak') || q.includes('sd') || q.includes('smp') || q.includes('smk'))
+    ) {
+      return "📝 **Cara & Syarat Pendaftaran Siswa Sekolah Juara (100% Gratis)**:\n\n" +
+             "**1. Kriteria Calon Siswa**:\n" +
+             "• Anak yatim, piatu, atau berasal dari keluarga dhuafa prasejahtera.\n" +
+             "• Memiliki semangat tinggi untuk belajar.\n\n" +
+             "**2. Dokumen Persyaratan**:\n" +
+             "• Surat Keterangan Tidak Mampu (SKTM) dari Kelurahan/Desa.\n" +
+             "• Fotokopi Kartu Keluarga (KK) dan Akta Kelahiran anak.\n" +
+             "• Rapor/ijazah jenjang sebelumnya.\n\n" +
+             "**3. Alur Pendaftaran**:\n" +
+             "• Isi formulir pendaftaran di unit Sekolah Juara terdekat.\n" +
+             "• Verifikasi berkas & survei kunjungan rumah (*home visit*).\n" +
+             "• Pengumuman kelulusan beasiswa pendidikan penuh.\n\n" +
+             "Untuk info jadwal PPDB terkini di cabang kota Anda, silakan hubungi narahubung kami di WhatsApp **+62 851-7979-7661** ya!";
+    }
+
+    // 9. CARA JADI MITRA PROGRAM / CSR
+    if (
+      (q.includes('cara') || q.includes('gimana') || q.includes('syarat') || q.includes('langkah') || q.includes('mau') || q.includes('alur') || q.includes('tata')) &&
+      (q.includes('mitra') || q.includes('kerjasama') || q.includes('kolaborasi') || q.includes('csr') || q.includes('sponsor') || q.includes('perusahaan'))
+    ) {
+      return "🤝 **Cara Menjadi Mitra Program / Kerjasama CSR**:\n\n" +
+             "1. Masuk ke halaman formulir [Jadi Mitra Program](form-mitra.html).\n" +
+             "2. Isi formulir dengan profil perusahaan/lembaga dan program kemitraan yang diminati (Beasiswa Binaan Kelas, Pembangunan Fasilitas, Green School, dll).\n" +
+             "3. Kirim formulir pendaftaran.\n" +
+             "4. Tim Partnership ACF Eduhub akan menghubungi PIC Anda dalam 1x24 jam untuk diskusi proposal dan sinergi bersama.\n\n" +
+             "Ingin berdiskusi langsung? Hubungi email kemitraan di **welcome@acf.or.id** atau WA di **+62 851-7979-7661**.";
+    }
+
+    // 10. CARA JADI RELAWAN (SAHABAT EDUHUB)
+    if (
+      (q.includes('cara') || q.includes('gimana') || q.includes('syarat') || q.includes('langkah') || q.includes('mau') || q.includes('alur') || q.includes('daftar') || q.includes('gabung')) &&
+      (q.includes('relawan') || q.includes('volunteer') || q.includes('sahabat') || q.includes('mengajar'))
+    ) {
+      return "🙋‍♀️ **Cara Mendaftar Jadi Relawan (Sahabat Eduhub)**:\n\n" +
+             "1. Buka formulir pendaftaran di halaman [Jadi Relawan](form-relawan.html).\n" +
+             "2. Lengkapi identitas diri dan pilih bidang yang diminati:\n" +
+             "   • *Relawan Pengajar / Tutor*\n" +
+             "   • *Fasilitator Kegiatan & Event*\n" +
+             "   • *Dokumentasi, Foto, & Desain Konten*\n" +
+             "   • *Mentor Inspiratif & Karakter*\n" +
+             "3. Kirim formulir pendaftaran.\n" +
+             "4. Tim relawan kami akan mengundang Anda ke sesi orientasi komunitas.\n\n" +
+             "Mari berbagi inspirasi dan senyuman untuk anak-anak Indonesia! ✨";
+    }
+
+    // 11. APA ITU SEKOLAH JUARA / PENJELASAN SEKOLAH JUARA
+    if (q.includes('sekolah juara') || (q.includes('juara') && (q.includes('apa') || q.includes('tentang') || q.includes('itu') || q.includes('maksud')))) {
+      return "🏆 **Sekolah Juara** adalah jaringan 10 unit sekolah formal (SD, SMP, dan SMK) berkualitas bebas biaya (gratis 100%) yang dikelola oleh ACF Eduhub untuk mendidik anak-anak dhuafa dan yatim di Indonesia.\n\n" +
+             "Sekolah Juara memadukan kurikulum nasional dengan pembinaan akhlak mulia, kepemimpinan (*leadership*), kewirausahaan, serta literasi teknologi modern.";
+    }
+
+    // 12. APA ITU SEKOLAH DAYA SETARA / PKBM / KEJAR PAKET
+    if (q.includes('daya setara') || q.includes('pkbm') || q.includes('kejar paket') || q.includes('paket c') || q.includes('paket b') || q.includes('paket a')) {
+      return "📖 **Sekolah Daya Setara** adalah 7 unit PKBM (Pusat Kegiatan Belajar Masyarakat) pendidikan non-formal kesetaraan (Paket A setara SD, Paket B setara SMP, Paket C setara SMA) yang diselenggarakan gratis/terjangkau.\n\n" +
+             "Program ini membantu anak-anak putus sekolah dan masyarakat prasejahtera untuk mendapatkan ijazah resmi negara serta pelatihan keterampilan vokasi kerja mandiri.";
+    }
+
+    // 13. APA ITU GURUVERSE
+    if (q.includes('guruverse') || (q.includes('guru') && (q.includes('pelatihan') || q.includes('training') || q.includes('kompetensi')))) {
+      return "👩‍🏫 **Guruverse.ID** adalah ekosistem peningkatan kapasitas guru yang diinisiasi oleh ACF Eduhub. Hingga kini telah melatih lebih dari **2.000+ guru** di seluruh pelosok Indonesia mengenai metode belajar aktif, pedagogik kreatif, dan pemanfaatan teknologi kelas.";
+    }
+
+    // 14. 4 PILAR PROGRAM LAYANAN
+    if (q.includes('program') || q.includes('layanan') || q.includes('pilar') || q.includes('kegiatan')) {
+      return "📚 **4 Pilar Program Layanan ACF Eduhub**:\n\n" +
+             "1. 🏫 **Keberlanjutan Unit Pendidikan**: Pembiayaan operasional & beasiswa penuh bagi 10 Sekolah Juara dan 7 PKBM Daya Setara.\n" +
+             "2. 🥗 **Pemberdayaan Berbasis Sekolah**: Inovasi gizi kantin sehat, green school, dan literasi digital siswa.\n" +
+             "3. 🕊️ **Kemanusiaan Internasional**: Penyaluran bantuan pangan dan pendidikan darurat bagi anak-anak di daerah konflik kemanusiaan.\n" +
+             "4. 🎒 **Bantuan Langsung Berkelanjutan**: Penyaluran rutin seragam, buku paket, sepatu, dan gizi sarapan.\n\n" +
+             "Pelajari detailnya di menu [Program Layanan](program-layanan.html)!";
+    }
+
+    // 15. LOKASI CABANG KOTA TERTENTU
+    if (q.includes('jogja') || q.includes('yogyakarta')) {
+      return "🏫 **Sekolah Juara Yogyakarta** adalah salah satu unit aktif kami di wilayah D.I. Yogyakarta! Unit ini melayani pendidikan berkualitas bebas biaya untuk anak-anak dhuafa. Ingin informasi pendaftaran atau kunjungan di unit Yogyakarta?";
+    }
+    if (q.includes('bandung') || q.includes('cimahi')) {
+      return "🏫 Di wilayah **Bandung dan Cimahi** terdapat kantor pusat yayasan kami serta beberapa unit SD Juara dan SMP Juara aktif. Kantor pusat beralamat di Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung.";
+    }
+    if (q.includes('jakarta') || q.includes('tangerang') || q.includes('jabodetabek')) {
+      return "🏫 Di wilayah **Jabodetabek (Jakarta & Tangerang)** kami mengoperasikan beberapa unit Sekolah Juara dan PKBM Daya Setara untuk anak-anak prasejahtera. Anda bisa menghubungi kontak pusat kami untuk detail lokasi tiap unit!";
+    }
+    if (q.includes('pekanbaru') || q.includes('medan') || q.includes('surabaya')) {
+      return "🏫 Ya, unit Sekolah Juara juga hadir di kota-kota besar di luar pulau Jawa seperti **Pekanbaru** dan **Medan**, serta di Jawa Timur seperti **Surabaya**. Total terdapat 17 unit di 12 kota/kabupaten di Indonesia.";
+    }
+
+    // 16. LOKASI & ALAMAT KANTOR
+    if (q.includes('alamat') || q.includes('lokasi') || q.includes('kantor') || q.includes('dimana') || q.includes('di mana')) {
+      return "📍 **Alamat & Lokasi Kantor ACF Eduhub**:\n\n" +
+             "🏢 **Kantor Pusat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n" +
+             "🏫 **Jangkauan**: 17 Unit Pendidikan tersebar di 12 Kota/Kabupaten di Indonesia (Bandung, Cimahi, Jakarta, Tangerang, Yogya, Pekanbaru, Medan, Surabaya, dll).\n\n" +
              "📞 **WhatsApp / Telepon**: +62 851-7979-7661\n" +
-             "✉️ **Email**: welcome@acf.or.id\n" +
-             "📸 **Instagram**: @acf.eduhub | **YouTube**: JUARA TV";
+             "✉️ **Email**: welcome@acf.or.id";
     }
 
-    if (q.includes('dampak') || q.includes('statistik') || q.includes('capaian') || q.includes('wtp')) {
-      return "📊 **Capaian Dampak Nyata ACF Eduhub** (10 Tahun Berjalan):\n\n" +
-             "• **17 Unit Pendidikan** (10 Sekolah Juara + 7 PKBM Daya Setara)\n" +
-             "• **12 Kota/Kabupaten** wilayah jangkauan\n" +
-             "• **1.812+ Siswa Terdampak** langsung\n" +
+    // 17. KONTAK RESMI & SOSIAL MEDIA
+    if (q.includes('kontak') || q.includes('telepon') || q.includes('wa') || q.includes('whatsapp') || q.includes('email') || q.includes('admin') || q.includes('hubungi') || q.includes('nomor') || q.includes('instagram') || q.includes('youtube')) {
+      return "📞 **Kontak Resmi ACF Eduhub**:\n\n" +
+             "• **WhatsApp / Telepon**: +62 851-7979-7661 (tersedia juga tombol hijau WA di pojok kiri bawah layar Anda)\n" +
+             "• **Email**: welcome@acf.or.id\n" +
+             "• **Instagram**: @acf.eduhub\n" +
+             "• **YouTube**: JUARA TV\n" +
+             "• **Website**: www.acf.or.id\n\n" +
+             "Tim kami siap melayani Anda pada jam operasional kerja.";
+    }
+
+    // 18. TENTANG YAYASAN ACF EDUHUB
+    if (q.includes('apa itu acf') || q.includes('tentang acf') || q.includes('profil acf') || q.includes('yayasan') || q.includes('sejarah') || q.includes('visi') || q.includes('misi')) {
+      return "🏫 **Tentang ACF Eduhub**:\n\n" +
+             "ACF Eduhub (Amal Khair Yasmin Foundation) adalah yayasan sosial pendidikan yang telah berdedikasi selama lebih dari 10 tahun memutus rantai kemiskinan di Indonesia melalui pendidikan gratis & berkualitas bagi dhuafa.\n\n" +
+             "• **17 Unit Pendidikan Aktif** (10 Sekolah Juara + 7 PKBM Daya Setara)\n" +
+             "• **1.812+ Siswa Terdampak** langsung beasiswa penuh\n" +
              "• **2.000+ Guru Terlatih** lewat Guruverse.ID\n" +
-             "• **Opini WTP** Akuntabilitas Audit sejak 2024";
+             "• **Opini WTP** Akuntabilitas Audit Keuangan sejak 2024.";
     }
 
-    return "Terima kasih atas pertanyaannya! 😊\n\n" +
-           "Saya **Cherry** dari ACF Eduhub. Anda dapat menanyakan tentang:\n" +
-           "• 🏫 **Unit Pendidikan**: Sekolah Juara & Daya Setara\n" +
-           "• 📚 **Program Layanan**: 4 pilar program pendidikan\n" +
-           "• 🤝 **Cara Jadi Mitra / CSR**: Kolaborasi kebaikan\n" +
-           "• 💖 **Donasi**: Penyaluran bantuan dhuafa\n" +
-           "• 📍 **Kontak & Alamat**: Info kantor dan narahubung\n\n" +
-           "Silakan pilih topik di atas atau ketik langsung pertanyaan Anda!";
+    // 19. TANYA KABAR (Apa kabar, sehat, dll)
+    if (q.includes('kabar') || q.includes('sehat') || q.includes('lagi apa')) {
+      return "Kabar saya luar biasa baik dan selalu bersemangat! ✨ Terima kasih sudah menanyakan. Semoga hari Anda juga menyenangkan dan penuh berkah! Ada informasi tentang ACF Eduhub yang bisa Cherry bantu carikan?";
+    }
+
+    // 20. UCAPAN TERIMA KASIH (Makasih, thanks, nuhun)
+    if (q.includes('terima kasih') || q.includes('makasih') || q.includes('thanks') || q.includes('nuhun') || q.includes('tengkyu') || q.includes('syukron')) {
+      return "Sama-sama! Senang sekali bisa membantu Anda. 😊 Jika ada hal lain yang ingin ditanyakan lagi tentang program kami, jangan ragu untuk menyapa Cherry lagi ya!";
+    }
+
+    // 21. AFIRMASI (Oke, siap, baik, mantap, sip)
+    if (q.match(/^(oke+|ok|siap|baik|mantap|sip|yoi|keren|siip)(\s|[!.,?~]|$)/i) || q === 'oke' || q === 'ok') {
+      return "Sip! Senang bisa mendampingi Anda. Jika ada informasi atau bantuan lain yang diperlukan di website ini, kabari Cherry ya! ✨";
+    }
+
+    // 22. PUJIAN (Pintar, keren, hebat)
+    if (q.includes('pintar') || q.includes('keren') || q.includes('hebat') || q.includes('bagus') || q.includes('lucu') || q.includes('cantik')) {
+      return "Wah, terima kasih banyak atas pujiannya! Senang sekali bisa membantu Anda dengan baik. Ada yang ingin Anda tanyakan lagi seputar ACF Eduhub? 😊";
+    }
+
+    // 23. SIAPA KAMU / CHERRY / BOT
+    if (q.includes('siapa') || q.includes('nama') || q.includes('bot') || q.includes('cherry') || q.includes('robot') || q.includes('ai')) {
+      return "Halo! 😊 Saya **Cherry**, asisten virtual AI ramah dari **ACF Eduhub**! Warna identitas saya ungu dan kuning emas khas ACF. Tugas saya menjawab pertanyaan Anda tentang Sekolah Juara, donasi, program beasiswa, relawan, dan kontak kami.";
+    }
+
+    // 24. DAMPAK & STATISTIK CAPAIAN
+    if (q.includes('dampak') || q.includes('statistik') || q.includes('capaian') || q.includes('angka') || q.includes('berapa siswa')) {
+      return "📊 **Capaian Dampak Nyata ACF Eduhub**:\n\n" +
+             "• **17 Unit Pendidikan Aktif** (10 Sekolah Juara + 7 PKBM Daya Setara)\n" +
+             "• **12 Kota & Kabupaten** wilayah jangkauan\n" +
+             "• **1.812+ Siswa Terdampak** langsung beasiswa pendidikan gratis\n" +
+             "• **2.000+ Guru Terlatih** lewat Guruverse.ID\n" +
+             "• **Opini Audit WTP** (Wajar Tanpa Pengecualian) sejak 2024.";
+    }
+
+    // 25. KAMU BISA APA / BANTU APA / MENU
+    if (q.includes('bisa apa') || q.includes('fitur') || q.includes('bantu apa') || q.includes('menu') || q.includes('panduan')) {
+      return "Cherry bisa membantu Anda menemukan informasi lengkap di ACF Eduhub seputar:\n\n" +
+             "1. 💖 **Donasi**: Cara donasi, metode transfer bank/QRIS, dan laporan audit.\n" +
+             "2. 🏫 **Sekolah Juara**: Pendidikan 100% gratis, syarat pendaftaran, dan kurikulum.\n" +
+             "3. 📖 **Sekolah Daya Setara**: Pendidikan kesetaraan Paket A, B, C dan vokasi.\n" +
+             "4. 🤝 **Kemitraan & Relawan**: Cara berkolaborasi program CSR atau gabung relawan.\n" +
+             "5. 📍 **Lokasi & Kontak**: Alamat kantor Bandung dan nomor WhatsApp admin.\n\n" +
+             "Silakan ketik pertanyaan Anda!";
+    }
+
+    // 26. DEFAULT NATURAL RESPONSE (NYAMBUNG DAN FLEKSIBEL)
+    return `Terima kasih atas pertanyaannya! 😊 Mengenai **"${escapeHtml(raw)}"**, Cherry siap bantu jelaskan lebih dalam. Anda bisa menanyakan hal spesifik seputar:\n\n` +
+           "• 💖 **Cara Donasi & Metode Pembayaran**\n" +
+           "• 🏫 **Pendaftaran Sekolah Juara (Gratis 100%)**\n" +
+           "• 📚 **4 Pilar Program Layanan Pendidikan**\n" +
+           "• 🤝 **Kerjasama Mitra CSR & Relawan**\n" +
+           "• 📍 **Alamat Kantor Bandung & Kontak WhatsApp**\n\n" +
+           "Atau Anda bisa langsung chat admin kami via WhatsApp di **+62 851-7979-7661** (tombol hijau di pojok kiri bawah).";
   }
 
   // Escape HTML helper
@@ -127,191 +371,249 @@
     return div.innerHTML;
   }
 
-  // Simple Markdown parser for bolding, lists, and line breaks
+  // Markdown Formatter (Bold, Italic, Links, Bullet Lists, Numbered Lists)
   function formatMarkdown(text) {
-    let raw = escapeHtml(text);
+    if (!text) return '';
+    let html = escapeHtml(text);
 
     // Bold **text**
-    raw = raw.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-    // Bullet points (* or •)
-    raw = raw.replace(/(?:^|\n)[•*]\s*(.*?)(?=(?:\n[•*]|\n\n|$))/g, function (match, p1) {
-      return '<div style="display:flex; gap:6px; margin:3px 0;"><span>•</span><span>' + p1 + '</span></div>';
+    // Italic *text*
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // Markdown Links [title](url)
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="cherry-inline-link" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    // Format newlines into paragraphs and lists
+    const lines = html.split('\n');
+    let inList = false;
+    let listType = '';
+    let result = [];
+
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      const bulletMatch = trimmed.match(/^[•\-*]\s+(.*)$/);
+      const numberMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+
+      if (bulletMatch) {
+        if (!inList || listType !== 'ul') {
+          if (inList) result.push(`</${listType}>`);
+          result.push('<ul class="cherry-list">');
+          inList = true;
+          listType = 'ul';
+        }
+        result.push(`<li>${bulletMatch[1]}</li>`);
+      } else if (numberMatch) {
+        if (!inList || listType !== 'ol') {
+          if (inList) result.push(`</${listType}>`);
+          result.push('<ol class="cherry-list numbered">');
+          inList = true;
+          listType = 'ol';
+        }
+        result.push(`<li>${numberMatch[2]}</li>`);
+      } else {
+        if (inList) {
+          result.push(`</${listType}>`);
+          inList = false;
+          listType = '';
+        }
+        if (trimmed.length > 0) {
+          result.push(`<p>${trimmed}</p>`);
+        }
+      }
     });
 
-    // Numbered lists
-    raw = raw.replace(/(?:^|\n)(\d+)\.\s*(.*?)(?=(?:\n\d+\.|\n\n|$))/g, function (match, num, p1) {
-      return '<div style="display:flex; gap:6px; margin:3px 0;"><span style="font-weight:600; color:#7D2280;">' + num + '.</span><span>' + p1 + '</span></div>';
-    });
+    if (inList) {
+      result.push(`</${listType}>`);
+    }
 
-    // Convert newlines to <br>
-    raw = raw.replace(/\n/g, '<br>');
-
-    return raw;
+    return result.join('');
   }
 
-  // Create & Inject Chatbot HTML
+  // Build Floating UI & Modal Window
   function initChatbotUI() {
-    // 1. Floating Round Trigger Button
-    const triggerBtn = document.createElement('button');
-    triggerBtn.id = 'cherry-chat-trigger';
-    triggerBtn.className = 'cherry-trigger-btn';
-    triggerBtn.setAttribute('aria-label', 'Buka Chat AI Cherry');
-    triggerBtn.setAttribute('title', 'Tanya Cherry AI • ACF Eduhub');
-    triggerBtn.innerHTML = `
-      <!-- Chat Icon SVG (Solid, crisp, identical optical balance with WhatsApp) -->
-      <svg class="cherry-icon-chat" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.86 7.04-.15.93-.65 2.5-1.74 3.65 0 0 2.65.15 5.3-1.63.83.21 1.7.32 2.58.32 5.52 0 10-4.03 10-9S17.52 2 12 2zm-5 10c-.83 0-1.5-.67-1.5-1.5S6.17 9 7 9s1.5.67 1.5 1.5S7.83 12 7 12zm5 0c-.83 0-1.5-.67-1.5-1.5S11.17 9 12 9s1.5.67 1.5 1.5S12.83 12 12 12zm5 0c-.83 0-1.5-.67-1.5-1.5S16.17 9 17 9s1.5.67 1.5 1.5S17.83 12 17 12z"/>
-      </svg>
-      <!-- Close 'X' Icon SVG -->
-      <svg class="cherry-icon-close" viewBox="0 0 24 24">
-        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-      </svg>
-      <span class="cherry-trigger-tooltip">Chat Tanya Cherry AI</span>
-    `;
+    if (document.getElementById('cherryChatbotRoot')) return;
 
-    // 2. Chat Modal Window
+    const root = document.createElement('div');
+    root.id = 'cherryChatbotRoot';
+    root.className = 'cherry-chatbot-container';
+
     const savedSize = localStorage.getItem(STORAGE_SIZE_KEY) || 'size-m';
 
-    const chatWindow = document.createElement('div');
-    chatWindow.id = 'cherry-chat-window';
-    chatWindow.className = `cherry-chat-window ${savedSize}`;
-    chatWindow.innerHTML = `
-      <!-- Header -->
-      <div class="cherry-chat-header">
-        <div class="cherry-header-info">
-          <div class="cherry-header-avatar">
-            <!-- Cute Cherry Bot Icon SVG -->
-            <svg class="cherry-avatar-svg" viewBox="0 0 36 36">
-              <!-- Cherries SVG with Purple/Gold theme -->
-              <path fill="#7D2280" d="M12.5 32c-4.1 0-7.5-3.4-7.5-7.5s3.4-7.5 7.5-7.5c2.3 0 4.3 1 5.6 2.6.4.5.2 1.2-.3 1.6-.5.4-1.2.2-1.6-.3-1-1.2-2.3-1.9-3.7-1.9-3 0-5.5 2.5-5.5 5.5s2.5 5.5 5.5 5.5c2.8 0 5.1-2.1 5.4-4.8.1-.6.6-1.1 1.2-1 .6.1 1.1.6 1 1.2-.4 3.7-3.6 6.7-7.6 6.7z"/>
-              <path fill="#9B2C9F" d="M23.5 32c-4.1 0-7.5-3.4-7.5-7.5 0-3.3 2.2-6.2 5.3-7.1.6-.2 1.2.2 1.4.8.2.6-.2 1.2-.8 1.4-2.3.7-3.9 2.8-3.9 5 0 3 2.5 5.5 5.5 5.5s5.5-2.5 5.5-5.5-2.5-5.5-5.5-5.5c-.6 0-1.2-.1-1.8-.3-.6-.2-.9-.8-.7-1.4.2-.6.8-.9 1.4-.7.7.2 1.4.3 2.1.3 4.1 0 7.5 3.4 7.5 7.5s-3.4 7.4-7.5 7.4z"/>
-              <circle cx="12.5" cy="24.5" r="5.5" fill="#7D2280"/>
-              <circle cx="23.5" cy="24.5" r="5.5" fill="#58105B"/>
-              <circle cx="10.5" cy="22.5" r="1.5" fill="#FFFFFF" opacity="0.8"/>
-              <circle cx="21.5" cy="22.5" r="1.5" fill="#FFFFFF" opacity="0.8"/>
-              <!-- Stems & Leaf in Gold -->
-              <path fill="#F5A623" d="M12.5 19c-.3 0-.5-.1-.7-.3-.5-.4-.5-1.2-.1-1.7 2.2-2.8 5.4-5.6 9.3-8 3.8-2.3 7.8-3.3 8.3-3.4.6-.2 1.3.2 1.4.8.2.6-.2 1.3-.8 1.4-.3.1-4 1-7.6 3.2-3.6 2.2-6.5 4.8-8.5 7.3-.3.5-.7.7-1.3.7z"/>
-              <path fill="#F5A623" d="M23.5 19c-.5 0-.9-.3-1-7.9-.1-.6.3-1.2.9-1.3 4.8-.8 8.8-3.4 9.1-3.6.5-.4 1.3-.2 1.6.3.4.5.2 1.3-.3 1.6-.6.4-4.8 3.2-9.9 4-.1 0-.2.1-.4.1z"/>
-            </svg>
-            
-          </div>
-          <div class="cherry-header-meta">
-            <div class="cherry-header-title">
-              Cherry <span class="cherry-badge-acf">ACF AI</span>
-            </div>
-            <div class="cherry-header-sub">
-              AI Assistant
-            </div>
-          </div>
-        </div>
-
-        <!-- Controls: S | M | L and Close -->
-        <div class="cherry-header-controls">
-          <div class="cherry-size-switcher" role="group" aria-label="Ukuran Chat">
-            <button type="button" class="cherry-size-btn ${savedSize === 'size-s' ? 'active' : ''}" data-size="size-s" title="Ukuran Kecil (S)">S</button>
-            <button type="button" class="cherry-size-btn ${savedSize === 'size-m' ? 'active' : ''}" data-size="size-m" title="Ukuran Standar (M)">M</button>
-            <button type="button" class="cherry-size-btn ${savedSize === 'size-l' ? 'active' : ''}" data-size="size-l" title="Ukuran Besar (L)">L</button>
-          </div>
-          <button type="button" class="cherry-minimize-btn" id="cherry-btn-minimize" title="Tutup Chat">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Messages Body -->
-      <div class="cherry-chat-body" id="cherry-chat-body">
-        <!-- Initial Welcome Message from Cherry -->
-        <div class="cherry-msg-row bot">
-          <div class="cherry-msg-avatar">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="#7D2280">
-              <circle cx="8" cy="15" r="4"/>
-              <circle cx="16" cy="15" r="4"/>
-              <path d="M8 11c1-4 4-7 8-9" stroke="#F5A623" stroke-width="2" fill="none"/>
-            </svg>
-          </div>
-          <div class="cherry-bubble">
-            <p>Halo! 👋 Saya <strong>Cherry</strong>, asisten AI resmi ACF Eduhub.</p>
-            <p>Saya siap membantu Anda mengenai:</p>
-            <ul class="cherry-welcome-list">
-              <li class="cherry-welcome-item">🏫 <span><strong>Unit Pendidikan</strong> (Sekolah Juara & Daya Setara)</span></li>
-              <li class="cherry-welcome-item">📚 <span><strong>Program Layanan</strong> & Beasiswa Edukasi</span></li>
-              <li class="cherry-welcome-item">🤝 <span><strong>Cara Menjadi Mitra</strong> & Relawan</span></li>
-              <li class="cherry-welcome-item">💖 <span><strong>Panduan Donasi</strong> & Transparansi</span></li>
-              <li class="cherry-welcome-item">📍 <span><strong>Alamat & Kontak</strong> ACF Eduhub</span></li>
-            </ul>
-            <span class="cherry-msg-time">Sekarang</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Action Chips -->
-      <div class="cherry-quick-chips-wrapper">
-        <div class="cherry-quick-chips" id="cherry-quick-chips">
-          <button type="button" class="cherry-chip" data-query="Jelaskan tentang Unit Pendidikan ACF Eduhub">
-            🏫 Unit Pendidikan
-          </button>
-          <button type="button" class="cherry-chip" data-query="Apa saja 4 Program Layanan di ACF Eduhub?">
-            📚 Program Layanan
-          </button>
-          <button type="button" class="cherry-chip" data-query="Bagaimana cara menjadi mitra CSR atau kerjasama dengan ACF?">
-            🤝 Jadi Mitra
-          </button>
-          <button type="button" class="cherry-chip" data-query="Bagaimana cara menyalurkan donasi di ACF Eduhub?">
-            💖 Salurkan Donasi
-          </button>
-          <button type="button" class="cherry-chip" data-query="Di mana alamat kantor dan kontak WhatsApp ACF Eduhub?">
-            📍 Alamat & Kontak
-          </button>
-        </div>
-      </div>
-
-      <!-- Input Footer -->
-      <form class="cherry-chat-footer" id="cherry-chat-form">
-        <div class="cherry-input-box">
-          <input type="text" id="cherry-chat-input" class="cherry-input" placeholder="Ketik pesan untuk Cherry..." autocomplete="off" />
-        </div>
-        <button type="submit" class="cherry-send-btn" id="cherry-send-btn" aria-label="Kirim Pesan">
-          <svg viewBox="0 0 24 24">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+    root.innerHTML = `
+      <!-- Floating Trigger Button -->
+      <button type="button" class="cherry-trigger-btn" id="cherryTriggerBtn" aria-label="Buka Chat AI Cherry" title="Tanya Cherry AI">
+        <!-- Chat Bubble Icon -->
+        <span class="cherry-btn-icon icon-chat">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="#FFFFFF">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
           </svg>
-        </button>
-      </form>
+        </span>
+        <!-- Close Icon -->
+        <span class="cherry-btn-icon icon-close">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+
+      <!-- Chat Modal Window -->
+      <div class="cherry-chat-window ${savedSize}" id="cherryChatWindow" role="dialog" aria-modal="true" aria-label="Jendela Chat Cherry">
+        <!-- Header -->
+        <div class="cherry-header">
+          <div class="cherry-header-left">
+            <div class="cherry-avatar-box">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#FFFFFF">
+                <circle cx="8" cy="15" r="4"/>
+                <circle cx="16" cy="15" r="4"/>
+                <path d="M8 11c1-4 4-7 8-9" stroke="#F5A623" stroke-width="2" fill="none"/>
+              </svg>
+            </div>
+            <div class="cherry-header-info">
+              <div class="cherry-title-row">
+                <span class="cherry-bot-name">Cherry</span>
+                <span class="cherry-badge-acf">ACF AI</span>
+              </div>
+              <div class="cherry-subtitle">AI Assistant</div>
+            </div>
+          </div>
+
+          <div class="cherry-header-actions">
+            <!-- Size Toggle (S, M, L) -->
+            <div class="cherry-size-toggle" title="Ubah Ukuran Jendela Chat">
+              <button type="button" class="cherry-size-btn ${savedSize === 'size-s' ? 'active' : ''}" data-size="size-s">S</button>
+              <button type="button" class="cherry-size-btn ${savedSize === 'size-m' ? 'active' : ''}" data-size="size-m">M</button>
+              <button type="button" class="cherry-size-btn ${savedSize === 'size-l' ? 'active' : ''}" data-size="size-l">L</button>
+            </div>
+
+            <!-- API Key Setup Button -->
+            <button type="button" class="cherry-key-btn" id="cherryKeyBtn" title="Atur Google Gemini API Key">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="7.5" cy="15.5" r="5.5"/>
+                <path d="m21 2-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/>
+              </svg>
+            </button>
+
+            <!-- Close Window Button -->
+            <button type="button" class="cherry-close-btn" id="cherryCloseBtn" aria-label="Tutup Chat">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Body (Messages Stream) -->
+        <div class="cherry-body" id="cherryBody">
+          <!-- Initial Welcome Message from Cherry -->
+          <div class="cherry-msg-row bot">
+            <div class="cherry-msg-avatar">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="#7D2280">
+                <circle cx="8" cy="15" r="4"/>
+                <circle cx="16" cy="15" r="4"/>
+                <path d="M8 11c1-4 4-7 8-9" stroke="#F5A623" stroke-width="2" fill="none"/>
+              </svg>
+            </div>
+            <div class="cherry-bubble">
+              <p>Halo! 👋 Saya <strong>Cherry</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
+              <p>Saya siap menjawab pertanyaan Anda mengenai:</p>
+              <ul class="cherry-list">
+                <li>💖 <strong>Cara & Metode Donasi</strong></li>
+                <li>🏫 <strong>Sekolah Juara</strong> (Gratis 100% untuk Dhuafa)</li>
+                <li>📚 <strong>4 Pilar Program Layanan</strong></li>
+                <li>🤝 <strong>Kemitraan CSR & Relawan</strong></li>
+              </ul>
+              <p>Ada yang ingin Anda tanyakan hari ini? 😊</p>
+              <span class="cherry-msg-time">Sekarang</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Action Chips -->
+        <div class="cherry-quick-chips" id="cherryQuickChips">
+          <button type="button" class="cherry-chip" data-query="cara donasi">💖 Cara Donasi</button>
+          <button type="button" class="cherry-chip" data-query="apakah sekolah juara gratis">🏫 Sekolah Juara Gratis?</button>
+          <button type="button" class="cherry-chip" data-query="cara jadi mitra csr">🤝 Jadi Mitra</button>
+          <button type="button" class="cherry-chip" data-query="lokasi kantor dan kontak wa">📍 Alamat & Kontak</button>
+        </div>
+
+        <!-- Input Footer Form -->
+        <form class="cherry-footer" id="cherryForm">
+          <input
+            type="text"
+            class="cherry-input"
+            id="cherryInput"
+            placeholder="Ketik pesan untuk Cherry..."
+            autocomplete="off"
+            required
+            maxlength="400"
+          />
+          <button type="submit" class="cherry-send-btn" id="cherrySendBtn" aria-label="Kirim Pesan">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </form>
+      </div>
     `;
 
-    document.body.appendChild(triggerBtn);
-    document.body.appendChild(chatWindow);
+    document.body.appendChild(root);
 
-    bindEvents(triggerBtn, chatWindow);
-  }
-
-  // Bind DOM Events
-  function bindEvents(triggerBtn, chatWindow) {
-    const chatBody = document.getElementById('cherry-chat-body');
-    const chatForm = document.getElementById('cherry-chat-form');
-    const chatInput = document.getElementById('cherry-chat-input');
-    const minimizeBtn = document.getElementById('cherry-btn-minimize');
-    const sizeButtons = chatWindow.querySelectorAll('.cherry-size-btn');
-    const quickChips = document.getElementById('cherry-quick-chips');
+    // Elements
+    const triggerBtn = document.getElementById('cherryTriggerBtn');
+    const chatWindow = document.getElementById('cherryChatWindow');
+    const closeBtn = document.getElementById('cherryCloseBtn');
+    const chatBody = document.getElementById('cherryBody');
+    const chatForm = document.getElementById('cherryForm');
+    const chatInput = document.getElementById('cherryInput');
+    const quickChips = document.getElementById('cherryQuickChips');
+    const sizeButtons = root.querySelectorAll('.cherry-size-btn');
+    const keyBtn = document.getElementById('cherryKeyBtn');
 
     // Toggle Chat Window
     function toggleChat(forceOpen) {
       const willOpen = typeof forceOpen === 'boolean' ? forceOpen : !chatWindow.classList.contains('active');
       if (willOpen) {
         chatWindow.classList.add('active');
-        triggerBtn.classList.add('active');
-        chatInput.focus();
-        scrollToBottom();
+        triggerBtn.classList.add('open');
+        setTimeout(() => {
+          chatInput.focus();
+          scrollToBottom();
+        }, 150);
       } else {
         chatWindow.classList.remove('active');
-        triggerBtn.classList.remove('active');
+        triggerBtn.classList.remove('open');
       }
     }
 
     triggerBtn.addEventListener('click', () => toggleChat());
-    minimizeBtn.addEventListener('click', () => toggleChat(false));
+    closeBtn.addEventListener('click', () => toggleChat(false));
+
+    // Handle Gemini API Key Dialog
+    if (keyBtn) {
+      keyBtn.addEventListener('click', () => {
+        const currentKey = localStorage.getItem(STORAGE_KEY_API) || '';
+        const promptMsg = currentKey
+          ? 'Google Gemini API Key saat ini terpasang.\n\nKosongkan lalu tekan OK jika ingin menghapus key:'
+          : 'Masukkan Google Gemini API Key (gratis dari Google AI Studio) untuk mengaktifkan AI generatif langsung di browser:';
+        
+        const inputKey = window.prompt(promptMsg, currentKey);
+        if (inputKey !== null) {
+          const trimmed = inputKey.trim();
+          if (trimmed) {
+            localStorage.setItem(STORAGE_KEY_API, trimmed);
+            appendMessage('bot', '✅ **Google Gemini API Key berhasil dipasang!**\n\nCherry sekarang terhubung langsung dengan kecerdasan Google Gemini AI.');
+          } else {
+            localStorage.removeItem(STORAGE_KEY_API);
+            appendMessage('bot', 'ℹ️ **Mode Pengetahuan Resmi Aktif.**\n\nAPI Key telah dibersihkan. Cherry menjawab menggunakan basis pengetahuan lengkap ACF Eduhub.');
+          }
+        }
+      });
+    }
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
@@ -398,7 +700,7 @@
       scrollToBottom();
     }
 
-    // Show / Hide Typing Indicator
+    // Typing Indicator
     let typingRow = null;
     function showTypingIndicator() {
       if (typingRow) return;
@@ -437,8 +739,27 @@
       isAwaitingResponse = true;
       showTypingIndicator();
 
-      const apiUrl = getChatApiUrl();
       const clientApiKey = localStorage.getItem(STORAGE_KEY_API) || '';
+
+      // 1. Jika ada Google Gemini API Key di browser, gunakan Google Gemini langsung
+      if (clientApiKey) {
+        try {
+          const aiReply = await callGeminiClientSide(userText, clientApiKey);
+          hideTypingIndicator();
+          appendMessage('bot', aiReply);
+          chatHistory.push({ role: 'model', text: aiReply });
+          isAwaitingResponse = false;
+          chatInput.focus();
+          return;
+        } catch (err) {
+          console.warn('Direct Gemini call failed, falling back:', err);
+        }
+      }
+
+      // 2. Hubungi backend API dengan timeout singkat 2 detik
+      const apiUrl = getChatApiUrl();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
 
       try {
         const response = await fetch(apiUrl, {
@@ -449,34 +770,36 @@
           },
           body: JSON.stringify({
             message: userText,
-            history: chatHistory.slice(-8), // Send recent context
+            history: chatHistory.slice(-6),
             clientApiKey: clientApiKey
-          })
+          }),
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
 
         if (response.ok) {
           const data = await response.json();
-          hideTypingIndicator();
           if (data && data.reply) {
+            hideTypingIndicator();
             appendMessage('bot', data.reply);
             chatHistory.push({ role: 'model', text: data.reply });
-          } else {
-            const fallback = getLocalKnowledgeReply(userText);
-            appendMessage('bot', fallback);
-            chatHistory.push({ role: 'model', text: fallback });
+            isAwaitingResponse = false;
+            chatInput.focus();
+            return;
           }
-        } else {
-          throw new Error(`HTTP Error: ${response.status}`);
         }
+        throw new Error('Local fallback preferred');
       } catch (err) {
-        // If server or network is not available (e.g. running on static server), use client-side knowledge base
-        console.warn('Cherry: Backend chat endpoint unavailable or offline, using smart knowledge base.', err);
-        hideTypingIndicator();
-        const fallback = getLocalKnowledgeReply(userText);
-        appendMessage('bot', fallback);
-        chatHistory.push({ role: 'model', text: fallback });
-      } finally {
-        isAwaitingResponse = false;
+        clearTimeout(timeoutId);
+        // Delay natural 300ms agar animasi mengetik halus, lalu berikan jawaban yang cerdas & nyambung
+        setTimeout(() => {
+          hideTypingIndicator();
+          const fallback = getLocalKnowledgeReply(userText);
+          appendMessage('bot', fallback);
+          chatHistory.push({ role: 'model', text: fallback });
+          isAwaitingResponse = false;
+          chatInput.focus();
+        }, 300);
       }
     }
   }
@@ -488,4 +811,3 @@
     initChatbotUI();
   }
 })();
-

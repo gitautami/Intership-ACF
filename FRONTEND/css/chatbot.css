@@ -57,25 +57,39 @@
 }
 
 /* Trigger Icon Switching (Chat Icon vs Close 'X' Icon) */
+.cherry-trigger-btn .cherry-btn-icon,
 .cherry-trigger-btn .cherry-icon-chat,
 .cherry-trigger-btn .cherry-icon-close {
   position: absolute;
-  width: 32px;
-  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
-  fill: currentColor;
 }
 
+.cherry-trigger-btn .cherry-btn-icon.icon-chat,
+.cherry-trigger-btn .cherry-icon-chat {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.cherry-trigger-btn .cherry-btn-icon.icon-close,
 .cherry-trigger-btn .cherry-icon-close {
   opacity: 0;
   transform: rotate(-90deg) scale(0.7);
 }
 
+.cherry-trigger-btn.open .cherry-btn-icon.icon-chat,
+.cherry-trigger-btn.active .cherry-btn-icon.icon-chat,
+.cherry-trigger-btn.open .cherry-icon-chat,
 .cherry-trigger-btn.active .cherry-icon-chat {
   opacity: 0;
   transform: rotate(90deg) scale(0.7);
 }
 
+.cherry-trigger-btn.open .cherry-btn-icon.icon-close,
+.cherry-trigger-btn.active .cherry-btn-icon.icon-close,
+.cherry-trigger-btn.open .cherry-icon-close,
 .cherry-trigger-btn.active .cherry-icon-close {
   opacity: 1;
   transform: rotate(0deg) scale(1);
@@ -182,6 +196,7 @@
 /* ==========================================================================
    3. CHAT HEADER (DEEP PURPLE + GOLD + S/M/L CONTROLS)
    ========================================================================== */
+.cherry-header,
 .cherry-chat-header {
   background: linear-gradient(135deg, var(--cherry-primary) 0%, var(--cherry-primary-dark) 100%);
   color: #FFFFFF;
@@ -315,9 +330,31 @@
   opacity: 1;
 }
 
+.cherry-key-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.cherry-key-btn:hover {
+  background: var(--cherry-accent);
+  color: #1E293B;
+  border-color: var(--cherry-accent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* ==========================================================================
    4. CHAT BODY & MESSAGE BUBBLES
    ========================================================================== */
+.cherry-body,
 .cherry-chat-body {
   flex: 1;
   background: var(--cherry-bg-light);
@@ -331,16 +368,20 @@
 }
 
 /* Custom Scrollbar */
+.cherry-body::-webkit-scrollbar,
 .cherry-chat-body::-webkit-scrollbar {
   width: 5px;
 }
+.cherry-body::-webkit-scrollbar-track,
 .cherry-chat-body::-webkit-scrollbar-track {
   background: transparent;
 }
+.cherry-body::-webkit-scrollbar-thumb,
 .cherry-chat-body::-webkit-scrollbar-thumb {
   background: rgba(125, 34, 128, 0.2);
   border-radius: 10px;
 }
+.cherry-body::-webkit-scrollbar-thumb:hover,
 .cherry-chat-body::-webkit-scrollbar-thumb:hover {
   background: rgba(125, 34, 128, 0.4);
 }
@@ -544,6 +585,7 @@
 /* ==========================================================================
    6. INPUT FOOTER BAR
    ========================================================================== */
+.cherry-footer,
 .cherry-chat-footer {
   background: #FFFFFF;
   padding: 10px 14px 14px 14px;

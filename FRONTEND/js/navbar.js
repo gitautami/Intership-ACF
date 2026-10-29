@@ -211,12 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('link[href*="chatbot.css"]')) {
         const chatCss = document.createElement('link');
         chatCss.rel = 'stylesheet';
-        chatCss.href = '../css/chatbot.css?v=5';
+        chatCss.href = '../css/chatbot.css?v=8';
         document.head.appendChild(chatCss);
     }
     if (!window.CherryChatbotInitialized && !document.querySelector('script[src*="chatbot.js"]')) {
         const chatScript = document.createElement('script');
-        chatScript.src = '../js/chatbot.js?v=5';
+        chatScript.src = '../js/chatbot.js?v=8';
         chatScript.defer = true;
         document.body.appendChild(chatScript);
     }
@@ -450,5 +450,27 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     initBilingualFeature();
+
+    // Auto-inject Chatbot "Cherry" across all pages
+    const injectCherryChatbot = () => {
+        if (!document.getElementById('cherryChatbotRoot') && !document.querySelector('script[src*="chatbot.js"]')) {
+            const isInsideHtmlDir = window.location.pathname.includes('/html/') || window.location.pathname.endsWith('.html');
+            const prefix = isInsideHtmlDir ? '..' : '.';
+            
+            // Inject CSS
+            if (!document.querySelector('link[href*="chatbot.css"]')) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = prefix + '/css/chatbot.css?v=9';
+                document.head.appendChild(link);
+            }
+            
+            // Inject JS
+            const script = document.createElement('script');
+            script.src = prefix + '/js/chatbot.js?v=9';
+            document.body.appendChild(script);
+        }
+    };
+    injectCherryChatbot();
 });
 

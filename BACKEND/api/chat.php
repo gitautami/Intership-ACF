@@ -7,14 +7,14 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/gemini_config.php';
 
-// Pastikan method adalah POST
+// Method check
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Method not allowed. Use POST.']);
     exit();
 }
 
-// Ambil input JSON
+// Read JSON input
 $inputRaw = file_get_contents('php://input');
 $data = json_decode($inputRaw, true);
 
@@ -28,122 +28,228 @@ $userMessage = trim($data['message']);
 $conversationHistory = isset($data['history']) && is_array($data['history']) ? $data['history'] : [];
 $clientApiKey = isset($data['clientApiKey']) ? trim($data['clientApiKey']) : '';
 
-// Tentukan API Key (prioritaskan clientApiKey jika ada, lalu GEMINI_API_KEY)
+// Resolve API Key
 $apiKey = !empty($clientApiKey) ? $clientApiKey : GEMINI_API_KEY;
 
-// Knowledge Base Prompt untuk Cherry
+// System Prompt for Gemini
 $systemPrompt = <<<EOT
-Kamu adalah "Cherry", asisten virtual AI resmi dan representasi ramah dari ACF Eduhub.
+Kamu adalah "Cherry", asisten virtual AI resmi dan representasi ramah dari yayasan pendidikan ACF Eduhub.
 Warna identitasmu dan ACF Eduhub adalah Ungu (#7D2280) dan Kuning Emas (#F5A623).
 
 Tentang ACF Eduhub:
-- Yayasan sosial berbasis misi pendidikan yang telah berdiri dan berdedikasi selama lebih dari 10 tahun untuk memutus rantai kemiskinan di Indonesia.
+- Yayasan sosial pendidikan yang sudah 10+ tahun berdedikasi memutus rantai kemiskinan di Indonesia melalui pendidikan gratis & berkualitas bagi dhuafa.
+- Mengelola 17 Unit Pendidikan Aktif: 10 Sekolah Juara (sekolah formal gratis 100% untuk yatim & dhuafa prasejahtera) dan 7 PKBM Sekolah Daya Setara (pendidikan kesetaraan Paket A, B, C dan vokasi mandiri).
+- Mengelola Guruverse.ID (pelatihan 2.000+ guru di berbagai penjuru Indonesia).
+- 4 Pilar Program: Keberlanjutan Unit Pendidikan, Pemberdayaan Berbasis Sekolah, Kemanusiaan Internasional, dan Bantuan Langsung Berkelanjutan.
 - Kantor Pusat: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275.
-- Kontak Telepon / WhatsApp: +62 851-7979-7661.
-- Email: welcome@acf.or.id.
-- Instagram: @acf.eduhub | YouTube: @JUARATV.
-- Opini Audit Keuangan: Wajar Tanpa Pengecualian (WTP) sejak tahun 2024.
+- Kontak WA/Telepon: +62 851-7979-7661 | Email: welcome@acf.or.id.
+- Akuntabilitas: Opini audit Wajar Tanpa Pengecualian (WTP) sejak 2024.
 
-Dampak & Capaian:
-- 17 Unit Pendidikan Aktif (10 Sekolah Juara + 7 Sekolah Daya Setara).
-- 12 Kota/Kabupaten Jangkauan Wilayah.
-- 1.812+ Siswa Terdampak (1.662 Sekolah Juara + 150 Sekolah Daya Setara).
-- 2.000+ Guru Terlatih lewat platform Guruverse.ID.
-
-Unit Pendidikan ACF Eduhub:
-1. Sekolah Juara: 10 unit sekolah formal (SD/SMP/SMA) bebas biaya (gratis 100%) dan berakreditasi baik bagi anak-anak yatim dan dhuafa dari keluarga prasejahtera.
-2. PKBM Sekolah Daya Setara: 7 unit Pusat Kegiatan Belajar Masyarakat (Pendidikan Kesetaraan Paket A, B, C, serta pelatihan vokasi kerja) bagi anak putus sekolah dan masyarakat marginal.
-3. Guruverse.ID: Ekosistem pelatihan dan pemberdayaan kapasitas guru honorer dan pendidik di pelosok Indonesia.
-
-4 Kategori Program Layanan:
-1. Keberlanjutan Unit Pendidikan: Dukungan beasiswa, operasional Sekolah Juara, dan tunjangan tutor PKBM.
-2. Pemberdayaan Berbasis Sekolah: Inovasi kantin sehat, green school berbasis lingkungan, dan literasi digital anak.
-3. Kemanusiaan Internasional: Penyaluran bantuan darurat & kebutuhan dasar bagi anak-anak di daerah konflik kemanusiaan.
-4. Bantuan Langsung Berkelanjutan: Bantuan nutrisi bergizi, seragam, sepatu, buku pelajaran, dan peralatan belajar siswa prasejahtera.
-
-Kemitraan & Partisipasi:
-- Kerjasama Mitra / CSR: Perusahaan atau lembaga dapat berkolaborasi program CSR atau beasiswa binaan melalui halaman "Jadi Mitra Program" (form-mitra.html).
-- Relawan (Sahabat Eduhub): Mahasiswa dan masyarakat umum dapat mendaftar menjadi relawan pengajar / event melalui "Jadi Relawan" (form-relawan.html).
-- Donasi: Donatur dapat menyalurkan infak, sedekah, dan beasiswa mandiri secara mudah lewat halaman "Donasi" (donasi.html).
-
-Instruksi Gaya Menjawab:
-- Berikan jawaban yang ramah, sopan, komunikatif, empatik, dan akurat seputar ACF Eduhub.
-- Gunakan bahasa Indonesia yang santun dengan sentuhan ceria khas Cherry.
-- Format teks dengan rapi (gunakan poin-poin bila ada daftar).
-- Jika pengguna bertanya hal di luar ACF atau pendidikan sosial, jawab dengan sopan dan hubungkan kembali ke cara ACF dapat membantu masyarakat.
+Gaya Komunikasi:
+- Berbicaralah dengan sangat ramah, hangat, komunikatif, solutif, dan NYAMBUNG dengan pertanyaan pengguna.
+- Jika pengguna bertanya 'cara donasi', berikan langkah-langkah praktis dan metode transfernya.
+- Jika pengguna bertanya biaya sekolah, tegaskan bahwa Sekolah Juara 100% GRATIS untuk yatim dan dhuafa.
+- Format teks dengan rapi dan gunakan emoji yang pas.
 EOT;
 
-// Fungsi respons fallback cerdas jika API Key belum tersedia atau kuota habis
+// Local Knowledge Fallback Engine
 function getSmartFallbackReply($query) {
-    $q = mb_strtolower($query);
+    $raw = trim($query);
+    $q = mb_strtolower($raw);
 
-    if (preg_match('/(siapa|kamu|nama|cherry|bot)/i', $q) && !preg_match('/sekolah|mitra|program/i', $q)) {
-        return "Halo! 😊 Saya **Cherry**, asisten virtual AI resmi dari **ACF Eduhub**. Saya siap membantu menjawab pertanyaan Anda seputar program pendidikan, Sekolah Juara, donasi, kemitraan, hingga kontak kami!";
+    // 1. CARA DONASI / MAU DONASI / LANGKAH BERDONASI
+    if (
+        (strpos($q, 'cara') !== false || strpos($q, 'gimana') !== false || strpos($q, 'bagaimana') !== false || strpos($q, 'langkah') !== false || strpos($q, 'alur') !== false || strpos($q, 'mau') !== false || strpos($q, 'pengen') !== false || strpos($q, 'ingin') !== false || strpos($q, 'bisa') !== false || strpos($q, 'prosedur') !== false) &&
+        (strpos($q, 'donasi') !== false || strpos($q, 'transfer') !== false || strpos($q, 'sedekah') !== false || strpos($q, 'infaq') !== false || strpos($q, 'rekening') !== false || strpos($q, 'bayar') !== false || strpos($q, 'nyumbang') !== false)
+    ) {
+        return "💖 **Cara Menyalurkan Donasi di ACF Eduhub**:\n\n" .
+               "1. Buka halaman [Donasi](donasi.html) di website ini (atau klik menu **Donasi**).\n" .
+               "2. Pilih program yang ingin Anda dukung (contoh: *Beasiswa Sekolah Juara*, *Nutrisi & Sarapan Siswa*, atau *Fasilitas Belajar*).\n" .
+               "3. Masukkan nominal donasi dan lengkapi data diri Anda.\n" .
+               "4. Pilih metode pembayaran yang diinginkan (Transfer Bank BCA, Mandiri, BRI, BSI, Virtual Account, atau QRIS / E-Wallet Gopay, OVO, ShopeePay, DANA).\n" .
+               "5. Selesaikan pembayaran, dan tanda terima resmi donasi akan langsung dikirimkan.\n\n" .
+               "Anda juga bisa transfer langsung atau konfirmasi lewat WhatsApp admin di **+62 851-7979-7661**. Terima kasih banyak atas kebaikan Anda! 😊";
     }
 
-    if (preg_match('/(unit|sekolah|sekolah juara|daya setara|pkbm|guruverse)/i', $q)) {
-        return "🏫 **Unit Pendidikan ACF Eduhub** saat ini mengelola 17 unit pendidikan aktif:\n\n" .
-               "1. **Sekolah Juara (10 Unit)**: Sekolah formal gratis berkualitas bagi anak-anak yatim dan dhuafa prasejahtera (membina 1.662+ siswa).\n" .
-               "2. **Sekolah Daya Setara / PKBM (7 Unit)**: Pendidikan non-formal kesetaraan (Paket A, B, C) serta vokasi kecakapan kerja untuk anak putus sekolah.\n" .
-               "3. **Guruverse.ID**: Platform pengembangan kompetensi dan pelatihan untuk lebih dari 2.000+ guru di Indonesia.\n\n" .
-               "Ingin mengetahui pendaftaran atau lokasi unit terdekat?";
+    // 2. METODE PEMBAYARAN / REKENING DONASI
+    if (
+        strpos($q, 'rekening') !== false || strpos($q, 'no rek') !== false || strpos($q, 'nomor rekening') !== false ||
+        ((strpos($q, 'bank') !== false || strpos($q, 'transfer') !== false || strpos($q, 'pembayaran') !== false) && (strpos($q, 'donasi') !== false || strpos($q, 'bca') !== false || strpos($q, 'mandiri') !== false || strpos($q, 'bri') !== false || strpos($q, 'bsi') !== false || strpos($q, 'qris') !== false))
+    ) {
+        return "💳 **Metode Pembayaran & Rekening Donasi ACF Eduhub**:\n\n" .
+               "Anda dapat berdonasi secara praktis melalui:\n" .
+               "• **QRIS Instan**: Scan via BCA Mobile, Livin Mandiri, GoPay, OVO, Dana, ShopeePay, atau LinkAja.\n" .
+               "• **Transfer Bank**: Tersedia Bank Mandiri, BCA, BRI, dan Bank Syariah Indonesia (BSI) atas nama **Yayasan Amal Khair Yasmin / ACF Eduhub**.\n" .
+               "• **Virtual Account (VA)**: Otomatis terverifikasi saat berdonasi di halaman [Donasi](donasi.html).\n\n" .
+               "Butuh bantuan transfer manual atau kwitansi? Hubungi WhatsApp kami di **+62 851-7979-7661** ya!";
     }
 
-    if (preg_match('/(program|layanan|pemberdayaan|kemanusiaan)/i', $q)) {
+    // 3. KEAMANAN / AUDIT / WTP
+    if (strpos($q, 'aman') !== false || strpos($q, 'terpercaya') !== false || strpos($q, 'audit') !== false || strpos($q, 'wtp') !== false || strpos($q, 'laporan keuangan') !== false || strpos($q, 'transparan') !== false) {
+        return "🛡️ **Donasi Anda 100% Aman & Terpercaya**:\n\n" .
+               "ACF Eduhub adalah yayasan resmi berbadan hukum yang telah berkiprah 10+ tahun. Laporan keuangan yayasan diaudit secara berkala oleh Kantor Akuntan Publik independen dan berhasil meraih predikat tertinggi **WTP (Wajar Tanpa Pengecualian)** sejak 2024.\n\n" .
+               "Setiap dana disalurkan langsung untuk operasional sekolah gratis, beasiswa, dan nutrisi siswa prasejahtera.";
+    }
+
+    // 4. DONASI UMUM
+    if ($q === 'donasi' || strpos($q, 'donasi') !== false || strpos($q, 'infaq') !== false || strpos($q, 'sedekah') !== false || strpos($q, 'donatur') !== false) {
+        return "💖 **Donasi Pendidikan ACF Eduhub**:\n\n" .
+               "Setiap rupiah donasi Anda membantu membiayai sekolah, seragam, buku, dan nutrisi siswa dhuafa di 10 Sekolah Juara dan 7 PKBM Daya Setara.\n\n" .
+               "• Ingin berdonasi sekarang? Buka halaman [Donasi](donasi.html).\n" .
+               "• Ingin tahu cara dan alur transfernya? Ketik **'cara donasi'** dan Cherry siap jelaskan langkah-langkahnya! 😊";
+    }
+
+    // 5. KEINGINAN BERTANYA
+    if (
+        preg_match('/^(aku\s+)?(mau|pengen|bisa|boleh)\s+(tanya|nanya|bertanya)/i', $q) ||
+        preg_match('/^(tanya|nanya)\s+(dong|nih|ya|aja|sesuatu)/i', $q) ||
+        preg_match('/^(bisa\s+(bantu|tolong)|tolong\s+bantu)/i', $q) ||
+        $q === 'tanya' || $q === 'nanya'
+    ) {
+        return "Boleh banget! Mau tanya tentang apa nih? 😊\n\nSilakan langsung ketik pertanyaannya, Cherry siap bantu jelaskan seputar:\n" .
+               "• 🏫 Sekolah Juara (biaya gratis 100%, syarat daftar, kurikulum)\n" .
+               "• 💖 Cara Donasi & metode transfer\n" .
+               "• 🤝 Cara jadi Mitra CSR atau Relawan\n" .
+               "• 📍 Alamat kantor pusat Bandung & kontak WhatsApp admin";
+    }
+
+    // 6. SAPAAN / GREETINGS
+    if (
+        preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|p|tes|test|assalamu[\'"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i', $q) ||
+        in_array($q, ['halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'p'])
+    ) {
+        return "Halo! 👋 Senang bisa menyapa Anda. Saya **Cherry**, asisten virtual resmi ACF Eduhub.\n\nAda yang bisa Cherry bantu seputar Sekolah Juara yang gratis, cara donasi, program beasiswa, atau informasi lainnya hari ini? 😊";
+    }
+
+    // 7. BIAYA SEKOLAH / APAKAH GRATIS?
+    if (strpos($q, 'biaya') !== false || strpos($q, 'bayar') !== false || strpos($q, 'gratis') !== false || strpos($q, 'spp') !== false || strpos($q, 'uang sekolah') !== false || strpos($q, 'uang gedung') !== false || strpos($q, 'tarif') !== false) {
+        return "✨ **Pendidikan di Sekolah Juara 100% GRATIS!**\n\n" .
+               "Anak-anak yatim dan dhuafa tidak dipungut biaya sepeser pun, bebas dari uang SPP bulanan, uang gedung/pangkal, seragam, sepatu, hingga buku pelajaran dan nutrisi sarapan.\n\n" .
+               "Seluruh biaya didanai penuh oleh beasiswa ACF Eduhub berkat dukungan para donatur dan mitra program kami.";
+    }
+
+    // 8. CARA DAFTAR SEKOLAH JUARA / SYARAT MASUK / PPDB
+    if (
+        (strpos($q, 'cara') !== false || strpos($q, 'gimana') !== false || strpos($q, 'syarat') !== false || strpos($q, 'daftar') !== false || strpos($q, 'masuk') !== false || strpos($q, 'ppdb') !== false) &&
+        (strpos($q, 'sekolah') !== false || strpos($q, 'juara') !== false || strpos($q, 'siswa') !== false || strpos($q, 'anak') !== false)
+    ) {
+        return "📝 **Cara & Syarat Pendaftaran Siswa Sekolah Juara (100% Gratis)**:\n\n" .
+               "**1. Kriteria Calon Siswa**:\n" .
+               "• Anak yatim, piatu, atau berasal dari keluarga dhuafa prasejahtera.\n" .
+               "• Memiliki semangat tinggi untuk belajar.\n\n" .
+               "**2. Dokumen Persyaratan**:\n" .
+               "• Surat Keterangan Tidak Mampu (SKTM) dari Kelurahan/Desa.\n" .
+               "• Fotokopi Kartu Keluarga (KK) dan Akta Kelahiran anak.\n" .
+               "• Rapor/ijazah jenjang sebelumnya.\n\n" .
+               "**3. Alur Pendaftaran**:\n" .
+               "• Isi formulir pendaftaran di unit Sekolah Juara terdekat.\n" .
+               "• Verifikasi berkas & survei kunjungan rumah (*home visit*).\n" .
+               "• Pengumuman kelulusan beasiswa pendidikan penuh.\n\n" .
+               "Untuk info jadwal PPDB terkini di cabang kota Anda, silakan hubungi narahubung kami di WhatsApp **+62 851-7979-7661** ya!";
+    }
+
+    // 9. CARA JADI MITRA PROGRAM / CSR
+    if (
+        (strpos($q, 'cara') !== false || strpos($q, 'gimana') !== false || strpos($q, 'syarat') !== false || strpos($q, 'langkah') !== false || strpos($q, 'mau') !== false) &&
+        (strpos($q, 'mitra') !== false || strpos($q, 'kerjasama') !== false || strpos($q, 'kolaborasi') !== false || strpos($q, 'csr') !== false || strpos($q, 'sponsor') !== false || strpos($q, 'perusahaan') !== false)
+    ) {
+        return "🤝 **Cara Menjadi Mitra Program / Kerjasama CSR**:\n\n" .
+               "1. Masuk ke halaman formulir [Jadi Mitra Program](form-mitra.html).\n" .
+               "2. Isi formulir dengan profil perusahaan/lembaga dan program kemitraan yang diminati (Beasiswa Binaan Kelas, Pembangunan Fasilitas, Green School, dll).\n" .
+               "3. Kirim formulir pendaftaran.\n" .
+               "4. Tim Partnership ACF Eduhub akan menghubungi PIC Anda dalam 1x24 jam untuk diskusi proposal dan sinergi bersama.\n\n" .
+               "Ingin berdiskusi langsung? Hubungi email kemitraan di **welcome@acf.or.id** atau WA di **+62 851-7979-7661**.";
+    }
+
+    // 10. CARA JADI RELAWAN (SAHABAT EDUHUB)
+    if (
+        (strpos($q, 'cara') !== false || strpos($q, 'gimana') !== false || strpos($q, 'syarat') !== false || strpos($q, 'daftar') !== false || strpos($q, 'gabung') !== false) &&
+        (strpos($q, 'relawan') !== false || strpos($q, 'volunteer') !== false || strpos($q, 'sahabat') !== false)
+    ) {
+        return "🙋‍♀️ **Cara Mendaftar Jadi Relawan (Sahabat Eduhub)**:\n\n" .
+               "1. Buka formulir pendaftaran di halaman [Jadi Relawan](form-relawan.html).\n" .
+               "2. Lengkapi identitas diri dan pilih bidang yang diminati:\n" .
+               "   • *Relawan Pengajar / Tutor*\n" .
+               "   • *Fasilitator Kegiatan & Event*\n" .
+               "   • *Dokumentasi, Foto, & Desain Konten*\n" .
+               "   • *Mentor Inspiratif & Karakter*\n" .
+               "3. Kirim formulir pendaftaran.\n" .
+               "4. Tim relawan kami akan mengundang Anda ke sesi orientasi komunitas.\n\n" .
+               "Mari berbagi inspirasi dan senyuman untuk anak-anak Indonesia! ✨";
+    }
+
+    // 11. APA ITU SEKOLAH JUARA
+    if (strpos($q, 'sekolah juara') !== false || (strpos($q, 'juara') !== false && (strpos($q, 'apa') !== false || strpos($q, 'tentang') !== false || strpos($q, 'itu') !== false))) {
+        return "🏆 **Sekolah Juara** adalah jaringan 10 unit sekolah formal (SD, SMP, dan SMK) berkualitas bebas biaya (gratis 100%) yang dikelola oleh ACF Eduhub untuk mendidik anak-anak dhuafa dan yatim di Indonesia.\n\n" .
+               "Sekolah Juara memadukan kurikulum nasional dengan pembinaan akhlak mulia, kepemimpinan (*leadership*), kewirausahaan, serta literasi teknologi modern.";
+    }
+
+    // 12. APA ITU SEKOLAH DAYA SETARA / PKBM
+    if (strpos($q, 'daya setara') !== false || strpos($q, 'pkbm') !== false || strpos($q, 'kejar paket') !== false || strpos($q, 'paket c') !== false) {
+        return "📖 **Sekolah Daya Setara** adalah 7 unit PKBM (Pusat Kegiatan Belajar Masyarakat) pendidikan non-formal kesetaraan (Paket A setara SD, Paket B setara SMP, Paket C setara SMA) yang diselenggarakan gratis/terjangkau.\n\n" .
+               "Program ini membantu anak-anak putus sekolah dan masyarakat prasejahtera untuk mendapatkan ijazah resmi negara serta pelatihan keterampilan vokasi kerja mandiri.";
+    }
+
+    // 13. APA ITU GURUVERSE
+    if (strpos($q, 'guruverse') !== false || (strpos($q, 'guru') !== false && (strpos($q, 'pelatihan') !== false || strpos($q, 'training') !== false))) {
+        return "👩‍🏫 **Guruverse.ID** adalah ekosistem peningkatan kapasitas guru yang diinisiasi oleh ACF Eduhub. Hingga kini telah melatih lebih dari **2.000+ guru** di seluruh pelosok Indonesia mengenai metode belajar aktif, pedagogik kreatif, dan pemanfaatan teknologi kelas.";
+    }
+
+    // 14. 4 PILAR PROGRAM
+    if (strpos($q, 'program') !== false || strpos($q, 'layanan') !== false || strpos($q, 'pilar') !== false) {
         return "📚 **4 Pilar Program Layanan ACF Eduhub**:\n\n" .
-               "1. **Keberlanjutan Unit Pendidikan**: Dukungan kuota beasiswa dan operasional sekolah dhuafa.\n" .
-               "2. **Pemberdayaan Berbasis Sekolah**: Program kantin sehat, green school, dan literasi anak.\n" .
-               "3. **Kemanusiaan Internasional**: Penyaluran bantuan anak-anak di wilayah bencana/krisis kemanusiaan.\n" .
-               "4. **Bantuan Langsung Berkelanjutan**: Distribusi paket gizi, seragam, dan buku paket belajar.\n\n" .
-               "Anda dapat melihat detail lengkapnya di menu **Program Layanan** pada website kami!";
+               "1. 🏫 **Keberlanjutan Unit Pendidikan**: Pembiayaan operasional & beasiswa penuh bagi 10 Sekolah Juara dan 7 PKBM Daya Setara.\n" .
+               "2. 🥗 **Pemberdayaan Berbasis Sekolah**: Inovasi gizi kantin sehat, green school, dan literasi digital siswa.\n" .
+               "3. 🕊️ **Kemanusiaan Internasional**: Penyaluran bantuan pangan dan pendidikan darurat bagi anak-anak di daerah konflik kemanusiaan.\n" .
+               "4. 🎒 **Bantuan Langsung Berkelanjutan**: Penyaluran rutin seragam, buku paket, sepatu, dan gizi sarapan.\n\n" .
+               "Pelajari detailnya di menu [Program Layanan](program-layanan.html)!";
     }
 
-    if (preg_match('/(mitra|kerjasama|kolaborasi|csr|sponsor)/i', $q)) {
-        return "🤝 **Kolaborasi Kemitraan Bersama ACF Eduhub**\n\n" .
-               "Kami membuka peluang sinergi bagi perusahaan, yayasan, komunitas, dan institusi untuk mewujudkan program CSR berkelanjutan, beasiswa binaan, maupun sarana fasilitas belajar.\n\n" .
-               "Silakan kunjungi menu **Kerjasama** atau langsung isi formulir pengajuan di halaman **Jadi Mitra Program** (`form-mitra.html`). Tim kami akan segera menindaklanjuti!";
+    // 15. LOKASI & ALAMAT KANTOR
+    if (strpos($q, 'alamat') !== false || strpos($q, 'lokasi') !== false || strpos($q, 'kantor') !== false || strpos($q, 'dimana') !== false) {
+        return "📍 **Alamat & Lokasi Kantor ACF Eduhub**:\n\n" .
+               "🏢 **Kantor Pusat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n" .
+               "🏫 **Jangkauan**: 17 Unit Pendidikan tersebar di 12 Kota/Kabupaten di Indonesia (Bandung, Cimahi, Jakarta, Tangerang, Yogya, Pekanbaru, Medan, Surabaya, dll).\n\n" .
+               "📞 **WhatsApp / Telepon**: +62 851-7979-7661\n" .
+               "✉️ **Email**: welcome@acf.or.id";
     }
 
-    if (preg_match('/(relawan|volunteer|sahabat)/i', $q)) {
-        return "🙋‍♀️ **Gabung Menjadi Relawan (Sahabat Eduhub)**\n\n" .
-               "Anda dapat berpartisipasi aktif menjadi relawan pengajar, fasilitator kegiatan, dokumentasi, maupun mentor siswa. Pendaftaran terbuka melalui formulir di halaman **Jadi Relawan** (`form-relawan.html`). Mari bersama menginspirasi tunas-tunas bangsa!";
+    // 16. KONTAK & WA
+    if (strpos($q, 'kontak') !== false || strpos($q, 'telepon') !== false || strpos($q, 'wa') !== false || strpos($q, 'whatsapp') !== false || strpos($q, 'email') !== false || strpos($q, 'admin') !== false) {
+        return "📞 **Kontak Resmi ACF Eduhub**:\n\n" .
+               "• **WhatsApp / Telepon**: +62 851-7979-7661 (tersedia juga tombol hijau WA di pojok kiri bawah layar Anda)\n" .
+               "• **Email**: welcome@acf.or.id\n" .
+               "• **Instagram**: @acf.eduhub\n" .
+               "• **YouTube**: JUARA TV\n\n" .
+               "Tim kami siap melayani Anda pada jam operasional kerja.";
     }
 
-    if (preg_match('/(donasi|donatur|infaq|sedekah|bayar|transfer|rekening)/i', $q)) {
-        return "💖 **Salurkan Donasi Pendidikan Anda**\n\n" .
-               "Setiap donasi yang disalurkan digunakan 100% transparan untuk mensubsidi biaya sekolah, buku paket, seragam, dan gizi sarapan siswa yatim/dhuafa. ACF Eduhub telah meraih opini audit WTP (Wajar Tanpa Pengecualian) sejak 2024.\n\n" .
-               "Untuk berdonasi secara aman dan mudah, silakan klik tombol **Salurkan Donasi** atau kunjungi halaman **Donasi** (`donasi.html`). Terima kasih atas kebaikan Anda!";
+    // 17. UCAPAN TERIMA KASIH
+    if (strpos($q, 'terima kasih') !== false || strpos($q, 'makasih') !== false || strpos($q, 'thanks') !== false || strpos($q, 'nuhun') !== false) {
+        return "Sama-sama! Senang sekali bisa membantu Anda. 😊 Jika ada hal lain yang ingin ditanyakan lagi tentang program kami, jangan ragu untuk menyapa Cherry lagi ya!";
     }
 
-    if (preg_match('/(alamat|lokasi|kantor|kontak|telepon|wa|whatsapp|email|hubungi)/i', $q)) {
-        return "📍 **Kontak & Lokasi Kantor ACF Eduhub**:\n\n" .
-               "🏢 **Alamat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n" .
-               "📞 **Telepon / WhatsApp**: +62 851-7979-7661 (tersedia tombol hijau WA di pojok kiri bawah layar)\n" .
-               "✉️ **Email**: welcome@acf.or.id\n" .
-               "📸 **Instagram**: @acf.eduhub | **YouTube**: JUARA TV";
+    // 18. AFIRMASI
+    if (preg_match('/^(oke+|ok|siap|baik|mantap|sip|yoi|keren|siip)(\s|[!.,?~]|$)/i', $q) || in_array($q, ['oke', 'ok', 'siap'])) {
+        return "Sip! Senang bisa mendampingi Anda. Jika ada informasi atau bantuan lain yang diperlukan di website ini, kabari Cherry ya! ✨";
     }
 
-    if (preg_match('/(dampak|statistik|capaian|angka|wtp)/i', $q)) {
-        return "📊 **Capaian Dampak ACF Eduhub (10 Tahun Berjalan)**:\n\n" .
-               "• **17 Unit Pendidikan**: 10 Sekolah Juara + 7 Sekolah Daya Setara\n" .
-               "• **12 Kota/Kabupaten** wilayah jangkauan operasional\n" .
-               "• **1.812+ Siswa Terdampak** langsung beasiswa penuh\n" .
-               "• **2.000+ Guru Terlatih** lewat program Guruverse.ID\n" .
-               "• **Opini WTP (Wajar Tanpa Pengecualian)** sejak 2024 untuk akuntabilitas publik.";
+    // 19. SIAPA KAMU / CHERRY
+    if (strpos($q, 'siapa') !== false || strpos($q, 'nama') !== false || strpos($q, 'bot') !== false || strpos($q, 'cherry') !== false) {
+        return "Halo! 😊 Saya **Cherry**, asisten virtual AI ramah dari **ACF Eduhub**! Warna identitas saya ungu dan kuning emas khas ACF. Tugas saya menjawab pertanyaan Anda tentang Sekolah Juara, donasi, program beasiswa, relawan, dan kontak kami.";
     }
 
-    // Default friendly answer
-    return "Terima kasih atas pertanyaannya! 😊\n\n" .
-           "Saya **Cherry**, asisten AI ACF Eduhub. Saya dapat memberikan informasi lengkap seputar:\n" .
-           "• 🏫 **Unit Pendidikan**: Sekolah Juara & PKBM Daya Setara\n" .
-           "• 📚 **Program Layanan**: 4 pilar program pendidikan & beasiswa\n" .
-           "• 🤝 **Kemitraan & Relawan**: Cara berkolaborasi bersama ACF\n" .
-           "• 💖 **Donasi**: Penyaluran bantuan pendidikan dhuafa\n" .
-           "• 📍 **Kontak & Alamat**: Layanan informasi dan konsultasi\n\n" .
-           "Ada bagian tertentu yang ingin Anda tanyakan lebih lanjut?";
+    // 20. DEFAULT NATURAL NYAMBUNG
+    return "Terima kasih atas pertanyaannya! 😊 Mengenai **" . htmlspecialchars($raw, ENT_QUOTES, 'UTF-8') . "**, Cherry siap bantu jelaskan lebih dalam. Anda bisa menanyakan hal spesifik seputar:\n\n" .
+           "• 💖 **Cara Donasi & Metode Pembayaran**\n" .
+           "• 🏫 **Pendaftaran Sekolah Juara (Gratis 100%)**\n" .
+           "• 📚 **4 Pilar Program Layanan Pendidikan**\n" .
+           "• 🤝 **Kerjasama Mitra CSR & Relawan**\n" .
+           "• 📍 **Alamat Kantor Bandung & Kontak WhatsApp**\n\n" .
+           "Atau Anda bisa langsung chat admin kami via WhatsApp di **+62 851-7979-7661** (tombol hijau di pojok kiri bawah).";
 }
 
-// Jika tidak ada API key, gunakan Smart Fallback
+// Check if API key is empty
 if (empty($apiKey)) {
     $reply = getSmartFallbackReply($userMessage);
     echo json_encode([
@@ -155,17 +261,11 @@ if (empty($apiKey)) {
     exit();
 }
 
-// Jika ada API Key, panggil Google Gemini API
+// Call Google Gemini API
 try {
     $url = GEMINI_API_URL . '?key=' . urlencode($apiKey);
 
-    // Siapkan riwayat percakapan untuk Gemini
     $contents = [];
-
-    // Tambahkan system instruction lewat prompt awal
-    $systemPreamble = $systemPrompt . "\n\nPertanyaan pengguna:";
-
-    // Format chat history
     foreach ($conversationHistory as $turn) {
         if (!empty($turn['role']) && !empty($turn['text'])) {
             $role = ($turn['role'] === 'user') ? 'user' : 'model';
@@ -178,11 +278,10 @@ try {
         }
     }
 
-    // Tambahkan pesan saat ini
     $contents[] = [
         'role' => 'user',
         'parts' => [
-            ['text' => (count($contents) === 0) ? ($systemPreamble . "\n" . $userMessage) : $userMessage]
+            ['text' => (count($contents) === 0) ? ($systemPrompt . "\n\nPertanyaan pengguna:\n" . $userMessage) : $userMessage]
         ]
     ];
 
@@ -190,20 +289,9 @@ try {
         'contents' => $contents,
         'generationConfig' => [
             'temperature' => 0.7,
-            'topK' => 40,
-            'topP' => 0.95,
-            'maxOutputTokens' => 1024
+            'maxOutputTokens' => 800
         ]
     ];
-
-    // Jika didukung model, masukkan systemInstruction
-    if (strpos(GEMINI_MODEL, '1.5') !== false || strpos(GEMINI_MODEL, '2.0') !== false) {
-        $payload['systemInstruction'] = [
-            'parts' => [
-                ['text' => $systemPrompt]
-            ]
-        ];
-    }
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -212,12 +300,11 @@ try {
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'
     ]);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlErr = curl_error($ch);
     curl_close($ch);
 
     if ($httpCode === 200 && $response) {
@@ -234,13 +321,12 @@ try {
         }
     }
 
-    // Jika gagal terhubung ke Google atau kuota limit, beralih ke Smart Fallback
+    // Fallback if Gemini quota exceeded or failed
     $reply = getSmartFallbackReply($userMessage);
     echo json_encode([
         'status' => 'success',
         'reply' => $reply,
-        'mode' => 'smart_fallback',
-        'note' => 'Gemini API call redirected to local ACF knowledge base.'
+        'mode' => 'smart_fallback'
     ]);
 
 } catch (Exception $e) {
@@ -252,4 +338,3 @@ try {
         'error' => $e->getMessage()
     ]);
 }
-

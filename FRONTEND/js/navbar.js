@@ -211,12 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('link[href*="chatbot.css"]')) {
         const chatCss = document.createElement('link');
         chatCss.rel = 'stylesheet';
-        chatCss.href = '../css/chatbot.css?v=2';
+        chatCss.href = '../css/chatbot.css?v=4';
         document.head.appendChild(chatCss);
     }
     if (!window.CherryChatbotInitialized && !document.querySelector('script[src*="chatbot.js"]')) {
         const chatScript = document.createElement('script');
-        chatScript.src = '../js/chatbot.js?v=2';
+        chatScript.src = '../js/chatbot.js?v=4';
         chatScript.defer = true;
         document.body.appendChild(chatScript);
     }

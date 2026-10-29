@@ -194,14 +194,14 @@
               <path fill="#F5A623" d="M12.5 19c-.3 0-.5-.1-.7-.3-.5-.4-.5-1.2-.1-1.7 2.2-2.8 5.4-5.6 9.3-8 3.8-2.3 7.8-3.3 8.3-3.4.6-.2 1.3.2 1.4.8.2.6-.2 1.3-.8 1.4-.3.1-4 1-7.6 3.2-3.6 2.2-6.5 4.8-8.5 7.3-.3.5-.7.7-1.3.7z"/>
               <path fill="#F5A623" d="M23.5 19c-.5 0-.9-.3-1-7.9-.1-.6.3-1.2.9-1.3 4.8-.8 8.8-3.4 9.1-3.6.5-.4 1.3-.2 1.6.3.4.5.2 1.3-.3 1.6-.6.4-4.8 3.2-9.9 4-.1 0-.2.1-.4.1z"/>
             </svg>
-            <span class="cherry-online-dot"></span>
+            
           </div>
           <div class="cherry-header-meta">
             <div class="cherry-header-title">
               Cherry <span class="cherry-badge-acf">ACF AI</span>
             </div>
             <div class="cherry-header-sub">
-              <span class="cherry-sub-dot"></span> Online • AI Assistant
+              AI Assistant
             </div>
           </div>
         </div>

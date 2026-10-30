@@ -1,6 +1,6 @@
 <?php
 /**
- * ACF EDUHUB — CHATBOT "CHERRY" API ENDPOINT
+ * ACF EDUHUB — CHATBOT "CERI-A" API ENDPOINT
  * Powered by Google Gemini Free API with Local Knowledge Fallback
  */
 
@@ -33,17 +33,17 @@ $apiKey = !empty($clientApiKey) ? $clientApiKey : GEMINI_API_KEY;
 
 // System Prompt for Gemini
 $systemPrompt = <<<EOT
-Kamu adalah "Cherry", asisten AI resmi yang super ramah, ceria, hangat, dan bersahabat dari yayasan pendidikan ACF Eduhub.
+Kamu adalah "Ceri-A", asisten AI resmi yang super ramah, ceria, hangat, dan bersahabat dari yayasan pendidikan ACF Eduhub.
 Warna identitasmu dan ACF Eduhub adalah Ungu (#7D2280) dan Kuning Emas (#F5A623).
 
 Gaya Komunikasi & Persona:
 1. Panggil pengguna dengan sebutan hangat: "Sahabat Ceria".
-2. Sebut dirimu sebagai "Cherry" atau "aku".
+2. Sebut dirimu sebagai "Ceri-A" atau "aku".
 3. Gunakan bahasa Indonesia yang santai, luwes, dan easy-going (ala admin muda edutech modern seperti Kitabisa/Ruangguru), tidak kaku, tidak seperti robot atau dokumen birokrasi, namun tetap santun dan penuh empati.
 4. Gunakan partikel percakapan alami yang ramah seperti "nih", "ya", "yaa", "yuk", "udah", "gimana", "lho", "kan".
 5. ATURAN SAPAAN (PENTING):
    Jika pengguna hanya menyapa santai (seperti 'halo', 'hai', 'uy', 'woy', 'p', 'assalamualaikum', 'tes', 'pagi', 'siang', dll), cukup balas singkat dan ramah:
-   "Halo Sahabat Ceria! 👋 Ada yang bisa Cherry bantu hari ini? 😊"
+   "Halo Sahabat Ceria! 👋 Ada yang bisa Ceri-A bantu hari ini? 😊"
    (JANGAN mencantumkan daftar Sekolah Juara, donasi, atau program lainnya saat hanya disapa).
 6. ATURAN PPDB & PENDAFTARAN SEKOLAH JUARA (PENTING):
    Jika ditanya soal PPDB, pendaftaran, formulir, atau brosur Sekolah Juara (misal 'ppdb ss sekolah juara batam'):
@@ -242,7 +242,7 @@ function getSekolahJuaraPpdbReply($query) {
         $idx++;
     }
 
-    $reply .= "Detail profil lengkap tiap unit bisa kamu lihat di menu [Sekolah Juara](sekolah-juara.html). Kalau ada yang bikin bingung, tanya Cherry lagi yaa! ✨";
+    $reply .= "Detail profil lengkap tiap unit bisa kamu lihat di menu [Sekolah Juara](sekolah-juara.html). Kalau ada yang bikin bingung, tanya Ceri-A lagi yaa! ✨";
     return $reply;
 }
 
@@ -256,19 +256,19 @@ function getSmartFallbackReply($query) {
         'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
         'assalamualaikum', 'assalamu alaikum', 'sampurasun', 'punten', 'permisi', 'misi',
         'pagi', 'siang', 'sore', 'malam', 'selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam',
-        'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
+        'ceri-a', 'ceri a', 'ceri', 'hai ceri-a', 'halo ceri-a', 'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
     ];
     if (
         in_array($q, $greetingsList) ||
-        preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|assalamu[\'"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i', $q) ||
+        preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu[\'"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i', $q) ||
         mb_strlen($q) <= 5
     ) {
-        return "Halo Sahabat Ceria! 👋 Ada yang bisa Cherry bantu hari ini? 😊";
+        return "Halo Sahabat Ceria! 👋 Ada yang bisa Ceri-A bantu hari ini? 😊";
     }
 
     // 2. TANYA KABAR & KEADAAN
     if (strpos($q, 'apa kabar') !== false || strpos($q, 'gimana kabar') !== false || strpos($q, 'sehat') !== false || strpos($q, 'lagi apa') !== false || strpos($q, 'lagi ngapain') !== false || strpos($q, 'kabar kamu') !== false || strpos($q, 'kabarmu') !== false) {
-        return "Kabar Cherry luar biasa baik dan selalu ceria dong! ✨\n\nSahabat Ceria gimana kabarnya hari ini? Semoga selalu sehat, bahagia, dan harinya menyenangkan yaa. Ada info yang pengen kamu tanyain ke Cherry?";
+        return "Kabar Ceri-A luar biasa baik dan selalu ceria dong! ✨\n\nSahabat Ceria gimana kabarnya hari ini? Semoga selalu sehat, bahagia, dan harinya menyenangkan yaa. Ada info yang pengen kamu tanyain ke Ceri-A?";
     }
 
     // 3. CARA DONASI / METODE DONASI
@@ -323,7 +323,7 @@ function getSmartFallbackReply($query) {
         strpos($q, 'nanya dong') !== false || strpos($q, 'bisa tanya') !== false || strpos($q, 'bantu dong') !== false ||
         strpos($q, 'minta tolong') !== false || strpos($q, 'tolong dong') !== false || $q === 'tanya' || $q === 'bantu' || $q === 'info dong' || $q === 'mau info'
     ) {
-        return "Boleh banget dong Sahabat Ceria! 😊 Silakan tanyakan apa aja yang pengen kamu tahu seputar Sekolah Juara (SD), pendaftaran PPDB, program layanan, relawan, atau donasi. Cherry siap jawabin satu-satu!";
+        return "Boleh banget dong Sahabat Ceria! 😊 Silakan tanyakan apa aja yang pengen kamu tahu seputar Sekolah Juara (SD), pendaftaran PPDB, program layanan, relawan, atau donasi. Ceri-A siap jawabin satu-satu!";
     }
 
     // 8. BIAYA SEKOLAH JUARA & SEKOLAH DAYA SETARA
@@ -373,7 +373,7 @@ function getSmartFallbackReply($query) {
                "   • *Dokumentasi, Foto, & Desain Konten*\n" .
                "   • *Mentor Inspiratif & Karakter*\n" .
                "3. Kirim pendaftaran, dan tim kami bakal ngajak kamu ke sesi orientasi komunitas yang seru!\n\n" .
-               "Yuk bareng Cherry jadi bagian dari perubahan positif! ✨";
+               "Yuk bareng Ceri-A jadi bagian dari perubahan positif! ✨";
     }
 
     // 12. DAFTAR LOKASI, DAERAH & SEBARAN 10 UNIT SEKOLAH JUARA
@@ -495,7 +495,7 @@ function getSmartFallbackReply($query) {
                "🏢 **Alamat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n" .
                "🗺️ **Google Maps**: [Buka di Google Maps](https://maps.app.goo.gl/GZM6nCS82CcettDcA)\n" .
                "📞 **WhatsApp**: +62 851-7979-7661\n\n" .
-               "Selain kantor pusat, di Bandung Raya kami juga memiliki 3 unit **Sekolah Daya Setara (PKBM Ceria)** yaitu di Ngamprah, Lembang, dan Ujungberung lho! Ada yang bisa Cherry bantu? 😊";
+               "Selain kantor pusat, di Bandung Raya kami juga memiliki 3 unit **Sekolah Daya Setara (PKBM Ceria)** yaitu di Ngamprah, Lembang, dan Ujungberung lho! Ada yang bisa Ceri-A bantu? 😊";
     }
     if (strpos($q, 'jakarta') !== false) {
         return "🏫 Di wilayah DKI Jakarta ada 3 unit SD Juara nih Sahabat Ceria:\n• **SD Juara Jakarta Barat**\n• **SD Juara Jakarta Timur**\n• **SD Juara Jakarta Utara**\n\nKamu bisa langsung daftar atau unduh brosurnya di menu [Sekolah Juara](sekolah-juara.html)!";
@@ -595,7 +595,7 @@ function getSmartFallbackReply($query) {
 
     // 23. UCAPAN TERIMA KASIH & APRESIASI
     if (strpos($q, 'terima kasih') !== false || strpos($q, 'makasih') !== false || strpos($q, 'thanks') !== false || strpos($q, 'nuhun') !== false || strpos($q, 'thank you') !== false) {
-        return "Sama-sama Sahabat Ceria! Senang banget bisa ngebantu kamu hari ini. 😊 Semoga harimu selalu menyenangkan dan penuh berkah ya! Kalau butuh info apa-apa lagi, panggil Cherry kapan aja yaa!";
+        return "Sama-sama Sahabat Ceria! Senang banget bisa ngebantu kamu hari ini. 😊 Semoga harimu selalu menyenangkan dan penuh berkah ya! Kalau butuh info apa-apa lagi, panggil Ceri-A kapan aja yaa!";
     }
 
     // 24. PUJIAN & PERCAKAPAN POSITIF
@@ -605,31 +605,31 @@ function getSmartFallbackReply($query) {
 
     // 25. AFIRMASI
     if (preg_match('/^(oke+|ok|siap|baik|mantap|sip|yoi|keren|siip)(\s|[!.,?~]|$)/i', $q) || in_array($q, ['oke', 'ok', 'siap'])) {
-        return "Siaap Sahabat Ceria! Senang bisa nemenin kamu di website ini. Kalau ada yang bikin penasaran lagi, langsung chat Cherry yaa! ✨";
+        return "Siaap Sahabat Ceria! Senang bisa nemenin kamu di website ini. Kalau ada yang bikin penasaran lagi, langsung chat Ceri-A yaa! ✨";
     }
 
     // 26. HUMOR & SANTAI
     if (strpos($q, 'wkwk') !== false || strpos($q, 'haha') !== false || strpos($q, 'hehe') !== false || strpos($q, 'xixi') !== false || strpos($q, 'canda') !== false || strpos($q, 'gabut') !== false) {
-        return "Hehe! Senang bisa ngobrol santai sama Sahabat Ceria. 😄 Selain asyik diajak ngobrol, Cherry juga jago lho cariin info soal sekolah, donasi, atau relawan. Ada yang pengen kamu kepoin?";
+        return "Hehe! Senang bisa ngobrol santai sama Sahabat Ceria. 😄 Selain asyik diajak ngobrol, Ceri-A juga jago lho cariin info soal sekolah, donasi, atau relawan. Ada yang pengen kamu kepoin?";
     }
 
     // 27. KELUHAN / BINGUNG
     if (strpos($q, 'bingung') !== false || strpos($q, 'ga paham') !== false || strpos($q, 'gak paham') !== false || strpos($q, 'ga ngerti') !== false || strpos($q, 'gak ngerti') !== false || strpos($q, 'pusing') !== false) {
-        return "Tenang aja ya Sahabat Ceria, jangan bingung-bingung. Cherry bantu pelan-pelan kok! 😊 Kamu bisa klik tombol menu cepat di bawah ini, atau ceritain bagian mana yang pengen Cherry jelasin lagi?";
+        return "Tenang aja ya Sahabat Ceria, jangan bingung-bingung. Ceri-A bantu pelan-pelan kok! 😊 Kamu bisa klik tombol menu cepat di bawah ini, atau ceritain bagian mana yang pengen Ceri-A jelasin lagi?";
     }
 
-    // 28. SIAPA KAMU / CHERRY
+    // 28. SIAPA KAMU / CERI-A
     if (strpos($q, 'siapa') !== false || strpos($q, 'nama') !== false || strpos($q, 'bot') !== false || strpos($q, 'cherry') !== false) {
-        return "Halo Sahabat Ceria! 😊 Kenalin, aku **Cherry**, asisten virtual AI resmi yang ceria dan ramah dari **ACF Eduhub**! Warna kebanggaanku ungu dan kuning emas khas ACF. Tugas Cherry ngebantuin kamu cari info soal Sekolah Juara, donasi beasiswa, kegiatan relawan, dan kontak kami.";
+        return "Halo Sahabat Ceria! 😊 Kenalin, aku **Ceri-A**, asisten virtual AI resmi yang ceria dan ramah dari **ACF Eduhub**! Warna kebanggaanku ungu dan kuning emas khas ACF. Tugas Ceri-A ngebantuin kamu cari info soal Sekolah Juara, donasi beasiswa, kegiatan relawan, dan kontak kami.";
     }
 
     // 29. PERTANYAAN EKSPLORATIF (apakah, kenapa, bagaimana, kapan, siapa)
     if (strpos($q, '?') !== false || strpos($q, 'apakah') !== false || strpos($q, 'gimana') !== false || strpos($q, 'kenapa') !== false || strpos($q, 'bagaimana') !== false || strpos($q, 'kapan') !== false) {
-        return "Pertanyaan yang bagus banget nih, Sahabat Ceria! Soal hal itu, Cherry siap bantu cariin info paling pas di ACF Eduhub. Apakah ini terkait **pendaftaran sekolah**, **kegiatan siswa**, atau **donasi**? 😊\n\nKamu juga bisa langsung ngobrol sama admin kami via WhatsApp di **+62 851-7979-7661** biar dibantu lebih detail yaa!";
+        return "Pertanyaan yang bagus banget nih, Sahabat Ceria! Soal hal itu, Ceri-A siap bantu cariin info paling pas di ACF Eduhub. Apakah ini terkait **pendaftaran sekolah**, **kegiatan siswa**, atau **donasi**? 😊\n\nKamu juga bisa langsung ngobrol sama admin kami via WhatsApp di **+62 851-7979-7661** biar dibantu lebih detail yaa!";
     }
 
     // 30. DEFAULT NATURAL NYAMBUNG
-    return "Terima kasih udah nyapa Cherry ya, Sahabat Ceria! 😊\n\n" +
+    return "Terima kasih udah nyapa Ceri-A ya, Sahabat Ceria! 😊\n\n" +
            "Biar makin gampang, kamu bisa pilih topik yang pengen kamu ketahui nih:\n\n" +
            "• 🏫 **Sekolah Juara (SD)**: Info pendaftaran & brosur 10 cabang unit\n" +
            "• 📖 **Sekolah Daya Setara (PKBM)**: Paket B & C serta pelatihan vokasi\n" +
@@ -647,17 +647,21 @@ $fastGreetings = [
     'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
     'assalamualaikum', 'assalamu alaikum', 'sampurasun', 'punten', 'permisi', 'misi',
     'pagi', 'siang', 'sore', 'malam', 'selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam',
-    'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
+    'ceri-a', 'ceri a', 'ceri', 'hai ceri-a', 'halo ceri-a', 'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
 ];
 
 if (
-    in_array($qFast, $fastGreetings) ||
-    preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|assalamu[\'"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i', $qFast) ||
-    (mb_strlen($qFast) <= 4 && strpos($qFast, '?') === false)
+    strpos($qFast, '?') === false &&
+    !preg_match('/\b(siapa|apa|kenapa|mengapa|bagaimana|gimana|kapan|dimana|di mana|berapa|tanya|bantu|biaya|daftar|program|sekolah)\b/i', $qFast) &&
+    (
+        in_array($qFast, $fastGreetings) ||
+        preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu[\'"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)[\s!.,~]*$/i', $qFast) ||
+        mb_strlen($qFast) <= 4
+    )
 ) {
     echo json_encode([
         'status' => 'success',
-        'reply' => "Halo Sahabat Ceria! 👋 Ada yang bisa Cherry bantu hari ini? 😊",
+        'reply' => "Halo Sahabat Ceria! 👋 Ada yang bisa Ceri-A bantu hari ini? 😊",
         'mode' => 'instant_greeting'
     ]);
     exit();

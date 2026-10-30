@@ -1,5 +1,5 @@
 /**
- * ACF EDUHUB — CHATBOT "CHERRY"
+ * ACF EDUHUB — CHATBOT "CERI-A"
  * Asisten AI Virtual Cerdas & Ramah khas ACF Eduhub
  * Warna Identitas: Ungu (#7D2280) & Kuning Emas (#F5A623)
  */
@@ -55,17 +55,17 @@
   // Panggilan langsung ke Google Gemini API dari browser
   async function callGeminiClientSide(userText, apiKey) {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const systemPrompt = `Kamu adalah "Cherry", asisten AI resmi yang super ramah, ceria, hangat, dan bersahabat dari yayasan pendidikan ACF Eduhub.
+    const systemPrompt = `Kamu adalah "Ceri-A", asisten AI resmi yang super ramah, ceria, hangat, dan bersahabat dari yayasan pendidikan ACF Eduhub.
 Warna identitasmu dan ACF Eduhub adalah Ungu (#7D2280) dan Kuning Emas (#F5A623).
 
 Gaya Komunikasi & Persona:
 1. Panggil pengguna dengan sebutan hangat: "Sahabat Ceria".
-2. Sebut dirimu sebagai "Cherry" atau "aku".
+2. Sebut dirimu sebagai "Ceri-A" atau "aku".
 3. Gunakan bahasa Indonesia yang santai, luwes, dan easy-going (ala admin muda edutech modern seperti Kitabisa/Ruangguru), tidak kaku, tidak seperti robot atau birokrasi, namun tetap santun dan penuh empati.
 4. Gunakan partikel percakapan alami yang ramah seperti "nih", "ya", "yaa", "yuk", "udah", "gimana", "lho", "kan".
 5. ATURAN SAPAAN (PENTING):
    Jika pengguna hanya menyapa santai (seperti 'halo', 'hai', 'uy', 'woy', 'p', 'assalamualaikum', 'tes', 'pagi', 'siang', dll), cukup balas singkat dan ramah:
-   "Halo Sahabat Ceria! 👋 Ada yang bisa Cherry bantu hari ini? 😊"
+   "Halo Sahabat Ceria! 👋 Ada yang bisa Ceri-A bantu hari ini? 😊"
    (JANGAN mencantumkan daftar Sekolah Juara, donasi, atau program lainnya saat hanya disapa).
 6. ATURAN PPDB & PENDAFTARAN SEKOLAH JUARA (PENTING):
    Jika ditanya soal PPDB, pendaftaran, formulir, atau brosur Sekolah Juara (misal 'ppdb ss sekolah juara batam'):
@@ -415,7 +415,7 @@ Gaya Komunikasi & Persona:
                `   • 📝 [Daftar Online](${s.daftar}) | 📖 [Buka Brosur](${s.brosur})\n\n`;
     });
 
-    reply += "Detail profil lengkap tiap unit bisa kamu lihat di menu [Sekolah Juara](sekolah-juara.html). Kalau ada yang bikin bingung, tanya Cherry lagi yaa! ✨";
+    reply += "Detail profil lengkap tiap unit bisa kamu lihat di menu [Sekolah Juara](sekolah-juara.html). Kalau ada yang bikin bingung, tanya Ceri-A lagi yaa! ✨";
     return reply;
   }
 
@@ -429,19 +429,19 @@ Gaya Komunikasi & Persona:
       'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
       'assalamualaikum', 'assalamu alaikum', 'sampurasun', 'punten', 'permisi', 'misi',
       'pagi', 'siang', 'sore', 'malam', 'selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam',
-      'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
+      'ceri-a', 'ceri a', 'ceri', 'hai ceri-a', 'halo ceri-a', 'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
     ];
     if (
       greetingsList.includes(q) ||
-      q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i) ||
+      q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i) ||
       q.length <= 5
     ) {
-      return "Halo Sahabat Ceria! 👋 Ada yang bisa Cherry bantu hari ini? 😊";
+      return "Halo Sahabat Ceria! 👋 Ada yang bisa Ceri-A bantu hari ini? 😊";
     }
 
     // 2. TANYA KABAR & KEADAAN
     if (q.includes('apa kabar') || q.includes('gimana kabar') || q.includes('sehat') || q.includes('lagi apa') || q.includes('lagi ngapain') || q.includes('kabar kamu') || q.includes('kabarmu')) {
-      return "Kabar Cherry luar biasa baik dan selalu ceria dong! ✨\n\nSahabat Ceria gimana kabarnya hari ini? Semoga selalu sehat, bahagia, dan harinya menyenangkan yaa. Ada info yang pengen kamu tanyain ke Cherry?";
+      return "Kabar Ceri-A luar biasa baik dan selalu ceria dong! ✨\n\nSahabat Ceria gimana kabarnya hari ini? Semoga selalu sehat, bahagia, dan harinya menyenangkan yaa. Ada info yang pengen kamu tanyain ke Ceri-A?";
     }
 
     // 3. CARA DONASI / METODE DONASI
@@ -496,7 +496,7 @@ Gaya Komunikasi & Persona:
       q.includes('nanya dong') || q.includes('bisa tanya') || q.includes('bantu dong') ||
       q.includes('minta tolong') || q.includes('tolong dong') || q === 'tanya' || q === 'bantu' || q === 'info dong' || q === 'mau info'
     ) {
-      return "Boleh banget dong Sahabat Ceria! 😊 Silakan tanyakan apa aja yang pengen kamu tahu seputar Sekolah Juara (SD), pendaftaran PPDB, program layanan, relawan, atau donasi. Cherry siap jawabin satu-satu!";
+      return "Boleh banget dong Sahabat Ceria! 😊 Silakan tanyakan apa aja yang pengen kamu tahu seputar Sekolah Juara (SD), pendaftaran PPDB, program layanan, relawan, atau donasi. Ceri-A siap jawabin satu-satu!";
     }
 
     // 8. BIAYA SEKOLAH JUARA & SEKOLAH DAYA SETARA
@@ -546,7 +546,7 @@ Gaya Komunikasi & Persona:
              "   • *Dokumentasi, Foto, & Desain Konten*\n" +
              "   • *Mentor Inspiratif & Karakter*\n" +
              "3. Kirim pendaftaran, dan tim kami bakal ngajak kamu ke sesi orientasi komunitas yang seru!\n\n" +
-             "Yuk bareng Cherry jadi bagian dari perubahan positif! ✨";
+             "Yuk bareng Ceri-A jadi bagian dari perubahan positif! ✨";
     }
 
     // 12. DAFTAR LOKASI, DAERAH & SEBARAN 10 UNIT SEKOLAH JUARA (SD JUARA)
@@ -656,7 +656,7 @@ Gaya Komunikasi & Persona:
              "🏢 **Alamat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n" +
              "🗺️ **Google Maps**: [Buka di Google Maps](https://maps.app.goo.gl/GZM6nCS82CcettDcA)\n" +
              "📞 **WhatsApp**: +62 851-7979-7661\n\n" +
-             "Selain kantor pusat, di Bandung Raya kami juga memiliki 3 unit **Sekolah Daya Setara (PKBM Ceria)** yaitu di Ngamprah, Lembang, dan Ujungberung lho! Ada yang bisa Cherry bantu? 😊";
+             "Selain kantor pusat, di Bandung Raya kami juga memiliki 3 unit **Sekolah Daya Setara (PKBM Ceria)** yaitu di Ngamprah, Lembang, dan Ujungberung lho! Ada yang bisa Ceri-A bantu? 😊";
     }
     if (q.includes('jakarta')) {
       return "🏫 Di wilayah DKI Jakarta ada 3 unit SD Juara nih Sahabat Ceria:\n• **SD Juara Jakarta Barat**\n• **SD Juara Jakarta Timur**\n• **SD Juara Jakarta Utara**\n\nKamu bisa langsung daftar atau unduh brosurnya di menu [Sekolah Juara](sekolah-juara.html)!";
@@ -752,7 +752,7 @@ Gaya Komunikasi & Persona:
 
     // 24. UCAPAN TERIMA KASIH & APRESIASI
     if (q.includes('terima kasih') || q.includes('makasih') || q.includes('thanks') || q.includes('nuhun') || q.includes('tengkyu') || q.includes('syukron') || q.includes('thank you')) {
-      return "Sama-sama Sahabat Ceria! Senang banget bisa ngebantu kamu hari ini. 😊 Semoga harimu selalu menyenangkan dan penuh berkah ya! Kalau butuh info apa-apa lagi, panggil Cherry kapan aja yaa!";
+      return "Sama-sama Sahabat Ceria! Senang banget bisa ngebantu kamu hari ini. 😊 Semoga harimu selalu menyenangkan dan penuh berkah ya! Kalau butuh info apa-apa lagi, panggil Ceri-A kapan aja yaa!";
     }
 
     // 25. PUJIAN & PERCAKAPAN POSITIF
@@ -762,31 +762,31 @@ Gaya Komunikasi & Persona:
 
     // 26. AFIRMASI
     if (q.match(/^(oke+|ok|siap|baik|mantap|sip|yoi|keren|siip)(\s|[!.,?~]|$)/i) || q === 'oke' || q === 'ok' || q === 'siap') {
-      return "Siaap Sahabat Ceria! Senang bisa nemenin kamu di website ini. Kalau ada yang bikin penasaran lagi, langsung chat Cherry yaa! ✨";
+      return "Siaap Sahabat Ceria! Senang bisa nemenin kamu di website ini. Kalau ada yang bikin penasaran lagi, langsung chat Ceri-A yaa! ✨";
     }
 
     // 27. HUMOR & SANTAI
     if (q.includes('wkwk') || q.includes('haha') || q.includes('hehe') || q.includes('xixi') || q.includes('canda') || q.includes('bercanda') || q.includes('gabut')) {
-      return "Hehe! Senang bisa ngobrol santai sama Sahabat Ceria. 😄 Selain asyik diajak ngobrol, Cherry juga jago lho cariin info soal sekolah, donasi, atau relawan. Ada yang pengen kamu kepoin?";
+      return "Hehe! Senang bisa ngobrol santai sama Sahabat Ceria. 😄 Selain asyik diajak ngobrol, Ceri-A juga jago lho cariin info soal sekolah, donasi, atau relawan. Ada yang pengen kamu kepoin?";
     }
 
     // 28. KELUHAN / BINGUNG
     if (q.includes('bingung') || q.includes('ga paham') || q.includes('gak paham') || q.includes('ga ngerti') || q.includes('gak ngerti') || q.includes('pusing') || q.includes('ribet')) {
-      return "Tenang aja ya Sahabat Ceria, jangan bingung-bingung. Cherry bantu pelan-pelan kok! 😊 Kamu bisa klik tombol menu cepat di bawah ini, atau ceritain bagian mana yang pengen Cherry jelasin lagi?";
+      return "Tenang aja ya Sahabat Ceria, jangan bingung-bingung. Ceri-A bantu pelan-pelan kok! 😊 Kamu bisa klik tombol menu cepat di bawah ini, atau ceritain bagian mana yang pengen Ceri-A jelasin lagi?";
     }
 
-    // 29. SIAPA KAMU / CHERRY
+    // 29. SIAPA KAMU / CERI-A
     if (q.includes('siapa') || q.includes('nama') || q.includes('bot') || q.includes('cherry') || q.includes('robot') || q.includes('ai')) {
-      return "Halo Sahabat Ceria! 😊 Kenalin, aku **Cherry**, asisten virtual AI resmi yang ceria dan ramah dari **ACF Eduhub**! Warna kebanggaanku ungu dan kuning emas khas ACF. Tugas Cherry ngebantuin kamu cari info soal Sekolah Juara, donasi beasiswa, kegiatan relawan, dan kontak kami.";
+      return "Halo Sahabat Ceria! 😊 Kenalin, aku **Ceri-A**, asisten virtual AI resmi yang ceria dan ramah dari **ACF Eduhub**! Warna kebanggaanku ungu dan kuning emas khas ACF. Tugas Ceri-A ngebantuin kamu cari info soal Sekolah Juara, donasi beasiswa, kegiatan relawan, dan kontak kami.";
     }
 
     // 30. PERTANYAAN EKSPLORATIF (apakah, kenapa, bagaimana, kapan, siapa)
     if (q.includes('?') || q.includes('apakah') || q.includes('gimana') || q.includes('kenapa') || q.includes('bagaimana') || q.includes('kapan')) {
-      return "Pertanyaan yang bagus banget nih, Sahabat Ceria! Soal hal itu, Cherry siap bantu cariin info paling pas di ACF Eduhub. Apakah ini terkait **pendaftaran sekolah**, **kegiatan siswa**, atau **donasi**? 😊\n\nKamu juga bisa langsung ngobrol sama admin kami via WhatsApp di **+62 851-7979-7661** biar dibantu lebih detail yaa!";
+      return "Pertanyaan yang bagus banget nih, Sahabat Ceria! Soal hal itu, Ceri-A siap bantu cariin info paling pas di ACF Eduhub. Apakah ini terkait **pendaftaran sekolah**, **kegiatan siswa**, atau **donasi**? 😊\n\nKamu juga bisa langsung ngobrol sama admin kami via WhatsApp di **+62 851-7979-7661** biar dibantu lebih detail yaa!";
     }
 
     // 31. DEFAULT NATURAL NYAMBUNG
-    return "Terima kasih udah nyapa Cherry ya, Sahabat Ceria! 😊\n\n" +
+    return "Terima kasih udah nyapa Ceri-A ya, Sahabat Ceria! 😊\n\n" +
            "Biar makin gampang, kamu bisa pilih topik yang pengen kamu ketahui nih:\n\n" +
            "• 🏫 **Sekolah Juara (SD)**: Info pendaftaran & brosur 10 cabang unit\n" +
            "• 📖 **Sekolah Daya Setara (PKBM)**: Paket B & C serta pelatihan vokasi\n" +
@@ -807,14 +807,18 @@ Gaya Komunikasi & Persona:
       'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
       'assalamualaikum', 'assalamu alaikum', 'sampurasun', 'punten', 'permisi', 'misi',
       'pagi', 'siang', 'sore', 'malam', 'selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam',
-      'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
+      'ceri-a', 'ceri a', 'ceri', 'hai ceri-a', 'halo ceri-a', 'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
     ];
     if (
-      greetingsList.includes(q) ||
-      q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i) ||
-      (q.length <= 4 && !q.includes('?'))
+      !q.includes('?') &&
+      !q.match(/\b(siapa|apa|kenapa|mengapa|bagaimana|gimana|kapan|dimana|di mana|berapa|tanya|bantu|biaya|daftar|program|sekolah)\b/i) &&
+      (
+        greetingsList.includes(q) ||
+        q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)[\s!.,~]*$/i) ||
+        q.length <= 4
+      )
     ) {
-      return "Halo Sahabat Ceria! 👋 Ada yang bisa Cherry bantu hari ini? 😊";
+      return "Halo Sahabat Ceria! 👋 Ada yang bisa Ceri-A bantu hari ini? 😊";
     }
 
     // Quick chips matching
@@ -943,7 +947,7 @@ Gaya Komunikasi & Persona:
 
     root.innerHTML = `
       <!-- Floating Trigger Button -->
-      <button type="button" class="cherry-trigger-btn" id="cherryTriggerBtn" aria-label="Buka Chat AI Cherry" title="Tanya Cherry AI">
+      <button type="button" class="cherry-trigger-btn" id="cherryTriggerBtn" aria-label="Buka Chat AI Ceri-A" title="Tanya Ceri-A AI">
         <!-- Chat Bubble Icon with 3 Dots -->
         <span class="cherry-btn-icon icon-chat">
           <svg viewBox="0 0 24 24" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -963,7 +967,7 @@ Gaya Komunikasi & Persona:
       </button>
 
       <!-- Chat Modal Window -->
-      <div class="cherry-chat-window ${savedSize}" id="cherryChatWindow" role="dialog" aria-modal="true" aria-label="Jendela Chat Cherry">
+      <div class="cherry-chat-window ${savedSize}" id="cherryChatWindow" role="dialog" aria-modal="true" aria-label="Jendela Chat Ceri-A">
         <!-- Header -->
         <div class="cherry-header cherry-chat-header">
           <div class="cherry-header-left">
@@ -976,7 +980,7 @@ Gaya Komunikasi & Persona:
             </div>
             <div class="cherry-header-meta">
               <div class="cherry-header-title">
-                <span class="cherry-name">Cherry</span>
+                <span class="cherry-name">Ceri-A</span>
                 <span class="cherry-badge-acf">ACF AI</span>
               </div>
               <div class="cherry-header-sub">AI Assistant</div>
@@ -1013,8 +1017,8 @@ Gaya Komunikasi & Persona:
               </svg>
             </div>
             <div class="cherry-bubble">
-              <p>Halo <strong>Sahabat Ceria</strong>! 👋 Senang banget bisa ketemu kamu. Kenalin, aku <strong>Cherry</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
-              <p>Cherry siap nemenin dan bantu kamu cari info seputar:</p>
+              <p>Halo <strong>Sahabat Ceria</strong>! 👋 Senang banget bisa ketemu kamu. Kenalin, aku <strong>Ceri-A</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
+              <p>Ceri-A siap nemenin dan bantu kamu cari info seputar:</p>
               <ul class="cherry-list">
                 <li>💖 <strong>Cara & Metode Donasi</strong></li>
                 <li>🏫 <strong>Sekolah Juara (SD)</strong>: Info PPDB, Pendaftaran & Brosur</li>
@@ -1026,7 +1030,7 @@ Gaya Komunikasi & Persona:
                 <li>📰 <strong>Artikel & Kabar</strong>: Kabar Edukasi & Kegiatan Terkini</li>
                 <li>📍 <strong>Alamat & Kontak WhatsApp Admin</strong></li>
               </ul>
-              <p>Ada yang lagi pengen kamu tanyain ke Cherry hari ini? Klik pilihan cepat di bawah atau langsung ketik chat apa aja yaa! 😊✨</p>
+              <p>Ada yang lagi pengen kamu tanyain ke Ceri-A hari ini? Klik pilihan cepat di bawah atau langsung ketik chat apa aja yaa! 😊✨</p>
               <span class="cherry-msg-time">Sekarang</span>
             </div>
           </div>
@@ -1059,7 +1063,7 @@ Gaya Komunikasi & Persona:
             type="text"
             class="cherry-input"
             id="cherryInput"
-            placeholder="Ketik pesan untuk Cherry..."
+            placeholder="Ketik pesan untuk Ceri-A..."
             autocomplete="off"
             required
             maxlength="400"

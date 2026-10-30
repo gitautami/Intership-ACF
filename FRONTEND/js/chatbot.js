@@ -54,31 +54,91 @@
 
   // Panggilan langsung ke Google Gemini API dari browser
   async function callGeminiClientSide(userText, apiKey) {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const systemPrompt = `Kamu adalah "Cherry", asisten virtual AI resmi dan representasi ramah dari yayasan pendidikan ACF Eduhub.
-Warna identitasmu dan ACF adalah Ungu (#7D2280) dan Kuning Emas (#F5A623).
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const systemPrompt = `Kamu adalah "Cherry", asisten AI resmi yang super ramah, ceria, hangat, dan bersahabat dari yayasan pendidikan ACF Eduhub.
+Warna identitasmu dan ACF Eduhub adalah Ungu (#7D2280) dan Kuning Emas (#F5A623).
 
-Tentang ACF Eduhub:
-- Yayasan sosial pendidikan yang sudah 10+ tahun berdedikasi memutus rantai kemiskinan di Indonesia melalui pendidikan berkualitas bagi dhuafa.
-- Mengelola 17 Unit Pendidikan Aktif: 10 Sekolah Juara (HANYA jenjang Sekolah Dasar / SD Juara; Sekolah Juara TIDAK GRATIS / memiliki biaya pendidikan) dan 7 PKBM Sekolah Daya Setara (pendidikan kesetaraan HANYA Paket B setara SMP dan Paket C setara SMA, serta vokasi mandiri).
-- PENTING:
-  1. Sekolah Juara HANYA ada jenjang Sekolah Dasar (SD Juara) saja, tidak ada jenjang SMP maupun SMA/SMK.
-  2. Sekolah Juara (SD) dan PKBM Sekolah Daya Setara TIDAK GRATIS (memiliki biaya pendidikan). Jika ditanya biaya atau apakah gratis, tegaskan bahwa Sekolah Juara dan Sekolah Daya Setara tidak gratis dan memiliki biaya pendidikan, serta sarankan konfirmasi rincian biaya ke admin WhatsApp +62 851-7979-7661.
-  3. Sekolah Daya Setara HANYA ada jenjang Paket B (setara SMP) dan Paket C (setara SMA) serta pelatihan vokasi mandiri.
-  4. Jangan menampilkan teks '*(Catatan: ...)*' pada akhir jawaban.
-- Mengelola Guruverse.ID (pelatihan 2.000+ guru di pelosok Indonesia).
-- Program Layanan: Memiliki inisiatif program layanan pendidikan komprehensif (saat ini 7 program terbit yang dikelompokkan ke dalam kategori keberlanjutan unit pendidikan, tanggap bencana & pemulihan, kesejahteraan ekosistem sekolah, kemanusiaan internasional, forum advokasi pendidikan, dan kepemimpinan manajemen sekolah).
-- Kantor Pusat: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275.
-- Kontak Telepon / WhatsApp: +62 851-7979-7661 | Email: welcome@acf.or.id.
-- Akuntabilitas: Opini audit Wajar Tanpa Pengecualian (WTP) sejak 2024.
-
-Gaya Komunikasi:
-- Berbicaralah dengan sangat ramah, hangat, komunikatif, solutif, dan NYAMBUNG dengan pertanyaan pengguna.
-- Jika pengguna hanya menyapa (seperti 'halo', 'hai', 'p', 'assalamualaikum', 'selamat pagi/siang/malam'), cukup respon singkat dan ramah: 'Halo! 👋 Senang bisa menyapa Anda. Ada yang bisa Cherry bantu hari ini? 😊' tanpa perlu menyebutkan Sekolah Juara atau daftar program.
-- Jika pengguna bertanya tentang PPDB, syarat masuk, pendaftaran, atau brosur Sekolah Juara (misalnya 'ppdb ss sekolah juara batam'), langsung berikan tautan pendaftaran online dan tautan brosur unit yang dituju (misal: Batam daftar di http://bit.ly/SPMB2728-SDJBATAM dan brosur di sekolah-juara.html?brosur=batam) tanpa menuliskan syarat berkas panjang seperti SKTM atau KK.
-- Jika pengguna bertanya 'cara donasi', jelaskan langkah-langkah praktis cara menyalurkan donasi.
-- Jika pengguna bertanya biaya sekolah atau apakah gratis, tegaskan bahwa Sekolah Juara TIDAK GRATIS dan memiliki biaya pendidikan.
-- Format teks dengan rapi dan gunakan emoji yang pas.`;
+Gaya Komunikasi & Persona:
+1. Panggil pengguna dengan sebutan hangat: "Sahabat Ceria".
+2. Sebut dirimu sebagai "Cherry" atau "aku".
+3. Gunakan bahasa Indonesia yang santai, luwes, dan easy-going (ala admin muda edutech modern seperti Kitabisa/Ruangguru), tidak kaku, tidak seperti robot atau birokrasi, namun tetap santun dan penuh empati.
+4. Gunakan partikel percakapan alami yang ramah seperti "nih", "ya", "yaa", "yuk", "udah", "gimana", "lho", "kan".
+5. ATURAN SAPAAN (PENTING):
+   Jika pengguna hanya menyapa santai (seperti 'halo', 'hai', 'uy', 'woy', 'p', 'assalamualaikum', 'tes', 'pagi', 'siang', dll), cukup balas singkat dan ramah:
+   "Halo Sahabat Ceria! 👋 Ada yang bisa Cherry bantu hari ini? 😊"
+   (JANGAN mencantumkan daftar Sekolah Juara, donasi, atau program lainnya saat hanya disapa).
+6. ATURAN PPDB & PENDAFTARAN SEKOLAH JUARA (PENTING):
+   Jika ditanya soal PPDB, pendaftaran, formulir, atau brosur Sekolah Juara (misal 'ppdb ss sekolah juara batam'):
+   LANGSUNG berikan tautan online pendaftaran dan tautan unduh brosur PDF unit yang dituju. JANGAN menuliskan teks panjang soal syarat berkas SKTM, KK, atau akta lahir.
+   Contoh link:
+   - SD Juara Batam: Formulir [Daftar Online](http://bit.ly/SPMB2728-SDJBATAM) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=batam)
+   - SD Juara Cilegon: Formulir [Daftar Online](https://bit.ly/SPMB2728SDJUARACILEGON) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=cilegon)
+   - SD Juara Jakarta Barat: Formulir [Daftar Online](https://forms.gle/7WoWewcTqsPCZ4Aq7) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=jakbar)
+   - SD Juara Jakarta Timur: Formulir [Daftar Online](https://bit.ly/PPDBSDJuaraJakartaTimur20272028) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=jaktim)
+   - SD Juara Jakarta Utara: Formulir [Daftar Online](https://bit.ly/SPMBINDENSDITJAKUT2728) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=jakut)
+   - SD Juara Persa Medan: Formulir [Daftar Online](https://linktr.ee/sdspersa) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=medan)
+   - SD Juara Jayapura: Formulir [Daftar Online](https://bit.ly/SPMBSDJUARAJayapura) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=jayapura)
+   - SD Juara Semarang: Formulir [Daftar Online](https://bit.ly/ForPeminatPPDB20272028) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=semarang)
+   - SD Juara Surabaya: Formulir [Daftar Online](https://s.id/spmb-sdjuarasurabaya27-28) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=surabaya)
+   - SD Juara AL Hakim Tangerang: Formulir [Daftar Online](https://bit.ly/DaftarIndenAlhakim2728) | Brosur [Unduh Brosur](sekolah-juara.html?brosur=tangerang)
+7. ATURAN BIAYA & JENJANG (PENTING):
+   - Sekolah Juara HANYA ada jenjang SD (Sekolah Dasar), TIDAK ADA jenjang SMP maupun SMA/SMK.
+   - Jika pengguna menanyakan perihal BIAYA (biaya sekolah, pendaftaran, SPP, apakah gratis, tarif, uang gedung, dll) untuk Sekolah Juara maupun PKBM Sekolah Daya Setara:
+     * DILARANG KERAS menggunakan kata/frasa "tidak gratis" dan "disubsidi oleh yayasan" (maupun variasi seperti "disubsidi yayasan", "bukan gratis", dsb).
+     * Sampaikan dengan ramah dan santai bahwa biayanya sangat terjangkau.
+     * Untuk rincian lengkap mengenai biaya formulir pendaftaran, uang pangkal, SPP bulanan, maupun informasi kuota beasiswa di unit kota tujuan, arahkan langsung untuk konfirmasi ke admin via WhatsApp di +62 851-7979-7661.
+8. DATA & ATURAN SEBARAN SEKOLAH DAYA SETARA (PKBM CERIA) (SANGAT PENTING):
+   - Sekolah Daya Setara adalah unit pendidikan non-formal (PKBM Ceria) binaan ACF Eduhub untuk jenjang Paket B (setara SMP) dan Paket C (setara SMA) serta pelatihan keterampilan vokasi kerja siap pakai dengan biaya terjangkau.
+   - Sekolah Daya Setara memiliki TOTAL 7 UNIT / TITIK di Indonesia sesuai Peta Sebaran resmi di website:
+     * BANDUNG RAYA (TOTAL 3 UNIT):
+       1. Sekolah Daya Setara Ngamprah (Kab. Bandung Barat)
+       2. Sekolah Daya Setara Lembang (Kab. Bandung Barat)
+       3. Sekolah Daya Setara Ujungberung (Kota Bandung)
+     * SUKABUMI (1 UNIT): Sekolah Daya Setara Cisolok
+     * INDRAMAYU (1 UNIT): PKBM Ceria Arahan
+     * PANGANDARAN (1 UNIT): PKBM Ceria Padaherang
+     * JAYAPURA (1 UNIT): Sekolah Daya Setara Jayapura
+   - JIKA DITANYA ADA BERAPA ATAU DI MANA UNIT SEKOLAH DAYA SETARA DI BANDUNG:
+     LANGSUNG JAWAB DENGAN TEPAT bahwa di Bandung Raya ada 3 UNIT:
+     1. Sekolah Daya Setara Ngamprah (Kab. Bandung Barat)
+     2. Sekolah Daya Setara Lembang (Kab. Bandung Barat)
+     3. Sekolah Daya Setara Ujungberung (Kota Bandung)
+     Jangan memberi jawaban umum atau mengalihkan tanpa menyebut 3 unit ini. Berikan link ke halaman [Sekolah Daya Setara](sekolah-daya-setara.html).
+   - JIKA DITANYA LOKASI / CABANG / SEBARAN DI KOTA LAIN ATAU KESELURUHAN:
+     Sebutkan data 7 unit di atas dengan ramah, jelas, dan akurat.
+9. ALAMAT KANTOR PUSAT & KONTAK RESMI ACF EDUHUB (SANGAT PENTING):
+   - Alamat KANTOR PUSAT resmi ACF Eduhub sesuai yang tertera di FOOTER WEBSITE resmi:
+     🏢 Alamat Kantor Pusat: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275
+     🗺️ Google Maps: https://maps.app.goo.gl/GZM6nCS82CcettDcA
+     📞 WhatsApp / Telepon: +62 851-7979-7661
+     ✉️ Email: welcome@acf.or.id
+   - DILARANG KERAS mengarang alamat di Jakarta Selatan (seperti Tebet atau alamat lainnya) atau kota selain Bandung! Kantor pusat resmi ACF Eduhub berada di BANDUNG (Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275).
+   - Jika pengguna menanyakan alamat kantor, lokasi kantor, kantor ACF di mana, kantor pusat di mana, atau kontak yayasan:
+     LANGSUNG jawab dengan jelas bahwa Kantor Pusat ACF Eduhub beralamat di Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275, sertakan link Google Maps [Buka di Google Maps](https://maps.app.goo.gl/GZM6nCS82CcettDcA) dan kontak di atas!
+10. DATA & ATURAN 7 PROGRAM LAYANAN ACF EDUHUB (SANGAT PENTING):
+    - JANGAN PERNAH menyamakan atau menukar antara "Program Layanan" dengan "Unit Pendidikan"!
+    - Unit Pendidikan ACF Eduhub adalah 3 unit: Sekolah Juara (SD), Sekolah Daya Setara (PKBM), dan Guruverse.ID.
+    - Sedangkan PROGRAM LAYANAN ACF Eduhub adalah 7 PROGRAM UNGGULAN yang dikelompokkan ke dalam 6 kategori induk:
+      1. Program Beasiswa & Keberlanjutan Sekolah Juara (Divisi: Sekolah Juara)
+         - Mendukung operasional & beasiswa 10 unit Sekolah Juara bagi anak dhuafa berprestasi.
+      2. Kesejahteraan Guru & Operasional Sekolah Daya Setara (Divisi: Sekolah Daya Setara)
+         - Kesejahteraan tutor & operasional 7 PKBM Daya Setara (Paket B, C, & vokasi kerja mandiri).
+      3. Layanan Pascabencana (Divisi: Guruverse.ID & ACF Educare)
+         - Respons psikososial anak & guru terdampak, sekolah darurat, serta bantuan dasar pangan/sandang/papan.
+      4. Kesejahteraan Ekosistem Sekolah (Divisi: ACF Educare)
+         - Dukungan terpadu bagi guru honorer, penjaga sekolah, & keluarga dhuafa sekitar sekolah.
+      5. Bantuan Kemanusiaan Internasional (Divisi: ACF Educare)
+         - Penyaluran bantuan pangan & kebutuhan darurat bagi anak-anak di wilayah krisis/konflik global (seperti Gaza).
+      6. Education Outlook — Forum Tahunan Pendidikan (Divisi: Guruverse.ID)
+         - Forum tahunan hybrid mempertemukan pembuat kebijakan, praktisi, & akademisi membahas arah tren pendidikan nasional.
+      7. Konsultasi & Pendampingan Manajemen Sekolah (Divisi: Guruverse.ID)
+         - Layanan konsultasi manajemen sekolah, strategi SPMB/PPDB, serta studi kelayakan pendirian unit pendidikan.
+    - Jika pengguna menanyakan "program layanan", "program acf", "apa saja programnya", "program layanan ada apa aja", dsb:
+      WAJIB menyebutkan daftar 7 Program Layanan di atas dengan nomor dan divisi terkait secara ramah dan ringkas, dan berikan tautan ke halaman [Program Layanan](program-layanan.html)!
+      DILARANG KERAS hanya menjawab dengan mendeskripsikan Sekolah Juara atau Unit Pendidikan!
+11. ATURAN RELAWAN:
+    Jika ditanya cara daftar jadi relawan, arahkan ke menu [Jadi Relawan](form-relawan.html) untuk bergabung dengan komunitas Sahabat Eduhub.
+12. Selalu nyambung dengan pertanyaan apa pun, komunikatif, solutif, dan gunakan emoji yang pas.`;
 
     const contents = [];
     chatHistory.slice(-6).forEach(turn => {
@@ -104,7 +164,10 @@ Gaya Komunikasi:
         contents: contents,
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 800
+          maxOutputTokens: 800,
+          thinkingConfig: {
+            thinkingBudget: 0
+          }
         }
       })
     });
@@ -186,13 +249,13 @@ Gaya Komunikasi:
   }
 
   function formatDynamicProgramsReply() {
-    const progs = getDynamicPrograms();
-    const count = progs.length;
-    let reply = `📚 **Program Layanan ACF Eduhub (${count} Program)**:\n\n`;
+    const list = getDynamicPrograms();
+    let reply = "📚 **Program Layanan ACF Eduhub (7 Program Aktif)**:\n\n" +
+                "Ini dia 7 inisiatif program layanan pendidikan yang dikelola oleh ACF Eduhub nih, Sahabat Ceria:\n\n";
 
-    progs.forEach((p, idx) => {
+    list.forEach((p, idx) => {
       const num = idx + 1;
-      const title = p.title || 'Program Pendidikan';
+      const title = p.title || 'Program Layanan';
       const divisi = p.divisi ? ` *(Divisi: ${p.divisi})*` : '';
       const desc = p.quote || p.categoryDesc || '';
       reply += `${num}. 🎯 **${title}**${divisi}\n`;
@@ -201,7 +264,7 @@ Gaya Komunikasi:
       }
     });
 
-    reply += `\nSeluruh program di atas terintegrasi dalam ekosistem pendidikan ACF Eduhub. Pelajari detail lengkap atau ajukan kemitraan di menu [Program Layanan](program-layanan.html)! 😊`;
+    reply += "\nSeluruh program di atas terintegrasi dalam ekosistem pendidikan ACF Eduhub. Sahabat Ceria bisa pelajari detail lengkap atau ajukan kemitraan di menu [Program Layanan](program-layanan.html) yaa! 😊";
     return reply;
   }
 
@@ -293,7 +356,7 @@ Gaya Komunikasi:
   function formatDynamicArticlesReply() {
     const list = getDynamicArticles(4);
     let reply = "📰 **Kabar & Artikel Terbaru ACF Eduhub**:\n\n" +
-                "Berikut adalah artikel dan publikasi berita terhangat yang terbit di website:\n\n";
+                "Ini dia artikel dan berita terhangat yang baru terbit di website nih, Sahabat Ceria:\n\n";
 
     list.forEach((art, idx) => {
       const num = idx + 1;
@@ -306,7 +369,7 @@ Gaya Komunikasi:
       reply += `${num}. 📝 **[${title}](${link})**\n   🏷️ *${cat}*${date}${excerpt}\n\n`;
     });
 
-    reply += "Anda dapat membaca artikel lengkapnya dengan mengklik tautan judul di atas atau mengunjungi halaman [Kabar](kabar.html)! ✨";
+    reply += "Sahabat Ceria bisa membaca artikel lengkapnya dengan mengklik judul di atas atau langsung kunjungi halaman [Kabar](kabar.html) yaa! ✨";
     return reply;
   }
 
@@ -335,25 +398,24 @@ Gaya Komunikasi:
       const matchKey = q.includes(s.key);
       const matchAlias = s.aliases && s.aliases.some(a => q.includes(a));
       if (matchKey || matchAlias) {
-        return `🎒 **Pendaftaran & Brosur SPMB ${s.name}**:\n\n` +
-               `Berikut adalah tautan resmi pendaftaran dan dokumen brosur untuk **${s.name}**:\n\n` +
-               `• 📝 **Link Pendaftaran**: [Daftar Online ${s.name}](${s.daftar})\n` +
-               `• 📖 **Brosur Resmi**: [Lihat & Unduh Brosur](${s.brosur})\n\n` +
-               `Anda juga dapat melihat profil lengkap unit ini di halaman [Sekolah Juara](sekolah-juara.html). Bantuan lebih lanjut hubungi WhatsApp admin di **+62 851-7979-7661**! 😊`;
+        return `🎒 **Info Pendaftaran & Brosur SPMB ${s.name}**:\n\n` +
+               `Siap Sahabat Ceria! Ini dia tautan pendaftaran online dan unduh brosur resmi buat **${s.name}** yaa:\n\n` +
+               `• 📝 **Formulir Pendaftaran**: [Klik Daftar Online ${s.name}](${s.daftar})\n` +
+               `• 📖 **Brosur Sekolah**: [Buka & Unduh Brosur PDF](${s.brosur})\n\n` +
+               `Gampang kan? Sahabat Ceria juga bisa kepoin profil sekolahnya di halaman [Sekolah Juara](sekolah-juara.html). Kalau ada yang mau ditanyakan lagi soal biaya atau jadwal tesnya, chat admin di WhatsApp **+62 851-7979-7661** yaa! 😊`;
       }
     }
 
     // Tampilkan seluruh 10 unit dengan tautan pendaftaran & brosur
     let reply = "🎒 **Link Pendaftaran & Brosur SPMB/PPDB Sekolah Juara (SD)**:\n\n" +
-                "Silakan klik tautan di bawah ini untuk langsung mengisi formulir pendaftaran atau mengunduh brosur resmi unit yang dituju:\n\n";
+                "Halo Sahabat Ceria! Mau daftar di cabang mana nih? Yuk langsung klik link pendaftaran online atau unduh brosur resmi unit yang dituju di bawah ini:\n\n";
 
     SJ_SCHOOLS.forEach((s, idx) => {
       reply += `${idx + 1}. **${s.name}**\n` +
-               `   • 📝 [Formulir Pendaftaran](${s.daftar})\n` +
-               `   • 📖 [Lihat & Unduh Brosur](${s.brosur})\n\n`;
+               `   • 📝 [Daftar Online](${s.daftar}) | 📖 [Buka Brosur](${s.brosur})\n\n`;
     });
 
-    reply += "Detail profil seluruh unit dapat Anda lihat di menu [Sekolah Juara](sekolah-juara.html)! ✨";
+    reply += "Detail profil lengkap tiap unit bisa kamu lihat di menu [Sekolah Juara](sekolah-juara.html). Kalau ada yang bikin bingung, tanya Cherry lagi yaa! ✨";
     return reply;
   }
 
@@ -361,83 +423,90 @@ Gaya Komunikasi:
     const raw = (query || '').trim();
     const q = raw.toLowerCase();
 
-    // 1. CARA DONASI / MAU DONASI / LANGKAH BERDONASI
+    // 1. SAPAAN & PANGGILAN SANTAI / GAUL (RESPON SINGKAT & RAMAH TANPA MENYEBUT SEKOLAH JUARA DLL)
+    const greetingsList = [
+      'halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'uy', 'ui', 'oy', 'oi', 'woy', 'woi',
+      'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
+      'assalamualaikum', 'assalamu alaikum', 'sampurasun', 'punten', 'permisi', 'misi',
+      'pagi', 'siang', 'sore', 'malam', 'selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam',
+      'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
+    ];
+    if (
+      greetingsList.includes(q) ||
+      q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i) ||
+      q.length <= 5
+    ) {
+      return "Halo Sahabat Ceria! 👋 Ada yang bisa Cherry bantu hari ini? 😊";
+    }
+
+    // 2. TANYA KABAR & KEADAAN
+    if (q.includes('apa kabar') || q.includes('gimana kabar') || q.includes('sehat') || q.includes('lagi apa') || q.includes('lagi ngapain') || q.includes('kabar kamu') || q.includes('kabarmu')) {
+      return "Kabar Cherry luar biasa baik dan selalu ceria dong! ✨\n\nSahabat Ceria gimana kabarnya hari ini? Semoga selalu sehat, bahagia, dan harinya menyenangkan yaa. Ada info yang pengen kamu tanyain ke Cherry?";
+    }
+
+    // 3. CARA DONASI / METODE DONASI
     if (
       (q.includes('cara') || q.includes('gimana') || q.includes('bagaimana') || q.includes('langkah') || q.includes('alur') || q.includes('mau') || q.includes('pengen') || q.includes('ingin') || q.includes('bisa') || q.includes('tata cara') || q.includes('prosedur')) &&
       (q.includes('donasi') || q.includes('transfer') || q.includes('sedekah') || q.includes('infaq') || q.includes('rekening') || q.includes('bayar') || q.includes('nyumbang'))
     ) {
       return "💖 **Cara Menyalurkan Donasi di ACF Eduhub**:\n\n" +
-             "1. Buka halaman [Donasi](donasi.html) di website ini (atau klik menu **Donasi**).\n" +
-             "2. Pilih program yang ingin Anda dukung (contoh: *Beasiswa Sekolah Juara*, *Nutrisi & Sarapan Siswa*, atau *Fasilitas Belajar*).\n" +
-             "3. Masukkan nominal donasi dan lengkapi data diri Anda.\n" +
-             "4. Pilih metode pembayaran yang diinginkan (Transfer Bank BCA, Mandiri, BRI, BSI, Virtual Account, atau QRIS / E-Wallet Gopay, OVO, ShopeePay, DANA).\n" +
-             "5. Selesaikan pembayaran, dan tanda terima resmi donasi akan langsung dikirimkan.\n\n" +
-             "Anda juga bisa transfer langsung atau konfirmasi lewat WhatsApp admin di **+62 851-7979-7661**. Terima kasih banyak atas kebaikan Anda! 😊";
+             "MasyaAllah, terima kasih banyak ya Sahabat Ceria atas niat mulianya! Kebaikan kamu sangat berarti buat masa depan anak-anak dhuafa. Caranya gampang banget:\n\n" +
+             "1. Buka menu [Donasi](donasi.html) di website ini.\n" +
+             "2. Pilih program yang pengen kamu dukung (misal: *Beasiswa Sekolah Juara*, *Nutrisi Siswa*, atau *Fasilitas Belajar*).\n" +
+             "3. Masukkan nominal donasi dan isi data diri singkat.\n" +
+             "4. Pilih metode pembayaran favoritmu (Transfer BCA, Mandiri, BRI, BSI, Virtual Account, atau scan QRIS via GoPay, OVO, ShopeePay, DANA).\n" +
+             "5. Selesaikan pembayaran, dan tanda terima resmi donasi langsung dikirimkan.\n\n" +
+             "Mau konfirmasi atau transfer manual? Bisa langsung chat admin WA kami di **+62 851-7979-7661** yaa. Berkah selalu buat kamu! 😊";
     }
 
-    // 2. METODE PEMBAYARAN / REKENING DONASI / BANK APA SAJA
+    // 4. METODE PEMBAYARAN / REKENING DONASI / BANK
     if (
       q.includes('rekening') || q.includes('no rek') || q.includes('nomor rekening') ||
       ((q.includes('bank') || q.includes('transfer') || q.includes('pembayaran') || q.includes('metode')) && (q.includes('donasi') || q.includes('bca') || q.includes('mandiri') || q.includes('bri') || q.includes('bsi') || q.includes('qris')))
     ) {
-      return "💳 **Metode Pembayaran & Rekening Donasi ACF Eduhub**:\n\n" +
-             "Anda dapat berdonasi secara praktis melalui:\n" +
-             "• **QRIS Instan**: Scan via BCA Mobile, Livin Mandiri, GoPay, OVO, Dana, ShopeePay, atau LinkAja.\n" +
-             "• **Transfer Bank**: Tersedia Bank Mandiri, BCA, BRI, dan Bank Syariah Indonesia (BSI) atas nama **Yayasan Amal Khair Yasmin / ACF Eduhub**.\n" +
+      return "💳 **Metode Pembayaran & Rekening Donasi**:\n\n" +
+             "Berdonasi di ACF Eduhub praktis banget lho Sahabat Ceria! Kamu bisa pilih cara yang paling nyaman:\n\n" +
+             "• **QRIS Instan**: Tinggal scan pakai BCA Mobile, Livin Mandiri, GoPay, OVO, Dana, ShopeePay, atau LinkAja.\n" +
+             "• **Transfer Bank**: Tersedia Bank Mandiri, BCA, BRI, dan BSI atas nama **Yayasan Amal Khair Yasmin / ACF Eduhub**.\n" +
              "• **Virtual Account (VA)**: Otomatis terverifikasi saat berdonasi di halaman [Donasi](donasi.html).\n\n" +
-             "Butuh bantuan transfer manual atau kwitansi? Hubungi WhatsApp kami di **+62 851-7979-7661** ya!";
+             "Butuh bantuan transfer atau konfirmasi kwitansi? Hubungi admin di WhatsApp **+62 851-7979-7661** yaa!";
     }
 
-    // 3. KEAMANAN / LAPORAN AUDIT / WTP
+    // 5. KEAMANAN / LAPORAN AUDIT / WTP
     if (q.includes('aman') || q.includes('terpercaya') || q.includes('audit') || q.includes('wtp') || q.includes('laporan keuangan') || q.includes('transparan') || q.includes('bukti donasi')) {
-      return "🛡️ **Donasi Anda 100% Aman & Terpercaya**:\n\n" +
-             "ACF Eduhub adalah yayasan resmi berbadan hukum yang telah berkiprah 10+ tahun. Laporan keuangan yayasan diaudit secara berkala oleh Kantor Akuntan Publik independen dan berhasil meraih predikat tertinggi **WTP (Wajar Tanpa Pengecualian)** sejak 2024.\n\n" +
-             "Setiap dana disalurkan langsung untuk operasional unit pendidikan, subsidi beasiswa, dan nutrisi siswa prasejahtera.";
+      return "🛡️ **Donasi Sahabat Ceria 100% Aman & Terpercaya!**\n\n" +
+             "Tenang aja ya Sahabat Ceria, ACF Eduhub adalah yayasan resmi berbadan hukum yang sudah berkiprah lebih dari 10 tahun. Laporan keuangan yayasan kami diaudit rutin oleh Kantor Akuntan Publik independen dan berhasil meraih predikat tertinggi **WTP (Wajar Tanpa Pengecualian)** sejak 2024.\n\n" +
+             "Setiap rupiah donasi disalurkan tepat sasaran buat operasional sekolah gratis/subsidi, nutrisi siswa, dan fasilitas belajar anak-anak dhuafa.";
     }
 
-    // 4. DONASI UMUM / INFAQ / SEDEKAH
+    // 6. DONASI UMUM
     if (q === 'donasi' || q.includes('donasi') || q.includes('infaq') || q.includes('sedekah') || q.includes('donatur')) {
-      return "💖 **Donasi Pendidikan ACF Eduhub**:\n\n" +
-             "Setiap rupiah donasi Anda membantu membiayai sekolah, seragam, buku, dan nutrisi siswa dhuafa di 10 Sekolah Juara dan 7 PKBM Daya Setara.\n\n" +
-             "• Ingin berdonasi sekarang? Buka halaman [Donasi](donasi.html).\n" +
-             "• Ingin tahu cara dan alur transfernya? Ketik **'cara donasi'** dan Cherry siap jelaskan langkah-langkahnya! 😊";
+      return "💖 **Aksi Kebaikan Bersama ACF Eduhub**:\n\n" +
+             "Senang banget lihat kepedulian Sahabat Ceria! Kebaikan kamu adalah alasan ribuan anak-anak prasejahtera bisa terus tersenyum dan bersekolah.\n\n" +
+             "Program kebaikan yang bisa kamu dukung nih:\n" +
+             "• 🏫 **Beasiswa Binaan Kelas**: Subsidi sekolah anak dhuafa selama satu tahun penuh.\n" +
+             "• 🍱 **Gizi & Nutrisi Siswa**: Sarapan sehat bergizi biar anak-anak fokus belajar.\n" +
+             "• 📖 **Sarana Belajar & Vokasi**: Perlengkapan sekolah dan alat keterampilan mandiri.\n\n" +
+             "Yuk salurkan kebaikanmu dengan mudah lewat menu [Donasi](donasi.html)! ✨";
     }
 
-    // 5. KEINGINAN BERTANYA (aku mau tanya nih, mau nanya dong, dll)
+    // 7. INGIN BERTANYA / BANTU DONG
     if (
-      q.match(/^(aku\s+)?(mau|pengen|bisa|boleh)\s+(tanya|nanya|bertanya)/i) ||
-      q.match(/^(tanya|nanya)\s+(dong|nih|ya|aja|sesuatu)/i) ||
-      q.match(/^(bisa\s+(bantu|tolong)|tolong\s+bantu)/i) ||
-      q === 'tanya' || q === 'nanya'
+      q.includes('mau tanya') || q.includes('tanya dong') || q.includes('mau nanya') ||
+      q.includes('nanya dong') || q.includes('bisa tanya') || q.includes('bantu dong') ||
+      q.includes('minta tolong') || q.includes('tolong dong') || q === 'tanya' || q === 'bantu' || q === 'info dong' || q === 'mau info'
     ) {
-      return "Boleh banget! Mau tanya tentang apa nih? 😊\n\nSilakan langsung ketik pertanyaannya, Cherry siap bantu jelaskan secara lengkap seputar:\n" +
-             "• 💖 **Cara & Metode Donasi**: Donasi beasiswa, nutrisi, rekening transfer, QRIS & audit WTP\n" +
-             "• 🏫 **Sekolah Juara (SD)**: 10 unit SD formal, Kurikulum Langit & syarat pendaftaran PPDB\n" +
-             "• 📖 **Sekolah Daya Setara (PKBM)**: Pendidikan kesetaraan Paket B & C serta vokasi mandiri\n" +
-             "• 👩‍🏫 **Guruverse.ID**: Platform peningkatan kapasitas dan pelatihan guru Indonesia\n" +
-             "• 📚 **Program Layanan**: Keberlanjutan pendidikan, pemberdayaan & bantuan langsung\n" +
-             "• 🤝 **Kemitraan CSR & Relawan**: Kolaborasi mitra program CSR & relawan Sahabat Eduhub\n" +
-             "• 📰 **Artikel & Kabar**: Update berita kegiatan & publikasi edukasi terbaru\n" +
-             "• 🏢 **Profil Yayasan**: Visi misi, cerita perjalanan 10+ tahun & kemitraan\n" +
-             "• 📍 **Alamat & Kontak Admin**: Alamat kantor pusat Bandung & nomor WhatsApp resmi";
+      return "Boleh banget dong Sahabat Ceria! 😊 Silakan tanyakan apa aja yang pengen kamu tahu seputar Sekolah Juara (SD), pendaftaran PPDB, program layanan, relawan, atau donasi. Cherry siap jawabin satu-satu!";
     }
 
-    // 6. SAPAAN / GREETINGS (halo, hallo, hai, hei, p, assalamualaikum, dll)
-    if (
-      q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|p|tes|test|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i) ||
-      ['halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'p'].includes(q)
-    ) {
-      return "Halo! 👋 Senang bisa menyapa Anda. Ada yang bisa Cherry bantu hari ini? 😊";
-    }
-
-    // 7. BIAYA SEKOLAH JUARA & SEKOLAH DAYA SETARA / APAKAH GRATIS?
+    // 8. BIAYA SEKOLAH JUARA & SEKOLAH DAYA SETARA
     if (q.includes('biaya') || q.includes('bayar') || q.includes('gratis') || q.includes('spp') || q.includes('uang sekolah') || q.includes('uang gedung') || q.includes('tarif')) {
-      return "🏫 **Informasi Biaya Pendidikan (Sekolah Juara & Sekolah Daya Setara)**:\n\n" +
-             "Sekolah Juara (SD) maupun PKBM Sekolah Daya Setara **TIDAK GRATIS**. Keduanya merupakan unit pendidikan binaan ACF Eduhub dengan biaya pendidikan terjangkau untuk menunjang mutu belajar dan fasilitas siswa.\n\n" +
-             "Untuk rincian lengkap mengenai biaya formulir pendaftaran, uang pangkal, SPP bulanan, maupun program beasiswa, silakan hubungi narahubung kami di WhatsApp **+62 851-7979-7661**.";
+      return "🏫 **Info Biaya Pendidikan (Sekolah Juara & Sekolah Daya Setara)**:\n\n" +
+             "Mengenai biaya pendidikan di Sekolah Juara (SD) maupun PKBM Sekolah Daya Setara, biayanya sangat terjangkau ya Sahabat Ceria! 😊\n\n" +
+             "Untuk mengetahui rincian lengkap mengenai biaya formulir pendaftaran, uang pangkal, SPP bulanan, maupun informasi program beasiswa di unit kota tujuanmu, Sahabat Ceria bisa langsung chat admin kami via WhatsApp di **+62 851-7979-7661** yaa!";
     }
 
-    // 8. INFO PPDB, DAFTAR, DAN BROSUR SEKOLAH JUARA
+    // 9. INFO PPDB, DAFTAR, DAN BROSUR SEKOLAH JUARA
     if (
       q.includes('ppdb') ||
       q.includes('spmb') ||
@@ -448,160 +517,228 @@ Gaya Komunikasi:
       return getSekolahJuaraPpdbReply(raw);
     }
 
-    // 9. CARA JADI MITRA PROGRAM / CSR
+    // 10. CARA JADI MITRA PROGRAM / CSR
     if (
       (q.includes('cara') || q.includes('gimana') || q.includes('syarat') || q.includes('langkah') || q.includes('mau') || q.includes('alur') || q.includes('tata')) &&
       (q.includes('mitra') || q.includes('kerjasama') || q.includes('kolaborasi') || q.includes('csr') || q.includes('sponsor') || q.includes('perusahaan'))
     ) {
-      return "🤝 **Cara Menjadi Mitra Program / Kerjasama CSR**:\n\n" +
-             "1. Masuk ke halaman formulir [Jadi Mitra Program](form-mitra.html).\n" +
-             "2. Isi formulir dengan profil perusahaan/lembaga dan program kemitraan yang diminati (Beasiswa Binaan Kelas, Pembangunan Fasilitas, Green School, dll).\n" +
-             "3. Kirim formulir pendaftaran.\n" +
-             "4. Tim Partnership ACF Eduhub akan menghubungi PIC Anda untuk diskusi proposal dan sinergi bersama.\n\n" +
-             "Ingin berdiskusi langsung? Hubungi email kemitraan di **welcome@acf.or.id** atau WA di **+62 851-7979-7661**.";
+      return "🤝 **Kemitraan CSR & Kolaborasi Program**:\n\n" +
+             "Wah, kami terbuka banget buat berkolaborasi dengan perusahaan atau komunitas Sahabat Ceria! Caranya simpel kok:\n\n" +
+             "1. Masuk ke halaman [Jadi Mitra Program](form-mitra.html).\n" +
+             "2. Isi profil singkat perusahaan/lembaga dan pilih program yang diminati (Beasiswa Kelas, Green School, Sarana Belajar, dll).\n" +
+             "3. Kirim formulirnya.\n" +
+             "4. Tim Partnership ACF Eduhub bakal langsung menghubungi PIC kamu buat diskusi proposal dan sinergi bersama.\n\n" +
+             "Mau ngobrol langsung? Email kami di **welcome@acf.or.id** atau chat WA di **+62 851-7979-7661** ya!";
     }
 
-    // 10. CARA JADI RELAWAN (SAHABAT EDUHUB)
+    // 11. CARA JADI RELAWAN (SAHABAT EDUHUB)
     if (
       q.includes('relawan') ||
       q.includes('volunteer') ||
       (q.includes('sahabat') && (q.includes('eduhub') || q.includes('daftar') || q.includes('gabung')))
     ) {
-      return "🙋‍♀️ **Cara Mendaftar Jadi Relawan (Sahabat Eduhub)**:\n\n" +
-             "1. Buka formulir pendaftaran di halaman [Jadi Relawan](form-relawan.html).\n" +
-             "2. Lengkapi identitas diri dan pilih bidang yang diminati:\n" +
+      return "🙋‍♀️ **Yuk Gabung Jadi Relawan (Sahabat Eduhub)!**\n\n" +
+             "Keren banget niat baik Sahabat Ceria! Bareng komunitas Sahabat Eduhub, kamu bisa berbagi inspirasi dan senyuman buat adik-adik di seluruh Indonesia. Caranya gampang:\n\n" +
+             "1. Buka formulir di halaman [Jadi Relawan](form-relawan.html).\n" +
+             "2. Isi data diri kamu dan pilih bidang yang paling cocok sama minatmu:\n" +
              "   • *Relawan Pengajar / Tutor*\n" +
              "   • *Fasilitator Kegiatan & Event*\n" +
              "   • *Dokumentasi, Foto, & Desain Konten*\n" +
              "   • *Mentor Inspiratif & Karakter*\n" +
-             "3. Kirim formulir pendaftaran.\n" +
-             "4. Tim relawan kami akan mengundang Anda ke sesi orientasi komunitas.\n\n" +
-             "Mari berbagi inspirasi dan senyuman untuk anak-anak Indonesia! ✨";
+             "3. Kirim pendaftaran, dan tim kami bakal ngajak kamu ke sesi orientasi komunitas yang seru!\n\n" +
+             "Yuk bareng Cherry jadi bagian dari perubahan positif! ✨";
     }
 
-    // 10.5 DAFTAR LOKASI, DAERAH & SEBARAN 10 UNIT SEKOLAH JUARA (SD JUARA)
+    // 12. DAFTAR LOKASI, DAERAH & SEBARAN 10 UNIT SEKOLAH JUARA (SD JUARA)
     if (
-      (q.includes('daerah') || q.includes('dimana') || q.includes('di mana') || q.includes('mana saja') || q.includes('mana aja') || q.includes('lokasi') || q.includes('kota') || q.includes('wilayah') || q.includes('tempat') || q.includes('sebaran') || q.includes('persebaran') || q.includes('cabang') || q.includes('tersebar') || q.includes('alamat') || q.includes('daftar') || q.includes('apa saja') || q.includes('apa aja') || q.includes('berapa') || q.includes('da berapa') || q.includes('jumlah') || q.includes('total')) &&
-      (q.includes('sekolah') || q.includes('juara') || q.includes('sd') || q.includes('unit'))
+      (q.includes('daerah') || q.includes('dimana') || q.includes('di mana') || q.includes('mana saja') || q.includes('mana aja') || q.includes('lokasi') || q.includes('kota') || q.includes('wilayah') || q.includes('tempat') || q.includes('sebaran') || q.includes('cabang') || q.includes('tersebar') || q.includes('alamat') || q.includes('daftar') || q.includes('berapa') || q.includes('da berapa') || q.includes('jumlah') || q.includes('total')) &&
+      (q.includes('sekolah') || q.includes('juara') || q.includes('sd'))
     ) {
-      return "🏫 **Daftar & Sebaran 10 Unit Sekolah Juara (SD Juara)** binaan ACF Eduhub di Indonesia:\n\n" +
-             "1. 📍 **SD Juara Batam** (Kepulauan Riau)\n" +
-             "2. 📍 **SD Juara Cilegon** (Banten)\n" +
-             "3. 📍 **SD Juara Jakarta Barat** (DKI Jakarta)\n" +
-             "4. 📍 **SD Juara Jakarta Timur** (DKI Jakarta)\n" +
-             "5. 📍 **SD Juara Jakarta Utara** (DKI Jakarta)\n" +
-             "6. 📍 **SD Juara Persa Medan** (Sumatera Utara)\n" +
-             "7. 📍 **SD Juara AL Hikmah Jayapura** (Papua)\n" +
-             "8. 📍 **SD Juara Semarang** (Jawa Tengah)\n" +
-             "9. 📍 **SD Juara Surabaya** (Jawa Timur)\n" +
-             "10. 📍 **SD Juara AL Hakim Tangerang** (Banten)\n\n" +
-             "Seluruh 10 unit di atas adalah jenjang **Sekolah Dasar (SD)** formal berkualitas. Untuk kontak alamat cabang terdekat atau info kunjungan, silakan hubungi narahubung kami di WhatsApp **+62 851-7979-7661** 😊";
+      return "🏫 **Daftar 10 Unit Sekolah Dasar (SD Juara)**:\n\n" +
+             "Fyi nih Sahabat Ceria, Sekolah Juara punya 10 unit yang tersebar di berbagai kota di Indonesia, dan seluruhnya adalah jenjang SD:\n\n" +
+             "1. SD Juara Batam\n" +
+             "2. SD Juara Cilegon\n" +
+             "3. SD Juara Jakarta Barat\n" +
+             "4. SD Juara Jakarta Timur\n" +
+             "5. SD Juara Jakarta Utara\n" +
+             "6. SD Juara Persa Medan\n" +
+             "7. SD Juara AL Hikmah Jayapura\n" +
+             "8. SD Juara Semarang\n" +
+             "9. SD Juara Surabaya\n" +
+             "10. SD Juara AL Hakim Tangerang\n\n" +
+             "Sahabat Ceria bisa cek info pendaftaran & unduh brosur masing-masing unit di halaman [Sekolah Juara](sekolah-juara.html) yaa!";
     }
 
-    // 10.6 JENJANG / TINGKAT / SMP / SMK / HANYA SD
+    // 12.5 SEBARAN & LOKASI SEKOLAH DAYA SETARA (PKBM CERIA)
+    if (
+      q.includes('daya setara') ||
+      q.includes('pkbm') ||
+      (q.includes('setara') && (q.includes('sekolah') || q.includes('bandung') || q.includes('lokasi') || q.includes('cabang')))
+    ) {
+      if (
+        q.includes('bandung') ||
+        q.includes('lembang') ||
+        q.includes('ngamprah') ||
+        q.includes('ujungberung') ||
+        q.includes('ujung berung')
+      ) {
+        return "🏫 **Sekolah Daya Setara di Bandung Raya**:\n\n" +
+               "Di wilayah Bandung Raya, Sekolah Daya Setara (PKBM Ceria) memiliki **3 unit/cabang** nih, Sahabat Ceria:\n\n" +
+               "1. 📍 **Sekolah Daya Setara Ngamprah** (Kab. Bandung Barat)\n" +
+               "2. 📍 **Sekolah Daya Setara Lembang** (Kab. Bandung Barat)\n" +
+               "3. 📍 **Sekolah Daya Setara Ujungberung** (Kota Bandung)\n\n" +
+               "Ketiga unit ini melayani pendidikan kesetaraan Paket B (setara SMP) dan Paket C (setara SMA) serta pelatihan vokasi siap kerja dengan sistem belajar yang fleksibel.\n\n" +
+               "Sahabat Ceria juga bisa melihat dokumentasi dan peta sebarannya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html), atau kalau mau info pendaftaran bisa langsung kontak admin di WhatsApp **+62 851-7979-7661** yaa! 😊";
+      }
+
+      if (q.includes('sukabumi') || q.includes('cisolok')) {
+        return "🏫 **Sekolah Daya Setara di Sukabumi**:\n\n" +
+               "Untuk wilayah Sukabumi, unit kami adalah **Sekolah Daya Setara Cisolok** yang melayani program kesetaraan Paket B dan C serta vokasi mandiri.\n\n" +
+               "Sahabat Ceria bisa cek info lengkapnya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
+      }
+
+      if (q.includes('indramayu') || q.includes('arahan')) {
+        return "🏫 **Sekolah Daya Setara di Indramayu**:\n\n" +
+               "Untuk wilayah Indramayu, unit kami adalah **PKBM Ceria Arahan** yang melayani program kesetaraan Paket B dan C serta vokasi mandiri.\n\n" +
+               "Sahabat Ceria bisa cek info lengkapnya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
+      }
+
+      if (q.includes('pangandaran') || q.includes('padaherang')) {
+        return "🏫 **Sekolah Daya Setara di Pangandaran**:\n\n" +
+               "Untuk wilayah Pangandaran, unit kami adalah **PKBM Ceria Padaherang** yang melayani program kesetaraan Paket B dan C serta vokasi mandiri.\n\n" +
+               "Sahabat Ceria bisa cek info lengkapnya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
+      }
+
+      if (q.includes('jayapura') || q.includes('papua')) {
+        return "🏫 **Sekolah Daya Setara di Jayapura**:\n\n" +
+               "Untuk wilayah Jayapura (Papua), unit kami adalah **Sekolah Daya Setara Jayapura** yang melayani program kesetaraan Paket B dan C serta vokasi mandiri.\n\n" +
+               "Sahabat Ceria bisa cek info lengkapnya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
+      }
+
+      if (
+        q.includes('dimana') ||
+        q.includes('di mana') ||
+        q.includes('lokasi') ||
+        q.includes('cabang') ||
+        q.includes('daerah') ||
+        q.includes('wilayah') ||
+        q.includes('sebaran') ||
+        q.includes('kota') ||
+        q.includes('berapa') ||
+        q.includes('da berapa') ||
+        q.includes('jumlah') ||
+        q.includes('total') ||
+        q.includes('titik') ||
+        q.includes('mana aja') ||
+        q.includes('mana saja')
+      ) {
+        return "🗺️ **Peta Sebaran 7 Unit Sekolah Daya Setara (PKBM Ceria)**:\n\n" +
+               "Sekolah Daya Setara hadir di **7 titik/unit** di Indonesia untuk memperluas akses pendidikan kesetaraan dan vokasi mandiri nih, Sahabat Ceria:\n\n" +
+               "• **Bandung Raya (3 Unit)**:\n" +
+               "  1. 📍 **Sekolah Daya Setara Ngamprah** (Kab. Bandung Barat)\n" +
+               "  2. 📍 **Sekolah Daya Setara Lembang** (Kab. Bandung Barat)\n" +
+               "  3. 📍 **Sekolah Daya Setara Ujungberung** (Kota Bandung)\n\n" +
+               "• **Sukabumi (1 Unit)**:\n" +
+               "  4. 📍 **Sekolah Daya Setara Cisolok**\n\n" +
+               "• **Indramayu (1 Unit)**:\n" +
+               "  5. 📍 **PKBM Ceria Arahan**\n\n" +
+               "• **Pangandaran (1 Unit)**:\n" +
+               "  6. 📍 **PKBM Ceria Padaherang**\n\n" +
+               "• **Jayapura (1 Unit)**:\n" +
+               "  7. 📍 **Sekolah Daya Setara Jayapura**\n\n" +
+               "Semua unit siap memfasilitasi Paket B (setara SMP) dan Paket C (setara SMA) serta keterampilan kerja. Info lengkapnya bisa dicek di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
+      }
+    }
+
+    // 13. KOTA TERTENTU (Bandung, Jakarta, Batam, dll)
+    if (q.includes('bandung')) {
+      return "📍 Buat Sahabat Ceria yang ada di Bandung, **Kantor Pusat ACF Eduhub** beralamat di:\n\n" +
+             "🏢 **Alamat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n" +
+             "🗺️ **Google Maps**: [Buka di Google Maps](https://maps.app.goo.gl/GZM6nCS82CcettDcA)\n" +
+             "📞 **WhatsApp**: +62 851-7979-7661\n\n" +
+             "Selain kantor pusat, di Bandung Raya kami juga memiliki 3 unit **Sekolah Daya Setara (PKBM Ceria)** yaitu di Ngamprah, Lembang, dan Ujungberung lho! Ada yang bisa Cherry bantu? 😊";
+    }
+    if (q.includes('jakarta')) {
+      return "🏫 Di wilayah DKI Jakarta ada 3 unit SD Juara nih Sahabat Ceria:\n• **SD Juara Jakarta Barat**\n• **SD Juara Jakarta Timur**\n• **SD Juara Jakarta Utara**\n\nKamu bisa langsung daftar atau unduh brosurnya di menu [Sekolah Juara](sekolah-juara.html)!";
+    }
+
+    // 14. JENJANG PENDIDIKAN
     if (
       (q.includes('jenjang') || q.includes('tingkat') || q.includes('smp') || q.includes('smk') || q.includes('sma') || q.includes('kelas') || q.includes('hanya sd') || q.includes('cuma sd')) &&
       (q.includes('sekolah') || q.includes('juara') || q.includes('pendidikan'))
     ) {
       return "ℹ️ **Jenjang Pendidikan di Sekolah Juara**:\n\n" +
-             "Sekolah Juara **HANYA ada jenjang Sekolah Dasar (SD)** yaitu 10 unit SD Juara binaan ACF Eduhub.\n\n" +
-             "Di Sekolah Juara **tidak ada jenjang SMP atau SMK**. Bagi yang memerlukan pendidikan kesetaraan lanjutan (setara SMP / Paket B dan setara SMA / Paket C serta vokasi), ACF Eduhub memfasilitasinya melalui unit **PKBM Sekolah Daya Setara**.";
+             "Perlu diingat ya Sahabat Ceria, Sekolah Juara **HANYA ada jenjang Sekolah Dasar (SD)** yaitu 10 unit SD Juara.\n\n" +
+             "Di Sekolah Juara **tidak ada jenjang SMP maupun SMA/SMK**. Tapi kalau Sahabat Ceria butuh pendidikan kesetaraan lanjutan (setara SMP/Paket B dan setara SMA/Paket C serta keahlian vokasi kerja mandiri), ACF Eduhub memfasilitasinya lewat unit **PKBM Sekolah Daya Setara**!";
     }
 
-    // 10.7 KURIKULUM / KURIKULUM LANGIT / KEGIATAN BELAJAR
-    if (q.includes('kurikulum') || q.includes('kurikulum langit') || q.includes('belajar apa') || q.includes('pembelajaran') || q.includes('pelajaran') || q.includes('tahfidz') || q.includes('akhlak')) {
-      return "📖 **Kurikulum Pembelajaran di Sekolah Juara**:\n\n" +
-             "Sekolah Juara memadukan **Kurikulum Nasional (Kemendikbudristek)** dengan ciri khas keunggulan ACF Eduhub yaitu **Kurikulum Langit**:\n\n" +
-             "• 🌟 **Kurikulum Langit**: Pembinaan tauhid, akhlak mulia, adab islami, serta tahsin & tahfidz Al-Qur'an harian.\n" +
-             "• 💡 **Leadership & Entrepreneurship**: Melatih kepemimpinan, kemandirian, dan pola pikir wirausaha sejak dini.\n" +
-             "• 💻 **Literasi Digital**: Pengenalan teknologi modern dan pembelajaran berbasis digital yang menyenangkan.\n\n" +
-             "Tujuannya adalah melahirkan generasi berprestasi (Juara) yang berkepribadian tangguh dan berakhlak mulia.";
+    // 15. APA ITU SEKOLAH JUARA
+    if (q === 'sekolah juara' || q === 'sd juara' || ((q.includes('sekolah juara') || q.includes('sd juara') || q.includes('juara')) && (q.includes('apa') || q.includes('tentang') || q.includes('maksud') || q.includes('profil') || q.includes('penjelasan') || q.includes('definisi') || q.includes('arti') || q.includes('info') || q.includes('informasi')))) {
+      return "🏆 **Mengenal Sekolah Juara**:\n\n" +
+             "Sekolah Juara adalah jaringan 10 unit **Sekolah Dasar (SD Juara)** binaan ACF Eduhub yang mendidik generasi berprestasi dan berakhlak mulia.\n\n" +
+             "Di sini kurikulum nasional dipadukan dengan pembinaan karakter islami lewat Kurikulum Langit, kepemimpinan (*leadership*), kewirausahaan cilik, dan hafalan Al-Qur'an (tahfidz). Keren kan, Sahabat Ceria?";
     }
 
-    // 10.8 FASILITAS SEKOLAH JUARA
-    if (q.includes('fasilitas') || q.includes('sarana') || q.includes('gedung') || q.includes('prasarana')) {
-      return "🏫 **Fasilitas di Unit Sekolah Juara**:\n\n" +
-             "Setiap unit Sekolah Juara dilengkapi dengan fasilitas pendukung belajar ramah anak:\n" +
-             "• Ruang kelas nyaman, bersih, dan berpendingin/ventilasi sehat\n" +
-             "• Pojok baca & perpustakaan literasi anak\n" +
-             "• Laboratorium komputer & multimedia digital\n" +
-             "• Sarana olahraga dan area bermain siswa\n" +
-             "• Ruang ibadah / musholla bersih\n" +
-             "• Program nutrisi & sarapan sehat siswa";
+    // 16. APA ITU SEKOLAH DAYA SETARA / PKBM
+    if (q.includes('daya setara') || q.includes('pkbm') || q.includes('kejar paket') || q.includes('paket c') || q.includes('paket b') || q.includes('kesetaraan')) {
+      return "📖 **Mengenal Sekolah Daya Setara (PKBM)**:\n\n" +
+             "Sekolah Daya Setara adalah 7 unit Pusat Kegiatan Belajar Masyarakat (PKBM) non-formal binaan ACF Eduhub buat jenjang **Paket B (setara SMP)** dan **Paket C (setara SMA)** serta vokasi mandiri dengan biaya terjangkau.\n\n" +
+             "Sekolah Daya Setara tersebar di 7 titik di Indonesia, yaitu **Bandung Raya (Ngamprah, Lembang, Ujungberung)**, Sukabumi (Cisolok), Indramayu (Arahan), Pangandaran (Padaherang), dan Jayapura.\n\n" +
+             "Program ini hadir buat ngebantu anak-anak putus sekolah dan masyarakat umum biar bisa dapet ijazah resmi negara dan keterampilan kerja mandiri lho, Sahabat Ceria! Info selengkapnya ada di menu [Sekolah Daya Setara](sekolah-daya-setara.html) yaa!";
     }
 
-    // 11. APA ITU SEKOLAH JUARA / PENJELASAN SEKOLAH JUARA (HANYA JIKA BERTANYA DEFINISI)
-    if (
-      q === 'sekolah juara' || q === 'sd juara' ||
-      ((q.includes('sekolah juara') || q.includes('sd juara') || q.includes('juara')) &&
-       (q.includes('apa') || q.includes('tentang') || q.includes('maksud') || q.includes('profil') || q.includes('penjelasan') || q.includes('definisi') || q.includes('arti') || q.includes('info') || q.includes('informasi')))
-    ) {
-      return "🏆 **Sekolah Juara** adalah jaringan 10 unit **Sekolah Dasar (SD Juara)** formal berkualitas binaan ACF Eduhub yang mendidik generasi penerus bangsa.\n\n" +
-             "Sekolah Juara memadukan kurikulum nasional dengan pembinaan akhlak mulia melalui Kurikulum Langit, kepemimpinan (*leadership*), kewirausahaan, serta kecintaan terhadap Al-Qur'an.\n\n" +
-             "• Ingin tahu daftar 10 lokasinya? Ketik **'lokasi sekolah juara'**.\n" +
-             "• Ingin tahu info biaya & pendaftaran? Ketik **'biaya sekolah juara'** atau **'syarat daftar'**.";
-    }
-
-    // 12. APA ITU SEKOLAH DAYA SETARA / PKBM / KEJAR PAKET
-    if (q.includes('daya setara') || q.includes('pkbm') || q.includes('kejar paket') || q.includes('paket c') || q.includes('paket b')) {
-      return "📖 **Sekolah Daya Setara** adalah 7 unit PKBM (Pusat Kegiatan Belajar Masyarakat) pendidikan non-formal kesetaraan yang berfokus pada **Paket B (setara SMP)** dan **Paket C (setara SMA)** serta pelatihan vokasi mandiri binaan ACF Eduhub dengan biaya terjangkau.\n\n" +
-             "Sekolah Daya Setara khusus melayani jenjang Paket B dan Paket C. Program ini membantu anak-anak putus sekolah dan masyarakat prasejahtera mendapatkan ijazah resmi negara serta keahlian kerja mandiri.";
-    }
-
-    // 13. APA ITU GURUVERSE
+    // 17. APA ITU GURUVERSE.ID
     if (q.includes('guruverse') || (q.includes('guru') && (q.includes('pelatihan') || q.includes('training') || q.includes('kompetensi')))) {
-      return "👩‍🏫 **Guruverse.ID** adalah ekosistem peningkatan kapasitas guru yang diinisiasi oleh ACF Eduhub. Hingga kini telah melatih lebih dari **2.000+ guru** di seluruh pelosok Indonesia mengenai metode belajar aktif, pedagogik kreatif, dan pemanfaatan teknologi kelas.";
+      return "👩‍🏫 **Mengenal Guruverse.ID**:\n\n" +
+             "Guruverse.ID adalah platform keren dari ACF Eduhub buat ningkatin kapasitas para guru di seluruh Indonesia! Sampai sekarang udah ada lebih dari **2.000+ guru** yang ikut pelatihan metode belajar kreatif, teknologi kelas, dan pedagogik modern bareng kami, Sahabat Ceria.";
     }
 
-    // 14. PROGRAM LAYANAN ACF EDUHUB (DINAMIS SESUAI WEBSITE & ADMIN PORTAL)
-    if (q.includes('program') || q.includes('layanan') || q.includes('pilar') || q.includes('kegiatan')) {
+    // 18. PROGRAM LAYANAN ACF EDUHUB
+    if (q.includes('program layanan') || q.includes('layanan acf') || q.includes('pilar program') || q.includes('7 program') || q === 'program') {
       return formatDynamicProgramsReply();
     }
 
-    // 15. LOKASI CABANG KOTA TERTENTU
-    if (q.includes('jogja') || q.includes('yogyakarta')) {
-      return "🏫 **Sekolah Juara Yogyakarta** adalah salah satu unit aktif kami di wilayah D.I. Yogyakarta! Unit ini melayani pendidikan berkualitas dengan biaya terjangkau binaan ACF Eduhub. Ingin informasi pendaftaran atau kunjungan di unit Yogyakarta?";
-    }
-    if (q.includes('bandung') || q.includes('cimahi')) {
-      return "🏫 Di wilayah **Bandung dan Cimahi** terdapat kantor pusat yayasan kami serta beberapa unit SD Juara aktif. Kantor pusat beralamat di Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung.";
-    }
-    if (q.includes('jakarta') || q.includes('tangerang') || q.includes('jabodetabek')) {
-      return "🏫 Di wilayah **Jabodetabek (Jakarta & Tangerang)** kami mengoperasikan beberapa unit Sekolah Juara dan PKBM Daya Setara untuk anak-anak prasejahtera. Anda bisa menghubungi kontak pusat kami untuk detail lokasi tiap unit!";
-    }
-    if (q.includes('pekanbaru') || q.includes('medan') || q.includes('surabaya')) {
-      return "🏫 Ya, unit Sekolah Juara juga hadir di kota-kota besar di luar pulau Jawa seperti **Pekanbaru** dan **Medan**, serta di Jawa Timur seperti **Surabaya**. Total terdapat 17 unit di 12 kota/kabupaten di Indonesia.";
+    // 19. BEASISWA & DHUAFA
+    if (q.includes('beasiswa') || q.includes('dhuafa') || q.includes('yatim') || q.includes('keringanan')) {
+      return "🎓 **Program Beasiswa ACF Eduhub**:\n\n" +
+             "Kabar baik buat Sahabat Ceria! ACF Eduhub punya program subsidi dan beasiswa khusus bagi anak-anak yatim dan keluarga prasejahtera berprestasi di Sekolah Juara maupun PKBM Daya Setara.\n\n" +
+             "Buat kepoin kuota beasiswa di unit kota tujuanmu, langsung hubungi admin WA kami di **+62 851-7979-7661** yaa!";
     }
 
-    // 16. LOKASI & ALAMAT KANTOR
-    if (q.includes('alamat') || q.includes('lokasi') || q.includes('kantor') || q.includes('dimana') || q.includes('di mana')) {
-      return "📍 **Alamat & Lokasi Kantor ACF Eduhub**:\n\n" +
+    // 20. LOKASI & ALAMAT KANTOR
+    if (q.includes('alamat') || q.includes('lokasi') || q.includes('kantor') || q.includes('pusat') || q.includes('dimana') || q.includes('di mana')) {
+      return "📍 **Alamat Kantor Pusat ACF Eduhub**:\n\n" +
              "🏢 **Kantor Pusat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n\n" +
+             "🗺️ **Google Maps**: [Buka di Google Maps](https://maps.app.goo.gl/GZM6nCS82CcettDcA)\n" +
              "📞 **WhatsApp / Telepon**: +62 851-7979-7661\n" +
-             "✉️ **Email**: welcome@acf.or.id";
+             "✉️ **Email**: welcome@acf.or.id\n\n" +
+             "Informasi alamat ini juga tertera di footer website kami ya, Sahabat Ceria. Kalau kamu lagi di Bandung dan mau bersilaturahmi langsung, pintu kami selalu terbuka lebar! 😊";
     }
 
-    // 17. KONTAK RESMI & SOSIAL MEDIA
+    // 21. KONTAK RESMI & SOSIAL MEDIA
     if (q.includes('kontak') || q.includes('telepon') || q.includes('wa') || q.includes('whatsapp') || q.includes('email') || q.includes('admin') || q.includes('hubungi') || q.includes('nomor') || q.includes('instagram') || q.includes('youtube')) {
       return "📞 **Kontak Resmi ACF Eduhub**:\n\n" +
-             "• **WhatsApp / Telepon**: +62 851-7979-7661 (tersedia juga tombol hijau WA di pojok kiri bawah layar Anda)\n" +
+             "Sahabat Ceria bisa menghubungi tim kami kapan aja lewat saluran berikut:\n\n" +
+             "• **WhatsApp / Telepon**: +62 851-7979-7661 (ada tombol hijau WA di pojok kiri bawah layar)\n" +
              "• **Email**: welcome@acf.or.id\n" +
              "• **Instagram**: @acf.eduhub\n" +
              "• **YouTube**: JUARA TV\n" +
              "• **Website**: www.acf.or.id\n\n" +
-             "Tim kami siap melayani Anda pada jam operasional kerja.";
+             "Kami siap menyapa dan melayani kamu di jam operasional kerja yaa!";
     }
 
-    // 18. TENTANG YAYASAN ACF EDUHUB
+    // 22. TENTANG YAYASAN ACF EDUHUB
     if (q.includes('apa itu acf') || q.includes('tentang acf') || q.includes('profil acf') || q.includes('yayasan') || q.includes('sejarah') || q.includes('visi') || q.includes('misi')) {
       return "🏫 **Tentang ACF Eduhub**:\n\n" +
-             "ACF Eduhub (Amal Khair Yasmin Foundation) adalah yayasan sosial pendidikan yang telah berdedikasi selama lebih dari 10 tahun memutus rantai kemiskinan di Indonesia melalui pendidikan gratis & berkualitas bagi dhuafa.\n\n" +
-             "• **17 Unit Pendidikan Aktif** (10 Sekolah Juara + 7 PKBM Daya Setara)\n" +
-             "• **1.812+ Siswa Terdampak** langsung beasiswa penuh\n" +
-             "• **2.000+ Guru Terlatih** lewat Guruverse.ID\n" +
-             "• **Opini WTP** Akuntabilitas Audit Keuangan sejak 2024.";
+             "ACF Eduhub (Yayasan Amal Khair Yasmin) adalah yayasan sosial pendidikan yang udah lebih dari 10 tahun berdedikasi memutus rantai kemiskinan lewat pendidikan berkualitas buat keluarga prasejahtera.\n\n" +
+             "• **17 Unit Pendidikan Aktif** (10 SD Juara + 7 PKBM Daya Setara)\n" +
+             "• **1.812+ Siswa Terdampak** langsung subsidi beasiswa\n" +
+             "• **2.000+ Guru Terlatih** lewat program Guruverse.ID\n" +
+             "• **Opini WTP** Audit Keuangan Akuntabel sejak 2024.\n\n" +
+             "Senang banget bisa berbagi cerita ini sama Sahabat Ceria! ✨";
     }
 
-    // 19. ARTIKEL & KABAR TERKINI (DINAMIS DARI WEBSITE & DATABASE)
+    // 23. ARTIKEL & KABAR TERKINI
     if (
       q.includes('artikel') ||
       q.includes('berita') ||
@@ -613,68 +750,118 @@ Gaya Komunikasi:
       return formatDynamicArticlesReply();
     }
 
-    // 19.1 TANYA KABAR (Apa kabar, sehat, dll)
-    if (q.includes('apa kabar') || q.includes('gimana kabar') || q.includes('sehat') || q.includes('lagi apa')) {
-      return "Kabar saya luar biasa baik dan selalu bersemangat! ✨ Terima kasih sudah menanyakan. Semoga hari Anda juga menyenangkan dan penuh berkah! Ada informasi tentang ACF Eduhub yang bisa Cherry bantu carikan?";
+    // 24. UCAPAN TERIMA KASIH & APRESIASI
+    if (q.includes('terima kasih') || q.includes('makasih') || q.includes('thanks') || q.includes('nuhun') || q.includes('tengkyu') || q.includes('syukron') || q.includes('thank you')) {
+      return "Sama-sama Sahabat Ceria! Senang banget bisa ngebantu kamu hari ini. 😊 Semoga harimu selalu menyenangkan dan penuh berkah ya! Kalau butuh info apa-apa lagi, panggil Cherry kapan aja yaa!";
     }
 
-    // 20. UCAPAN TERIMA KASIH (Makasih, thanks, nuhun)
-    if (q.includes('terima kasih') || q.includes('makasih') || q.includes('thanks') || q.includes('nuhun') || q.includes('tengkyu') || q.includes('syukron')) {
-      return "Sama-sama! Senang sekali bisa membantu Anda. 😊 Jika ada hal lain yang ingin ditanyakan lagi tentang program kami, jangan ragu untuk menyapa Cherry lagi ya!";
+    // 25. PUJIAN & PERCAKAPAN POSITIF
+    if (q.includes('pintar') || q.includes('keren') || q.includes('hebat') || q.includes('bagus') || q.includes('lucu') || q.includes('cantik') || q.includes('top') || q.includes('mantap')) {
+      return "Wahh, makasih banyak yaa atas pujiannya Sahabat Ceria! Jadi makin semangat nih nemenin kamu. 😄 Ada yang pengen kamu tanyain lagi seputar ACF Eduhub?";
     }
 
-    // 21. AFIRMASI (Oke, siap, baik, mantap, sip)
-    if (q.match(/^(oke+|ok|siap|baik|mantap|sip|yoi|keren|siip)(\s|[!.,?~]|$)/i) || q === 'oke' || q === 'ok') {
-      return "Sip! Senang bisa mendampingi Anda. Jika ada informasi atau bantuan lain yang diperlukan di website ini, kabari Cherry ya! ✨";
+    // 26. AFIRMASI
+    if (q.match(/^(oke+|ok|siap|baik|mantap|sip|yoi|keren|siip)(\s|[!.,?~]|$)/i) || q === 'oke' || q === 'ok' || q === 'siap') {
+      return "Siaap Sahabat Ceria! Senang bisa nemenin kamu di website ini. Kalau ada yang bikin penasaran lagi, langsung chat Cherry yaa! ✨";
     }
 
-    // 22. PUJIAN (Pintar, keren, hebat)
-    if (q.includes('pintar') || q.includes('keren') || q.includes('hebat') || q.includes('bagus') || q.includes('lucu') || q.includes('cantik')) {
-      return "Wah, terima kasih banyak atas pujiannya! Senang sekali bisa membantu Anda dengan baik. Ada yang ingin Anda tanyakan lagi seputar ACF Eduhub? 😊";
+    // 27. HUMOR & SANTAI
+    if (q.includes('wkwk') || q.includes('haha') || q.includes('hehe') || q.includes('xixi') || q.includes('canda') || q.includes('bercanda') || q.includes('gabut')) {
+      return "Hehe! Senang bisa ngobrol santai sama Sahabat Ceria. 😄 Selain asyik diajak ngobrol, Cherry juga jago lho cariin info soal sekolah, donasi, atau relawan. Ada yang pengen kamu kepoin?";
     }
 
-    // 23. SIAPA KAMU / CHERRY / BOT
+    // 28. KELUHAN / BINGUNG
+    if (q.includes('bingung') || q.includes('ga paham') || q.includes('gak paham') || q.includes('ga ngerti') || q.includes('gak ngerti') || q.includes('pusing') || q.includes('ribet')) {
+      return "Tenang aja ya Sahabat Ceria, jangan bingung-bingung. Cherry bantu pelan-pelan kok! 😊 Kamu bisa klik tombol menu cepat di bawah ini, atau ceritain bagian mana yang pengen Cherry jelasin lagi?";
+    }
+
+    // 29. SIAPA KAMU / CHERRY
     if (q.includes('siapa') || q.includes('nama') || q.includes('bot') || q.includes('cherry') || q.includes('robot') || q.includes('ai')) {
-      return "Halo! 😊 Saya **Cherry**, asisten virtual AI ramah dari **ACF Eduhub**! Warna identitas saya ungu dan kuning emas khas ACF. Tugas saya menjawab pertanyaan Anda tentang Sekolah Juara, donasi, program beasiswa, relawan, dan kontak kami.";
+      return "Halo Sahabat Ceria! 😊 Kenalin, aku **Cherry**, asisten virtual AI resmi yang ceria dan ramah dari **ACF Eduhub**! Warna kebanggaanku ungu dan kuning emas khas ACF. Tugas Cherry ngebantuin kamu cari info soal Sekolah Juara, donasi beasiswa, kegiatan relawan, dan kontak kami.";
     }
 
-    // 24. DAMPAK & STATISTIK CAPAIAN
-    if (q.includes('dampak') || q.includes('statistik') || q.includes('capaian') || q.includes('angka') || q.includes('berapa siswa')) {
-      return "📊 **Capaian Dampak Nyata ACF Eduhub**:\n\n" +
-             "• **17 Unit Pendidikan Aktif** (10 Sekolah Juara + 7 PKBM Daya Setara)\n" +
-             "• **12 Kota & Kabupaten** wilayah jangkauan\n" +
-             "• **1.812+ Siswa Terdampak** langsung subsidi beasiswa pendidikan\n" +
-             "• **2.000+ Guru Terlatih** lewat Guruverse.ID\n" +
-             "• **Opini Audit WTP** (Wajar Tanpa Pengecualian) sejak 2024.";
+    // 30. PERTANYAAN EKSPLORATIF (apakah, kenapa, bagaimana, kapan, siapa)
+    if (q.includes('?') || q.includes('apakah') || q.includes('gimana') || q.includes('kenapa') || q.includes('bagaimana') || q.includes('kapan')) {
+      return "Pertanyaan yang bagus banget nih, Sahabat Ceria! Soal hal itu, Cherry siap bantu cariin info paling pas di ACF Eduhub. Apakah ini terkait **pendaftaran sekolah**, **kegiatan siswa**, atau **donasi**? 😊\n\nKamu juga bisa langsung ngobrol sama admin kami via WhatsApp di **+62 851-7979-7661** biar dibantu lebih detail yaa!";
     }
 
-    // 25. KAMU BISA APA / BANTU APA / MENU
-    if (q.includes('bisa apa') || q.includes('fitur') || q.includes('bantu apa') || q.includes('menu') || q.includes('panduan')) {
-      return "Cherry bisa membantu Anda menemukan informasi lengkap di ACF Eduhub seputar:\n\n" +
-             "1. 💖 **Cara & Metode Donasi**: Alur donasi, rekening transfer/QRIS, dan transparansi laporan audit WTP.\n" +
-             "2. 🏫 **Sekolah Juara (SD)**: Pendidikan formal SD, Kurikulum Langit, syarat PPDB, dan 10 lokasi unit.\n" +
-             "3. 📖 **Sekolah Daya Setara (PKBM)**: Pendidikan kesetaraan Paket B (SMP), Paket C (SMA) & pelatihan vokasi mandiri.\n" +
-             "4. 👩‍🏫 **Guruverse.ID**: Platform digital pelatihan guru dan pengembangan kompetensi pedagogik.\n" +
-             "5. 📚 **Program Layanan**: Keberlanjutan unit, pemberdayaan sekolah, kemanusiaan, dan bantuan langsung.\n" +
-             "6. 🤝 **Kemitraan CSR & Relawan**: Menjadi mitra program perusahaan atau relawan Sahabat Eduhub.\n" +
-             "7. 📰 **Artikel & Kabar**: Liputan inisiatif, dokumentasi kegiatan, dan publikasi edukasi terkini.\n" +
-             "8. 🏢 **Profil Yayasan**: Sejarah 10+ tahun, visi misi, legalitas WTP, dan kemitraan.\n" +
-             "9. 📍 **Lokasi & Kontak**: Alamat kantor pusat Bandung dan nomor WhatsApp resmi admin.\n\n" +
-             "Silakan ketik pertanyaan Anda!";
+    // 31. DEFAULT NATURAL NYAMBUNG
+    return "Terima kasih udah nyapa Cherry ya, Sahabat Ceria! 😊\n\n" +
+           "Biar makin gampang, kamu bisa pilih topik yang pengen kamu ketahui nih:\n\n" +
+           "• 🏫 **Sekolah Juara (SD)**: Info pendaftaran & brosur 10 cabang unit\n" +
+           "• 📖 **Sekolah Daya Setara (PKBM)**: Paket B & C serta pelatihan vokasi\n" +
+           "• 📚 **Program Layanan**: 7 program pendidikan unggulan yayasan\n" +
+           "• 🙋‍♀️ **Jadi Relawan**: Gabung bareng komunitas Sahabat Eduhub\n" +
+           "• 💖 **Cara Donasi**: Rekening transfer & QRIS resmi yayasan\n" +
+           "• 📍 **Kontak & Lokasi**: WhatsApp admin & alamat kantor pusat\n\n" +
+           "Atau kamu juga bisa langsung ngobrol santai sama admin via WhatsApp di **+62 851-7979-7661**! ✨";
+  }
+
+  // Deteksi pesan cepat (Sapaan & Quick Chips) agar tidak perlu menunggu lama (loading instan 220ms)
+  function getInstantLocalReply(query) {
+    const raw = (query || '').trim();
+    const q = raw.toLowerCase();
+
+    const greetingsList = [
+      'halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'uy', 'ui', 'oy', 'oi', 'woy', 'woi',
+      'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
+      'assalamualaikum', 'assalamu alaikum', 'sampurasun', 'punten', 'permisi', 'misi',
+      'pagi', 'siang', 'sore', 'malam', 'selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam',
+      'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
+    ];
+    if (
+      greetingsList.includes(q) ||
+      q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i) ||
+      (q.length <= 4 && !q.includes('?'))
+    ) {
+      return "Halo Sahabat Ceria! 👋 Ada yang bisa Cherry bantu hari ini? 😊";
     }
 
-    // 26. DEFAULT NATURAL RESPONSE (NYAMBUNG DAN FLEKSIBEL)
-    return `Terima kasih atas pertanyaannya! 😊 Mengenai **"${escapeHtml(raw)}"**, Cherry siap bantu jelaskan lebih dalam. Anda bisa menanyakan hal spesifik seputar:\n\n` +
-           "• 💖 **Cara Donasi & Metode Pembayaran**\n" +
-           "• 🏫 **Sekolah Juara (SD)**: Kurikulum & Info Pendaftaran\n" +
-           "• 📖 **Sekolah Daya Setara (PKBM)**: Paket B & C serta Vokasi\n" +
-           "• 👩‍🏫 **Guruverse.ID**: Ekosistem Pelatihan Guru Indonesia\n" +
-           "• 📚 **Program Layanan**\n" +
-           "• 🤝 **Kerjasama Mitra CSR & Relawan (Sahabat Eduhub)**\n" +
-           "• 📰 **Artikel & Kabar Berita Terkini**\n" +
-           "• 🏢 **Profil Yayasan & Visi Misi**\n" +
-           "• 📍 **Alamat Kantor Bandung & Kontak WhatsApp**\n\n" +
-           "Atau Anda bisa langsung chat admin kami via WhatsApp di **+62 851-7979-7661** (tombol hijau di pojok kiri bawah).";
+    // Quick chips matching
+    if (q === 'cara donasi' || q.includes('cara donasi') || q === 'metode donasi' || q === 'rekening donasi') {
+      return getLocalKnowledgeReply('cara donasi');
+    }
+    if (q === 'informasi sekolah juara' || q === 'info sekolah juara') {
+      return getLocalKnowledgeReply('sekolah juara');
+    }
+    if (q === 'sekolah daya setara') {
+      return getLocalKnowledgeReply('daya setara');
+    }
+    if (q === 'guruverse' || q === 'guruverse.id') {
+      return getLocalKnowledgeReply('guruverse');
+    }
+    if (
+      q === 'program layanan' ||
+      q.includes('program layanan') ||
+      (q.includes('program') && (q.includes('layanan') || q.includes('apa aja') || q.includes('apa saja') || q.includes('di acf') || q.includes('ada apa') || q.includes('daftar program') || q.includes('7 program') || q.includes('pilar')))
+    ) {
+      return formatDynamicProgramsReply();
+    }
+    if (q === 'artikel dan kabar terbaru' || q === 'artikel & kabar') {
+      return formatDynamicArticlesReply();
+    }
+    if (q === 'cara jadi mitra csr' || q === 'jadi mitra') {
+      return getLocalKnowledgeReply('mitra');
+    }
+    if (q === 'cara jadi relawan' || q === 'jadi relawan') {
+      return getLocalKnowledgeReply('relawan');
+    }
+    if (
+      q === 'lokasi kantor dan kontak wa' ||
+      q === 'alamat & kontak' ||
+      q === 'kantor acf' ||
+      q === 'alamat kantor' ||
+      q === 'lokasi kantor' ||
+      q === 'alamat acf' ||
+      q.includes('alamat kantor') ||
+      q.includes('kantor acf') ||
+      q.includes('lokasi kantor acf') ||
+      (q.includes('kantor') && (q.includes('dimana') || q.includes('di mana') || q.includes('mana')))
+    ) {
+      return getLocalKnowledgeReply('alamat');
+    }
+
+    return null;
   }
 
   // Escape HTML helper
@@ -826,21 +1013,20 @@ Gaya Komunikasi:
               </svg>
             </div>
             <div class="cherry-bubble">
-              <p>Halo! 👋 Saya <strong>Cherry</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
-              <p>Saya siap menjawab pertanyaan Anda mengenai:</p>
+              <p>Halo <strong>Sahabat Ceria</strong>! 👋 Senang banget bisa ketemu kamu. Kenalin, aku <strong>Cherry</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
+              <p>Cherry siap nemenin dan bantu kamu cari info seputar:</p>
               <ul class="cherry-list">
                 <li>💖 <strong>Cara & Metode Donasi</strong></li>
-                <li>🏫 <strong>Sekolah Juara (SD)</strong>: Kurikulum & Info Pendaftaran</li>
-                <li>📖 <strong>Sekolah Daya Setara (PKBM)</strong>: Paket B & C serta Vokasi</li>
+                <li>🏫 <strong>Sekolah Juara (SD)</strong>: Info PPDB, Pendaftaran & Brosur</li>
+                <li>📖 <strong>Sekolah Daya Setara (PKBM)</strong>: Paket B, Paket C & Vokasi</li>
                 <li>👩‍🏫 <strong>Guruverse.ID</strong>: Pelatihan Guru Indonesia</li>
-                <li>📚 <strong>Program Layanan</strong></li>
-                <li>🤝 <strong>Kemitraan CSR</strong></li>
-                <li>🙋‍♀️ <strong>Jadi Relawan</strong>: Sahabat Eduhub</li>
-                <li>📰 <strong>Artikel & Kabar</strong>: Berita Kegiatan & Edukasi Terbaru</li>
-                <li>🏢 <strong>Profil Yayasan</strong>: Visi Misi, Cerita Kami & Mitra</li>
+                <li>📚 <strong>Program Layanan</strong>: Inisiatif Pendidikan ACF Eduhub</li>
+                <li>🤝 <strong>Kemitraan CSR</strong>: Kolaborasi Program & Perusahaan</li>
+                <li>🙋‍♀️ <strong>Jadi Relawan</strong>: Gabung Sahabat Eduhub</li>
+                <li>📰 <strong>Artikel & Kabar</strong>: Kabar Edukasi & Kegiatan Terkini</li>
                 <li>📍 <strong>Alamat & Kontak WhatsApp Admin</strong></li>
               </ul>
-              <p>Ada yang ingin Anda tanyakan hari ini? 😊</p>
+              <p>Ada yang lagi pengen kamu tanyain ke Cherry hari ini? Klik pilihan cepat di bawah atau langsung ketik chat apa aja yaa! 😊✨</p>
               <span class="cherry-msg-time">Sekarang</span>
             </div>
           </div>
@@ -1074,6 +1260,19 @@ Gaya Komunikasi:
       isAwaitingResponse = true;
       showTypingIndicator();
 
+      // Respon instan super cepat untuk sapaan dan tombol menu (220ms natural delay)
+      const instantReply = getInstantLocalReply(userText);
+      if (instantReply) {
+        setTimeout(() => {
+          hideTypingIndicator();
+          appendMessage('bot', instantReply);
+          chatHistory.push({ role: 'model', text: instantReply });
+          isAwaitingResponse = false;
+          chatInput.focus();
+        }, 220);
+        return;
+      }
+
       const clientApiKey = localStorage.getItem(STORAGE_KEY_API) || '';
 
       // 1. Jika ada Google Gemini API Key di browser, gunakan Google Gemini langsung
@@ -1094,7 +1293,7 @@ Gaya Komunikasi:
       // 2. Hubungi backend API dengan timeout singkat 2 detik
       const apiUrl = getChatApiUrl();
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const timeoutId = setTimeout(() => controller.abort(), 7500);
 
       try {
         const response = await fetch(apiUrl, {

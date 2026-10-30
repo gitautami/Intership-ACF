@@ -53,8 +53,8 @@ if (!$gemini_api_key) {
     }
 }
 
-// 3. Model Gemini (default gemini-1.5-flash)
-$gemini_model = getenv('GEMINI_MODEL') ?: 'gemini-1.5-flash';
+// 3. Model Gemini (default gemini-3.1-flash-lite)
+$gemini_model = getenv('GEMINI_MODEL') ?: 'gemini-3.1-flash-lite';
 
 define('GEMINI_API_KEY', $gemini_api_key ?: '');
 define('GEMINI_MODEL', $gemini_model);

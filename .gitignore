@@ -1,0 +1,15 @@
+# Environment & Secret Configuration
+.env
+.env.local
+.env.*.local
+*.key
+gemini_key.txt
+
+# Temp & Scratch Files
+scratch/
+*.log
+
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+

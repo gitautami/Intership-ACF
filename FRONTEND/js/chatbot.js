@@ -1032,17 +1032,25 @@ Gaya Komunikasi & Persona:
           </div>
         </div>
 
-        <!-- Quick Action Chips -->
-        <div class="cherry-quick-chips" id="cherryQuickChips">
-          <button type="button" class="cherry-chip" data-query="cara donasi">💖 Cara Donasi</button>
-          <button type="button" class="cherry-chip" data-query="informasi sekolah juara">🏫 Info Sekolah Juara</button>
-          <button type="button" class="cherry-chip" data-query="sekolah daya setara">📖 Sekolah Daya Setara</button>
-          <button type="button" class="cherry-chip" data-query="guruverse">👩‍🏫 Guruverse.ID</button>
-          <button type="button" class="cherry-chip" data-query="program layanan">📚 Program Layanan</button>
-          <button type="button" class="cherry-chip" data-query="artikel dan kabar terbaru">📰 Artikel & Kabar</button>
-          <button type="button" class="cherry-chip" data-query="cara jadi mitra csr">🤝 Jadi Mitra</button>
-          <button type="button" class="cherry-chip" data-query="cara jadi relawan">🙋‍♀️ Jadi Relawan</button>
-          <button type="button" class="cherry-chip" data-query="lokasi kantor dan kontak wa">📍 Alamat & Kontak</button>
+        <!-- Quick Action Chips Slider -->
+        <div class="cherry-quick-chips-wrapper" id="cherryChipsWrapper">
+          <button type="button" class="cherry-chips-nav prev" id="cherryChipsPrev" aria-label="Slide ke kiri" title="Geser ke kiri">
+            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="cherry-quick-chips" id="cherryQuickChips" role="region" aria-label="Menu Cepat Rekomendasi">
+            <button type="button" class="cherry-chip" data-query="cara donasi">💖 Cara Donasi</button>
+            <button type="button" class="cherry-chip" data-query="informasi sekolah juara">🏫 Info Sekolah Juara</button>
+            <button type="button" class="cherry-chip" data-query="sekolah daya setara">📖 Sekolah Daya Setara</button>
+            <button type="button" class="cherry-chip" data-query="guruverse">👩‍🏫 Guruverse.ID</button>
+            <button type="button" class="cherry-chip" data-query="program layanan">📚 Program Layanan</button>
+            <button type="button" class="cherry-chip" data-query="artikel dan kabar terbaru">📰 Artikel & Kabar</button>
+            <button type="button" class="cherry-chip" data-query="cara jadi mitra csr">🤝 Jadi Mitra</button>
+            <button type="button" class="cherry-chip" data-query="cara jadi relawan">🙋‍♀️ Jadi Relawan</button>
+            <button type="button" class="cherry-chip" data-query="lokasi kantor dan kontak wa">📍 Alamat & Kontak</button>
+          </div>
+          <button type="button" class="cherry-chips-nav next" id="cherryChipsNext" aria-label="Slide ke kanan" title="Geser ke kanan">
+            <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
         </div>
 
         <!-- Input Footer Form -->
@@ -1122,9 +1130,80 @@ Gaya Komunikasi & Persona:
       });
     });
 
-    // Handle Quick Action Chips
+    // Handle Quick Action Chips Slider Control
+    const chipsWrapper = document.getElementById('cherryChipsWrapper');
+    const chipsPrevBtn = document.getElementById('cherryChipsPrev');
+    const chipsNextBtn = document.getElementById('cherryChipsNext');
+
     if (quickChips) {
+      let isDragging = false;
+      let startX = 0;
+      let scrollLeftPos = 0;
+      let hasDragged = false;
+
+      const updateChipsNavState = () => {
+        if (!chipsPrevBtn || !chipsNextBtn) return;
+        const sl = Math.ceil(quickChips.scrollLeft);
+        const maxScroll = quickChips.scrollWidth - quickChips.clientWidth;
+        chipsPrevBtn.disabled = sl <= 2;
+        chipsNextBtn.disabled = sl >= maxScroll - 2;
+      };
+
+      if (chipsPrevBtn && chipsNextBtn) {
+        chipsPrevBtn.addEventListener('click', () => {
+          quickChips.scrollBy({ left: -160, behavior: 'smooth' });
+        });
+
+        chipsNextBtn.addEventListener('click', () => {
+          quickChips.scrollBy({ left: 160, behavior: 'smooth' });
+        });
+      }
+
+      quickChips.addEventListener('scroll', updateChipsNavState, { passive: true });
+
+      // Convert vertical mouse wheel into horizontal slide
+      quickChips.addEventListener('wheel', (e) => {
+        if (e.deltaY !== 0) {
+          e.preventDefault();
+          quickChips.scrollLeft += e.deltaY;
+          updateChipsNavState();
+        }
+      }, { passive: false });
+
+      // Drag to scroll for mouse users
+      quickChips.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        isDragging = true;
+        hasDragged = false;
+        quickChips.classList.add('is-dragging');
+        startX = e.pageX - quickChips.offsetLeft;
+        scrollLeftPos = quickChips.scrollLeft;
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        quickChips.classList.remove('is-dragging');
+      });
+
+      quickChips.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - quickChips.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        if (Math.abs(walk) > 4) {
+          hasDragged = true;
+        }
+        quickChips.scrollLeft = scrollLeftPos - walk;
+        updateChipsNavState();
+      });
+
+      // Handle Quick Action Chip Click
       quickChips.addEventListener('click', (e) => {
+        if (hasDragged) {
+          hasDragged = false;
+          return;
+        }
         const chip = e.target.closest('.cherry-chip');
         if (!chip) return;
         const query = chip.dataset.query;
@@ -1132,6 +1211,9 @@ Gaya Komunikasi & Persona:
           sendUserMessage(query);
         }
       });
+
+      setTimeout(updateChipsNavState, 150);
+      window.addEventListener('resize', updateChipsNavState);
     }
 
     // Handle Form Submit

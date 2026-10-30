@@ -663,11 +663,47 @@ Gaya Komunikasi:
     });
 
     // Auto-scroll to bottom
-    function scrollToBottom() {
+    function scrollToBottom(smooth = false) {
       setTimeout(() => {
-        chatBody.scrollTop = chatBody.scrollHeight;
+        if (!chatBody) return;
+        if (smooth) {
+          chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: 'smooth' });
+        } else {
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }
       }, 50);
     }
+
+    // Isolate scrolling to Chat Window (prevent background webpage from scrolling)
+    chatWindow.addEventListener('wheel', (e) => {
+      if (!chatBody) return;
+      chatBody.scrollTop += e.deltaY;
+      e.stopPropagation();
+      e.preventDefault();
+    }, { passive: false });
+
+    // Touch events for mobile to prevent background page scroll chaining
+    let touchStartY = 0;
+    chatWindow.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    chatWindow.addEventListener('touchmove', (e) => {
+      if (!chatBody) return;
+      const touchY = e.touches[0].clientY;
+      const touchDiff = touchStartY - touchY;
+      if (!e.target.closest('#cherryBody')) {
+        e.preventDefault();
+        chatBody.scrollTop += touchDiff;
+        touchStartY = touchY;
+      } else {
+        const atTop = chatBody.scrollTop <= 0 && touchDiff < 0;
+        const atBottom = (chatBody.scrollTop + chatBody.clientHeight >= chatBody.scrollHeight - 1) && touchDiff > 0;
+        if (atTop || atBottom) {
+          e.preventDefault();
+        }
+      }
+    }, { passive: false });
 
     // Append Message to UI
     function appendMessage(sender, text, isMarkdown = true) {

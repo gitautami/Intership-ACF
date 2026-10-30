@@ -478,7 +478,8 @@
 }
 
 /* Welcome List Styling */
-.cherry-welcome-list {
+.cherry-welcome-list,
+.cherry-list {
   margin: 10px 0 0 0;
   padding: 0;
   list-style: none;

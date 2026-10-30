@@ -59,20 +59,23 @@
 Warna identitasmu dan ACF adalah Ungu (#7D2280) dan Kuning Emas (#F5A623).
 
 Tentang ACF Eduhub:
-- Yayasan sosial pendidikan yang sudah 10+ tahun berdedikasi memutus rantai kemiskinan di Indonesia melalui pendidikan gratis & bermutu bagi dhuafa.
-- Mengelola 17 Unit Pendidikan Aktif: 10 Sekolah Juara (HANYA jenjang Sekolah Dasar / SD Juara; Sekolah Juara TIDAK GRATIS / memiliki biaya pendidikan) dan 7 PKBM Sekolah Daya Setara (pendidikan kesetaraan Paket A, B, C dan vokasi mandiri).
+- Yayasan sosial pendidikan yang sudah 10+ tahun berdedikasi memutus rantai kemiskinan di Indonesia melalui pendidikan berkualitas bagi dhuafa.
+- Mengelola 17 Unit Pendidikan Aktif: 10 Sekolah Juara (HANYA jenjang Sekolah Dasar / SD Juara; Sekolah Juara TIDAK GRATIS / memiliki biaya pendidikan) dan 7 PKBM Sekolah Daya Setara (pendidikan kesetaraan HANYA Paket B setara SMP dan Paket C setara SMA, serta vokasi mandiri).
 - PENTING:
   1. Sekolah Juara HANYA ada jenjang Sekolah Dasar (SD Juara) saja, tidak ada jenjang SMP maupun SMA/SMK.
-  2. Sekolah Juara TIDAK GRATIS. Jika ditanya biaya atau apakah gratis, tegaskan bahwa Sekolah Juara tidak gratis dan memiliki biaya pendidikan, serta sarankan konfirmasi rincian biaya ke admin WhatsApp +62 851-7979-7661.
-  3. Jangan menampilkan teks '*(Catatan: ...)*' pada akhir jawaban.
+  2. Sekolah Juara (SD) dan PKBM Sekolah Daya Setara TIDAK GRATIS (memiliki biaya pendidikan). Jika ditanya biaya atau apakah gratis, tegaskan bahwa Sekolah Juara dan Sekolah Daya Setara tidak gratis dan memiliki biaya pendidikan, serta sarankan konfirmasi rincian biaya ke admin WhatsApp +62 851-7979-7661.
+  3. Sekolah Daya Setara HANYA ada jenjang Paket B (setara SMP) dan Paket C (setara SMA) serta pelatihan vokasi mandiri.
+  4. Jangan menampilkan teks '*(Catatan: ...)*' pada akhir jawaban.
 - Mengelola Guruverse.ID (pelatihan 2.000+ guru di pelosok Indonesia).
-- 4 Pilar Program: Keberlanjutan Unit Pendidikan, Pemberdayaan Berbasis Sekolah, Kemanusiaan Internasional, dan Bantuan Langsung Berkelanjutan.
+- Program Layanan: Memiliki inisiatif program layanan pendidikan komprehensif (saat ini 7 program terbit yang dikelompokkan ke dalam kategori keberlanjutan unit pendidikan, tanggap bencana & pemulihan, kesejahteraan ekosistem sekolah, kemanusiaan internasional, forum advokasi pendidikan, dan kepemimpinan manajemen sekolah).
 - Kantor Pusat: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275.
 - Kontak Telepon / WhatsApp: +62 851-7979-7661 | Email: welcome@acf.or.id.
 - Akuntabilitas: Opini audit Wajar Tanpa Pengecualian (WTP) sejak 2024.
 
 Gaya Komunikasi:
 - Berbicaralah dengan sangat ramah, hangat, komunikatif, solutif, dan NYAMBUNG dengan pertanyaan pengguna.
+- Jika pengguna hanya menyapa (seperti 'halo', 'hai', 'p', 'assalamualaikum', 'selamat pagi/siang/malam'), cukup respon singkat dan ramah: 'Halo! 👋 Senang bisa menyapa Anda. Ada yang bisa Cherry bantu hari ini? 😊' tanpa perlu menyebutkan Sekolah Juara atau daftar program.
+- Jika pengguna bertanya tentang PPDB, syarat masuk, pendaftaran, atau brosur Sekolah Juara (misalnya 'ppdb ss sekolah juara batam'), langsung berikan tautan pendaftaran online dan tautan brosur unit yang dituju (misal: Batam daftar di http://bit.ly/SPMB2728-SDJBATAM dan brosur di sekolah-juara.html?brosur=batam) tanpa menuliskan syarat berkas panjang seperti SKTM atau KK.
 - Jika pengguna bertanya 'cara donasi', jelaskan langkah-langkah praktis cara menyalurkan donasi.
 - Jika pengguna bertanya biaya sekolah atau apakah gratis, tegaskan bahwa Sekolah Juara TIDAK GRATIS dan memiliki biaya pendidikan.
 - Format teks dengan rapi dan gunakan emoji yang pas.`;
@@ -114,8 +117,246 @@ Gaya Komunikasi:
   }
 
   /**
+   * Mengambil data Program Layanan secara dinamis dari localStorage (Portal Admin)
+   * atau fallback ke daftar program terbit saat ini di website.
+   * Jika nanti di web bertambah (melalui Admin Portal), chatbot otomatis langsung membaca dan menambahkannya!
+   */
+  function getDynamicPrograms() {
+    try {
+      const stored = localStorage.getItem('acf_programs_data');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const active = parsed.filter(p => !p.status || p.status === 'Terbit');
+          if (active.length > 0) return active;
+        }
+      }
+    } catch (e) {
+      console.warn('[Cherry AI] Gagal membaca acf_programs_data:', e);
+    }
+
+    if (typeof DEFAULT_PROGRAMS !== 'undefined' && Array.isArray(DEFAULT_PROGRAMS) && DEFAULT_PROGRAMS.length > 0) {
+      return DEFAULT_PROGRAMS.filter(p => !p.status || p.status === 'Terbit');
+    }
+
+    return [
+      {
+        id: 'PRG-01',
+        title: 'Program Beasiswa & Keberlanjutan Sekolah Juara',
+        divisi: 'Sekolah Juara',
+        quote: 'Mendukung operasional dan beasiswa 10 unit Sekolah Juara agar akses pendidikan formal berkualitas tetap gratis bagi anak-anak dhuafa berprestasi.'
+      },
+      {
+        id: 'PRG-02',
+        title: 'Kesejahteraan Guru & Operasional Sekolah Daya Setara',
+        divisi: 'Sekolah Daya Setara',
+        quote: 'Mendukung kesejahteraan tutor/guru dan operasional PKBM Sekolah Daya Setara (Paket B, C, & vokasi mandiri).'
+      },
+      {
+        id: 'PRG-03',
+        title: 'Layanan Pascabencana',
+        divisi: 'Guruverse.ID & ACF Educare',
+        quote: 'Respons terintegrasi pascabencana: dukungan psikososial anak, pelatihan psikososial guru terdampak, dan bantuan pangan/sandang/papan darurat.'
+      },
+      {
+        id: 'PRG-04',
+        title: 'Kesejahteraan Ekosistem Sekolah',
+        divisi: 'ACF Educare',
+        quote: 'Dukungan berkelanjutan bagi guru honorer, penjaga sekolah, dan keluarga prasejahtera di lingkungan sekitar sekolah.'
+      },
+      {
+        id: 'PRG-05',
+        title: 'Bantuan Kemanusiaan Internasional',
+        divisi: 'ACF Educare',
+        quote: 'Penyaluran bantuan pangan dan kebutuhan dasar darurat bagi anak-anak di wilayah konflik dan krisis kemanusiaan global.'
+      },
+      {
+        id: 'PRG-06',
+        title: 'Education Outlook — Forum Tahunan Pendidikan',
+        divisi: 'Guruverse.ID',
+        quote: 'Forum hybrid tahunan yang mempertemukan praktisi, akademisi, dan pembuat kebijakan untuk mendiskusikan arah tren pendidikan nasional.'
+      },
+      {
+        id: 'PRG-07',
+        title: 'Konsultasi & Pendampingan Manajemen Sekolah',
+        divisi: 'Guruverse.ID',
+        quote: 'Layanan konsultasi manajemen sekolah, strategi SPMB/PPDB, serta studi kelayakan pendirian atau pengembangan unit pendidikan.'
+      }
+    ];
+  }
+
+  function formatDynamicProgramsReply() {
+    const progs = getDynamicPrograms();
+    const count = progs.length;
+    let reply = `📚 **Program Layanan ACF Eduhub (${count} Program)**:\n\n`;
+
+    progs.forEach((p, idx) => {
+      const num = idx + 1;
+      const title = p.title || 'Program Pendidikan';
+      const divisi = p.divisi ? ` *(Divisi: ${p.divisi})*` : '';
+      const desc = p.quote || p.categoryDesc || '';
+      reply += `${num}. 🎯 **${title}**${divisi}\n`;
+      if (desc) {
+        reply += `   ${desc}\n`;
+      }
+    });
+
+    reply += `\nSeluruh program di atas terintegrasi dalam ekosistem pendidikan ACF Eduhub. Pelajari detail lengkap atau ajukan kemitraan di menu [Program Layanan](program-layanan.html)! 😊`;
+    return reply;
+  }
+
+  let cachedLatestArticles = [];
+
+  // Sinkronisasi data Artikel & Berita langsung dari server / website secara berkala
+  async function syncLatestArticlesFromWeb() {
+    try {
+      if (window.ACF_API && window.ACF_API.articles) {
+        const fetched = await window.ACF_API.articles.getAll({ status: 'Terbit', limit: 4 });
+        if (Array.isArray(fetched) && fetched.length > 0) {
+          cachedLatestArticles = fetched;
+          return;
+        }
+      }
+      const apiEndpoint = getChatApiUrl().replace('chat.php', 'articles.php');
+      const res = await fetch(`${apiEndpoint}?status=Terbit&limit=4`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+          cachedLatestArticles = json.data;
+          return;
+        }
+      }
+    } catch (e) {
+      // offline/fallback
+    }
+
+    try {
+      const stored = localStorage.getItem('acf_articles_data');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          cachedLatestArticles = parsed.filter(a => !a.status || a.status === 'Terbit').slice(0, 4);
+        }
+      }
+    } catch (e) {}
+  }
+
+  function getDynamicArticles(limit = 4) {
+    if (Array.isArray(cachedLatestArticles) && cachedLatestArticles.length > 0) {
+      return cachedLatestArticles.slice(0, limit);
+    }
+
+    try {
+      const stored = localStorage.getItem('acf_articles_data');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const published = parsed.filter(a => !a.status || a.status === 'Terbit');
+          if (published.length > 0) return published.slice(0, limit);
+        }
+      }
+    } catch (e) {}
+
+    // Fallback artikel terbit resmi website
+    return [
+      {
+        id: 'ART-SDS07',
+        title: 'Menyalakan Kembali Api Harapan: Kisah Pejuang PKBM Ceria Taklukkan ANBK 2025',
+        categoryLabel: 'Artikel Sekolah Daya Setara',
+        date: '14 Agu 2025',
+        excerpt: 'Kisah 16 pejuang program Paket C PKBM Ceria yang membuktikan semangat belajar tanpa batas usia dalam ANBK.'
+      },
+      {
+        id: 'ART-SDS06',
+        title: 'Sebuah Langkah Kecil Hari Ini, Lompatan Besar di Masa Depan: Pelepasan Lulusan Sekolah Daya Setara 2025/2026',
+        categoryLabel: 'Artikel Sekolah Daya Setara',
+        date: '7 Agu 2026',
+        excerpt: 'Pelepasan peserta didik Paket B dan Paket C yang sukses menyelesaikan studi kesetaraan di PKBM Lembang.'
+      },
+      {
+        id: 'ART-SJ06',
+        title: 'Haflah Tahfidz Qur’an SD Persa Juara Medan: Wisuda 61 Siswa Penghafal Qur’an',
+        categoryLabel: 'Artikel Sekolah Juara',
+        date: '3 Jul 2026',
+        excerpt: 'Sebanyak 61 siswa SD Juara Medan diwisuda tahfidz dengan hafalan hingga 6 juz dalam suasana khidmat dan haru.'
+      },
+      {
+        id: 'ART-SJ03',
+        title: 'Tasyakuran Tahsin Metode Tilawati SD Juara Cilegon: Uji Publik & Wisuda Jilid 1–6',
+        categoryLabel: 'Artikel Sekolah Juara',
+        date: '18 Jun 2026',
+        excerpt: 'Uji publik bacaan Al-Qur’an bersama Kepala Cabang Tilawati Banten bagi siswa yang menyelesaikan jilid 1 hingga 6.'
+      }
+    ];
+  }
+
+  function formatDynamicArticlesReply() {
+    const list = getDynamicArticles(4);
+    let reply = "📰 **Kabar & Artikel Terbaru ACF Eduhub**:\n\n" +
+                "Berikut adalah artikel dan publikasi berita terhangat yang terbit di website:\n\n";
+
+    list.forEach((art, idx) => {
+      const num = idx + 1;
+      const title = art.title || 'Artikel Edukasi ACF';
+      const cat = art.categoryLabel || (art.category && art.category.includes('juara') ? 'Artikel Sekolah Juara' : 'Artikel Sekolah Daya Setara');
+      const date = art.date ? ` • 📅 ${art.date}` : '';
+      const link = art.id ? `kabar.html?id=${encodeURIComponent(art.id)}` : 'kabar.html';
+      const excerpt = art.excerpt ? `\n   ${art.excerpt.substring(0, 115).trim()}...` : '';
+
+      reply += `${num}. 📝 **[${title}](${link})**\n   🏷️ *${cat}*${date}${excerpt}\n\n`;
+    });
+
+    reply += "Anda dapat membaca artikel lengkapnya dengan mengklik tautan judul di atas atau mengunjungi halaman [Kabar](kabar.html)! ✨";
+    return reply;
+  }
+
+  /**
    * Conversational Brain: Sangat responsif, cerdas, dan nyambung dengan semua perkataan user
    */
+  // Data 10 Unit Sekolah Juara (SD) lengkap dengan link pendaftaran & brosur
+  const SJ_SCHOOLS = [
+    { key: 'batam', name: 'SD Juara Batam', daftar: 'http://bit.ly/SPMB2728-SDJBATAM', brosur: 'sekolah-juara.html?brosur=batam' },
+    { key: 'cilegon', name: 'SD Juara Cilegon', daftar: 'https://bit.ly/SPMB2728SDJUARACILEGON', brosur: 'sekolah-juara.html?brosur=cilegon' },
+    { key: 'jakbar', name: 'SD Juara Jakarta Barat', aliases: ['jakarta barat', 'jakbar'], daftar: 'https://forms.gle/7WoWewcTqsPCZ4Aq7', brosur: 'sekolah-juara.html?brosur=jakbar' },
+    { key: 'jaktim', name: 'SD Juara Jakarta Timur', aliases: ['jakarta timur', 'jaktim'], daftar: 'https://bit.ly/PPDBSDJuaraJakartaTimur20272028', brosur: 'sekolah-juara.html?brosur=jaktim' },
+    { key: 'jakut', name: 'SD Juara Jakarta Utara', aliases: ['jakarta utara', 'jakut'], daftar: 'https://bit.ly/SPMBINDENSDITJAKUT2728', brosur: 'sekolah-juara.html?brosur=jakut' },
+    { key: 'medan', name: 'SD Juara Persa Medan', aliases: ['medan', 'persa'], daftar: 'https://linktr.ee/sdspersa', brosur: 'sekolah-juara.html?brosur=medan' },
+    { key: 'jayapura', name: 'SD Juara AL Hikmah Jayapura', aliases: ['jayapura', 'hikmah', 'papua'], daftar: 'https://bit.ly/SPMBSDJUARAJayapura', brosur: 'sekolah-juara.html?brosur=jayapura' },
+    { key: 'semarang', name: 'SD Juara Semarang', daftar: 'https://bit.ly/ForPeminatPPDB20272028', brosur: 'sekolah-juara.html?brosur=semarang' },
+    { key: 'surabaya', name: 'SD Juara Surabaya', daftar: 'https://s.id/spmb-sdjuarasurabaya27-28', brosur: 'sekolah-juara.html?brosur=surabaya' },
+    { key: 'tangerang', name: 'SD Juara AL Hakim Tangerang', aliases: ['tangerang', 'hakim'], daftar: 'https://bit.ly/DaftarIndenAlhakim2728', brosur: 'sekolah-juara.html?brosur=tangerang' }
+  ];
+
+  function getSekolahJuaraPpdbReply(query) {
+    const q = (query || '').toLowerCase();
+    
+    // Jika menanyakan unit spesifik tertentu
+    for (const s of SJ_SCHOOLS) {
+      const matchKey = q.includes(s.key);
+      const matchAlias = s.aliases && s.aliases.some(a => q.includes(a));
+      if (matchKey || matchAlias) {
+        return `🎒 **Pendaftaran & Brosur SPMB ${s.name}**:\n\n` +
+               `Berikut adalah tautan resmi pendaftaran dan dokumen brosur untuk **${s.name}**:\n\n` +
+               `• 📝 **Link Pendaftaran**: [Daftar Online ${s.name}](${s.daftar})\n` +
+               `• 📖 **Brosur Resmi**: [Lihat & Unduh Brosur](${s.brosur})\n\n` +
+               `Anda juga dapat melihat profil lengkap unit ini di halaman [Sekolah Juara](sekolah-juara.html). Bantuan lebih lanjut hubungi WhatsApp admin di **+62 851-7979-7661**! 😊`;
+      }
+    }
+
+    // Tampilkan seluruh 10 unit dengan tautan pendaftaran & brosur
+    let reply = "🎒 **Link Pendaftaran & Brosur SPMB/PPDB Sekolah Juara (SD)**:\n\n" +
+                "Silakan klik tautan di bawah ini untuk langsung mengisi formulir pendaftaran atau mengunduh brosur resmi unit yang dituju:\n\n";
+
+    SJ_SCHOOLS.forEach((s, idx) => {
+      reply += `${idx + 1}. **${s.name}**\n` +
+               `   • 📝 [Formulir Pendaftaran](${s.daftar})\n` +
+               `   • 📖 [Lihat & Unduh Brosur](${s.brosur})\n\n`;
+    });
+
+    reply += "Detail profil seluruh unit dapat Anda lihat di menu [Sekolah Juara](sekolah-juara.html)! ✨";
+    return reply;
+  }
+
   function getLocalKnowledgeReply(query) {
     const raw = (query || '').trim();
     const q = raw.toLowerCase();
@@ -151,7 +392,7 @@ Gaya Komunikasi:
     if (q.includes('aman') || q.includes('terpercaya') || q.includes('audit') || q.includes('wtp') || q.includes('laporan keuangan') || q.includes('transparan') || q.includes('bukti donasi')) {
       return "🛡️ **Donasi Anda 100% Aman & Terpercaya**:\n\n" +
              "ACF Eduhub adalah yayasan resmi berbadan hukum yang telah berkiprah 10+ tahun. Laporan keuangan yayasan diaudit secara berkala oleh Kantor Akuntan Publik independen dan berhasil meraih predikat tertinggi **WTP (Wajar Tanpa Pengecualian)** sejak 2024.\n\n" +
-             "Setiap dana disalurkan langsung untuk operasional sekolah gratis, beasiswa, dan nutrisi siswa prasejahtera.";
+             "Setiap dana disalurkan langsung untuk operasional unit pendidikan, subsidi beasiswa, dan nutrisi siswa prasejahtera.";
     }
 
     // 4. DONASI UMUM / INFAQ / SEDEKAH
@@ -169,11 +410,16 @@ Gaya Komunikasi:
       q.match(/^(bisa\s+(bantu|tolong)|tolong\s+bantu)/i) ||
       q === 'tanya' || q === 'nanya'
     ) {
-      return "Boleh banget! Mau tanya tentang apa nih? 😊\n\nSilakan langsung ketik pertanyaannya, Cherry siap bantu jelaskan seputar:\n" +
-             "• 🏫 Sekolah Juara (biaya gratis 100%, syarat daftar, kurikulum)\n" +
-             "• 💖 Cara Donasi & metode transfer\n" +
-             "• 🤝 Cara jadi Mitra CSR atau Relawan\n" +
-             "• 📍 Alamat kantor pusat Bandung & kontak WhatsApp admin";
+      return "Boleh banget! Mau tanya tentang apa nih? 😊\n\nSilakan langsung ketik pertanyaannya, Cherry siap bantu jelaskan secara lengkap seputar:\n" +
+             "• 💖 **Cara & Metode Donasi**: Donasi beasiswa, nutrisi, rekening transfer, QRIS & audit WTP\n" +
+             "• 🏫 **Sekolah Juara (SD)**: 10 unit SD formal, Kurikulum Langit & syarat pendaftaran PPDB\n" +
+             "• 📖 **Sekolah Daya Setara (PKBM)**: Pendidikan kesetaraan Paket B & C serta vokasi mandiri\n" +
+             "• 👩‍🏫 **Guruverse.ID**: Platform peningkatan kapasitas dan pelatihan guru Indonesia\n" +
+             "• 📚 **Program Layanan**: Keberlanjutan pendidikan, pemberdayaan & bantuan langsung\n" +
+             "• 🤝 **Kemitraan CSR & Relawan**: Kolaborasi mitra program CSR & relawan Sahabat Eduhub\n" +
+             "• 📰 **Artikel & Kabar**: Update berita kegiatan & publikasi edukasi terbaru\n" +
+             "• 🏢 **Profil Yayasan**: Visi misi, cerita perjalanan 10+ tahun & kemitraan\n" +
+             "• 📍 **Alamat & Kontak Admin**: Alamat kantor pusat Bandung & nomor WhatsApp resmi";
     }
 
     // 6. SAPAAN / GREETINGS (halo, hallo, hai, hei, p, assalamualaikum, dll)
@@ -181,34 +427,25 @@ Gaya Komunikasi:
       q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|p|tes|test|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i) ||
       ['halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'p'].includes(q)
     ) {
-      return "Halo! 👋 Senang bisa menyapa Anda. Saya **Cherry**, asisten virtual resmi ACF Eduhub.\n\nAda yang bisa Cherry bantu seputar Sekolah Juara (SD), program pendidikan, cara donasi, atau informasi lainnya hari ini? 😊";
+      return "Halo! 👋 Senang bisa menyapa Anda. Ada yang bisa Cherry bantu hari ini? 😊";
     }
 
-    // 7. BIAYA SEKOLAH / APAKAH GRATIS?
+    // 7. BIAYA SEKOLAH JUARA & SEKOLAH DAYA SETARA / APAKAH GRATIS?
     if (q.includes('biaya') || q.includes('bayar') || q.includes('gratis') || q.includes('spp') || q.includes('uang sekolah') || q.includes('uang gedung') || q.includes('tarif')) {
-      return "🏫 **Informasi Biaya Pendidikan di Sekolah Juara**:\n\n" +
-             "Sekolah Juara **tidak gratis**. Sekolah Juara merupakan jaringan sekolah formal jenjang SD (Sekolah Dasar) berkualitas binaan ACF Eduhub dengan biaya pendidikan terjangkau.\n\n" +
-             "Untuk rincian lengkap mengenai biaya formulir pendaftaran, uang pangkal, SPP bulanan, maupun program beasiswa khusus, silakan hubungi narahubung kami di WhatsApp **+62 851-7979-7661**.";
+      return "🏫 **Informasi Biaya Pendidikan (Sekolah Juara & Sekolah Daya Setara)**:\n\n" +
+             "Sekolah Juara (SD) maupun PKBM Sekolah Daya Setara **TIDAK GRATIS**. Keduanya merupakan unit pendidikan binaan ACF Eduhub dengan biaya pendidikan terjangkau untuk menunjang mutu belajar dan fasilitas siswa.\n\n" +
+             "Untuk rincian lengkap mengenai biaya formulir pendaftaran, uang pangkal, SPP bulanan, maupun program beasiswa, silakan hubungi narahubung kami di WhatsApp **+62 851-7979-7661**.";
     }
 
-    // 8. CARA DAFTAR SEKOLAH JUARA / SYARAT MASUK / PPDB
+    // 8. INFO PPDB, DAFTAR, DAN BROSUR SEKOLAH JUARA
     if (
-      (q.includes('cara') || q.includes('gimana') || q.includes('syarat') || q.includes('langkah') || q.includes('alur') || q.includes('daftar') || q.includes('masuk') || q.includes('ppdb')) &&
-      (q.includes('sekolah') || q.includes('juara') || q.includes('siswa') || q.includes('anak') || q.includes('sd') || q.includes('smp') || q.includes('smk'))
+      q.includes('ppdb') ||
+      q.includes('spmb') ||
+      q.includes('brosur') ||
+      ((q.includes('cara') || q.includes('gimana') || q.includes('syarat') || q.includes('langkah') || q.includes('alur') || q.includes('daftar') || q.includes('masuk')) &&
+       (q.includes('sekolah') || q.includes('juara') || q.includes('siswa') || q.includes('anak') || q.includes('sd')))
     ) {
-      return "📝 **Cara & Syarat Pendaftaran Siswa Sekolah Juara (SD)**:\n\n" +
-             "**1. Kriteria Calon Siswa**:\n" +
-             "• Anak yatim, piatu, atau berasal dari keluarga dhuafa prasejahtera.\n" +
-             "• Memiliki semangat tinggi untuk belajar.\n\n" +
-             "**2. Dokumen Persyaratan**:\n" +
-             "• Surat Keterangan Tidak Mampu (SKTM) dari Kelurahan/Desa.\n" +
-             "• Fotokopi Kartu Keluarga (KK) dan Akta Kelahiran anak.\n" +
-             "• Rapor/ijazah jenjang sebelumnya.\n\n" +
-             "**3. Alur Pendaftaran**:\n" +
-             "• Isi formulir pendaftaran di unit Sekolah Juara terdekat.\n" +
-             "• Verifikasi berkas & survei kunjungan rumah (*home visit*).\n" +
-             "• Pengumuman kelulusan beasiswa pendidikan penuh.\n\n" +
-             "Untuk info jadwal PPDB terkini di cabang kota Anda, silakan hubungi narahubung kami di WhatsApp **+62 851-7979-7661** ya!";
+      return getSekolahJuaraPpdbReply(raw);
     }
 
     // 9. CARA JADI MITRA PROGRAM / CSR
@@ -220,14 +457,15 @@ Gaya Komunikasi:
              "1. Masuk ke halaman formulir [Jadi Mitra Program](form-mitra.html).\n" +
              "2. Isi formulir dengan profil perusahaan/lembaga dan program kemitraan yang diminati (Beasiswa Binaan Kelas, Pembangunan Fasilitas, Green School, dll).\n" +
              "3. Kirim formulir pendaftaran.\n" +
-             "4. Tim Partnership ACF Eduhub akan menghubungi PIC Anda dalam 1x24 jam untuk diskusi proposal dan sinergi bersama.\n\n" +
+             "4. Tim Partnership ACF Eduhub akan menghubungi PIC Anda untuk diskusi proposal dan sinergi bersama.\n\n" +
              "Ingin berdiskusi langsung? Hubungi email kemitraan di **welcome@acf.or.id** atau WA di **+62 851-7979-7661**.";
     }
 
     // 10. CARA JADI RELAWAN (SAHABAT EDUHUB)
     if (
-      (q.includes('cara') || q.includes('gimana') || q.includes('syarat') || q.includes('langkah') || q.includes('mau') || q.includes('alur') || q.includes('daftar') || q.includes('gabung')) &&
-      (q.includes('relawan') || q.includes('volunteer') || q.includes('sahabat') || q.includes('mengajar'))
+      q.includes('relawan') ||
+      q.includes('volunteer') ||
+      (q.includes('sahabat') && (q.includes('eduhub') || q.includes('daftar') || q.includes('gabung')))
     ) {
       return "🙋‍♀️ **Cara Mendaftar Jadi Relawan (Sahabat Eduhub)**:\n\n" +
              "1. Buka formulir pendaftaran di halaman [Jadi Relawan](form-relawan.html).\n" +
@@ -241,22 +479,23 @@ Gaya Komunikasi:
              "Mari berbagi inspirasi dan senyuman untuk anak-anak Indonesia! ✨";
     }
 
-    // 10.5 JUMLAH & SEBARAN SEKOLAH JUARA (10 SD JUARA)
+    // 10.5 DAFTAR LOKASI, DAERAH & SEBARAN 10 UNIT SEKOLAH JUARA (SD JUARA)
     if (
-      (q.includes('berapa') || q.includes('da berapa') || q.includes('jumlah') || q.includes('total') || q.includes('sebaran') || q.includes('cabang')) &&
-      (q.includes('sekolah') || q.includes('juara') || q.includes('sd'))
+      (q.includes('daerah') || q.includes('dimana') || q.includes('di mana') || q.includes('mana saja') || q.includes('mana aja') || q.includes('lokasi') || q.includes('kota') || q.includes('wilayah') || q.includes('tempat') || q.includes('sebaran') || q.includes('persebaran') || q.includes('cabang') || q.includes('tersebar') || q.includes('alamat') || q.includes('daftar') || q.includes('apa saja') || q.includes('apa aja') || q.includes('berapa') || q.includes('da berapa') || q.includes('jumlah') || q.includes('total')) &&
+      (q.includes('sekolah') || q.includes('juara') || q.includes('sd') || q.includes('unit'))
     ) {
-      return "🏫 **Sekolah Juara memiliki total 10 unit**, dan seluruhnya adalah jenjang **Sekolah Dasar (SD Juara)** binaan ACF Eduhub:\n\n" +
-             "1. SD Juara Batam\n" +
-             "2. SD Juara Cilegon\n" +
-             "3. SD Juara Jakarta Barat\n" +
-             "4. SD Juara Jakarta Timur\n" +
-             "5. SD Juara Jakarta Utara\n" +
-             "6. SD Juara Persa Medan\n" +
-             "7. SD Juara AL Hikmah Jayapura\n" +
-             "8. SD Juara Semarang\n" +
-             "9. SD Juara Surabaya\n" +
-             "10. SD Juara AL Hakim Tangerang";
+      return "🏫 **Daftar & Sebaran 10 Unit Sekolah Juara (SD Juara)** binaan ACF Eduhub di Indonesia:\n\n" +
+             "1. 📍 **SD Juara Batam** (Kepulauan Riau)\n" +
+             "2. 📍 **SD Juara Cilegon** (Banten)\n" +
+             "3. 📍 **SD Juara Jakarta Barat** (DKI Jakarta)\n" +
+             "4. 📍 **SD Juara Jakarta Timur** (DKI Jakarta)\n" +
+             "5. 📍 **SD Juara Jakarta Utara** (DKI Jakarta)\n" +
+             "6. 📍 **SD Juara Persa Medan** (Sumatera Utara)\n" +
+             "7. 📍 **SD Juara AL Hikmah Jayapura** (Papua)\n" +
+             "8. 📍 **SD Juara Semarang** (Jawa Tengah)\n" +
+             "9. 📍 **SD Juara Surabaya** (Jawa Timur)\n" +
+             "10. 📍 **SD Juara AL Hakim Tangerang** (Banten)\n\n" +
+             "Seluruh 10 unit di atas adalah jenjang **Sekolah Dasar (SD)** formal berkualitas. Untuk kontak alamat cabang terdekat atau info kunjungan, silakan hubungi narahubung kami di WhatsApp **+62 851-7979-7661** 😊";
     }
 
     // 10.6 JENJANG / TINGKAT / SMP / SMK / HANYA SD
@@ -269,16 +508,44 @@ Gaya Komunikasi:
              "Di Sekolah Juara **tidak ada jenjang SMP atau SMK**. Bagi yang memerlukan pendidikan kesetaraan lanjutan (setara SMP / Paket B dan setara SMA / Paket C serta vokasi), ACF Eduhub memfasilitasinya melalui unit **PKBM Sekolah Daya Setara**.";
     }
 
-    // 11. APA ITU SEKOLAH JUARA / PENJELASAN SEKOLAH JUARA
-    if (q.includes('sekolah juara') || (q.includes('juara') && (q.includes('apa') || q.includes('tentang') || q.includes('itu') || q.includes('maksud')))) {
+    // 10.7 KURIKULUM / KURIKULUM LANGIT / KEGIATAN BELAJAR
+    if (q.includes('kurikulum') || q.includes('kurikulum langit') || q.includes('belajar apa') || q.includes('pembelajaran') || q.includes('pelajaran') || q.includes('tahfidz') || q.includes('akhlak')) {
+      return "📖 **Kurikulum Pembelajaran di Sekolah Juara**:\n\n" +
+             "Sekolah Juara memadukan **Kurikulum Nasional (Kemendikbudristek)** dengan ciri khas keunggulan ACF Eduhub yaitu **Kurikulum Langit**:\n\n" +
+             "• 🌟 **Kurikulum Langit**: Pembinaan tauhid, akhlak mulia, adab islami, serta tahsin & tahfidz Al-Qur'an harian.\n" +
+             "• 💡 **Leadership & Entrepreneurship**: Melatih kepemimpinan, kemandirian, dan pola pikir wirausaha sejak dini.\n" +
+             "• 💻 **Literasi Digital**: Pengenalan teknologi modern dan pembelajaran berbasis digital yang menyenangkan.\n\n" +
+             "Tujuannya adalah melahirkan generasi berprestasi (Juara) yang berkepribadian tangguh dan berakhlak mulia.";
+    }
+
+    // 10.8 FASILITAS SEKOLAH JUARA
+    if (q.includes('fasilitas') || q.includes('sarana') || q.includes('gedung') || q.includes('prasarana')) {
+      return "🏫 **Fasilitas di Unit Sekolah Juara**:\n\n" +
+             "Setiap unit Sekolah Juara dilengkapi dengan fasilitas pendukung belajar ramah anak:\n" +
+             "• Ruang kelas nyaman, bersih, dan berpendingin/ventilasi sehat\n" +
+             "• Pojok baca & perpustakaan literasi anak\n" +
+             "• Laboratorium komputer & multimedia digital\n" +
+             "• Sarana olahraga dan area bermain siswa\n" +
+             "• Ruang ibadah / musholla bersih\n" +
+             "• Program nutrisi & sarapan sehat siswa";
+    }
+
+    // 11. APA ITU SEKOLAH JUARA / PENJELASAN SEKOLAH JUARA (HANYA JIKA BERTANYA DEFINISI)
+    if (
+      q === 'sekolah juara' || q === 'sd juara' ||
+      ((q.includes('sekolah juara') || q.includes('sd juara') || q.includes('juara')) &&
+       (q.includes('apa') || q.includes('tentang') || q.includes('maksud') || q.includes('profil') || q.includes('penjelasan') || q.includes('definisi') || q.includes('arti') || q.includes('info') || q.includes('informasi')))
+    ) {
       return "🏆 **Sekolah Juara** adalah jaringan 10 unit **Sekolah Dasar (SD Juara)** formal berkualitas binaan ACF Eduhub yang mendidik generasi penerus bangsa.\n\n" +
-             "Sekolah Juara memadukan kurikulum nasional dengan pembinaan akhlak mulia melalui Kurikulum Langit, kepemimpinan (*leadership*), kewirausahaan, serta kecintaan terhadap Al-Qur'an.";
+             "Sekolah Juara memadukan kurikulum nasional dengan pembinaan akhlak mulia melalui Kurikulum Langit, kepemimpinan (*leadership*), kewirausahaan, serta kecintaan terhadap Al-Qur'an.\n\n" +
+             "• Ingin tahu daftar 10 lokasinya? Ketik **'lokasi sekolah juara'**.\n" +
+             "• Ingin tahu info biaya & pendaftaran? Ketik **'biaya sekolah juara'** atau **'syarat daftar'**.";
     }
 
     // 12. APA ITU SEKOLAH DAYA SETARA / PKBM / KEJAR PAKET
-    if (q.includes('daya setara') || q.includes('pkbm') || q.includes('kejar paket') || q.includes('paket c') || q.includes('paket b') || q.includes('paket a')) {
-      return "📖 **Sekolah Daya Setara** adalah 7 unit PKBM (Pusat Kegiatan Belajar Masyarakat) pendidikan non-formal kesetaraan (Paket A setara SD, Paket B setara SMP, Paket C setara SMA) yang diselenggarakan gratis/terjangkau.\n\n" +
-             "Program ini membantu anak-anak putus sekolah dan masyarakat prasejahtera untuk mendapatkan ijazah resmi negara serta pelatihan keterampilan vokasi kerja mandiri.";
+    if (q.includes('daya setara') || q.includes('pkbm') || q.includes('kejar paket') || q.includes('paket c') || q.includes('paket b')) {
+      return "📖 **Sekolah Daya Setara** adalah 7 unit PKBM (Pusat Kegiatan Belajar Masyarakat) pendidikan non-formal kesetaraan yang berfokus pada **Paket B (setara SMP)** dan **Paket C (setara SMA)** serta pelatihan vokasi mandiri binaan ACF Eduhub dengan biaya terjangkau.\n\n" +
+             "Sekolah Daya Setara khusus melayani jenjang Paket B dan Paket C. Program ini membantu anak-anak putus sekolah dan masyarakat prasejahtera mendapatkan ijazah resmi negara serta keahlian kerja mandiri.";
     }
 
     // 13. APA ITU GURUVERSE
@@ -286,19 +553,14 @@ Gaya Komunikasi:
       return "👩‍🏫 **Guruverse.ID** adalah ekosistem peningkatan kapasitas guru yang diinisiasi oleh ACF Eduhub. Hingga kini telah melatih lebih dari **2.000+ guru** di seluruh pelosok Indonesia mengenai metode belajar aktif, pedagogik kreatif, dan pemanfaatan teknologi kelas.";
     }
 
-    // 14. 4 PILAR PROGRAM LAYANAN
+    // 14. PROGRAM LAYANAN ACF EDUHUB (DINAMIS SESUAI WEBSITE & ADMIN PORTAL)
     if (q.includes('program') || q.includes('layanan') || q.includes('pilar') || q.includes('kegiatan')) {
-      return "📚 **4 Pilar Program Layanan ACF Eduhub**:\n\n" +
-             "1. 🏫 **Keberlanjutan Unit Pendidikan**: Pembiayaan operasional & beasiswa penuh bagi 10 Sekolah Juara dan 7 PKBM Daya Setara.\n" +
-             "2. 🥗 **Pemberdayaan Berbasis Sekolah**: Inovasi gizi kantin sehat, green school, dan literasi digital siswa.\n" +
-             "3. 🕊️ **Kemanusiaan Internasional**: Penyaluran bantuan pangan dan pendidikan darurat bagi anak-anak di daerah konflik kemanusiaan.\n" +
-             "4. 🎒 **Bantuan Langsung Berkelanjutan**: Penyaluran rutin seragam, buku paket, sepatu, dan gizi sarapan.\n\n" +
-             "Pelajari detailnya di menu [Program Layanan](program-layanan.html)!";
+      return formatDynamicProgramsReply();
     }
 
     // 15. LOKASI CABANG KOTA TERTENTU
     if (q.includes('jogja') || q.includes('yogyakarta')) {
-      return "🏫 **Sekolah Juara Yogyakarta** adalah salah satu unit aktif kami di wilayah D.I. Yogyakarta! Unit ini melayani pendidikan berkualitas bebas biaya untuk anak-anak dhuafa. Ingin informasi pendaftaran atau kunjungan di unit Yogyakarta?";
+      return "🏫 **Sekolah Juara Yogyakarta** adalah salah satu unit aktif kami di wilayah D.I. Yogyakarta! Unit ini melayani pendidikan berkualitas dengan biaya terjangkau binaan ACF Eduhub. Ingin informasi pendaftaran atau kunjungan di unit Yogyakarta?";
     }
     if (q.includes('bandung') || q.includes('cimahi')) {
       return "🏫 Di wilayah **Bandung dan Cimahi** terdapat kantor pusat yayasan kami serta beberapa unit SD Juara aktif. Kantor pusat beralamat di Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung.";
@@ -313,8 +575,7 @@ Gaya Komunikasi:
     // 16. LOKASI & ALAMAT KANTOR
     if (q.includes('alamat') || q.includes('lokasi') || q.includes('kantor') || q.includes('dimana') || q.includes('di mana')) {
       return "📍 **Alamat & Lokasi Kantor ACF Eduhub**:\n\n" +
-             "🏢 **Kantor Pusat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n" +
-             "🏫 **Jangkauan**: 17 Unit Pendidikan tersebar di 12 Kota/Kabupaten di Indonesia (Bandung, Cimahi, Jakarta, Tangerang, Yogya, Pekanbaru, Medan, Surabaya, dll).\n\n" +
+             "🏢 **Kantor Pusat**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275\n\n" +
              "📞 **WhatsApp / Telepon**: +62 851-7979-7661\n" +
              "✉️ **Email**: welcome@acf.or.id";
     }
@@ -340,8 +601,20 @@ Gaya Komunikasi:
              "• **Opini WTP** Akuntabilitas Audit Keuangan sejak 2024.";
     }
 
-    // 19. TANYA KABAR (Apa kabar, sehat, dll)
-    if (q.includes('kabar') || q.includes('sehat') || q.includes('lagi apa')) {
+    // 19. ARTIKEL & KABAR TERKINI (DINAMIS DARI WEBSITE & DATABASE)
+    if (
+      q.includes('artikel') ||
+      q.includes('berita') ||
+      q.includes('liputan') ||
+      q.includes('publikasi') ||
+      q === 'kabar' ||
+      (q.includes('kabar') && !q.includes('apa kabar') && !q.includes('gimana kabar') && !q.includes('kabar baik') && !q.includes('kabar mu') && !q.includes('kabarmu'))
+    ) {
+      return formatDynamicArticlesReply();
+    }
+
+    // 19.1 TANYA KABAR (Apa kabar, sehat, dll)
+    if (q.includes('apa kabar') || q.includes('gimana kabar') || q.includes('sehat') || q.includes('lagi apa')) {
       return "Kabar saya luar biasa baik dan selalu bersemangat! ✨ Terima kasih sudah menanyakan. Semoga hari Anda juga menyenangkan dan penuh berkah! Ada informasi tentang ACF Eduhub yang bisa Cherry bantu carikan?";
     }
 
@@ -370,7 +643,7 @@ Gaya Komunikasi:
       return "📊 **Capaian Dampak Nyata ACF Eduhub**:\n\n" +
              "• **17 Unit Pendidikan Aktif** (10 Sekolah Juara + 7 PKBM Daya Setara)\n" +
              "• **12 Kota & Kabupaten** wilayah jangkauan\n" +
-             "• **1.812+ Siswa Terdampak** langsung beasiswa pendidikan gratis\n" +
+             "• **1.812+ Siswa Terdampak** langsung subsidi beasiswa pendidikan\n" +
              "• **2.000+ Guru Terlatih** lewat Guruverse.ID\n" +
              "• **Opini Audit WTP** (Wajar Tanpa Pengecualian) sejak 2024.";
     }
@@ -378,20 +651,28 @@ Gaya Komunikasi:
     // 25. KAMU BISA APA / BANTU APA / MENU
     if (q.includes('bisa apa') || q.includes('fitur') || q.includes('bantu apa') || q.includes('menu') || q.includes('panduan')) {
       return "Cherry bisa membantu Anda menemukan informasi lengkap di ACF Eduhub seputar:\n\n" +
-             "1. 💖 **Donasi**: Cara donasi, metode transfer bank/QRIS, dan laporan audit.\n" +
-             "2. 🏫 **Sekolah Juara**: Pendidikan 100% gratis, syarat pendaftaran, dan kurikulum.\n" +
-             "3. 📖 **Sekolah Daya Setara**: Pendidikan kesetaraan Paket A, B, C dan vokasi.\n" +
-             "4. 🤝 **Kemitraan & Relawan**: Cara berkolaborasi program CSR atau gabung relawan.\n" +
-             "5. 📍 **Lokasi & Kontak**: Alamat kantor Bandung dan nomor WhatsApp admin.\n\n" +
+             "1. 💖 **Cara & Metode Donasi**: Alur donasi, rekening transfer/QRIS, dan transparansi laporan audit WTP.\n" +
+             "2. 🏫 **Sekolah Juara (SD)**: Pendidikan formal SD, Kurikulum Langit, syarat PPDB, dan 10 lokasi unit.\n" +
+             "3. 📖 **Sekolah Daya Setara (PKBM)**: Pendidikan kesetaraan Paket B (SMP), Paket C (SMA) & pelatihan vokasi mandiri.\n" +
+             "4. 👩‍🏫 **Guruverse.ID**: Platform digital pelatihan guru dan pengembangan kompetensi pedagogik.\n" +
+             "5. 📚 **Program Layanan**: Keberlanjutan unit, pemberdayaan sekolah, kemanusiaan, dan bantuan langsung.\n" +
+             "6. 🤝 **Kemitraan CSR & Relawan**: Menjadi mitra program perusahaan atau relawan Sahabat Eduhub.\n" +
+             "7. 📰 **Artikel & Kabar**: Liputan inisiatif, dokumentasi kegiatan, dan publikasi edukasi terkini.\n" +
+             "8. 🏢 **Profil Yayasan**: Sejarah 10+ tahun, visi misi, legalitas WTP, dan kemitraan.\n" +
+             "9. 📍 **Lokasi & Kontak**: Alamat kantor pusat Bandung dan nomor WhatsApp resmi admin.\n\n" +
              "Silakan ketik pertanyaan Anda!";
     }
 
     // 26. DEFAULT NATURAL RESPONSE (NYAMBUNG DAN FLEKSIBEL)
     return `Terima kasih atas pertanyaannya! 😊 Mengenai **"${escapeHtml(raw)}"**, Cherry siap bantu jelaskan lebih dalam. Anda bisa menanyakan hal spesifik seputar:\n\n` +
            "• 💖 **Cara Donasi & Metode Pembayaran**\n" +
-           "• 🏫 **Pendaftaran Sekolah Juara (SD)**\n" +
-           "• 📚 **4 Pilar Program Layanan Pendidikan**\n" +
-           "• 🤝 **Kerjasama Mitra CSR & Relawan**\n" +
+           "• 🏫 **Sekolah Juara (SD)**: Kurikulum & Info Pendaftaran\n" +
+           "• 📖 **Sekolah Daya Setara (PKBM)**: Paket B & C serta Vokasi\n" +
+           "• 👩‍🏫 **Guruverse.ID**: Ekosistem Pelatihan Guru Indonesia\n" +
+           "• 📚 **Program Layanan**\n" +
+           "• 🤝 **Kerjasama Mitra CSR & Relawan (Sahabat Eduhub)**\n" +
+           "• 📰 **Artikel & Kabar Berita Terkini**\n" +
+           "• 🏢 **Profil Yayasan & Visi Misi**\n" +
            "• 📍 **Alamat Kantor Bandung & Kontak WhatsApp**\n\n" +
            "Atau Anda bisa langsung chat admin kami via WhatsApp di **+62 851-7979-7661** (tombol hijau di pojok kiri bawah).";
   }
@@ -550,8 +831,14 @@ Gaya Komunikasi:
               <ul class="cherry-list">
                 <li>💖 <strong>Cara & Metode Donasi</strong></li>
                 <li>🏫 <strong>Sekolah Juara (SD)</strong>: Kurikulum & Info Pendaftaran</li>
-                <li>📚 <strong>4 Pilar Program Layanan</strong></li>
-                <li>🤝 <strong>Kemitraan CSR & Relawan</strong></li>
+                <li>📖 <strong>Sekolah Daya Setara (PKBM)</strong>: Paket B & C serta Vokasi</li>
+                <li>👩‍🏫 <strong>Guruverse.ID</strong>: Pelatihan Guru Indonesia</li>
+                <li>📚 <strong>Program Layanan</strong></li>
+                <li>🤝 <strong>Kemitraan CSR</strong></li>
+                <li>🙋‍♀️ <strong>Jadi Relawan</strong>: Sahabat Eduhub</li>
+                <li>📰 <strong>Artikel & Kabar</strong>: Berita Kegiatan & Edukasi Terbaru</li>
+                <li>🏢 <strong>Profil Yayasan</strong>: Visi Misi, Cerita Kami & Mitra</li>
+                <li>📍 <strong>Alamat & Kontak WhatsApp Admin</strong></li>
               </ul>
               <p>Ada yang ingin Anda tanyakan hari ini? 😊</p>
               <span class="cherry-msg-time">Sekarang</span>
@@ -563,7 +850,12 @@ Gaya Komunikasi:
         <div class="cherry-quick-chips" id="cherryQuickChips">
           <button type="button" class="cherry-chip" data-query="cara donasi">💖 Cara Donasi</button>
           <button type="button" class="cherry-chip" data-query="informasi sekolah juara">🏫 Info Sekolah Juara</button>
+          <button type="button" class="cherry-chip" data-query="sekolah daya setara">📖 Sekolah Daya Setara</button>
+          <button type="button" class="cherry-chip" data-query="guruverse">👩‍🏫 Guruverse.ID</button>
+          <button type="button" class="cherry-chip" data-query="program layanan">📚 Program Layanan</button>
+          <button type="button" class="cherry-chip" data-query="artikel dan kabar terbaru">📰 Artikel & Kabar</button>
           <button type="button" class="cherry-chip" data-query="cara jadi mitra csr">🤝 Jadi Mitra</button>
+          <button type="button" class="cherry-chip" data-query="cara jadi relawan">🙋‍♀️ Jadi Relawan</button>
           <button type="button" class="cherry-chip" data-query="lokasi kantor dan kontak wa">📍 Alamat & Kontak</button>
         </div>
 
@@ -589,6 +881,9 @@ Gaya Komunikasi:
     `;
 
     document.body.appendChild(root);
+
+    // Sinkronkan artikel terbaru secara dinamis dari database / API
+    syncLatestArticlesFromWeb();
 
     // Elements
     const triggerBtn = document.getElementById('cherryTriggerBtn');

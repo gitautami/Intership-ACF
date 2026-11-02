@@ -54,8 +54,11 @@
   color: #FFFFFF;
 }
 
-.cherry-trigger-btn:active {
+.cherry-trigger-btn:active,
+.cherry-trigger-btn.open,
+.cherry-trigger-btn.active {
   transform: scale(0.95);
+  border-color: var(--cherry-accent);
 }
 
 .cherry-icon-dot {
@@ -270,11 +273,11 @@
 }
 
 .cherry-trigger-img {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.28));
   transition: transform 0.25s ease;
 }
 
@@ -824,6 +827,8 @@
     left: auto;
     width: 52px;
     height: 52px;
+    border: 2.5px solid var(--cherry-accent);
+    box-sizing: border-box;
   }
 
   .cherry-trigger-btn .cherry-icon-chat,
@@ -833,8 +838,8 @@
   }
 
   .cherry-trigger-img {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
   }
   
   .cherry-trigger-tooltip {

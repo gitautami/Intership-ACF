@@ -941,8 +941,8 @@ Gaya Komunikasi & Persona:
 
     // Path ke ikon resmi Ceri-A
     const ceriAIconSrc = (window.location.pathname.includes('/html/'))
-      ? '../assets/icon chatbot/Ceri-A.png'
-      : 'assets/icon chatbot/Ceri-A.png';
+      ? '../assets/icon chatbot/Ceri-A.png?v=2'
+      : 'assets/icon chatbot/Ceri-A.png?v=2';
 
     const root = document.createElement('div');
     root.id = 'cherryChatbotRoot';

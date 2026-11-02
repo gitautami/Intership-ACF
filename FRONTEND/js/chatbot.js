@@ -939,6 +939,11 @@ Gaya Komunikasi & Persona:
   function initChatbotUI() {
     if (document.getElementById('cherryChatbotRoot')) return;
 
+    // Path ke ikon resmi Ceri-A
+    const ceriAIconSrc = (window.location.pathname.includes('/html/'))
+      ? '../assets/icon chatbot/Ceri-A.png'
+      : 'assets/icon chatbot/Ceri-A.png';
+
     const root = document.createElement('div');
     root.id = 'cherryChatbotRoot';
     root.className = 'cherry-chatbot-container';
@@ -948,14 +953,9 @@ Gaya Komunikasi & Persona:
     root.innerHTML = `
       <!-- Floating Trigger Button -->
       <button type="button" class="cherry-trigger-btn" id="cherryTriggerBtn" aria-label="Buka Chat AI Ceri-A" title="Tanya Ceri-A AI">
-        <!-- Chat Bubble Icon with 3 Dots -->
+        <!-- Chat Icon (Ceri-A Mascot) -->
         <span class="cherry-btn-icon icon-chat">
-          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 2H4C2.34 2 1 3.34 1 5V15C1 16.66 2.34 18 4 18H6V22L10.5 18H20C21.66 18 23 16.66 23 15V5C23 3.34 21.66 2 20 2Z" fill="#FFFFFF"/>
-            <circle cx="7.5" cy="10" r="1.6" class="cherry-icon-dot"/>
-            <circle cx="12" cy="10" r="1.6" class="cherry-icon-dot"/>
-            <circle cx="16.5" cy="10" r="1.6" class="cherry-icon-dot"/>
-          </svg>
+          <img src="${ceriAIconSrc}" alt="Ceri-A AI" class="cherry-trigger-img" />
         </span>
         <!-- Close Icon -->
         <span class="cherry-btn-icon icon-close">
@@ -972,11 +972,7 @@ Gaya Komunikasi & Persona:
         <div class="cherry-header cherry-chat-header">
           <div class="cherry-header-left">
             <div class="cherry-header-avatar">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#7D2280">
-                <circle cx="8" cy="15" r="4"/>
-                <circle cx="16" cy="15" r="4"/>
-                <path d="M8 11c1-4 4-7 8-9" stroke="#F5A623" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-              </svg>
+              <img src="${ceriAIconSrc}" alt="Ceri-A AI" class="cherry-avatar-img" />
             </div>
             <div class="cherry-header-meta">
               <div class="cherry-header-title">
@@ -1010,11 +1006,7 @@ Gaya Komunikasi & Persona:
           <!-- Initial Welcome Message from Cherry -->
           <div class="cherry-msg-row bot">
             <div class="cherry-msg-avatar">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="#7D2280">
-                <circle cx="8" cy="15" r="4"/>
-                <circle cx="16" cy="15" r="4"/>
-                <path d="M8 11c1-4 4-7 8-9" stroke="#F5A623" stroke-width="2" fill="none"/>
-              </svg>
+              <img src="${ceriAIconSrc}" alt="Ceri-A" class="cherry-avatar-img" />
             </div>
             <div class="cherry-bubble">
               <p>Halo <strong>Sahabat Ceria</strong>! 👋 Senang banget bisa ketemu kamu. Kenalin, aku <strong>Ceri-A</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
@@ -1283,11 +1275,7 @@ Gaya Komunikasi & Persona:
       if (sender === 'bot') {
         row.innerHTML = `
           <div class="cherry-msg-avatar">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="#7D2280">
-              <circle cx="8" cy="15" r="4"/>
-              <circle cx="16" cy="15" r="4"/>
-              <path d="M8 11c1-4 4-7 8-9" stroke="#F5A623" stroke-width="2" fill="none"/>
-            </svg>
+            <img src="${ceriAIconSrc}" alt="Ceri-A" class="cherry-avatar-img" />
           </div>
           <div class="cherry-bubble">
             ${isMarkdown ? formatMarkdown(text) : escapeHtml(text)}
@@ -1315,11 +1303,7 @@ Gaya Komunikasi & Persona:
       typingRow.className = 'cherry-msg-row bot cherry-typing-row';
       typingRow.innerHTML = `
         <div class="cherry-msg-avatar">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="#7D2280">
-            <circle cx="8" cy="15" r="4"/>
-            <circle cx="16" cy="15" r="4"/>
-            <path d="M8 11c1-4 4-7 8-9" stroke="#F5A623" stroke-width="2" fill="none"/>
-          </svg>
+          <img src="${ceriAIconSrc}" alt="Ceri-A" class="cherry-avatar-img" />
         </div>
         <div class="cherry-typing-bubble">
           <span class="cherry-dot"></span>

@@ -104,10 +104,10 @@
           return res;
         } catch (err) {
           // Local fallback check
-          if (username === 'admin' && password === 'adminacf2026') {
+          if (username === 'adminacf' && password === 'ACFCERIA26') {
             const fallbackUser = {
               authenticated: true,
-              user: { username: 'admin', full_name: 'Administrator ACF (Offline Mode)', role: 'superadmin' }
+              user: { username: 'adminacf', full_name: 'Administrator ACF (Offline Mode)', role: 'superadmin' }
             };
             localStorage.setItem('acf_admin_auth', JSON.stringify(fallbackUser));
             return { success: true, message: 'Login berhasil (Offline Mode)', data: fallbackUser };

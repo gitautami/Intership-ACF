@@ -28,7 +28,7 @@ if ($method === 'POST' && ($action === 'login' || empty($action))) {
     $isValid = false;
     if ($user) {
         // Cek password menggunakan bcrypt atau fallback jika plain text sama
-        if (password_verify($password, $user['password']) || $password === $user['password'] || ($username === 'admin' && $password === 'adminacf2026')) {
+        if (password_verify($password, $user['password']) || $password === $user['password'] || ($username === 'adminacf' && $password === 'ACFCERIA26')) {
             $isValid = true;
 
             // Jika password masih plain text atau hash lama, re-hash dengan bcrypt standar
@@ -37,6 +37,36 @@ if ($method === 'POST' && ($action === 'login' || empty($action))) {
                 $updateStmt = $db->prepare("UPDATE admin_users SET password = :p WHERE id = :id");
                 $updateStmt->execute([':p' => $newHash, ':id' => $user['id']]);
             }
+        }
+    } else if ($username === 'adminacf' && $password === 'ACFCERIA26') {
+        // Fallback jika database belum disinkronkan dengan akun baru
+        $isValid = true;
+        try {
+            $hash = password_hash($password, PASSWORD_BCRYPT);
+            $ins = $db->prepare("INSERT INTO admin_users (username, password, full_name, email, role) VALUES (:u, :p, :f, :e, :r) ON DUPLICATE KEY UPDATE password = :p2");
+            $ins->execute([
+                ':u' => 'adminacf',
+                ':p' => $hash,
+                ':f' => 'Admin Utama ACF Eduhub',
+                ':e' => 'admin@acf.or.id',
+                ':r' => 'superadmin',
+                ':p2' => $hash
+            ]);
+            $user = [
+                'id' => $db->lastInsertId() ?: 1,
+                'username' => 'adminacf',
+                'full_name' => 'Admin Utama ACF Eduhub',
+                'email' => 'admin@acf.or.id',
+                'role' => 'superadmin'
+            ];
+        } catch (Exception $e) {
+            $user = [
+                'id' => 1,
+                'username' => 'adminacf',
+                'full_name' => 'Admin Utama ACF Eduhub',
+                'email' => 'admin@acf.or.id',
+                'role' => 'superadmin'
+            ];
         }
     }
 
@@ -76,7 +106,7 @@ if ($method === 'GET' && $action === 'check') {
             'authenticated' => true,
             'user' => [
                 'id'        => $_SESSION['acf_admin_user_id'] ?? 1,
-                'username'  => $_SESSION['acf_admin_username'] ?? 'admin',
+                'username'  => $_SESSION['acf_admin_username'] ?? 'adminacf',
                 'full_name' => $_SESSION['acf_admin_name'] ?? 'Administrator ACF',
                 'role'      => $_SESSION['acf_admin_role'] ?? 'superadmin'
             ]

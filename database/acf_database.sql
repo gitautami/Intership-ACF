@@ -22,9 +22,9 @@ CREATE TABLE IF NOT EXISTS `admin_users` (
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Default Admin Account: username = admin, password = adminacf2026
+-- Default Admin Account: username = adminacf, password = ACFCERIA26
 INSERT INTO `admin_users` (`id`, `username`, `password`, `full_name`, `email`, `role`)
-VALUES (1, 'admin', '.O3d42rYfIqD1Gv0s9K9F3x3fVnQW.eW', 'Admin Utama ACF Eduhub', 'admin@acf.or.id', 'superadmin')
+VALUES (1, 'adminacf', 'ACFCERIA26', 'Admin Utama ACF Eduhub', 'admin@acf.or.id', 'superadmin')
 ON DUPLICATE KEY UPDATE `username` = VALUES(`username`);
 
 -- ------------------------------------------------------------------------------

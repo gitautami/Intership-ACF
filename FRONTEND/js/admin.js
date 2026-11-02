@@ -20,8 +20,8 @@
 
   // Default Admin Credentials
   const ADMIN_CREDENTIALS = {
-    username: 'admin',
-    password: 'adminacf2026'
+    username: 'adminacf',
+    password: 'ACFCERIA26'
   };
 
   // Initial Data for Mitra (Hanya berisi dari pengisian formulir)

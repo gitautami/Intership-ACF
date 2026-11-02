@@ -114,9 +114,15 @@ Gaya Komunikasi & Persona:
     - Jika pengguna menanyakan "program layanan", "program acf", "apa saja programnya", "program layanan ada apa aja", dsb:
       WAJIB menyebutkan daftar 7 Program Layanan di atas dengan nomor dan divisi terkait secara ramah dan ringkas, dan berikan tautan ke halaman [Program Layanan](program-layanan.html)!
       DILARANG KERAS hanya menjawab dengan mendeskripsikan Sekolah Juara atau Unit Pendidikan!
-11. ATURAN RELAWAN:
-    Jika ditanya cara daftar relawan, arahkan ke menu [Jadi Relawan](form-relawan.html) untuk bergabung dengan komunitas Sahabat Eduhub.
-12. Selalu nyambung dengan pertanyaan apa pun, komunikatif, solutif, dan gunakan emoji yang pas.
+11. ATURAN FORM JADI MITRA & KEMITRAAN CSR (SANGAT PENTING):
+    - Jika pengguna menanyakan seputar "mitra", "jadi mitra", "kemitraan", "kerja sama", "kolaborasi", "CSR", "sponsor", ataupun FORM/FORMULIR JADI MITRA (misalnya 'boleh tanya mengenai form jadi mitra ngga ya', 'form jadi mitra', 'cara jadi mitra', 'formulir mitra', dll):
+      WAJIB LANGSUNG berikan tautan formulir pendaftaran online di halaman [Jadi Mitra Program](form-mitra.html) beserta panduan singkat langkah pengisiannya (isi profil perusahaan/lembaga dan pilih program yang diminati seperti Beasiswa Kelas, Green School, Sarana Belajar, dll)!
+      DILARANG KERAS hanya menyuruh pengguna menghubungi admin WhatsApp atau mengatakan akan diarahkan admin tanpa memberikan tautan formulir [Jadi Mitra Program](form-mitra.html)!
+12. ATURAN FORM JADI RELAWAN (SAHABAT EDUHUB) (SANGAT PENTING):
+    - Jika pengguna menanyakan seputar "relawan", "volunteer", "sahabat eduhub", ataupun FORM/FORMULIR JADI RELAWAN (misalnya 'form jadi relawan', 'cara jadi relawan', 'daftar relawan', 'formulir relawan', dll):
+      WAJIB LANGSUNG berikan tautan formulir pendaftaran online di halaman [Jadi Relawan](form-relawan.html) beserta 4 pilihan bidangnya (Pengajar/Tutor, Fasilitator Event, Dokumentasi & Desain, Mentor Karakter)!
+      DILARANG KERAS menyuruh pengguna menghubungi WhatsApp untuk meminta formulir!
+13. Selalu nyambung dengan pertanyaan apa pun, komunikatif, solutif, dan gunakan emoji yang pas.
 EOT;
 
 // Local Knowledge Fallback Engine
@@ -246,11 +252,55 @@ function getSekolahJuaraPpdbReply($query) {
     return $reply;
 }
 
+function getMitraProgramReply() {
+    return "🤝 **Formulir Pendaftaran Jadi Mitra Program (CSR & Kolaborasi)**:\n\n" .
+           "Boleh banget dong, Sahabat Ceria! Ceri-A senang sekali kalau ada yang tertarik buat berkolaborasi bareng ACF Eduhub. 😊\n\n" .
+           "Sahabat Ceria atau pihak perusahaan/lembaga kamu bisa langsung mengisi formulir pendaftaran kemitraan secara online di sini:\n" .
+           "📝 **[Isi Formulir Jadi Mitra Program](form-mitra.html)**\n\n" .
+           "**Langkah & Alur Kemitraan:**\n" .
+           "1. Masuk ke formulir online di halaman [Jadi Mitra Program](form-mitra.html).\n" .
+           "2. Isi profil singkat perusahaan/lembaga dan pilih program yang diminati (*Beasiswa Kelas*, *Green School*, *Sarana Belajar*, *Nutrisi Siswa*, dll).\n" .
+           "3. Kirim formulirnya.\n" .
+           "4. Tim Partnership ACF Eduhub bakal langsung menghubungi PIC yang tertera untuk diskusi proposal dan sinergi bersama.\n\n" .
+           "Mau ngobrol langsung atau butuh proposal resmi? Kamu juga bisa hubungi email kami di **welcome@acf.or.id** atau chat WhatsApp di **+62 851-7979-7661** yaa! ✨";
+}
+
+function getRelawanReply() {
+    return "🙋‍♀️ **Formulir Pendaftaran Jadi Relawan (Sahabat Eduhub)**:\n\n" .
+           "Wah, keren banget niat baik Sahabat Ceria! Bareng komunitas Sahabat Eduhub, kamu bisa langsung mendaftar dan berbagi inspirasi buat adik-adik di seluruh Indonesia. 😊\n\n" .
+           "Yuk langsung isi formulir pendaftaran relawan online di sini:\n" .
+           "📝 **[Isi Formulir Jadi Relawan](form-relawan.html)**\n\n" .
+           "**Pilihan Bidang Relawan yang Tersedia:**\n" .
+           "• 📚 *Relawan Pengajar / Tutor* (SD Juara & PKBM Daya Setara)\n" .
+           "• 🎪 *Fasilitator Kegiatan & Event Edukasi*\n" .
+           "• 📸 *Dokumentasi, Foto, Video, & Desain Konten Kreatif*\n" .
+           "• 💡 *Mentor Inspiratif & Pembinaan Karakter*\n\n" .
+           "Setelah formulir terkirim di halaman [Jadi Relawan](form-relawan.html), tim kami bakal menghubungi kamu untuk sesi orientasi komunitas yang seru! Yuk bareng Ceri-A jadi bagian dari perubahan positif! ✨";
+}
+
 function getSmartFallbackReply($query) {
     $raw = trim($query);
     $q = mb_strtolower($raw);
 
-    // 1. SAPAAN & PANGGILAN SANTAI / GAUL (RESPON SINGKAT & RAMAH TANPA MENYEBUT SEKOLAH JUARA DLL)
+    // 0.1 FORM JADI MITRA PROGRAM / CSR & KOLABORASI (PRIORITAS UTAMA)
+    if (
+        strpos($q, 'mitra') !== false || strpos($q, 'kemitraan') !== false || strpos($q, 'csr') !== false || strpos($q, 'sponsor') !== false ||
+        ((strpos($q, 'form') !== false || strpos($q, 'formulir') !== false || strpos($q, 'daftar') !== false || strpos($q, 'cara') !== false || strpos($q, 'gimana') !== false || strpos($q, 'mau') !== false || strpos($q, 'tanya') !== false || strpos($q, 'nanya') !== false || strpos($q, 'info') !== false) &&
+         (strpos($q, 'kerjasama') !== false || strpos($q, 'kerja sama') !== false || strpos($q, 'kolaborasi') !== false || strpos($q, 'perusahaan') !== false))
+    ) {
+        return getMitraProgramReply();
+    }
+
+    // 0.2 FORM JADI RELAWAN (SAHABAT EDUHUB) (PRIORITAS UTAMA)
+    if (
+        strpos($q, 'relawan') !== false ||
+        strpos($q, 'volunteer') !== false ||
+        (strpos($q, 'sahabat') !== false && (strpos($q, 'eduhub') !== false || strpos($q, 'daftar') !== false || strpos($q, 'gabung') !== false || strpos($q, 'form') !== false || strpos($q, 'formulir') !== false))
+    ) {
+        return getRelawanReply();
+    }
+
+    // 1. SAPAAN & PANGGILAN SANTAI / GAUL (HANYA JIKA PESAN MURNI SAPAAN)
     $greetingsList = [
         'halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'uy', 'ui', 'oy', 'oi', 'woy', 'woi',
         'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
@@ -259,9 +309,12 @@ function getSmartFallbackReply($query) {
         'ceri-a', 'ceri a', 'ceri', 'hai ceri-a', 'halo ceri-a', 'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
     ];
     if (
-        in_array($q, $greetingsList) ||
-        preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu[\'"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i', $q) ||
-        mb_strlen($q) <= 5
+        strpos($q, '?') === false &&
+        !preg_match('/\b(siapa|apa|kenapa|mengapa|bagaimana|gimana|kapan|dimana|di mana|berapa|tanya|nanya|bantu|biaya|daftar|program|sekolah|mitra|relawan|donasi)\b/i', $q) &&
+        (
+            in_array($q, $greetingsList) ||
+            preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu['"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)[\s!.,~]*$/i', $q)
+        )
     ) {
         return "Halo Sahabat Ceria! 👋 Ada yang bisa Ceri-A bantu hari ini? 😊";
     }
@@ -321,7 +374,7 @@ function getSmartFallbackReply($query) {
     if (
         strpos($q, 'mau tanya') !== false || strpos($q, 'tanya dong') !== false || strpos($q, 'mau nanya') !== false ||
         strpos($q, 'nanya dong') !== false || strpos($q, 'bisa tanya') !== false || strpos($q, 'bantu dong') !== false ||
-        strpos($q, 'minta tolong') !== false || strpos($q, 'tolong dong') !== false || $q === 'tanya' || $q === 'bantu' || $q === 'info dong' || $q === 'mau info'
+        strpos($q, 'minta tolong') !== false || strpos($q, 'tolong dong') !== false || $q === 'tanya' || $q === 'nanya' || $q === 'bantu' || $q === 'info dong' || $q === 'mau info'
     ) {
         return "Boleh banget dong Sahabat Ceria! 😊 Silakan tanyakan apa aja yang pengen kamu tahu seputar Sekolah Juara (SD), pendaftaran PPDB, program layanan, relawan, atau donasi. Ceri-A siap jawabin satu-satu!";
     }
@@ -349,13 +402,7 @@ function getSmartFallbackReply($query) {
         (strpos($q, 'cara') !== false || strpos($q, 'gimana') !== false || strpos($q, 'syarat') !== false || strpos($q, 'langkah') !== false || strpos($q, 'mau') !== false || strpos($q, 'alur') !== false) &&
         (strpos($q, 'mitra') !== false || strpos($q, 'kerjasama') !== false || strpos($q, 'kolaborasi') !== false || strpos($q, 'csr') !== false || strpos($q, 'sponsor') !== false || strpos($q, 'perusahaan') !== false)
     ) {
-        return "🤝 **Kemitraan CSR & Kolaborasi Program**:\n\n" .
-               "Wah, kami terbuka banget buat berkolaborasi dengan perusahaan atau komunitas Sahabat Ceria! Caranya simpel kok:\n\n" .
-               "1. Masuk ke halaman [Jadi Mitra Program](form-mitra.html).\n" .
-               "2. Isi profil singkat perusahaan/lembaga dan pilih program yang diminati (Beasiswa Kelas, Green School, Sarana Belajar, dll).\n" .
-               "3. Kirim formulirnya.\n" .
-               "4. Tim Partnership ACF Eduhub bakal langsung menghubungi PIC kamu buat diskusi proposal dan sinergi bersama.\n\n" .
-               "Mau ngobrol langsung? Email kami di **welcome@acf.or.id** atau chat WA di **+62 851-7979-7661** ya!";
+        return getMitraProgramReply();
     }
 
     // 11. CARA JADI RELAWAN (SAHABAT EDUHUB)
@@ -364,16 +411,7 @@ function getSmartFallbackReply($query) {
         strpos($q, 'volunteer') !== false ||
         (strpos($q, 'sahabat') !== false && (strpos($q, 'eduhub') !== false || strpos($q, 'daftar') !== false || strpos($q, 'gabung') !== false))
     ) {
-        return "🙋‍♀️ **Yuk Gabung Jadi Relawan (Sahabat Eduhub)!**\n\n" .
-               "Keren banget niat baik Sahabat Ceria! Bareng komunitas Sahabat Eduhub, kamu bisa berbagi inspirasi dan senyuman buat adik-adik di seluruh Indonesia. Caranya gampang:\n\n" .
-               "1. Buka formulir di halaman [Jadi Relawan](form-relawan.html).\n" .
-               "2. Isi data diri kamu dan pilih bidang yang paling cocok sama minatmu:\n" .
-               "   • *Relawan Pengajar / Tutor*\n" .
-               "   • *Fasilitator Kegiatan & Event*\n" .
-               "   • *Dokumentasi, Foto, & Desain Konten*\n" .
-               "   • *Mentor Inspiratif & Karakter*\n" .
-               "3. Kirim pendaftaran, dan tim kami bakal ngajak kamu ke sesi orientasi komunitas yang seru!\n\n" .
-               "Yuk bareng Ceri-A jadi bagian dari perubahan positif! ✨";
+        return getRelawanReply();
     }
 
     // 12. DAFTAR LOKASI, DAERAH & SEBARAN 10 UNIT SEKOLAH JUARA
@@ -655,8 +693,36 @@ function getSmartFallbackReply($query) {
            "Atau kamu juga bisa langsung ngobrol santai sama admin via WhatsApp di **+62 851-7979-7661**! ✨";
 }
 
+// Fast instant response for Mitra & Relawan Forms (Direct link)
+$qFast = mb_strtolower(trim($userMessage));
+
+if (
+    strpos($qFast, 'mitra') !== false || strpos($qFast, 'kemitraan') !== false || strpos($qFast, 'csr') !== false || strpos($qFast, 'sponsor') !== false ||
+    ((strpos($qFast, 'form') !== false || strpos($qFast, 'formulir') !== false || strpos($qFast, 'daftar') !== false || strpos($qFast, 'cara') !== false || strpos($qFast, 'gimana') !== false || strpos($qFast, 'mau') !== false || strpos($qFast, 'tanya') !== false || strpos($qFast, 'nanya') !== false || strpos($qFast, 'info') !== false) &&
+     (strpos($qFast, 'kerjasama') !== false || strpos($qFast, 'kerja sama') !== false || strpos($qFast, 'kolaborasi') !== false || strpos($qFast, 'perusahaan') !== false))
+) {
+    echo json_encode([
+        'status' => 'success',
+        'reply' => getMitraProgramReply(),
+        'mode' => 'instant_mitra'
+    ]);
+    exit();
+}
+
+if (
+    strpos($qFast, 'relawan') !== false ||
+    strpos($qFast, 'volunteer') !== false ||
+    (strpos($qFast, 'sahabat') !== false && (strpos($qFast, 'eduhub') !== false || strpos($qFast, 'daftar') !== false || strpos($qFast, 'gabung') !== false || strpos($qFast, 'form') !== false || strpos($qFast, 'formulir') !== false))
+) {
+    echo json_encode([
+        'status' => 'success',
+        'reply' => getRelawanReply(),
+        'mode' => 'instant_relawan'
+    ]);
+    exit();
+}
+
 // Cek respon cepat (Instant Response) untuk sapaan langsung agar tidak perlu menunggu
-$qFast = mb_strtolower($userMessage);
 $fastGreetings = [
     'halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'uy', 'ui', 'oy', 'oi', 'woy', 'woi',
     'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
@@ -667,11 +733,10 @@ $fastGreetings = [
 
 if (
     strpos($qFast, '?') === false &&
-    !preg_match('/\b(siapa|apa|kenapa|mengapa|bagaimana|gimana|kapan|dimana|di mana|berapa|tanya|bantu|biaya|daftar|program|sekolah)\b/i', $qFast) &&
+    !preg_match('/\b(siapa|apa|kenapa|mengapa|bagaimana|gimana|kapan|dimana|di mana|berapa|tanya|nanya|bantu|biaya|daftar|program|sekolah|mitra|relawan|donasi)\b/i', $qFast) &&
     (
         in_array($qFast, $fastGreetings) ||
-        preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu[\'"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)[\s!.,~]*$/i', $qFast) ||
-        mb_strlen($qFast) <= 4
+        preg_match('/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu['"`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)[\s!.,~]*$/i', $qFast)
     )
 ) {
     echo json_encode([

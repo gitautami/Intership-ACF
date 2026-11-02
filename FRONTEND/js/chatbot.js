@@ -136,9 +136,15 @@ Gaya Komunikasi & Persona:
     - Jika pengguna menanyakan "program layanan", "program acf", "apa saja programnya", "program layanan ada apa aja", dsb:
       WAJIB menyebutkan daftar 7 Program Layanan di atas dengan nomor dan divisi terkait secara ramah dan ringkas, dan berikan tautan ke halaman [Program Layanan](program-layanan.html)!
       DILARANG KERAS hanya menjawab dengan mendeskripsikan Sekolah Juara atau Unit Pendidikan!
-11. ATURAN RELAWAN:
-    Jika ditanya cara daftar jadi relawan, arahkan ke menu [Jadi Relawan](form-relawan.html) untuk bergabung dengan komunitas Sahabat Eduhub.
-12. Selalu nyambung dengan pertanyaan apa pun, komunikatif, solutif, dan gunakan emoji yang pas.`;
+11. ATURAN FORM JADI MITRA & KEMITRAAN CSR (SANGAT PENTING):
+    - Jika pengguna menanyakan seputar "mitra", "jadi mitra", "kemitraan", "kerja sama", "kolaborasi", "CSR", "sponsor", ataupun FORM/FORMULIR JADI MITRA (misalnya 'boleh tanya mengenai form jadi mitra ngga ya', 'form jadi mitra', 'cara jadi mitra', 'formulir mitra', dll):
+      WAJIB LANGSUNG berikan tautan formulir pendaftaran online di halaman [Jadi Mitra Program](form-mitra.html) beserta panduan singkat langkah pengisiannya (isi profil perusahaan/lembaga dan pilih program yang diminati seperti Beasiswa Kelas, Green School, Sarana Belajar, dll)!
+      DILARANG KERAS hanya menyuruh pengguna menghubungi admin WhatsApp atau mengatakan akan diarahkan admin tanpa memberikan tautan formulir [Jadi Mitra Program](form-mitra.html)!
+12. ATURAN FORM JADI RELAWAN (SAHABAT EDUHUB) (SANGAT PENTING):
+    - Jika pengguna menanyakan seputar "relawan", "volunteer", "sahabat eduhub", ataupun FORM/FORMULIR JADI RELAWAN (misalnya 'form jadi relawan', 'cara jadi relawan', 'daftar relawan', 'formulir relawan', dll):
+      WAJIB LANGSUNG berikan tautan formulir pendaftaran online di halaman [Jadi Relawan](form-relawan.html) beserta 4 pilihan bidangnya (Pengajar/Tutor, Fasilitator Event, Dokumentasi & Desain, Mentor Karakter)!
+      DILARANG KERAS menyuruh pengguna menghubungi WhatsApp untuk meminta formulir!
+13. Selalu nyambung dengan pertanyaan apa pun, komunikatif, solutif, dan gunakan emoji yang pas.`;
 
     const contents = [];
     chatHistory.slice(-6).forEach(turn => {
@@ -148,19 +154,18 @@ Gaya Komunikasi & Persona:
       });
     });
 
-    const promptWithContext = contents.length === 0 
-      ? `${systemPrompt}\n\nPertanyaan pengguna: ${userText}`
-      : userText;
-
     contents.push({
       role: 'user',
-      parts: [{ text: promptWithContext }]
+      parts: [{ text: userText }]
     });
 
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        system_instruction: {
+          parts: [{ text: systemPrompt }]
+        },
         contents: contents,
         generationConfig: {
           temperature: 0.7,
@@ -419,11 +424,55 @@ Gaya Komunikasi & Persona:
     return reply;
   }
 
+  function getMitraProgramReply() {
+    return "🤝 **Formulir Pendaftaran Jadi Mitra Program (CSR & Kolaborasi)**:\n\n" +
+           "Boleh banget dong, Sahabat Ceria! Ceri-A senang sekali kalau ada yang tertarik buat berkolaborasi bareng ACF Eduhub. 😊\n\n" +
+           "Sahabat Ceria atau pihak perusahaan/lembaga kamu bisa langsung mengisi formulir pendaftaran kemitraan secara online di sini:\n" +
+           "📝 **[Isi Formulir Jadi Mitra Program](form-mitra.html)**\n\n" +
+           "**Langkah & Alur Kemitraan:**\n" +
+           "1. Masuk ke formulir online di halaman [Jadi Mitra Program](form-mitra.html).\n" +
+           "2. Isi profil singkat perusahaan/lembaga dan pilih program yang diminati (*Beasiswa Kelas*, *Green School*, *Sarana Belajar*, *Nutrisi Siswa*, dll).\n" +
+           "3. Kirim formulirnya.\n" +
+           "4. Tim Partnership ACF Eduhub bakal langsung menghubungi PIC yang tertera untuk diskusi proposal dan sinergi bersama.\n\n" +
+           "Mau ngobrol langsung atau butuh proposal resmi? Kamu juga bisa hubungi email kami di **welcome@acf.or.id** atau chat WhatsApp di **+62 851-7979-7661** yaa! ✨";
+  }
+
+  function getRelawanReply() {
+    return "🙋‍♀️ **Formulir Pendaftaran Jadi Relawan (Sahabat Eduhub)**:\n\n" +
+           "Wah, keren banget niat baik Sahabat Ceria! Bareng komunitas Sahabat Eduhub, kamu bisa langsung mendaftar dan berbagi inspirasi buat adik-adik di seluruh Indonesia. 😊\n\n" +
+           "Yuk langsung isi formulir pendaftaran relawan online di sini:\n" +
+           "📝 **[Isi Formulir Jadi Relawan](form-relawan.html)**\n\n" +
+           "**Pilihan Bidang Relawan yang Tersedia:**\n" +
+           "• 📚 *Relawan Pengajar / Tutor* (SD Juara & PKBM Daya Setara)\n" +
+           "• 🎪 *Fasilitator Kegiatan & Event Edukasi*\n" +
+           "• 📸 *Dokumentasi, Foto, Video, & Desain Konten Kreatif*\n" +
+           "• 💡 *Mentor Inspiratif & Pembinaan Karakter*\n\n" +
+           "Setelah formulir terkirim di halaman [Jadi Relawan](form-relawan.html), tim kami bakal menghubungi kamu untuk sesi orientasi komunitas yang seru! Yuk bareng Ceri-A jadi bagian dari perubahan positif! ✨";
+  }
+
   function getLocalKnowledgeReply(query) {
     const raw = (query || '').trim();
     const q = raw.toLowerCase();
 
-    // 1. SAPAAN & PANGGILAN SANTAI / GAUL (RESPON SINGKAT & RAMAH TANPA MENYEBUT SEKOLAH JUARA DLL)
+    // 0.1 FORM JADI MITRA PROGRAM / CSR & KOLABORASI (PRIORITAS UTAMA)
+    if (
+      q.includes('mitra') || q.includes('kemitraan') || q.includes('csr') || q.includes('sponsor') ||
+      ((q.includes('form') || q.includes('formulir') || q.includes('daftar') || q.includes('cara') || q.includes('gimana') || q.includes('mau') || q.includes('tanya') || q.includes('nanya') || q.includes('info')) &&
+       (q.includes('kerjasama') || q.includes('kerja sama') || q.includes('kolaborasi') || q.includes('perusahaan')))
+    ) {
+      return getMitraProgramReply();
+    }
+
+    // 0.2 FORM JADI RELAWAN (SAHABAT EDUHUB) (PRIORITAS UTAMA)
+    if (
+      q.includes('relawan') ||
+      q.includes('volunteer') ||
+      (q.includes('sahabat') && (q.includes('eduhub') || q.includes('daftar') || q.includes('gabung') || q.includes('form') || q.includes('formulir')))
+    ) {
+      return getRelawanReply();
+    }
+
+    // 1. SAPAAN & PANGGILAN SANTAI / GAUL (HANYA JIKA PESAN MURNI SAPAAN)
     const greetingsList = [
       'halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'uy', 'ui', 'oy', 'oi', 'woy', 'woi',
       'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
@@ -432,9 +481,12 @@ Gaya Komunikasi & Persona:
       'ceri-a', 'ceri a', 'ceri', 'hai ceri-a', 'halo ceri-a', 'cherry', 'hai cherry', 'halo cherry', 'hei cherry', 'kuy', 'lur', 'gan', 'kak', 'kak admin'
     ];
     if (
-      greetingsList.includes(q) ||
-      q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)(\s|[!.,?~]|$)/i) ||
-      q.length <= 5
+      !q.includes('?') &&
+      !q.match(/\b(siapa|apa|kenapa|mengapa|bagaimana|gimana|kapan|dimana|di mana|berapa|tanya|nanya|bantu|biaya|daftar|program|sekolah|mitra|relawan|donasi)\b/i) &&
+      (
+        greetingsList.includes(q) ||
+        q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)[\s!.,~]*$/i)
+      )
     ) {
       return "Halo Sahabat Ceria! 👋 Ada yang bisa Ceri-A bantu hari ini? 😊";
     }
@@ -494,9 +546,9 @@ Gaya Komunikasi & Persona:
     if (
       q.includes('mau tanya') || q.includes('tanya dong') || q.includes('mau nanya') ||
       q.includes('nanya dong') || q.includes('bisa tanya') || q.includes('bantu dong') ||
-      q.includes('minta tolong') || q.includes('tolong dong') || q === 'tanya' || q === 'bantu' || q === 'info dong' || q === 'mau info'
+      q.includes('minta tolong') || q.includes('tolong dong') || q === 'tanya' || q === 'nanya' || q === 'bantu' || q === 'info dong' || q === 'mau info'
     ) {
-      return "Boleh banget dong Sahabat Ceria! 😊 Silakan tanyakan apa aja yang pengen kamu tahu seputar Sekolah Juara (SD), pendaftaran PPDB, program layanan, relawan, atau donasi. Ceri-A siap jawabin satu-satu!";
+      return "Boleh banget dong Sahabat Ceria! 😊 Silakan tanyakan apa aja yang pengen kamu tahu seputar pendaftaran Sekolah Juara (SD), Sekolah Daya Setara (PKBM), formulir mitra/relawan, program layanan, atau donasi. Ceri-A siap jawabin satu-satu!";
     }
 
     // 8. BIAYA SEKOLAH JUARA & SEKOLAH DAYA SETARA
@@ -522,13 +574,7 @@ Gaya Komunikasi & Persona:
       (q.includes('cara') || q.includes('gimana') || q.includes('syarat') || q.includes('langkah') || q.includes('mau') || q.includes('alur') || q.includes('tata')) &&
       (q.includes('mitra') || q.includes('kerjasama') || q.includes('kolaborasi') || q.includes('csr') || q.includes('sponsor') || q.includes('perusahaan'))
     ) {
-      return "🤝 **Kemitraan CSR & Kolaborasi Program**:\n\n" +
-             "Wah, kami terbuka banget buat berkolaborasi dengan perusahaan atau komunitas Sahabat Ceria! Caranya simpel kok:\n\n" +
-             "1. Masuk ke halaman [Jadi Mitra Program](form-mitra.html).\n" +
-             "2. Isi profil singkat perusahaan/lembaga dan pilih program yang diminati (Beasiswa Kelas, Green School, Sarana Belajar, dll).\n" +
-             "3. Kirim formulirnya.\n" +
-             "4. Tim Partnership ACF Eduhub bakal langsung menghubungi PIC kamu buat diskusi proposal dan sinergi bersama.\n\n" +
-             "Mau ngobrol langsung? Email kami di **welcome@acf.or.id** atau chat WA di **+62 851-7979-7661** ya!";
+      return getMitraProgramReply();
     }
 
     // 11. CARA JADI RELAWAN (SAHABAT EDUHUB)
@@ -537,16 +583,7 @@ Gaya Komunikasi & Persona:
       q.includes('volunteer') ||
       (q.includes('sahabat') && (q.includes('eduhub') || q.includes('daftar') || q.includes('gabung')))
     ) {
-      return "🙋‍♀️ **Yuk Gabung Jadi Relawan (Sahabat Eduhub)!**\n\n" +
-             "Keren banget niat baik Sahabat Ceria! Bareng komunitas Sahabat Eduhub, kamu bisa berbagi inspirasi dan senyuman buat adik-adik di seluruh Indonesia. Caranya gampang:\n\n" +
-             "1. Buka formulir di halaman [Jadi Relawan](form-relawan.html).\n" +
-             "2. Isi data diri kamu dan pilih bidang yang paling cocok sama minatmu:\n" +
-             "   • *Relawan Pengajar / Tutor*\n" +
-             "   • *Fasilitator Kegiatan & Event*\n" +
-             "   • *Dokumentasi, Foto, & Desain Konten*\n" +
-             "   • *Mentor Inspiratif & Karakter*\n" +
-             "3. Kirim pendaftaran, dan tim kami bakal ngajak kamu ke sesi orientasi komunitas yang seru!\n\n" +
-             "Yuk bareng Ceri-A jadi bagian dari perubahan positif! ✨";
+      return getRelawanReply();
     }
 
     // 12. DAFTAR LOKASI, DAERAH & SEBARAN 10 UNIT SEKOLAH JUARA (SD JUARA)
@@ -817,6 +854,25 @@ Gaya Komunikasi & Persona:
     const raw = (query || '').trim();
     const q = raw.toLowerCase();
 
+    // 0.1 Quick Instant Matching for Mitra Forms & CSR (PRIORITAS TINGGI)
+    if (
+      q.includes('mitra') || q.includes('kemitraan') || q.includes('csr') || q.includes('sponsor') ||
+      ((q.includes('form') || q.includes('formulir') || q.includes('daftar') || q.includes('cara') || q.includes('gimana') || q.includes('mau') || q.includes('tanya') || q.includes('nanya') || q.includes('info')) &&
+       (q.includes('kerjasama') || q.includes('kerja sama') || q.includes('kolaborasi') || q.includes('perusahaan')))
+    ) {
+      return getMitraProgramReply();
+    }
+
+    // 0.2 Quick Instant Matching for Relawan Forms (PRIORITAS TINGGI)
+    if (
+      q.includes('relawan') ||
+      q.includes('volunteer') ||
+      (q.includes('sahabat') && (q.includes('eduhub') || q.includes('daftar') || q.includes('gabung') || q.includes('form') || q.includes('formulir')))
+    ) {
+      return getRelawanReply();
+    }
+
+    // 1. Sapaan murni instan (HANYA jika pesan murni sapaan tanpa pertanyaan)
     const greetingsList = [
       'halo', 'hallo', 'hai', 'hi', 'hey', 'hei', 'uy', 'ui', 'oy', 'oi', 'woy', 'woi',
       'yoo', 'yo', 'bro', 'sis', 'min', 'mimin', 'admin', 'p', 'ping', 'tes', 'test', 'cek',
@@ -826,11 +882,10 @@ Gaya Komunikasi & Persona:
     ];
     if (
       !q.includes('?') &&
-      !q.match(/\b(siapa|apa|kenapa|mengapa|bagaimana|gimana|kapan|dimana|di mana|berapa|tanya|bantu|biaya|daftar|program|sekolah)\b/i) &&
+      !q.match(/\b(siapa|apa|kenapa|mengapa|bagaimana|gimana|kapan|dimana|di mana|berapa|tanya|nanya|bantu|biaya|daftar|program|sekolah|mitra|relawan|donasi)\b/i) &&
       (
         greetingsList.includes(q) ||
-        q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)[\s!.,~]*$/i) ||
-        q.length <= 4
+        q.match(/^(halo+|hallo+|hai+|hey+|hei+|hi+|uy+|ui+|oy+|woy+|woi+|oi+|yo+|p+|ping|tes|test|ceri-a|ceri|assalamu['`]?alaikum|selamat\s*(pagi|siang|sore|malam)|sampurasun|punten|permisi)[\s!.,~]*$/i)
       )
     ) {
       return "Halo Sahabat Ceria! 👋 Ada yang bisa Ceri-A bantu hari ini? 😊";

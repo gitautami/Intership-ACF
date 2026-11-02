@@ -211,12 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('link[href*="chatbot.css"]')) {
         const chatCss = document.createElement('link');
         chatCss.rel = 'stylesheet';
-        chatCss.href = '../css/chatbot.css?v=8';
+        chatCss.href = '../css/chatbot.css?v=58';
         document.head.appendChild(chatCss);
     }
     if (!window.CherryChatbotInitialized && !document.querySelector('script[src*="chatbot.js"]')) {
         const chatScript = document.createElement('script');
-        chatScript.src = '../js/chatbot.js?v=56';
+        chatScript.src = '../js/chatbot.js?v=58';
         chatScript.defer = true;
         document.body.appendChild(chatScript);
     }
@@ -461,13 +461,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!document.querySelector('link[href*="chatbot.css"]')) {
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
-                link.href = prefix + '/css/chatbot.css?v=14';
+                link.href = prefix + '/css/chatbot.css?v=58';
                 document.head.appendChild(link);
             }
 
             // Inject JS
             const script = document.createElement('script');
-            script.src = prefix + '/js/chatbot.js?v=56';
+            script.src = prefix + '/js/chatbot.js?v=58';
             document.body.appendChild(script);
         }
     };

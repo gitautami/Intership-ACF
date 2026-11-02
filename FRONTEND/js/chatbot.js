@@ -397,7 +397,7 @@ Gaya Komunikasi & Persona:
 
   function getSekolahJuaraPpdbReply(query) {
     const q = (query || '').toLowerCase();
-    
+
     // Jika menanyakan unit spesifik tertentu
     for (const s of SJ_SCHOOLS) {
       const matchKey = q.includes(s.key);
@@ -1024,8 +1024,8 @@ Gaya Komunikasi & Persona:
     const savedSize = localStorage.getItem(STORAGE_SIZE_KEY) || 'size-m';
 
     root.innerHTML = `
-      <!-- Floating Trigger Button -->
-      <button type="button" class="cherry-trigger-btn" id="cherryTriggerBtn" aria-label="Buka Chat AI Ceri-A" title="Tanya Ceri-A AI">
+      <!-- Floating Trigger Button (div role=button untuk mencegah scrollbar internal browser) -->
+      <div class="cherry-trigger-btn" id="cherryTriggerBtn" role="button" tabindex="0" aria-label="Buka Chat AI Ceri-A" title="Tanya Ceri-A AI">
         <!-- Chat Icon (Ceri-A Mascot) -->
         <span class="cherry-btn-icon icon-chat">
           <img src="${ceriAIconSrc}" alt="Ceri-A AI" class="cherry-trigger-img" />
@@ -1037,7 +1037,7 @@ Gaya Komunikasi & Persona:
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </span>
-      </button>
+      </div>
 
       <!-- Chat Modal Window -->
       <div class="cherry-chat-window ${savedSize}" id="cherryChatWindow" role="dialog" aria-modal="true" aria-label="Jendela Chat Ceri-A">
@@ -1171,6 +1171,12 @@ Gaya Komunikasi & Persona:
     }
 
     triggerBtn.addEventListener('click', () => toggleChat());
+    triggerBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleChat();
+      }
+    });
     closeBtn.addEventListener('click', () => toggleChat(false));
 
     // Close on Escape key

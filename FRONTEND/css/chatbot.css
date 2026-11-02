@@ -29,36 +29,60 @@
   left: auto;
   width: 60px;
   height: 60px;
-  border-radius: 50%;
-  background: var(--cherry-primary);
+  border-radius: 50% !important;
+  background: var(--cherry-primary) !important;
   color: #FFFFFF;
-  border: 2.5px solid var(--cherry-accent);
-  box-sizing: border-box;
-  box-shadow: 0 6px 20px rgba(125, 34, 128, 0.45), 0 2px 6px rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 3px solid var(--cherry-accent) !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 6px 20px rgba(125, 34, 128, 0.45), 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   cursor: pointer;
   z-index: 9999;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  outline: none;
-  padding: 0;
+  outline: none !important;
+  padding: 0 !important;
   text-decoration: none;
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              box-shadow 0.25s ease,
+              border-color 0.2s ease,
+              background 0.2s ease;
+}
+
+.cherry-trigger-btn::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .cherry-trigger-btn:hover {
-  transform: scale(1.1) translateY(-3px);
-  background: var(--cherry-primary-hover);
-  border-color: #FBBF24;
-  box-shadow: 0 10px 28px rgba(125, 34, 128, 0.55), 0 0 16px rgba(245, 166, 35, 0.45);
+  transform: scale(1.08) translateY(-2px);
+  background: var(--cherry-primary-hover) !important;
+  border: 3px solid #FBBF24 !important;
+  border-color: #FBBF24 !important;
+  box-shadow: 0 10px 28px rgba(125, 34, 128, 0.55), 0 0 16px rgba(245, 166, 35, 0.45) !important;
   color: #FFFFFF;
 }
 
 .cherry-trigger-btn:active,
+.cherry-trigger-btn:focus,
+.cherry-trigger-btn:focus-visible,
 .cherry-trigger-btn.open,
 .cherry-trigger-btn.active {
   transform: scale(0.95);
-  border-color: var(--cherry-accent);
+  background: var(--cherry-primary) !important;
+  border: 3px solid var(--cherry-accent) !important;
+  border-color: var(--cherry-accent) !important;
+  outline: none !important;
+  box-shadow: 0 4px 15px rgba(125, 34, 128, 0.4), 0 0 10px rgba(245, 166, 35, 0.3) !important;
 }
 
 .cherry-icon-dot {
@@ -171,7 +195,7 @@
   transform: scale(0.92) translateY(20px);
   transform-origin: bottom right;
   pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
               width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
               height 0.32s cubic-bezier(0.16, 1, 0.3, 1);
@@ -827,8 +851,8 @@
     left: auto;
     width: 52px;
     height: 52px;
-    border: 2.5px solid var(--cherry-accent);
-    box-sizing: border-box;
+    border: 2.5px solid var(--cherry-accent) !important;
+    box-sizing: border-box !important;
   }
 
   .cherry-trigger-btn .cherry-icon-chat,
@@ -841,7 +865,7 @@
     width: 38px;
     height: 38px;
   }
-  
+
   .cherry-trigger-tooltip {
     display: none;
   }
@@ -851,7 +875,7 @@
   .cherry-size-toggle {
     display: none !important;
   }
-  
+
   /* Ukuran General Chatbot Mobile */
   .cherry-chat-window,
   .cherry-chat-window.size-s,

@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update banner teks metrik jika ada
     if (bannerDesc) {
-      bannerDesc.textContent = `Inisiatif holistik ACF Eduhub yang mencakup ${published.length} program berdampak tinggi, dikelompokkan ke dalam ${sortedCategories.length} kategori induk untuk ekosistem pendidikan yang tangguh dan merata.`;
+      bannerDesc.textContent = `Inisiatif holistik ACF Eduhub yang mencakup ${published.length} program berdampak tinggi untuk ekosistem pendidikan yang tangguh dan merata.`;
     }
 
     // Bind scroll reveal observer jika ada
@@ -336,6 +336,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Re-bind in-page links
     bindAnchorLinks();
   }
+
+  
+  // Update otomatis jika data diubah dari Portal Admin di tab lain
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'acf_programs_data') {
+      renderDynamicPrograms();
+    }
+  });
 
   // Jalankan render program dinamis
   renderDynamicPrograms();

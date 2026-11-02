@@ -211,12 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('link[href*="chatbot.css"]')) {
         const chatCss = document.createElement('link');
         chatCss.rel = 'stylesheet';
-        chatCss.href = '../css/chatbot.css?v=58';
+        chatCss.href = '../css/chatbot.css?v=59';
         document.head.appendChild(chatCss);
     }
     if (!window.CherryChatbotInitialized && !document.querySelector('script[src*="chatbot.js"]')) {
         const chatScript = document.createElement('script');
-        chatScript.src = '../js/chatbot.js?v=58';
+        chatScript.src = '../js/chatbot.js?v=59';
         chatScript.defer = true;
         document.body.appendChild(chatScript);
     }
@@ -445,6 +445,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 b.style.setProperty('height', '0px', 'important');
                 b.style.setProperty('pointer-events', 'none', 'important');
             });
+
+            // Pastikan nama chatbot Ceri-A tidak berubah menjadi 'Cheerful' saat bilingual Inggris aktif
+            const botName = document.querySelector('.cherry-name');
+            if (botName && botName.textContent.trim() !== 'Ceri-A') {
+                botName.textContent = 'Ceri-A';
+            }
         };
         setInterval(removeGoogleBars, 250);
     };
@@ -461,13 +467,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!document.querySelector('link[href*="chatbot.css"]')) {
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
-                link.href = prefix + '/css/chatbot.css?v=58';
+                link.href = prefix + '/css/chatbot.css?v=59';
                 document.head.appendChild(link);
             }
 
             // Inject JS
             const script = document.createElement('script');
-            script.src = prefix + '/js/chatbot.js?v=58';
+            script.src = prefix + '/js/chatbot.js?v=59';
             document.body.appendChild(script);
         }
     };

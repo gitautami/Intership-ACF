@@ -1005,7 +1005,10 @@ Gaya Komunikasi & Persona:
       result.push(`</${listType}>`);
     }
 
-    return result.join('');
+    let finalHtml = result.join('');
+    // Protect Ceri-A name from being translated to 'Cheerful'
+    finalHtml = finalHtml.replace(/\bCeri-A\b/g, '<span class="notranslate" translate="no">Ceri-A</span>');
+    return finalHtml;
   }
 
   // Build Floating UI & Modal Window
@@ -1025,7 +1028,7 @@ Gaya Komunikasi & Persona:
 
     root.innerHTML = `
       <!-- Floating Trigger Button (div role=button untuk mencegah scrollbar internal browser) -->
-      <div class="cherry-trigger-btn" id="cherryTriggerBtn" role="button" tabindex="0" aria-label="Buka Chat AI Ceri-A" title="Tanya Ceri-A AI">
+      <div class="cherry-trigger-btn notranslate" translate="no" id="cherryTriggerBtn" role="button" tabindex="0" aria-label="Buka Chat AI Ceri-A" title="Tanya Ceri-A AI">
         <!-- Chat Icon (Ceri-A Mascot) -->
         <span class="cherry-btn-icon icon-chat">
           <img src="${ceriAIconSrc}" alt="Ceri-A AI" class="cherry-trigger-img" />
@@ -1048,9 +1051,9 @@ Gaya Komunikasi & Persona:
               <img src="${ceriAIconSrc}" alt="Ceri-A AI" class="cherry-avatar-img" />
             </div>
             <div class="cherry-header-meta">
-              <div class="cherry-header-title">
-                <span class="cherry-name">Ceri-A</span>
-                <span class="cherry-badge-acf">ACF AI</span>
+              <div class="cherry-header-title notranslate" translate="no">
+                <span class="cherry-name notranslate" translate="no">Ceri-A</span>
+                <span class="cherry-badge-acf notranslate" translate="no">ACF AI</span>
               </div>
               <div class="cherry-header-sub">AI Assistant</div>
             </div>
@@ -1082,8 +1085,8 @@ Gaya Komunikasi & Persona:
               <img src="${ceriAIconSrc}" alt="Ceri-A" class="cherry-avatar-img" />
             </div>
             <div class="cherry-bubble">
-              <p>Halo <strong>Sahabat Ceria</strong>! 👋 Senang banget bisa ketemu kamu. Kenalin, aku <strong>Ceri-A</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
-              <p>Ceri-A siap nemenin dan bantu kamu cari info seputar:</p>
+              <p>Halo <strong>Sahabat Ceria</strong>! 👋 Senang banget bisa ketemu kamu. Kenalin, aku <strong class="notranslate" translate="no">Ceri-A</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
+              <p><span class="notranslate" translate="no">Ceri-A</span> siap nemenin dan bantu kamu cari info seputar:</p>
               <ul class="cherry-list">
                 <li>💖 <strong>Cara & Metode Donasi</strong></li>
                 <li>🏫 <strong>Unit Pendidikan</strong>: Sekolah Juara (SD), Sekolah Daya Setara (PKBM Paket B & C), & Guruverse.ID</li>
@@ -1093,7 +1096,7 @@ Gaya Komunikasi & Persona:
                 <li>📰 <strong>Artikel & Kabar</strong>: Kabar Edukasi & Kegiatan Terkini</li>
                 <li>📍 <strong>Alamat & Kontak WhatsApp Admin</strong></li>
               </ul>
-              <p>Ada yang lagi pengen kamu tanyain ke Ceri-A hari ini? Klik pilihan cepat di bawah atau langsung ketik chat apa aja yaa! 😊✨</p>
+              <p>Ada yang lagi pengen kamu tanyain ke <span class="notranslate" translate="no">Ceri-A</span> hari ini? Klik pilihan cepat di bawah atau langsung ketik chat apa aja yaa! 😊✨</p>
               <span class="cherry-msg-time">Sekarang</span>
             </div>
           </div>
@@ -1178,6 +1181,15 @@ Gaya Komunikasi & Persona:
       }
     });
     closeBtn.addEventListener('click', () => toggleChat(false));
+
+    // Safeguard: Pastikan nama Ceri-A tetap 'Ceri-A' dan tidak diubah Google Translate menjadi 'Cheerful'
+    const protectCeriAName = () => {
+      const nameEl = root.querySelector('.cherry-name');
+      if (nameEl && nameEl.textContent.trim() !== 'Ceri-A') {
+        nameEl.textContent = 'Ceri-A';
+      }
+    };
+    setInterval(protectCeriAName, 300);
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {

@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!window.CherryChatbotInitialized && !document.querySelector('script[src*="chatbot.js"]')) {
         const chatScript = document.createElement('script');
-        chatScript.src = '../js/chatbot.js?v=55';
+        chatScript.src = '../js/chatbot.js?v=56';
         chatScript.defer = true;
         document.body.appendChild(chatScript);
     }
@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Inject JS
             const script = document.createElement('script');
-            script.src = prefix + '/js/chatbot.js?v=55';
+            script.src = prefix + '/js/chatbot.js?v=56';
             document.body.appendChild(script);
         }
     };

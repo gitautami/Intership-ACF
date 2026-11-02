@@ -1107,7 +1107,6 @@ Gaya Komunikasi & Persona:
           <div class="cherry-quick-chips" id="cherryQuickChips" role="region" aria-label="Menu Cepat Rekomendasi">
             <button type="button" class="cherry-chip" data-query="cara donasi">💖 Cara Donasi</button>
             <button type="button" class="cherry-chip" data-query="unit pendidikan">🏫 Unit Pendidikan</button>
-            <button type="button" class="cherry-chip" data-query="guruverse">👩‍🏫 Guruverse.ID</button>
             <button type="button" class="cherry-chip" data-query="program layanan">📚 Program Layanan</button>
             <button type="button" class="cherry-chip" data-query="artikel dan kabar terbaru">📰 Artikel & Kabar</button>
             <button type="button" class="cherry-chip" data-query="cara jadi mitra csr">🤝 Jadi Mitra</button>

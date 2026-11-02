@@ -501,6 +501,22 @@ function getSmartFallbackReply($query) {
         return "🏫 Di wilayah DKI Jakarta ada 3 unit SD Juara nih Sahabat Ceria:\n• **SD Juara Jakarta Barat**\n• **SD Juara Jakarta Timur**\n• **SD Juara Jakarta Utara**\n\nKamu bisa langsung daftar atau unduh brosurnya di menu [Sekolah Juara](sekolah-juara.html)!";
     }
 
+    // 14.5 UNIT PENDIDIKAN ACF EDUHUB
+    if ($q === 'unit pendidikan' || strpos($q, 'unit pendidikan') !== false || $q === 'sekolah acf' || $q === 'unit sekolah' || $q === 'unit') {
+        return "🏫 **3 Pilar Unit Pendidikan ACF Eduhub**:\n\n" .
+               "ACF Eduhub mengelola 3 unit pendidikan utama yang menjangkau kebutuhan pendidikan Indonesia:\n\n" .
+               "1. 🏆 **Sekolah Juara (SD)**\n" .
+               "   Jaringan 10 unit Sekolah Dasar formal berkarakter islami (*Kurikulum Langit*, tahfidz & kepemimpinan) bagi anak-anak Indonesia dengan biaya terjangkau.\n" .
+               "   🔗 Pelajari lebih lanjut: [Sekolah Juara](sekolah-juara.html)\n\n" .
+               "2. 📖 **Sekolah Daya Setara (PKBM)**\n" .
+               "   7 unit Pusat Kegiatan Belajar Masyarakat non-formal di berbagai wilayah (Bandung Raya, Sukabumi, Indramayu, Pangandaran, Jayapura) untuk jenjang kesetaraan **Paket B (setara SMP)** dan **Paket C (setara SMA)** dengan biaya terjangkau.\n" .
+               "   🔗 Pelajari lebih lanjut: [Sekolah Daya Setara](sekolah-daya-setara.html)\n\n" .
+               "3. 👩‍🏫 **Guruverse.ID**\n" .
+               "   Platform digital pengembangan kompetensi dan pelatihan pedagogik modern bagi lebih dari 2.000+ guru di seluruh Indonesia.\n" .
+               "   🔗 Pelajari lebih lanjut: [Guruverse.ID](https://www.guruverse.id/)\n\n" .
+               "Sahabat Ceria juga bisa membaca ulasan lengkap seluruh unit di halaman [Unit Pendidikan](unit-pendidikan.html) yaa! ✨";
+    }
+
     // 14. JENJANG PENDIDIKAN
     if (
         (strpos($q, 'jenjang') !== false || strpos($q, 'tingkat') !== false || strpos($q, 'smp') !== false || strpos($q, 'smk') !== false || strpos($q, 'sma') !== false || strpos($q, 'kelas') !== false || strpos($q, 'hanya sd') !== false || strpos($q, 'cuma sd') !== false) &&
@@ -631,8 +647,7 @@ function getSmartFallbackReply($query) {
     // 30. DEFAULT NATURAL NYAMBUNG
     return "Terima kasih udah nyapa Ceri-A ya, Sahabat Ceria! 😊\n\n" +
            "Biar makin gampang, kamu bisa pilih topik yang pengen kamu ketahui nih:\n\n" +
-           "• 🏫 **Sekolah Juara (SD)**: Info pendaftaran & brosur 10 cabang unit\n" +
-           "• 📖 **Sekolah Daya Setara (PKBM)**: Paket B & Paket C\n" +
+           "• 🏫 **Unit Pendidikan**: Sekolah Juara (SD), Sekolah Daya Setara (PKBM), & Guruverse.ID\n" +
            "• 📚 **Program Layanan**: 7 program pendidikan unggulan yayasan\n" +
            "• 🙋‍♀️ **Jadi Relawan**: Gabung bareng komunitas Sahabat Eduhub\n" +
            "• 💖 **Cara Donasi**: Rekening transfer & QRIS resmi yayasan\n" +

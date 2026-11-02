@@ -88,7 +88,7 @@ Gaya Komunikasi & Persona:
      * Sampaikan dengan ramah dan santai bahwa biayanya sangat terjangkau.
      * Untuk rincian lengkap mengenai biaya formulir pendaftaran, uang pangkal, SPP bulanan, maupun informasi kuota beasiswa di unit kota tujuan, arahkan langsung untuk konfirmasi ke admin via WhatsApp di +62 851-7979-7661.
 8. DATA & ATURAN SEBARAN SEKOLAH DAYA SETARA (PKBM CERIA) (SANGAT PENTING):
-   - Sekolah Daya Setara adalah unit pendidikan non-formal (PKBM Ceria) binaan ACF Eduhub untuk jenjang Paket B (setara SMP) dan Paket C (setara SMA) serta pelatihan keterampilan vokasi kerja siap pakai dengan biaya terjangkau.
+   - Sekolah Daya Setara adalah unit pendidikan non-formal (PKBM Ceria) binaan ACF Eduhub khusus untuk jenjang Paket B (setara SMP) dan Paket C (setara SMA) dengan biaya terjangkau (hanya Paket B dan C, tidak ada program vokasi).
    - Sekolah Daya Setara memiliki TOTAL 7 UNIT / TITIK di Indonesia sesuai Peta Sebaran resmi di website:
      * BANDUNG RAYA (TOTAL 3 UNIT):
        1. Sekolah Daya Setara Ngamprah (Kab. Bandung Barat)
@@ -122,7 +122,7 @@ Gaya Komunikasi & Persona:
       1. Program Beasiswa & Keberlanjutan Sekolah Juara (Divisi: Sekolah Juara)
          - Mendukung operasional & beasiswa 10 unit Sekolah Juara bagi anak dhuafa berprestasi.
       2. Kesejahteraan Guru & Operasional Sekolah Daya Setara (Divisi: Sekolah Daya Setara)
-         - Kesejahteraan tutor & operasional 7 PKBM Daya Setara (Paket B, C, & vokasi kerja mandiri).
+         - Kesejahteraan tutor & operasional 7 PKBM Daya Setara (Paket B & Paket C).
       3. Layanan Pascabencana (Divisi: Guruverse.ID & ACF Educare)
          - Respons psikososial anak & guru terdampak, sekolah darurat, serta bantuan dasar pangan/sandang/papan.
       4. Kesejahteraan Ekosistem Sekolah (Divisi: ACF Educare)
@@ -213,7 +213,7 @@ Gaya Komunikasi & Persona:
         id: 'PRG-02',
         title: 'Kesejahteraan Guru & Operasional Sekolah Daya Setara',
         divisi: 'Sekolah Daya Setara',
-        quote: 'Mendukung kesejahteraan tutor/guru dan operasional PKBM Sekolah Daya Setara (Paket B, C, & vokasi mandiri).'
+        quote: 'Mendukung kesejahteraan tutor/guru dan operasional PKBM Sekolah Daya Setara (Paket B & Paket C).'
       },
       {
         id: 'PRG-03',
@@ -587,31 +587,31 @@ Gaya Komunikasi & Persona:
                "1. 📍 **Sekolah Daya Setara Ngamprah** (Kab. Bandung Barat)\n" +
                "2. 📍 **Sekolah Daya Setara Lembang** (Kab. Bandung Barat)\n" +
                "3. 📍 **Sekolah Daya Setara Ujungberung** (Kota Bandung)\n\n" +
-               "Ketiga unit ini melayani pendidikan kesetaraan Paket B (setara SMP) dan Paket C (setara SMA) serta pelatihan vokasi siap kerja dengan sistem belajar yang fleksibel.\n\n" +
+               "Ketiga unit ini melayani pendidikan kesetaraan Paket B (setara SMP) dan Paket C (setara SMA) dengan sistem belajar yang fleksibel.\n\n" +
                "Sahabat Ceria juga bisa melihat dokumentasi dan peta sebarannya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html), atau kalau mau info pendaftaran bisa langsung kontak admin di WhatsApp **+62 851-7979-7661** yaa! 😊";
       }
 
       if (q.includes('sukabumi') || q.includes('cisolok')) {
         return "🏫 **Sekolah Daya Setara di Sukabumi**:\n\n" +
-               "Untuk wilayah Sukabumi, unit kami adalah **Sekolah Daya Setara Cisolok** yang melayani program kesetaraan Paket B dan C serta vokasi mandiri.\n\n" +
+               "Untuk wilayah Sukabumi, unit kami adalah **Sekolah Daya Setara Cisolok** yang melayani program kesetaraan Paket B (setara SMP) dan Paket C (setara SMA).\n\n" +
                "Sahabat Ceria bisa cek info lengkapnya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
       }
 
       if (q.includes('indramayu') || q.includes('arahan')) {
         return "🏫 **Sekolah Daya Setara di Indramayu**:\n\n" +
-               "Untuk wilayah Indramayu, unit kami adalah **PKBM Ceria Arahan** yang melayani program kesetaraan Paket B dan C serta vokasi mandiri.\n\n" +
+               "Untuk wilayah Indramayu, unit kami adalah **PKBM Ceria Arahan** yang melayani program kesetaraan Paket B (setara SMP) dan Paket C (setara SMA).\n\n" +
                "Sahabat Ceria bisa cek info lengkapnya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
       }
 
       if (q.includes('pangandaran') || q.includes('padaherang')) {
         return "🏫 **Sekolah Daya Setara di Pangandaran**:\n\n" +
-               "Untuk wilayah Pangandaran, unit kami adalah **PKBM Ceria Padaherang** yang melayani program kesetaraan Paket B dan C serta vokasi mandiri.\n\n" +
+               "Untuk wilayah Pangandaran, unit kami adalah **PKBM Ceria Padaherang** yang melayani program kesetaraan Paket B (setara SMP) dan Paket C (setara SMA).\n\n" +
                "Sahabat Ceria bisa cek info lengkapnya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
       }
 
       if (q.includes('jayapura') || q.includes('papua')) {
         return "🏫 **Sekolah Daya Setara di Jayapura**:\n\n" +
-               "Untuk wilayah Jayapura (Papua), unit kami adalah **Sekolah Daya Setara Jayapura** yang melayani program kesetaraan Paket B dan C serta vokasi mandiri.\n\n" +
+               "Untuk wilayah Jayapura (Papua), unit kami adalah **Sekolah Daya Setara Jayapura** yang melayani program kesetaraan Paket B (setara SMP) dan Paket C (setara SMA).\n\n" +
                "Sahabat Ceria bisa cek info lengkapnya di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
       }
 
@@ -633,7 +633,7 @@ Gaya Komunikasi & Persona:
         q.includes('mana saja')
       ) {
         return "🗺️ **Peta Sebaran 7 Unit Sekolah Daya Setara (PKBM Ceria)**:\n\n" +
-               "Sekolah Daya Setara hadir di **7 titik/unit** di Indonesia untuk memperluas akses pendidikan kesetaraan dan vokasi mandiri nih, Sahabat Ceria:\n\n" +
+               "Sekolah Daya Setara hadir di **7 titik/unit** di Indonesia untuk memperluas akses pendidikan kesetaraan Paket B dan Paket C nih, Sahabat Ceria:\n\n" +
                "• **Bandung Raya (3 Unit)**:\n" +
                "  1. 📍 **Sekolah Daya Setara Ngamprah** (Kab. Bandung Barat)\n" +
                "  2. 📍 **Sekolah Daya Setara Lembang** (Kab. Bandung Barat)\n" +
@@ -646,7 +646,7 @@ Gaya Komunikasi & Persona:
                "  6. 📍 **PKBM Ceria Padaherang**\n\n" +
                "• **Jayapura (1 Unit)**:\n" +
                "  7. 📍 **Sekolah Daya Setara Jayapura**\n\n" +
-               "Semua unit siap memfasilitasi Paket B (setara SMP) dan Paket C (setara SMA) serta keterampilan kerja. Info lengkapnya bisa dicek di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
+               "Semua unit siap memfasilitasi Paket B (setara SMP) dan Paket C (setara SMA). Info lengkapnya bisa dicek di halaman [Sekolah Daya Setara](sekolah-daya-setara.html) yaa! ✨";
       }
     }
 
@@ -669,7 +669,7 @@ Gaya Komunikasi & Persona:
     ) {
       return "ℹ️ **Jenjang Pendidikan di Sekolah Juara**:\n\n" +
              "Perlu diingat ya Sahabat Ceria, Sekolah Juara **HANYA ada jenjang Sekolah Dasar (SD)** yaitu 10 unit SD Juara.\n\n" +
-             "Di Sekolah Juara **tidak ada jenjang SMP maupun SMA/SMK**. Tapi kalau Sahabat Ceria butuh pendidikan kesetaraan lanjutan (setara SMP/Paket B dan setara SMA/Paket C serta keahlian vokasi kerja mandiri), ACF Eduhub memfasilitasinya lewat unit **PKBM Sekolah Daya Setara**!";
+             "Di Sekolah Juara **tidak ada jenjang SMP maupun SMA/SMK**. Tapi kalau Sahabat Ceria butuh pendidikan kesetaraan lanjutan (setara SMP/Paket B dan setara SMA/Paket C), ACF Eduhub memfasilitasinya lewat unit **PKBM Sekolah Daya Setara**!";
     }
 
     // 15. APA ITU SEKOLAH JUARA
@@ -682,9 +682,9 @@ Gaya Komunikasi & Persona:
     // 16. APA ITU SEKOLAH DAYA SETARA / PKBM
     if (q.includes('daya setara') || q.includes('pkbm') || q.includes('kejar paket') || q.includes('paket c') || q.includes('paket b') || q.includes('kesetaraan')) {
       return "📖 **Mengenal Sekolah Daya Setara (PKBM)**:\n\n" +
-             "Sekolah Daya Setara adalah 7 unit Pusat Kegiatan Belajar Masyarakat (PKBM) non-formal binaan ACF Eduhub buat jenjang **Paket B (setara SMP)** dan **Paket C (setara SMA)** serta vokasi mandiri dengan biaya terjangkau.\n\n" +
+             "Sekolah Daya Setara adalah 7 unit Pusat Kegiatan Belajar Masyarakat (PKBM) non-formal binaan ACF Eduhub buat jenjang **Paket B (setara SMP)** dan **Paket C (setara SMA)** dengan biaya terjangkau.\n\n" +
              "Sekolah Daya Setara tersebar di 7 titik di Indonesia, yaitu **Bandung Raya (Ngamprah, Lembang, Ujungberung)**, Sukabumi (Cisolok), Indramayu (Arahan), Pangandaran (Padaherang), dan Jayapura.\n\n" +
-             "Program ini hadir buat ngebantu anak-anak putus sekolah dan masyarakat umum biar bisa dapet ijazah resmi negara dan keterampilan kerja mandiri lho, Sahabat Ceria! Info selengkapnya ada di menu [Sekolah Daya Setara](sekolah-daya-setara.html) yaa!";
+             "Program ini hadir buat ngebantu anak-anak putus sekolah dan masyarakat umum biar bisa dapet ijazah resmi negara lho, Sahabat Ceria! Info selengkapnya ada di menu [Sekolah Daya Setara](sekolah-daya-setara.html) yaa!";
     }
 
     // 17. APA ITU GURUVERSE.ID
@@ -789,7 +789,7 @@ Gaya Komunikasi & Persona:
     return "Terima kasih udah nyapa Ceri-A ya, Sahabat Ceria! 😊\n\n" +
            "Biar makin gampang, kamu bisa pilih topik yang pengen kamu ketahui nih:\n\n" +
            "• 🏫 **Sekolah Juara (SD)**: Info pendaftaran & brosur 10 cabang unit\n" +
-           "• 📖 **Sekolah Daya Setara (PKBM)**: Paket B & C serta pelatihan vokasi\n" +
+           "• 📖 **Sekolah Daya Setara (PKBM)**: Paket B & Paket C\n" +
            "• 📚 **Program Layanan**: 7 program pendidikan unggulan yayasan\n" +
            "• 🙋‍♀️ **Jadi Relawan**: Gabung bareng komunitas Sahabat Eduhub\n" +
            "• 💖 **Cara Donasi**: Rekening transfer & QRIS resmi yayasan\n" +
@@ -1014,7 +1014,7 @@ Gaya Komunikasi & Persona:
               <ul class="cherry-list">
                 <li>💖 <strong>Cara & Metode Donasi</strong></li>
                 <li>🏫 <strong>Sekolah Juara (SD)</strong>: Info PPDB, Pendaftaran & Brosur</li>
-                <li>📖 <strong>Sekolah Daya Setara (PKBM)</strong>: Paket B, Paket C & Vokasi</li>
+                <li>📖 <strong>Sekolah Daya Setara (PKBM)</strong>: Paket B & Paket C</li>
                 <li>👩‍🏫 <strong>Guruverse.ID</strong>: Pelatihan Guru Indonesia</li>
                 <li>📚 <strong>Program Layanan</strong>: Inisiatif Pendidikan ACF Eduhub</li>
                 <li>🤝 <strong>Kemitraan CSR</strong>: Kolaborasi Program & Perusahaan</li>

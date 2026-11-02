@@ -807,8 +807,16 @@
 }
 
 /* ==========================================================================
-   7. RESPONSIVE MEDIA QUERIES (MOBILE) - EXACT MIRROR OF WHATSAPP
+   7. RESPONSIVE MEDIA QUERIES (MOBILE) - GENERAL CHATBOT UI
    ========================================================================== */
+@media (max-width: 768px) {
+  /* Sembunyikan toggle ukuran S/M/L di layar mobile & tablet */
+  .cherry-size-switcher,
+  .cherry-size-toggle {
+    display: none !important;
+  }
+}
+
 @media (max-width: 640px) {
   .cherry-trigger-btn {
     bottom: 20px;
@@ -832,18 +840,84 @@
   .cherry-trigger-tooltip {
     display: none;
   }
+
+  /* Sembunyikan toggle ukuran S/M/L di mobile */
+  .cherry-size-switcher,
+  .cherry-size-toggle {
+    display: none !important;
+  }
   
+  /* Ukuran General Chatbot Mobile */
   .cherry-chat-window,
   .cherry-chat-window.size-s,
   .cherry-chat-window.size-m,
   .cherry-chat-window.size-l {
-    right: 14px;
-    bottom: 82px;
-    width: calc(100vw - 28px);
-    max-width: 420px;
-    height: calc(100vh - 110px);
-    max-height: 540px;
-    border-radius: 16px;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 82px !important;
+    top: auto !important;
+    width: auto !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
+    height: calc(100dvh - 100px) !important;
+    max-height: calc(100vh - 100px) !important;
+    min-height: 400px !important;
+    border-radius: 18px !important;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25), 0 4px 16px rgba(125, 34, 128, 0.18) !important;
+    transform-origin: bottom right;
+  }
+
+  /* Header Mobile: Bersih & Lega (Avatar + Title di kiri, tombol X di kanan) */
+  .cherry-header,
+  .cherry-chat-header {
+    padding: 10px 14px !important;
+  }
+
+  .cherry-header-avatar,
+  .cherry-avatar-box {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .cherry-name,
+  .cherry-bot-name {
+    font-size: 0.9rem !important;
+  }
+
+  /* Chat Body & Typography General Mobile */
+  .cherry-chat-window.size-s .cherry-chat-body,
+  .cherry-chat-window.size-s .cherry-body,
+  .cherry-chat-window.size-m .cherry-chat-body,
+  .cherry-chat-window.size-m .cherry-body,
+  .cherry-chat-window.size-l .cherry-chat-body,
+  .cherry-chat-window.size-l .cherry-body,
+  .cherry-body,
+  .cherry-chat-body {
+    font-size: 0.9rem !important;
+    padding: 12px 14px !important;
+    gap: 12px !important;
+  }
+
+  .cherry-bubble {
+    max-width: 86% !important;
+    padding: 10px 14px !important;
+  }
+
+  /* Footer & Input Bar Mobile */
+  .cherry-footer,
+  .cherry-chat-footer {
+    padding: 10px 14px 12px 14px !important;
+    gap: 8px !important;
+  }
+
+  .cherry-input {
+    padding: 10px 16px !important;
+    font-size: 0.88rem !important;
+  }
+
+  .cherry-send-btn {
+    width: 42px !important;
+    height: 42px !important;
   }
 }
 

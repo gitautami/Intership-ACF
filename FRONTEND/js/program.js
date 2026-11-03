@@ -384,6 +384,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Jalankan render program dinamis
   renderDynamicPrograms();
 
+  // Inisialisasi animasi masuk tulisan banner program dari bawah (slide-up)
+  initProgramBannerAnimation();
+
   // Handle deep link hash on page load if valid
   if (window.location.hash && window.location.hash.length > 1) {
     try {
@@ -395,4 +398,47 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (err) {}
   }
+
+/**
+ * Program Banner Content Entrance Animation (Slide up from bottom)
+ * Mengaktifkan efek teks masuk dari bawah dan dapat berulang saat di-scroll kembali ke atas.
+ */
+function initProgramBannerAnimation() {
+  const banner = document.querySelector('.program-header-banner');
+  if (!banner) return;
+
+  const animatedElements = banner.querySelectorAll('.section-label, .program-banner-title, .program-banner-desc');
+  if (animatedElements.length === 0) return;
+
+  function triggerBannerAnimation() {
+    animatedElements.forEach(el => {
+      el.style.animation = 'none';
+      void el.offsetHeight; // force reflow
+      el.style.animation = '';
+    });
+    banner.classList.add('is-animated');
+  }
+
+  // Initial trigger
+  triggerBannerAnimation();
+
+  if ('IntersectionObserver' in window) {
+    let hasLeft = false;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (hasLeft) {
+            triggerBannerAnimation();
+          }
+        } else {
+          hasLeft = true;
+          banner.classList.remove('is-animated');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    observer.observe(banner);
+  }
+}
+
 });

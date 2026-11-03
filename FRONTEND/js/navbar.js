@@ -382,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTranslateCookie(lang);
             syncButtonStates(lang);
             applyInstantUITranslation(lang);
+            try { window.dispatchEvent(new CustomEvent('acfLanguageChanged', { detail: { lang } })); } catch (e) {}
 
             if (lang === 'id') {
                 // Bersihkan translasi seketika dan reload ke tampilan asli Bahasa Indonesia

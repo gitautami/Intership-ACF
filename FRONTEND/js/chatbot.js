@@ -16,6 +16,23 @@
   const STORAGE_KEY_API = 'cherry_gemini_api_key';
   let chatHistory = [];
   let isAwaitingResponse = false;
+  // Bilingual helper
+  function getCurrentLang() {
+    return (localStorage.getItem('acf_language') || 'id').toLowerCase();
+  }
+
+  function isExplicitEnglish(text) {
+    if (!text) return false;
+    const t = text.toLowerCase().trim();
+    return /\b(hello|hi|hey|good morning|good afternoon|good evening|how to|where is|what is|tell me|can i|who are you|thank you|thanks|donate|donation|volunteer|partner|partnership|scholarship|school|brochure|admission|address|contact|fee|cost)\b/i.test(t);
+  }
+
+  function getCurrentChatLanguage(userText) {
+    const stored = getCurrentLang();
+    if (stored === 'en') return 'en';
+    if (userText && isExplicitEnglish(userText)) return 'en';
+    return 'id';
+  }
 
   // Resolve API Base URL for backend chat endpoint
   function getChatApiUrl() {
@@ -55,7 +72,7 @@
   // Panggilan langsung ke Google Gemini API dari browser
   async function callGeminiClientSide(userText, apiKey) {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const systemPrompt = `Kamu adalah "Ceri-A", asisten AI resmi yang super ramah, ceria, hangat, dan bersahabat dari yayasan pendidikan ACF Eduhub.
+    const systemPromptId = `Kamu adalah "Ceri-A", asisten AI resmi yang super ramah, ceria, hangat, dan bersahabat dari yayasan pendidikan ACF Eduhub.
 Warna identitasmu dan ACF Eduhub adalah Ungu (#7D2280) dan Kuning Emas (#F5A623).
 
 Gaya Komunikasi & Persona:
@@ -145,6 +162,99 @@ Gaya Komunikasi & Persona:
       WAJIB LANGSUNG berikan tautan formulir pendaftaran online di halaman [Jadi Relawan](form-relawan.html) beserta 4 pilihan bidangnya (Pengajar/Tutor, Fasilitator Event, Dokumentasi & Desain, Mentor Karakter)!
       DILARANG KERAS menyuruh pengguna menghubungi WhatsApp untuk meminta formulir!
 13. Selalu nyambung dengan pertanyaan apa pun, komunikatif, solutif, dan gunakan emoji yang pas.`;
+
+    const systemPromptEn = `You are "Ceri-A", the official AI assistant of the ACF Eduhub educational foundation. You are super friendly, cheerful, warm, and helpful.
+Your signature colors and ACF Eduhub's identity colors are Purple (#7D2280) and Golden Yellow (#F5A623).
+
+Communication Style & Persona:
+1. Warmly address the user as: "Cheerful Friend".
+2. Refer to yourself as "Ceri-A" or "I".
+3. Respond fluently and naturally in English with a warm, friendly, modern, and helpful tone (like a friendly modern edutech coordinator), polite, conversational, not stiff or bureaucratic.
+4. GREETING RULE (IMPORTANT):
+   If the user simply gives a casual greeting (like 'hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'test', etc.), reply concisely and warmly:
+   "Hello Cheerful Friend! 👋 How can Ceri-A help you today? 😊"
+   (DO NOT dump long lists of schools, donations, or other programs upon a mere greeting).
+5. PPDB & SEKOLAH JUARA ADMISSION RULE (IMPORTANT):
+   If asked about admission, registration, application forms, or brochures for Sekolah Juara (e.g. 'admission batam juara school'):
+   DIRECTLY provide the online registration link and brochure download link for the requested unit. DO NOT write long lists of required physical documents (such as SKTM, Family Card, or birth certificate).
+   Official links:
+   - SD Juara Batam: Form [Online Registration](http://bit.ly/SPMB2728-SDJBATAM) | Brochure [Download Brochure](sekolah-juara.html?brosur=batam)
+   - SD Juara Cilegon: Form [Online Registration](https://bit.ly/SPMB2728SDJUARACILEGON) | Brochure [Download Brochure](sekolah-juara.html?brosur=cilegon)
+   - SD Juara Jakarta Barat: Form [Online Registration](https://forms.gle/7WoWewcTqsPCZ4Aq7) | Brochure [Download Brochure](sekolah-juara.html?brosur=jakbar)
+   - SD Juara Jakarta Timur: Form [Online Registration](https://bit.ly/PPDBSDJuaraJakartaTimur20272028) | Brochure [Download Brochure](sekolah-juara.html?brosur=jaktim)
+   - SD Juara Jakarta Utara: Form [Online Registration](https://bit.ly/SPMBINDENSDITJAKUT2728) | Brochure [Download Brochure](sekolah-juara.html?brosur=jakut)
+   - SD Juara Persa Medan: Form [Online Registration](https://linktr.ee/sdspersa) | Brochure [Download Brochure](sekolah-juara.html?brosur=medan)
+   - SD Juara Jayapura: Form [Online Registration](https://bit.ly/SPMBSDJUARAJayapura) | Brochure [Download Brochure](sekolah-juara.html?brosur=jayapura)
+   - SD Juara Semarang: Form [Online Registration](https://bit.ly/ForPeminatPPDB20272028) | Brochure [Download Brochure](sekolah-juara.html?brosur=semarang)
+   - SD Juara Surabaya: Form [Online Registration](https://s.id/spmb-sdjuarasurabaya27-28) | Brochure [Download Brochure](sekolah-juara.html?brosur=surabaya)
+   - SD Juara AL Hakim Tangerang: Form [Online Registration](https://bit.ly/DaftarIndenAlhakim2728) | Brochure [Download Brochure](sekolah-juara.html?brosur=tangerang)
+6. TUITION & LEVEL RULES (IMPORTANT):
+   - Sekolah Juara ONLY provides elementary school (SD - Sekolah Dasar). There is NO junior high school (SMP) or senior high school (SMA/SMK).
+   - If asked about FEES / TUITION (cost, registration fee, monthly fee, whether it is free, building fees, etc.) for Sekolah Juara or PKBM Sekolah Daya Setara:
+     * STRICTLY FORBIDDEN to use phrases like "not free" or "subsidized by foundation" (or variations like "subsidized by the foundation", "not free of charge", etc.).
+     * Warmly and pleasantly explain that the education is very affordable.
+     * For full fee breakdowns (registration forms, admission fee, monthly tuition) and scholarship quota details at the target branch, direct the user to confirm with our admin via WhatsApp at +62 851-7979-7661.
+7. SEKOLAH DAYA SETARA (PKBM CERIA) DISTRIBUTION (VERY IMPORTANT):
+   - Sekolah Daya Setara is a non-formal community learning center (PKBM Ceria) guided by ACF Eduhub specifically for Paket B (equivalent to junior high school / 7th-9th grade) and Paket C (equivalent to senior high school / 10th-12th grade) at affordable rates (Package B and C only, no vocational courses).
+   - Total of 7 UNITS across Indonesia according to the official Distribution Map on the website:
+     * GREATER BANDUNG (TOTAL 3 UNITS):
+       1. Sekolah Daya Setara Ngamprah (West Bandung Regency)
+       2. Sekolah Daya Setara Lembang (West Bandung Regency)
+       3. Sekolah Daya Setara Ujungberung (Bandung City)
+     * SUKABUMI (1 UNIT): Sekolah Daya Setara Cisolok
+     * INDRAMAYU (1 UNIT): PKBM Ceria Arahan
+     * PANGANDARAN (1 UNIT): PKBM Ceria Padaherang
+     * JAYAPURA (1 UNIT): Sekolah Daya Setara Jayapura
+   - IF ASKED HOW MANY OR WHERE UNITS ARE IN BANDUNG:
+     DIRECTLY ANSWER CLEARLY that in Greater Bandung there are 3 UNITS:
+     1. Sekolah Daya Setara Ngamprah (West Bandung Regency)
+     2. Sekolah Daya Setara Lembang (West Bandung Regency)
+     3. Sekolah Daya Setara Ujungberung (Bandung City)
+     Provide link to [Sekolah Daya Setara](sekolah-daya-setara.html).
+   - IF ASKED ABOUT OTHER CITIES OR OVERALL DISTRIBUTION:
+     Mention the 7 units above accurately and warmly.
+8. HEAD OFFICE ADDRESS & OFFICIAL CONTACT (VERY IMPORTANT):
+   - Official Head Office Address of ACF Eduhub as stated in the website footer:
+     🏢 Head Office: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275, Indonesia
+     🗺️ Google Maps: https://maps.app.goo.gl/GZM6nCS82CcettDcA
+     📞 WhatsApp / Phone: +62 851-7979-7661
+     ✉️ Email: welcome@acf.or.id
+   - STRICTLY FORBIDDEN to invent an address in South Jakarta (such as Tebet or others) or any city other than Bandung! The official head office of ACF Eduhub is in BANDUNG (Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275).
+   - If the user asks for office address, location, where ACF office is, or contact info:
+     DIRECTLY answer clearly that ACF Eduhub Head Office is located at Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, Jawa Barat 40275, include Google Maps link [Open in Google Maps](https://maps.app.goo.gl/GZM6nCS82CcettDcA) and the contacts above!
+9. 7 SERVICE PROGRAMS OF ACF EDUHUB (VERY IMPORTANT):
+   - NEVER confuse or swap "Service Programs" with "Education Units"!
+   - ACF Eduhub's Education Units are 3 units: Sekolah Juara (Elementary), Sekolah Daya Setara (PKBM), and Guruverse.ID.
+   - Meanwhile, ACF Eduhub's SERVICE PROGRAMS are 7 FLAGSHIP PROGRAMS grouped into 6 parent categories:
+     1. Juara School Scholarship & Sustainability Program (Sekolah Juara Division)
+        - Supports operational and scholarship quotas for 10 Sekolah Juara units for underprivileged high-achieving children.
+     2. Teacher Welfare & Community Learning Center Operations (Sekolah Daya Setara Division)
+        - Tutor welfare & operations for 7 PKBM Daya Setara units (Package B & Package C).
+     3. Post-Disaster Education Services (Guruverse.ID & ACF Educare Division)
+        - Psychosocial support for affected children & teachers, emergency schools, and basic food/clothing/shelter aid.
+     4. School Ecosystem Welfare (ACF Educare Division)
+        - Integrated support for honorary teachers, school caretakers, & underprivileged families surrounding schools.
+     5. International Humanitarian Relief (ACF Educare Division)
+        - Distribution of food aid & emergency needs for children in global crisis/conflict regions (such as Gaza).
+     6. Education Outlook — Annual Education Forum (Guruverse.ID Division)
+        - Hybrid annual forum bringing together policymakers, practitioners, & academics to discuss national education trends.
+     7. School Management Consultation & Mentorship (Guruverse.ID Division)
+        - Consultation on school management, SPMB/PPDB strategy, and feasibility studies for founding education units.
+   - If asked about "service programs", "acf programs", "what programs do you have", etc.:
+     MUST list the 7 Service Programs above with numbers and respective divisions warmly and concisely, and provide a link to [Service Programs](program-layanan.html)!
+10. CSR PARTNERSHIP FORM RULE (VERY IMPORTANT):
+    - If asked about "partner", "become a partner", "partnership", "collaboration", "CSR", "sponsor", or PARTNERSHIP FORM (e.g. 'how to become a partner', 'partnership form', 'csr collaboration', etc.):
+      MUST DIRECTLY provide the online registration form link at [Become a Program Partner](form-mitra.html) along with a concise step-by-step guide (fill company/institution profile and choose preferred program like Classroom Scholarship, Green School, Learning Facilities, etc.)!
+      STRICTLY FORBIDDEN to merely tell the user to contact WhatsApp without providing the link to [Become a Program Partner](form-mitra.html)!
+11. VOLUNTEER REGISTRATION FORM RULE (SAHABAT EDUHUB) (VERY IMPORTANT):
+    - If asked about "volunteer", "relawan", "sahabat eduhub", or VOLUNTEER FORM (e.g. 'how to volunteer', 'volunteer form', 'join as volunteer', etc.):
+      MUST DIRECTLY provide the online registration form link at [Become a Volunteer](form-relawan.html) along with the 4 field options (Teacher/Tutor, Event Facilitator, Documentation & Design, Character Mentor)!
+      STRICTLY FORBIDDEN to tell the user to request forms via WhatsApp!
+12. Always keep responses relevant, communicative, solution-driven, and use appropriate friendly emojis.`;
+
+    const activeLang = getCurrentChatLanguage(userText);
+    const systemPrompt = (activeLang === 'en') ? systemPromptEn : systemPromptId;
+
 
     const contents = [];
     chatHistory.slice(-6).forEach(turn => {
@@ -450,7 +560,398 @@ Gaya Komunikasi & Persona:
            "Setelah formulir terkirim di halaman [Jadi Relawan](form-relawan.html), tim kami bakal menghubungi kamu untuk sesi orientasi komunitas yang seru! Yuk bareng Ceri-A jadi bagian dari perubahan positif! ✨";
   }
 
+
+  function formatDynamicProgramsReplyEn() {
+    const list = getDynamicPrograms();
+    let reply = "📚 **ACF Eduhub 7 Service Programs**:\n\n" +
+                "Here are the 7 educational service initiatives managed by ACF Eduhub, Cheerful Friend:\n\n";
+
+    list.forEach((p, idx) => {
+      const num = idx + 1;
+      const title = p.title || 'Service Program';
+      const divisi = p.divisi ? ` *(Division: ${p.divisi})*` : '';
+      const desc = p.quote || p.categoryDesc || '';
+      reply += `${num}. 🎯 **${title}**${divisi}\n`;
+      if (desc) {
+        reply += `   ${desc}\n`;
+      }
+    });
+
+    reply += "\nAll of these programs are integrated into the ACF Eduhub ecosystem. You can explore more or apply for partnership on the [Service Programs](program-layanan.html) page! 😊";
+    return reply;
+  }
+
+  function formatDynamicArticlesReplyEn(limit = 4) {
+    const list = getDynamicArticles(limit);
+    let reply = "📰 **Latest ACF Eduhub Articles & News**:\n\n" +
+                "Here are the latest news and stories published on our website, Cheerful Friend:\n\n";
+
+    list.forEach((art, idx) => {
+      const num = idx + 1;
+      const title = art.title || 'ACF Educational Story';
+      const cat = art.categoryLabel || (art.category && art.category.includes('juara') ? 'Juara School Article' : 'Sekolah Daya Setara Article');
+      const date = art.date ? ` • 📅 ${art.date}` : '';
+      const link = art.id ? `kabar.html?id=${encodeURIComponent(art.id)}` : 'kabar.html';
+      const excerpt = art.excerpt ? `\n   ${art.excerpt.substring(0, 115).trim()}...` : '';
+
+      reply += `${num}. 📝 **[${title}](${link})**\n   🏷️ *${cat}*${date}${excerpt}\n\n`;
+    });
+
+    reply += "You can read the full articles by clicking any link above or visiting the [News & Articles](kabar.html) page! ✨";
+    return reply;
+  }
+
+  function getSekolahJuaraPpdbReplyEn(query) {
+    const q = (query || '').toLowerCase();
+
+    for (const s of SJ_SCHOOLS) {
+      const matchKey = q.includes(s.key);
+      const matchAlias = s.aliases && s.aliases.some(a => q.includes(a));
+      if (matchKey || matchAlias) {
+        return `🎒 **Admission & Brochure Info for ${s.name}**:\n\n` +
+               `Certainly, Cheerful Friend! Here are the official links for online registration and the brochure for **${s.name}**:\n\n` +
+               `• 📝 **Registration Form**: [Click Here for Online Registration](${s.daftar})\n` +
+               `• 📖 **School Brochure**: [Open & Download Brochure PDF](${s.brosur})\n\n` +
+               `You can also explore more details on the [Sekolah Juara](sekolah-juara.html) page. If you have questions regarding fees or schedules, feel free to chat with our admin on WhatsApp at **+62 851-7979-7661**! 😊`;
+      }
+    }
+
+    let reply = "🎒 **Admission & Brochure Links for Sekolah Juara (Elementary)**:\n\n" +
+                "Hello Cheerful Friend! Which branch would you like to enroll in? Feel free to click the online registration or brochure link for your chosen branch below:\n\n";
+
+    SJ_SCHOOLS.forEach((s, idx) => {
+      reply += `${idx + 1}. **${s.name}**\n` +
+               `   • 📝 [Online Registration](${s.daftar}) | 📖 [Download Brochure](${s.brosur})\n\n`;
+    });
+
+    reply += "You can read detailed profiles of each unit on the [Sekolah Juara](sekolah-juara.html) page. If you have any further questions, feel free to ask Ceri-A! ✨";
+    return reply;
+  }
+
+  function getMitraProgramReplyEn() {
+    return "🤝 **Program Partner Application Form (CSR & Collaboration)**:\n\n" +
+           "We would love to collaborate with you, Cheerful Friend! Ceri-A is thrilled by your interest in partnering with ACF Eduhub. 😊\n\n" +
+           "You or your company/institution can submit a partnership application online right here:\n" +
+           "📝 **[Fill Out the Program Partner Form](form-mitra.html)**\n\n" +
+           "**Partnership Steps & Workflow:**\n" +
+           "1. Open the online form at [Become a Program Partner](form-mitra.html).\n" +
+           "2. Complete a brief profile of your company/institution and select the program of interest (*Classroom Scholarships*, *Green School*, *Learning Facilities*, *Student Nutrition*, etc.).\n" +
+           "3. Submit the form.\n" +
+           "4. The ACF Eduhub Partnership Team will promptly contact your designated PIC for proposal discussion and joint synergy.\n\n" +
+           "Would you like to discuss directly or request a formal proposal? Feel free to reach out via email at **welcome@acf.or.id** or chat with us on WhatsApp at **+62 851-7979-7661**! ✨";
+  }
+
+  function getRelawanReplyEn() {
+    return "🙋‍♀️ **Volunteer Application Form (Sahabat Eduhub)**:\n\n" +
+           "What a wonderful and noble initiative, Cheerful Friend! Together with the Sahabat Eduhub community, you can share inspiration and support children across Indonesia. 😊\n\n" +
+           "You can sign up as a volunteer online here:\n" +
+           "📝 **[Fill Out the Volunteer Application Form](form-relawan.html)**\n\n" +
+           "**Available Volunteer Categories:**\n" +
+           "• 📚 *Volunteer Teacher / Tutor* (Sekolah Juara & PKBM Daya Setara)\n" +
+           "• 🎪 *Educational Event & Activity Facilitator*\n" +
+           "• 📸 *Documentation, Photography, Video, & Creative Design*\n" +
+           "• 💡 *Inspirational Mentor & Character Development*\n\n" +
+           "Once your form is submitted on the [Become a Volunteer](form-relawan.html) page, our team will reach out with details for an orientation session. Let's create a positive impact together with Ceri-A! ✨";
+  }
+
+  function getLocalKnowledgeReplyEn(query) {
+    const raw = (query || '').trim();
+    const q = raw.toLowerCase();
+
+    // 0.1 PARTNER / CSR
+    if (
+      q.includes('mitra') || q.includes('kemitraan') || q.includes('csr') || q.includes('sponsor') ||
+      q.includes('partner') || q.includes('partnership') || q.includes('collaborat') ||
+      ((q.includes('form') || q.includes('apply') || q.includes('how to')) && (q.includes('company') || q.includes('corporat')))
+    ) {
+      return getMitraProgramReplyEn();
+    }
+
+    // 0.2 VOLUNTEER
+    if (
+      q.includes('relawan') ||
+      q.includes('volunteer') ||
+      q.includes('volunteering') ||
+      (q.includes('sahabat') && (q.includes('eduhub') || q.includes('join') || q.includes('form')))
+    ) {
+      return getRelawanReplyEn();
+    }
+
+    // 1. GREETINGS
+    const greetingsEn = [
+      'hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening',
+      'hiya', 'yo', 'sup', 'greetings', 'ceri-a', 'ceri', 'cherry', 'admin'
+    ];
+    if (
+      !q.includes('?') &&
+      !q.match(/\b(who|what|why|how|when|where|cost|fee|donate|volunteer|partner|school|program)\b/i) &&
+      (greetingsEn.includes(q) || q.match(/^(hello+|hi+|hey+|good\s*(morning|afternoon|evening)|hiya+)[\s!.,~]*$/i))
+    ) {
+      return "Hello Cheerful Friend! 👋 How can Ceri-A help you today? 😊";
+    }
+
+    // 2. HOW ARE YOU
+    if (q.includes('how are you') || q.includes('how are u') || q.includes('how do you do') || q.includes('how is it going')) {
+      return "Ceri-A is doing great and always cheerful! ✨\n\nHow are you doing today, Cheerful Friend? Wishing you a healthy, happy, and productive day! Is there anything you'd like to ask Ceri-A about ACF Eduhub?";
+    }
+
+    // 3. HOW TO DONATE
+    if (
+      (q.includes('how') || q.includes('way') || q.includes('can i') || q.includes('procedure') || q.includes('step') || q.includes('want to')) &&
+      (q.includes('donate') || q.includes('donation') || q.includes('transfer') || q.includes('payment') || q.includes('contribute'))
+    ) {
+      return "💖 **How to Donate to ACF Eduhub**:\n\n" +
+             "Thank you so much, Cheerful Friend, for your wonderful kindness! Your generosity brings smiles and bright futures to underprivileged children across Indonesia. Donating is simple:\n\n" +
+             "1. Visit the [Donation](donasi.html) page on our website.\n" +
+             "2. Choose the program you wish to support (e.g., *Juara School Scholarship*, *Student Nutrition*, or *Learning Facilities*).\n" +
+             "3. Enter your donation amount and basic details.\n" +
+             "4. Select your preferred payment method (Bank Transfer BCA, Mandiri, BRI, BSI, Virtual Account, or scan QRIS via GoPay, OVO, ShopeePay, DANA).\n" +
+             "5. Complete your transaction, and an official donation receipt will be provided.\n\n" +
+             "Need confirmation or manual transfer assistance? Chat with our admin on WhatsApp at **+62 851-7979-7661**! 😊";
+    }
+
+    // 4. PAYMENT METHODS / BANK ACCOUNTS
+    if (
+      q.includes('account') || q.includes('bank') || q.includes('qris') ||
+      ((q.includes('payment') || q.includes('transfer') || q.includes('method')) && (q.includes('donat') || q.includes('bca') || q.includes('mandiri') || q.includes('bri') || q.includes('bsi')))
+    ) {
+      return "💳 **Payment Methods & Donation Accounts**:\n\n" +
+             "Donating to ACF Eduhub is practical and flexible, Cheerful Friend:\n\n" +
+             "• **Instant QRIS**: Simply scan with BCA Mobile, Livin Mandiri, GoPay, OVO, Dana, ShopeePay, or LinkAja.\n" +
+             "• **Bank Transfer**: Available for Bank Mandiri, BCA, BRI, and BSI under **Yayasan Amal Khair Yasmin / ACF Eduhub**.\n" +
+             "• **Virtual Account (VA)**: Automatically verified upon donating via the [Donation](donasi.html) page.\n\n" +
+             "Need transfer assistance or receipt confirmation? Contact our admin on WhatsApp at **+62 851-7979-7661**!";
+    }
+
+    // 5. SECURITY / AUDIT / WTP
+    if (q.includes('safe') || q.includes('secure') || q.includes('trusted') || q.includes('audit') || q.includes('wtp') || q.includes('financial report') || q.includes('transparent')) {
+      return "🛡️ **Your Donation is 100% Safe & Trusted!**\n\n" +
+             "Rest assured, Cheerful Friend! ACF Eduhub is a legally registered foundation operating for over 10 years. Our financial reports are routinely audited by independent Public Accounting Firms and have consistently received the highest **Unqualified Opinion (WTP - Wajar Tanpa Pengecualian)** since 2024.\n\n" +
+             "Every contribution is directed towards subsidized school operations, student nutrition, and learning equipment for underprivileged children.";
+    }
+
+    // 6. DONATION GENERAL
+    if (q === 'donasi' || q === 'donate' || q.includes('donate') || q.includes('donation') || q.includes('donating')) {
+      return "💖 **Creating Impact Together with ACF Eduhub**:\n\n" +
+             "We are deeply grateful for your compassion, Cheerful Friend! Your support empowers thousands of underprivileged children to stay in school and achieve their dreams.\n\n" +
+             "Programs you can support:\n" +
+             "• 🏫 **Classroom Sponsorship**: Full one-year educational support for children in need.\n" +
+             "• 🍱 **Student Nutrition**: Wholesome daily meals to help children concentrate and learn happily.\n" +
+             "• 📖 **Learning & Vocational Tools**: School kits, laboratory apparatus, and skills training tools.\n\n" +
+             "Easily channel your kindness through the [Donation](donasi.html) page! ✨";
+    }
+
+    // 7. INQUIRY / HELP
+    if (
+      q.includes('may i ask') || q.includes('can i ask') || q.includes('help me') ||
+      q.includes('need info') || q.includes('question') || q === 'help' || q === 'info'
+    ) {
+      return "Certainly, Cheerful Friend! 😊 Feel free to ask anything you would like to know about Sekolah Juara (Elementary), admission & brochures, Sekolah Daya Setara (PKBM), volunteer/partner forms, service programs, or donations. Ceri-A is ready to assist you!";
+    }
+
+    // 8. TUITION & FEES
+    if (q.includes('fee') || q.includes('fees') || q.includes('cost') || q.includes('tuition') || q.includes('price') || q.includes('free') || q.includes('is it free') || q.includes('how much')) {
+      return "🏫 **Tuition & Education Fee Information (Sekolah Juara & Sekolah Daya Setara)**:\n\n" +
+             "Regarding tuition at Sekolah Juara (Elementary) and PKBM Sekolah Daya Setara, the education is very affordable, Cheerful Friend! 😊\n\n" +
+             "For full details regarding registration form fees, admission fees, monthly tuition, and scholarship quota availability at your target city, please chat directly with our admin on WhatsApp at **+62 851-7979-7661**!";
+    }
+
+    // 9. ADMISSION & BROCHURES FOR SEKOLAH JUARA
+    if (
+      q.includes('admission') ||
+      q.includes('enroll') ||
+      q.includes('registration') ||
+      q.includes('register') ||
+      q.includes('brochure') ||
+      q.includes('apply') ||
+      ((q.includes('how') || q.includes('requirement') || q.includes('step')) && (q.includes('school') || q.includes('juara') || q.includes('student')))
+    ) {
+      return getSekolahJuaraPpdbReplyEn(raw);
+    }
+
+    // 12. LIST OF 10 SEKOLAH JUARA BRANCHES
+    if (
+      (q.includes('branch') || q.includes('where') || q.includes('location') || q.includes('city') || q.includes('cities') || q.includes('list') || q.includes('how many') || q.includes('total')) &&
+      (q.includes('juara') || q.includes('elementary') || q.includes('sd'))
+    ) {
+      return "🏫 **10 Branches of Juara Elementary School (SD Juara)**:\n\n" +
+             "Sekolah Juara operates 10 elementary school branches across Indonesia:\n\n" +
+             "1. SD Juara Batam\n" +
+             "2. SD Juara Cilegon\n" +
+             "3. SD Juara Jakarta Barat (West Jakarta)\n" +
+             "4. SD Juara Jakarta Timur (East Jakarta)\n" +
+             "5. SD Juara Jakarta Utara (North Jakarta)\n" +
+             "6. SD Juara Persa Medan\n" +
+             "7. SD Juara AL Hikmah Jayapura\n" +
+             "8. SD Juara Semarang\n" +
+             "9. SD Juara Surabaya\n" +
+             "10. SD Juara AL Hakim Tangerang\n\n" +
+             "You can check registration info and download brochures for each branch on the [Sekolah Juara](sekolah-juara.html) page!";
+    }
+
+    // 12.5 SEKOLAH DAYA SETARA (PKBM CERIA) DISTRIBUTION
+    if (
+      q.includes('daya setara') ||
+      q.includes('pkbm') ||
+      (q.includes('setara') && (q.includes('school') || q.includes('bandung') || q.includes('branch') || q.includes('location')))
+    ) {
+      if (q.includes('bandung') || q.includes('lembang') || q.includes('ngamprah') || q.includes('ujungberung')) {
+        return "🏫 **Sekolah Daya Setara in Greater Bandung**:\n\n" +
+               "In Greater Bandung, Sekolah Daya Setara (PKBM Ceria) has **3 units/branches**, Cheerful Friend:\n\n" +
+               "1. 📍 **Sekolah Daya Setara Ngamprah** (West Bandung Regency)\n" +
+               "2. 📍 **Sekolah Daya Setara Lembang** (West Bandung Regency)\n" +
+               "3. 📍 **Sekolah Daya Setara Ujungberung** (Bandung City)\n\n" +
+               "All three units serve Package B (Junior High equivalent) and Package C (Senior High equivalent) programs with flexible schedules.\n\n" +
+               "Learn more on the [Sekolah Daya Setara](sekolah-daya-setara.html) page, or contact our admin on WhatsApp at **+62 851-7979-7661**! 😊";
+      }
+
+      return "🗺️ **Distribution Map of 7 Sekolah Daya Setara Units (PKBM Ceria)**:\n\n" +
+             "Sekolah Daya Setara operates at **7 units/points** across Indonesia:\n\n" +
+             "• **Greater Bandung (3 Units)**:\n" +
+             "  1. 📍 **Sekolah Daya Setara Ngamprah** (West Bandung)\n" +
+             "  2. 📍 **Sekolah Daya Setara Lembang** (West Bandung)\n" +
+             "  3. 📍 **Sekolah Daya Setara Ujungberung** (Bandung City)\n\n" +
+             "• **Sukabumi (1 Unit)**:\n" +
+             "  4. 📍 **Sekolah Daya Setara Cisolok**\n\n" +
+             "• **Indramayu (1 Unit)**:\n" +
+             "  5. 📍 **PKBM Ceria Arahan**\n\n" +
+             "• **Pangandaran (1 Unit)**:\n" +
+             "  6. 📍 **PKBM Ceria Padaherang**\n\n" +
+             "• **Jayapura (1 Unit)**:\n" +
+             "  7. 📍 **Sekolah Daya Setara Jayapura**\n\n" +
+             "All units facilitate Package B (Junior High) and Package C (High School). For full details, check out the [Sekolah Daya Setara](sekolah-daya-setara.html) page! ✨";
+    }
+
+    // 13. CITY SPECIFIC
+    if (q.includes('bandung')) {
+      return "📍 For Cheerful Friends in Bandung, **ACF Eduhub Head Office** is located at:\n\n" +
+             "🏢 **Address**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, West Java 40275\n" +
+             "🗺️ **Google Maps**: [Open in Google Maps](https://maps.app.goo.gl/GZM6nCS82CcettDcA)\n" +
+             "📞 **WhatsApp**: +62 851-7979-7661\n\n" +
+             "In addition to our headquarters, Greater Bandung hosts 3 **Sekolah Daya Setara (PKBM Ceria)** units (Ngamprah, Lembang, and Ujungberung)! How can Ceri-A assist you today? 😊";
+    }
+    if (q.includes('jakarta')) {
+      return "🏫 In the Special Capital Region of Jakarta, we have 3 SD Juara branches, Cheerful Friend:\n• **SD Juara West Jakarta**\n• **SD Juara East Jakarta**\n• **SD Juara North Jakarta**\n\nYou can register or download their brochures directly on the [Sekolah Juara](sekolah-juara.html) page!";
+    }
+
+    // 14.5 EDUCATION UNITS
+    if (q === 'education units' || q.includes('education unit') || q.includes('unit pendidikan') || (q.includes('schools') && q.includes('what'))) {
+      return "🏫 **3 Pillars of ACF Eduhub Education Units**:\n\n" +
+             "ACF Eduhub manages 3 main educational initiatives:\n\n" +
+             "1. 🏆 **Sekolah Juara (SD)**\n" +
+             "   Network of 10 formal Elementary Schools emphasizing Islamic character building (*Kurikulum Langit*, Quran memorization & leadership) for children with very affordable rates.\n" +
+             "   🔗 Learn more: [Sekolah Juara](sekolah-juara.html)\n\n" +
+             "2. 📖 **Sekolah Daya Setara (PKBM)**\n" +
+             "   7 non-formal community learning center units across Indonesia providing **Package B (Junior High equivalent)** and **Package C (High School equivalent)**.\n" +
+             "   🔗 Learn more: [Sekolah Daya Setara](sekolah-daya-setara.html)\n\n" +
+             "3. 👩‍🏫 **Guruverse.ID**\n" +
+             "   Digital capacity-building platform training over 2,000+ educators across Indonesia in modern pedagogy and technology.\n" +
+             "   🔗 Learn more: [Guruverse.ID](https://www.guruverse.id/)\n\n" +
+             "Explore more on our [Education Units](unit-pendidikan.html) page! ✨";
+    }
+
+    // 14. EDUCATION LEVELS
+    if (q.includes('level') || q.includes('levels') || q.includes('grade') || q.includes('junior high') || q.includes('high school') || q.includes('smp') || q.includes('sma')) {
+      return "ℹ️ **Education Levels at ACF Eduhub**:\n\n" +
+             "Please note, Cheerful Friend, that **Sekolah Juara ONLY covers Elementary School (SD)** across its 10 branches.\n\n" +
+             "There is no junior high or senior high within Sekolah Juara. However, for secondary education equivalency (Package B / Junior High and Package C / High School), ACF Eduhub facilitates this through our **PKBM Sekolah Daya Setara** network!";
+    }
+
+    // 15. WHAT IS SEKOLAH JUARA
+    if (q.includes('sekolah juara') || q.includes('juara school')) {
+      return "🏆 **About Sekolah Juara**:\n\n" +
+             "Sekolah Juara is a network of 10 **Elementary Schools (SD Juara)** nurtured by ACF Eduhub to cultivate high-achieving generations with noble character.\n\n" +
+             "The national curriculum is enriched with Islamic character education (Kurikulum Langit), leadership development, young entrepreneurship, and Quran memorization (Tahfidz). Learn more on the [Sekolah Juara](sekolah-juara.html) page!";
+    }
+
+    // 16. WHAT IS SEKOLAH DAYA SETARA
+    if (q.includes('daya setara')) {
+      return "📖 **About Sekolah Daya Setara (PKBM)**:\n\n" +
+             "Sekolah Daya Setara consists of 7 non-formal Community Learning Centers (PKBM) under ACF Eduhub offering affordable **Package B (Junior High equivalent)** and **Package C (High School equivalent)**.\n\n" +
+             "Located across 7 regions: Greater Bandung (Ngamprah, Lembang, Ujungberung), Sukabumi, Indramayu, Pangandaran, and Jayapura. It enables out-of-school youth and adults to earn official state diplomas! Explore more at [Sekolah Daya Setara](sekolah-daya-setara.html).";
+    }
+
+    // 17. WHAT IS GURUVERSE
+    if (q.includes('guruverse')) {
+      return "👩‍🏫 **About Guruverse.ID**:\n\n" +
+             "Guruverse.ID is ACF Eduhub's digital platform designed to elevate teacher competency across Indonesia! To date, over **2,000+ educators** have participated in workshops covering creative pedagogy, classroom technology, and character education.";
+    }
+
+    // 18. SERVICE PROGRAMS
+    if (q.includes('service program') || q.includes('service') || q.includes('program') || q.includes('programs')) {
+      return formatDynamicProgramsReplyEn();
+    }
+
+    // 19. SCHOLARSHIP
+    if (q.includes('scholarship') || q.includes('financial aid') || q.includes('orphan')) {
+      return "🎓 **ACF Eduhub Scholarship Programs**:\n\n" +
+             "Great news, Cheerful Friend! ACF Eduhub provides education subsidies and scholarships for underprivileged and orphaned students at Sekolah Juara and PKBM Daya Setara.\n\n" +
+             "To inquire about scholarship quotas for your target branch, please connect with our admin on WhatsApp at **+62 851-7979-7661**! 😊";
+    }
+
+    // 20. HEAD OFFICE ADDRESS & LOCATION
+    if (q.includes('address') || q.includes('location') || q.includes('office') || q.includes('headquarters') || q.includes('where is')) {
+      return "📍 **ACF Eduhub Head Office Address**:\n\n" +
+             "🏢 **Head Office**: Jl. Jati Mulya No.9, Gumuruh, Kec. Batununggal, Kota Bandung, West Java 40275, Indonesia\n\n" +
+             "🗺️ **Google Maps**: [Open in Google Maps](https://maps.app.goo.gl/GZM6nCS82CcettDcA)\n" +
+             "📞 **WhatsApp / Phone**: +62 851-7979-7661\n" +
+             "✉️ **Email**: welcome@acf.or.id\n\n" +
+             "Our address is also officially listed on the website footer. If you are in Bandung, you are always welcome to visit us! 😊";
+    }
+
+    // 21. CONTACT & SOCIAL MEDIA
+    if (q.includes('contact') || q.includes('phone') || q.includes('whatsapp') || q.includes('wa') || q.includes('email') || q.includes('instagram') || q.includes('youtube')) {
+      return "📞 **ACF Eduhub Official Contacts**:\n\n" +
+             "You can reach our team anytime through the following channels, Cheerful Friend:\n\n" +
+             "• **WhatsApp / Phone**: +62 851-7979-7661 (green WhatsApp button on the bottom left of the screen)\n" +
+             "• **Email**: welcome@acf.or.id\n" +
+             "• **Instagram**: @acf.eduhub\n" +
+             "• **YouTube**: JUARA TV\n" +
+             "• **Website**: www.acf.or.id\n\n" +
+             "We look forward to connecting with you during business hours! ✨";
+    }
+
+    // 22. NEWS & ARTICLES
+    if (q.includes('article') || q.includes('news') || q.includes('story') || q.includes('publication')) {
+      return formatDynamicArticlesReplyEn(4);
+    }
+
+    // 23. THANK YOU
+    if (q.includes('thank') || q.includes('thanks') || q.includes('appreciate')) {
+      return "You're very welcome, Cheerful Friend! 😊 It's a true joy to assist you. Wishing you a wonderful and blessed day! Feel free to call Ceri-A anytime if you need more info! ✨";
+    }
+
+    // 24. PRAISE
+    if (q.includes('smart') || q.includes('cool') || q.includes('great') || q.includes('awesome') || q.includes('good')) {
+      return "Aww, thank you so much for the kind words, Cheerful Friend! 😄 That makes Ceri-A even more motivated to help you. Is there anything else you'd like to ask about ACF Eduhub?";
+    }
+
+    // 25. AFFIRMATION
+    if (q.match(/^(ok+|okay+|sure+|great+|got it+|alright+|fine)(\s|[!.,?~]|$)/i) || ['ok', 'okay', 'sure', 'fine'].includes(q)) {
+      return "All right, Cheerful Friend! Glad to be here with you. If any questions pop up, feel free to ask Ceri-A anytime! ✨";
+    }
+
+    // 26. WHO ARE YOU
+    if (q.includes('who are you') || q.includes('your name') || q.includes('who are u') || q.includes('who r u') || q.includes('what are you')) {
+      return "Hello Cheerful Friend! 😊 I'm **Ceri-A**, the official cheerful and friendly AI assistant of **ACF Eduhub**! My signature colors are purple and gold, representing ACF. I'm here to help you discover everything about Sekolah Juara, scholarships, volunteer opportunities, CSR partnerships, and our official contacts.";
+    }
+
+    // 30. DEFAULT NATURAL FALLBACK
+    return "Thank you for reaching out to Ceri-A, Cheerful Friend! 😊\n\n" +
+           "Here are quick topics you might be interested in:\n\n" +
+           "• 🏫 **Education Units**: Sekolah Juara (Elementary), Sekolah Daya Setara (PKBM), & Guruverse.ID\n" +
+           "• 📚 **Service Programs**: 7 flagship educational programs\n" +
+           "• 🙋‍♀️ **Become a Volunteer**: Join the Sahabat Eduhub community\n" +
+           "• 💖 **How to Donate**: Bank transfers & official QRIS\n" +
+           "• 📍 **Contact & Location**: WhatsApp admin & head office address\n\n" +
+           "Or feel free to chat with our admin directly on WhatsApp at **+62 851-7979-7661**! ✨";
+  }
+
   function getLocalKnowledgeReply(query) {
+    const activeLang = getCurrentChatLanguage(query);
+    if (activeLang === 'en') {
+      return getLocalKnowledgeReplyEn(query);
+    }
     const raw = (query || '').trim();
     const q = raw.toLowerCase();
 
@@ -853,6 +1354,48 @@ Gaya Komunikasi & Persona:
   function getInstantLocalReply(query) {
     const raw = (query || '').trim();
     const q = raw.toLowerCase();
+    const activeLang = getCurrentChatLanguage(query);
+    if (activeLang === 'en') {
+      if (
+        q.includes('mitra') || q.includes('csr') || q.includes('sponsor') || q.includes('partner') || q.includes('collaboration') ||
+        ((q.includes('form') || q.includes('apply') || q.includes('how to')) && (q.includes('partner') || q.includes('company')))
+      ) {
+        return getMitraProgramReplyEn();
+      }
+      if (q.includes('relawan') || q.includes('volunteer') || (q.includes('sahabat') && q.includes('eduhub'))) {
+        return getRelawanReplyEn();
+      }
+      const greetingsEn = ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening', 'hiya', 'sup', 'yo', 'greetings', 'cherry', 'ceri-a'];
+      if (
+        !q.includes('?') &&
+        !q.match(/\b(who|what|why|how|when|where|cost|fee|donate|volunteer|partner|school|program)\b/i) &&
+        (greetingsEn.includes(q) || q.match(/^(hello+|hi+|hey+|good\s*(morning|afternoon|evening)|hiya+)[\s!.,~]*$/i))
+      ) {
+        return "Hello Cheerful Friend! 👋 How can Ceri-A help you today? 😊";
+      }
+      if (q === 'how to donate' || q.includes('how to donate')) {
+        return getLocalKnowledgeReplyEn('how to donate');
+      }
+      if (q === 'education units' || q.includes('education units')) {
+        return getLocalKnowledgeReplyEn('education units');
+      }
+      if (q === 'service programs' || q.includes('service programs')) {
+        return formatDynamicProgramsReplyEn();
+      }
+      if (q === 'news and articles' || q.includes('news and articles') || q === 'news & articles') {
+        return formatDynamicArticlesReplyEn();
+      }
+      if (q === 'become a partner' || q.includes('become a partner')) {
+        return getMitraProgramReplyEn();
+      }
+      if (q === 'become a volunteer' || q.includes('become a volunteer')) {
+        return getRelawanReplyEn();
+      }
+      if (q === 'office address and contact' || q.includes('office address and contact') || q.includes('address & contact')) {
+        return getLocalKnowledgeReplyEn('address');
+      }
+    }
+
 
     // 0.1 Quick Instant Matching for Mitra Forms & CSR (PRIORITAS TINGGI)
     if (
@@ -1025,6 +1568,9 @@ Gaya Komunikasi & Persona:
     root.className = 'cherry-chatbot-container';
 
     const savedSize = localStorage.getItem(STORAGE_SIZE_KEY) || 'size-m';
+    const activeLang = getCurrentLang();
+    const isEn = (activeLang === 'en');
+
 
     root.innerHTML = `
       <!-- Floating Trigger Button (div role=button untuk mencegah scrollbar internal browser) -->
@@ -1085,19 +1631,35 @@ Gaya Komunikasi & Persona:
               <img src="${ceriAIconSrc}" alt="Ceri-A" class="cherry-avatar-img" />
             </div>
             <div class="cherry-bubble">
-              <p>Halo <strong>Sahabat Ceria</strong>! 👋 Senang banget bisa ketemu kamu. Kenalin, aku <strong class="notranslate" translate="no">Ceri-A</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
-              <p><span class="notranslate" translate="no">Ceri-A</span> siap nemenin dan bantu kamu cari info seputar:</p>
-              <ul class="cherry-list">
-                <li>💖 <strong>Cara & Metode Donasi</strong></li>
-                <li>🏫 <strong>Unit Pendidikan</strong>: Sekolah Juara (SD), Sekolah Daya Setara (PKBM Paket B & C), & Guruverse.ID</li>
-                <li>📚 <strong>Program Layanan</strong>: Inisiatif Pendidikan ACF Eduhub</li>
-                <li>🤝 <strong>Kemitraan CSR</strong>: Kolaborasi Program & Perusahaan</li>
-                <li>🙋‍♀️ <strong>Jadi Relawan</strong>: Gabung Sahabat Eduhub</li>
-                <li>📰 <strong>Artikel & Kabar</strong>: Kabar Edukasi & Kegiatan Terkini</li>
-                <li>📍 <strong>Alamat & Kontak WhatsApp Admin</strong></li>
-              </ul>
-              <p>Ada yang lagi pengen kamu tanyain ke <span class="notranslate" translate="no">Ceri-A</span> hari ini? Klik pilihan cepat di bawah atau langsung ketik chat apa aja yaa! 😊✨</p>
-              <span class="cherry-msg-time">Sekarang</span>
+              ${isEn ? `
+                <p>Hello <strong>Cheerful Friend</strong>! 👋 So glad to meet you. I'm <strong class="notranslate" translate="no">Ceri-A</strong>, the official AI assistant of <strong>ACF Eduhub</strong>.</p>
+                <p><span class="notranslate" translate="no">Ceri-A</span> is ready to help you with:</p>
+                <ul class="cherry-list">
+                  <li>💖 <strong>How & Where to Donate</strong></li>
+                  <li>🏫 <strong>Education Units</strong>: Sekolah Juara (Elementary), Sekolah Daya Setara (PKBM Package B & C), & Guruverse.ID</li>
+                  <li>📚 <strong>Service Programs</strong>: ACF Eduhub Flagship Educational Initiatives</li>
+                  <li>🤝 <strong>CSR Partnerships</strong>: Program & Corporate Collaboration</li>
+                  <li>🙋‍♀️ <strong>Become a Volunteer</strong>: Join Sahabat Eduhub</li>
+                  <li>📰 <strong>News & Articles</strong>: Educational Updates & Recent Stories</li>
+                  <li>📍 <strong>Office Address & WhatsApp Contact</strong></li>
+                </ul>
+                <p>Is there anything you'd like to ask <span class="notranslate" translate="no">Ceri-A</span> today? Click a quick option below or type your question directly! 😊✨</p>
+                <span class="cherry-msg-time">Just now</span>
+              ` : `
+                <p>Halo <strong>Sahabat Ceria</strong>! 👋 Senang banget bisa ketemu kamu. Kenalin, aku <strong class="notranslate" translate="no">Ceri-A</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
+                <p><span class="notranslate" translate="no">Ceri-A</span> siap nemenin dan bantu kamu cari info seputar:</p>
+                <ul class="cherry-list">
+                  <li>💖 <strong>Cara & Metode Donasi</strong></li>
+                  <li>🏫 <strong>Unit Pendidikan</strong>: Sekolah Juara (SD), Sekolah Daya Setara (PKBM Paket B & C), & Guruverse.ID</li>
+                  <li>📚 <strong>Program Layanan</strong>: Inisiatif Pendidikan ACF Eduhub</li>
+                  <li>🤝 <strong>Kemitraan CSR</strong>: Kolaborasi Program & Perusahaan</li>
+                  <li>🙋‍♀️ <strong>Jadi Relawan</strong>: Gabung Sahabat Eduhub</li>
+                  <li>📰 <strong>Artikel & Kabar</strong>: Kabar Edukasi & Kegiatan Terkini</li>
+                  <li>📍 <strong>Alamat & Kontak WhatsApp Admin</strong></li>
+                </ul>
+                <p>Ada yang lagi pengen kamu tanyain ke <span class="notranslate" translate="no">Ceri-A</span> hari ini? Klik pilihan cepat di bawah atau langsung ketik chat apa aja yaa! 😊✨</p>
+                <span class="cherry-msg-time">Sekarang</span>
+              `}
             </div>
           </div>
         </div>
@@ -1108,13 +1670,23 @@ Gaya Komunikasi & Persona:
             <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <div class="cherry-quick-chips" id="cherryQuickChips" role="region" aria-label="Menu Cepat Rekomendasi">
-            <button type="button" class="cherry-chip" data-query="cara donasi">💖 Cara Donasi</button>
-            <button type="button" class="cherry-chip" data-query="unit pendidikan">🏫 Unit Pendidikan</button>
-            <button type="button" class="cherry-chip" data-query="program layanan">📚 Program Layanan</button>
-            <button type="button" class="cherry-chip" data-query="artikel dan kabar terbaru">📰 Artikel & Kabar</button>
-            <button type="button" class="cherry-chip" data-query="cara jadi mitra csr">🤝 Jadi Mitra</button>
-            <button type="button" class="cherry-chip" data-query="cara jadi relawan">🙋‍♀️ Jadi Relawan</button>
-            <button type="button" class="cherry-chip" data-query="lokasi kantor dan kontak wa">📍 Alamat & Kontak</button>
+            ${isEn ? `
+              <button type="button" class="cherry-chip" data-query="how to donate">💖 How to Donate</button>
+              <button type="button" class="cherry-chip" data-query="education units">🏫 Education Units</button>
+              <button type="button" class="cherry-chip" data-query="service programs">📚 Service Programs</button>
+              <button type="button" class="cherry-chip" data-query="news and articles">📰 News & Articles</button>
+              <button type="button" class="cherry-chip" data-query="become a partner">🤝 Become a Partner</button>
+              <button type="button" class="cherry-chip" data-query="become a volunteer">🙋‍♀️ Become a Volunteer</button>
+              <button type="button" class="cherry-chip" data-query="office address and contact">📍 Address & Contact</button>
+            ` : `
+              <button type="button" class="cherry-chip" data-query="cara donasi">💖 Cara Donasi</button>
+              <button type="button" class="cherry-chip" data-query="unit pendidikan">🏫 Unit Pendidikan</button>
+              <button type="button" class="cherry-chip" data-query="program layanan">📚 Program Layanan</button>
+              <button type="button" class="cherry-chip" data-query="artikel dan kabar terbaru">📰 Artikel & Kabar</button>
+              <button type="button" class="cherry-chip" data-query="cara jadi mitra csr">🤝 Jadi Mitra</button>
+              <button type="button" class="cherry-chip" data-query="cara jadi relawan">🙋‍♀️ Jadi Relawan</button>
+              <button type="button" class="cherry-chip" data-query="lokasi kantor dan kontak wa">📍 Alamat & Kontak</button>
+            `}
           </div>
           <button type="button" class="cherry-chips-nav next" id="cherryChipsNext" aria-label="Slide ke kanan" title="Geser ke kanan">
             <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
@@ -1127,7 +1699,7 @@ Gaya Komunikasi & Persona:
             type="text"
             class="cherry-input"
             id="cherryInput"
-            placeholder="Ketik pesan untuk Ceri-A..."
+            placeholder="${isEn ? 'Type a message for Ceri-A...' : 'Ketik pesan untuk Ceri-A...'}"
             autocomplete="off"
             required
             maxlength="400"
@@ -1146,6 +1718,78 @@ Gaya Komunikasi & Persona:
 
     // Sinkronkan artikel terbaru secara dinamis dari database / API
     syncLatestArticlesFromWeb();
+
+
+    function updateChatbotLanguageUI(newLang) {
+      const isEnglishNow = (newLang === 'en');
+      if (chatInput) {
+        chatInput.placeholder = isEnglishNow ? "Type a message for Ceri-A..." : "Ketik pesan untuk Ceri-A...";
+      }
+      if (quickChips) {
+        quickChips.innerHTML = isEnglishNow ? `
+          <button type="button" class="cherry-chip" data-query="how to donate">💖 How to Donate</button>
+          <button type="button" class="cherry-chip" data-query="education units">🏫 Education Units</button>
+          <button type="button" class="cherry-chip" data-query="service programs">📚 Service Programs</button>
+          <button type="button" class="cherry-chip" data-query="news and articles">📰 News & Articles</button>
+          <button type="button" class="cherry-chip" data-query="become a partner">🤝 Become a Partner</button>
+          <button type="button" class="cherry-chip" data-query="become a volunteer">🙋‍♀️ Become a Volunteer</button>
+          <button type="button" class="cherry-chip" data-query="office address and contact">📍 Address & Contact</button>
+        ` : `
+          <button type="button" class="cherry-chip" data-query="cara donasi">💖 Cara Donasi</button>
+          <button type="button" class="cherry-chip" data-query="unit pendidikan">🏫 Unit Pendidikan</button>
+          <button type="button" class="cherry-chip" data-query="program layanan">📚 Program Layanan</button>
+          <button type="button" class="cherry-chip" data-query="artikel dan kabar terbaru">📰 Artikel & Kabar</button>
+          <button type="button" class="cherry-chip" data-query="cara jadi mitra csr">🤝 Jadi Mitra</button>
+          <button type="button" class="cherry-chip" data-query="cara jadi relawan">🙋‍♀️ Jadi Relawan</button>
+          <button type="button" class="cherry-chip" data-query="lokasi kantor dan kontak wa">📍 Alamat & Kontak</button>
+        `;
+      }
+      if (chatHistory.length === 0 && chatBody) {
+        const firstBubble = chatBody.querySelector('.cherry-bubble');
+        if (firstBubble) {
+          firstBubble.innerHTML = isEnglishNow ? `
+            <p>Hello <strong>Cheerful Friend</strong>! 👋 So glad to meet you. I'm <strong class="notranslate" translate="no">Ceri-A</strong>, the official AI assistant of <strong>ACF Eduhub</strong>.</p>
+            <p><span class="notranslate" translate="no">Ceri-A</span> is ready to help you with:</p>
+            <ul class="cherry-list">
+              <li>💖 <strong>How & Where to Donate</strong></li>
+              <li>🏫 <strong>Education Units</strong>: Sekolah Juara (Elementary), Sekolah Daya Setara (PKBM Package B & C), & Guruverse.ID</li>
+              <li>📚 <strong>Service Programs</strong>: ACF Eduhub Flagship Educational Initiatives</li>
+              <li>🤝 <strong>CSR Partnerships</strong>: Program & Corporate Collaboration</li>
+              <li>🙋‍♀️ <strong>Become a Volunteer</strong>: Join Sahabat Eduhub</li>
+              <li>📰 <strong>News & Articles</strong>: Educational Updates & Recent Stories</li>
+              <li>📍 <strong>Office Address & WhatsApp Contact</strong></li>
+            </ul>
+            <p>Is there anything you'd like to ask <span class="notranslate" translate="no">Ceri-A</span> today? Click a quick option below or type your question directly! 😊✨</p>
+            <span class="cherry-msg-time">Just now</span>
+          ` : `
+            <p>Halo <strong>Sahabat Ceria</strong>! 👋 Senang banget bisa ketemu kamu. Kenalin, aku <strong class="notranslate" translate="no">Ceri-A</strong>, asisten AI resmi dari <strong>ACF Eduhub</strong>.</p>
+            <p><span class="notranslate" translate="no">Ceri-A</span> siap nemenin dan bantu kamu cari info seputar:</p>
+            <ul class="cherry-list">
+              <li>💖 <strong>Cara & Metode Donasi</strong></li>
+              <li>🏫 <strong>Unit Pendidikan</strong>: Sekolah Juara (SD), Sekolah Daya Setara (PKBM Paket B & C), & Guruverse.ID</li>
+              <li>📚 <strong>Program Layanan</strong>: Inisiatif Pendidikan ACF Eduhub</li>
+              <li>🤝 <strong>Kemitraan CSR</strong>: Kolaborasi Program & Perusahaan</li>
+              <li>🙋‍♀️ <strong>Jadi Relawan</strong>: Gabung Sahabat Eduhub</li>
+              <li>📰 <strong>Artikel & Kabar</strong>: Kabar Edukasi & Kegiatan Terkini</li>
+              <li>📍 <strong>Alamat & Kontak WhatsApp Admin</strong></li>
+            </ul>
+            <p>Ada yang lagi pengen kamu tanyain ke <span class="notranslate" translate="no">Ceri-A</span> hari ini? Klik pilihan cepat di bawah atau langsung ketik chat apa aja yaa! 😊✨</p>
+            <span class="cherry-msg-time">Sekarang</span>
+          `;
+        }
+      }
+    }
+
+    window.addEventListener('acfLanguageChanged', (e) => {
+      const lang = (e && e.detail && e.detail.lang) ? e.detail.lang : getCurrentLang();
+      updateChatbotLanguageUI(lang);
+    });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'acf_language') {
+        updateChatbotLanguageUI(e.newValue || 'id');
+      }
+    });
 
     // Elements
     const triggerBtn = document.getElementById('cherryTriggerBtn');
@@ -1462,7 +2106,8 @@ Gaya Komunikasi & Persona:
           body: JSON.stringify({
             message: userText,
             history: chatHistory.slice(-6),
-            clientApiKey: clientApiKey
+            clientApiKey: clientApiKey,
+            lang: getCurrentChatLanguage(userText)
           }),
           signal: controller.signal
         });

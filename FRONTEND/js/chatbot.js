@@ -1573,6 +1573,9 @@ Communication Style & Persona:
 
 
     root.innerHTML = `
+      <!-- Mobile Backdrop Overlay -->
+      <div class="cherry-backdrop" id="cherryBackdrop" aria-hidden="true"></div>
+
       <!-- Floating Trigger Button (div role=button untuk mencegah scrollbar internal browser) -->
       <div class="cherry-trigger-btn notranslate" translate="no" id="cherryTriggerBtn" role="button" tabindex="0" aria-label="Buka Chat AI Ceri-A" title="Tanya Ceri-A AI">
         <!-- Chat Icon (Ceri-A Mascot) -->
@@ -1800,6 +1803,7 @@ Communication Style & Persona:
     const chatInput = document.getElementById('cherryInput');
     const quickChips = document.getElementById('cherryQuickChips');
     const sizeButtons = root.querySelectorAll('.cherry-size-btn');
+    const backdrop = document.getElementById('cherryBackdrop');
 
     // Toggle Chat Window
     function toggleChat(forceOpen) {
@@ -1807,6 +1811,8 @@ Communication Style & Persona:
       if (willOpen) {
         chatWindow.classList.add('active');
         triggerBtn.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+        document.body.classList.add('cherry-chat-open');
         setTimeout(() => {
           chatInput.focus();
           scrollToBottom();
@@ -1814,7 +1820,13 @@ Communication Style & Persona:
       } else {
         chatWindow.classList.remove('active');
         triggerBtn.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+        document.body.classList.remove('cherry-chat-open');
       }
+    }
+
+    if (backdrop) {
+      backdrop.addEventListener('click', () => toggleChat(false));
     }
 
     triggerBtn.addEventListener('click', () => toggleChat());

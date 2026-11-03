@@ -1445,42 +1445,42 @@
 }
 
 .card-formal .model-card-btn {
-  background: rgba(125, 34, 128, 0.05);
-  color: #7D2280;
-  border: 1px solid rgba(125, 34, 128, 0.15);
-}
-
-.card-formal .model-card-btn:hover {
-  background: #7D2280;
+  background: linear-gradient(90deg, #7D2280 0%, #A8246E 100%);
   color: #FFFFFF;
-  border-color: #7D2280;
+  border: 1px solid transparent;
   box-shadow: 0 4px 14px rgba(125, 34, 128, 0.25);
 }
 
+.card-formal .model-card-btn:hover {
+  background: linear-gradient(90deg, #68196B 0%, #911D5D 100%);
+  color: #FFFFFF;
+  box-shadow: 0 6px 18px rgba(125, 34, 128, 0.35);
+}
+
 .card-vokasi .model-card-btn {
-  background: rgba(245, 166, 35, 0.08);
-  color: #B45309;
-  border: 1px solid rgba(245, 166, 35, 0.22);
+  background: linear-gradient(90deg, #F5A623 0%, #D97706 100%);
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.28);
 }
 
 .card-vokasi .model-card-btn:hover {
-  background: #D97706;
+  background: linear-gradient(90deg, #D97706 0%, #B45309 100%);
   color: #FFFFFF;
-  border-color: #D97706;
-  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.35);
 }
 
 .card-digital .model-card-btn {
-  background: rgba(99, 102, 241, 0.07);
-  color: #4F46E5;
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: linear-gradient(90deg, #6366F1 0%, #8B5CF6 100%);
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
 }
 
 .card-digital .model-card-btn:hover {
-  background: #4F46E5;
+  background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 100%);
   color: #FFFFFF;
-  border-color: #4F46E5;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35);
 }
 
 .model-card-btn svg {

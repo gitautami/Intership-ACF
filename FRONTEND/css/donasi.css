@@ -674,16 +674,10 @@
   height: 5px;
 }
 
-.sh-bar {
-  background: linear-gradient(90deg, #F37021, #0056B3);
-}
-
-.as-bar {
-  background: linear-gradient(90deg, #059669, #10B981);
-}
-
+.sh-bar,
+.as-bar,
 .kb-bar {
-  background: linear-gradient(90deg, #00AEEF, #0077C8);
+  background: #7D2280;
 }
 
 .mitra-card-body {

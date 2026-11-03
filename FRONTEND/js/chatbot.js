@@ -120,7 +120,7 @@ Gaya Komunikasi & Persona:
     - Unit Pendidikan ACF Eduhub adalah 3 unit: Sekolah Juara (SD), Sekolah Daya Setara (PKBM), dan Guruverse.ID.
     - Sedangkan PROGRAM LAYANAN ACF Eduhub adalah 7 PROGRAM UNGGULAN yang dikelompokkan ke dalam 6 kategori induk:
       1. Program Beasiswa & Keberlanjutan Sekolah Juara (Divisi: Sekolah Juara)
-         - Mendukung operasional & beasiswa 10 unit Sekolah Juara bagi anak dhuafa berprestasi.
+         - Mendukung kuota beasiswa & operasional Sekolah Juara agar pendidikan berkualitas tetap terjangkau bagi anak keluarga kurang mampu.
       2. Kesejahteraan Guru & Operasional Sekolah Daya Setara (Divisi: Sekolah Daya Setara)
          - Kesejahteraan tutor & operasional 7 PKBM Daya Setara (Paket B & Paket C).
       3. Layanan Pascabencana (Divisi: Guruverse.ID & ACF Educare)
@@ -212,7 +212,7 @@ Gaya Komunikasi & Persona:
         id: 'PRG-01',
         title: 'Program Beasiswa & Keberlanjutan Sekolah Juara',
         divisi: 'Sekolah Juara',
-        quote: 'Mendukung operasional dan beasiswa 10 unit Sekolah Juara agar akses pendidikan formal berkualitas tetap gratis bagi anak-anak dhuafa berprestasi.'
+        quote: 'Mendukung kuota beasiswa dan kebutuhan operasional Sekolah Juara agar akses pendidikan berkualitas tetap terjangkau bagi anak dari keluarga kurang mampu, di tengah proses menuju kemandirian finansial sekolah.'
       },
       {
         id: 'PRG-02',

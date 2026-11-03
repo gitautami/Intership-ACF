@@ -295,9 +295,9 @@
       divisi: 'Sekolah Juara',
       title: 'Program Beasiswa & Keberlanjutan Sekolah Juara',
       cover: '../assets/unit-pendidikan/Sekolah Juara.jpg',
-      quote: 'Mendukung operasional dan penyediaan fasilitas belajar Sekolah Juara agar akses pendidikan formal berkualitas tetap 100% bebas biaya (gratis) bagi anak-anak dhuafa dan keluarga prasejahtera berprestasi.',
-      buktiKapasitas: 'Mengelola 10 cabang Sekolah Juara di berbagai wilayah Indonesia dengan layanan pendidikan 100% bebas biaya sejak ACF mengelola langsung jaringan ini pada 2023.',
-      kebutuhanDukungan: 'Dana operasional, Beasiswa pendidikan, In-kind (sarana belajar)',
+      quote: 'Mendukung kuota beasiswa dan kebutuhan operasional Sekolah Juara agar akses pendidikan berkualitas tetap terjangkau bagi anak dari keluarga kurang mampu, di tengah proses menuju kemandirian finansial sekolah.',
+      buktiKapasitas: 'Saat ini menopang 518 siswa penerima beasiswa dari total 1.662 siswa di 10 Sekolah Juara — bagian dari model cross-subsidy yang berjalan sejak ACF mengelola langsung jaringan ini pada 2023.',
+      kebutuhanDukungan: 'Dana penuh/sebagian (per kursi beasiswa), In-kind',
       metric: '10 Sekolah Juara di Indonesia',
       actionLink: 'jadi-mitra-program.html',
       actionText: 'Jadi Mitra Program',
@@ -3379,6 +3379,14 @@
     if (!Array.isArray(dataPrograms) || dataPrograms.length === 0) {
       dataPrograms = JSON.parse(JSON.stringify(DEFAULT_PROGRAMS_DATA));
       saveProgramsData();
+    } else {
+      const p1 = dataPrograms.find(p => p.id === 'PRG-01');
+      if (p1 && (p1.quote.includes('100% bebas biaya') || p1.buktiKapasitas.includes('Mengelola 10 cabang'))) {
+        p1.quote = 'Mendukung kuota beasiswa dan kebutuhan operasional Sekolah Juara agar akses pendidikan berkualitas tetap terjangkau bagi anak dari keluarga kurang mampu, di tengah proses menuju kemandirian finansial sekolah.';
+        p1.buktiKapasitas = 'Saat ini menopang 518 siswa penerima beasiswa dari total 1.662 siswa di 10 Sekolah Juara — bagian dari model cross-subsidy yang berjalan sejak ACF mengelola langsung jaringan ini pada 2023.';
+        p1.kebutuhanDukungan = 'Dana penuh/sebagian (per kursi beasiswa), In-kind';
+        saveProgramsData();
+      }
     }
 
     populateProgramCategoryOptions();

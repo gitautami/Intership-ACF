@@ -107,9 +107,11 @@
 /* Active Entrance Trigger */
 .kerjasama-card-box.animate-in,
 .kerjasama-card-box.visible,
-.kerjasama-cards-grid.is-visible .kerjasama-card-box {
-  opacity: 1;
-  transform: translate(0, 0) scale(1);
+.kerjasama-cards-grid.is-visible .kerjasama-card-box,
+.kerjasama-cards-grid .kerjasama-card-box.animate-in,
+.kerjasama-cards-grid .kerjasama-card-box.visible {
+  opacity: 1 !important;
+  transform: translate(0, 0) scale(1) !important;
 }
 
 /* Continuous Recurring Ambient Wave Cycle (Berulang terus menerus) */
@@ -337,9 +339,27 @@
     grid-template-columns: 1fr;
     gap: 28px;
   }
-  .kerjasama-cards-grid .kerjasama-card-box:nth-child(1),
+
+  /* Card 1: Slide in dari arah kiri-bawah pada mobile (sama persis seperti desktop) */
+  .kerjasama-cards-grid .kerjasama-card-box:nth-child(1) {
+    transform: translateX(-40px) translateY(36px) scale(0.95);
+    transition-delay: 0.08s;
+  }
+
+  /* Card 2: Slide in dari arah kanan-bawah pada mobile (sama persis seperti desktop) */
   .kerjasama-cards-grid .kerjasama-card-box:nth-child(2) {
-    transform: translateY(38px) scale(0.96);
+    transform: translateX(40px) translateY(36px) scale(0.95);
+    transition-delay: 0.24s;
+  }
+
+  /* Active Entrance Trigger pada mobile */
+  .kerjasama-cards-grid .kerjasama-card-box.animate-in,
+  .kerjasama-cards-grid .kerjasama-card-box.visible,
+  .kerjasama-cards-grid.is-visible .kerjasama-card-box,
+  .kerjasama-cards-grid.is-visible .kerjasama-card-box:nth-child(1),
+  .kerjasama-cards-grid.is-visible .kerjasama-card-box:nth-child(2) {
+    opacity: 1 !important;
+    transform: translate(0, 0) scale(1) !important;
   }
 }
 
@@ -368,6 +388,25 @@
 }
 
 @media (max-width: 640px) {
+  .kerjasama-cards-grid .kerjasama-card-box:nth-child(1) {
+    transform: translateX(-32px) translateY(30px) scale(0.95);
+    transition-delay: 0.08s;
+  }
+
+  .kerjasama-cards-grid .kerjasama-card-box:nth-child(2) {
+    transform: translateX(32px) translateY(30px) scale(0.95);
+    transition-delay: 0.22s;
+  }
+
+  .kerjasama-cards-grid .kerjasama-card-box.animate-in,
+  .kerjasama-cards-grid .kerjasama-card-box.visible,
+  .kerjasama-cards-grid.is-visible .kerjasama-card-box,
+  .kerjasama-cards-grid.is-visible .kerjasama-card-box:nth-child(1),
+  .kerjasama-cards-grid.is-visible .kerjasama-card-box:nth-child(2) {
+    opacity: 1 !important;
+    transform: translate(0, 0) scale(1) !important;
+  }
+
   .kerjasama-header-banner {
     padding: 100px 0 36px;
     min-height: auto;

@@ -36,6 +36,18 @@
   z-index: 2;
 }
 
+/* Animasi Masuk dari Bawah (Slide-Up Staggered Fade-In) */
+@keyframes unitBannerSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(42px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .unit-header-banner .section-label {
   color: #FDE68A;
   background: rgba(245, 166, 35, 0.2);
@@ -48,18 +60,41 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 14px;
+  animation: unitBannerSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  will-change: transform, opacity;
 }
 
 .unit-header-banner .section-label::before {
   display: none;
 }
 
-.unit-header-banner h1 {
+.unit-header-banner h1,
+.unit-header-banner .unit-banner-title {
   color: #FFFFFF !important;
+  animation: unitBannerSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+  will-change: transform, opacity;
 }
 
-.unit-header-banner p {
+.unit-header-banner p,
+.unit-header-banner .unit-banner-desc {
   color: rgba(255, 255, 255, 0.9) !important;
+  animation: unitBannerSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+  will-change: transform, opacity;
+}
+
+/* Re-triggered saat scroll balik ke atas */
+.unit-header-banner.is-animated .section-label {
+  animation: unitBannerSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.unit-header-banner.is-animated h1,
+.unit-header-banner.is-animated .unit-banner-title {
+  animation: unitBannerSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.unit-header-banner.is-animated p,
+.unit-header-banner.is-animated .unit-banner-desc {
+  animation: unitBannerSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
 }
 
 /* =============================================
@@ -282,9 +317,27 @@
 }
 
 @media (max-width: 768px) {
+  @keyframes unitBannerSlideUpMobile {
+    0% {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .unit-header-banner {
     min-height: auto;
     padding: 105px 0 42px;
+  }
+
+  .unit-header-banner .section-label {
+    font-size: 0.74rem;
+    padding: 4px 13px;
+    margin-bottom: 10px;
+    animation: unitBannerSlideUpMobile 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
   }
 
   .unit-header-banner h1,
@@ -292,18 +345,28 @@
     font-size: clamp(1.65rem, 5.5vw, 2.2rem) !important;
     line-height: 1.25 !important;
     margin-bottom: 10px !important;
+    animation: unitBannerSlideUpMobile 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
   }
 
   .unit-header-banner p,
   .unit-header-banner .unit-banner-desc {
     font-size: 0.92rem !important;
     line-height: 1.6 !important;
+    animation: unitBannerSlideUpMobile 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
   }
 
-  .unit-header-banner .section-label {
-    font-size: 0.74rem;
-    padding: 4px 13px;
-    margin-bottom: 10px;
+  .unit-header-banner.is-animated .section-label {
+    animation: unitBannerSlideUpMobile 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+  }
+
+  .unit-header-banner.is-animated h1,
+  .unit-header-banner.is-animated .unit-banner-title {
+    animation: unitBannerSlideUpMobile 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  }
+
+  .unit-header-banner.is-animated p,
+  .unit-header-banner.is-animated .unit-banner-desc {
+    animation: unitBannerSlideUpMobile 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
   }
 
   .unit-section-block {

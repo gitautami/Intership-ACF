@@ -48,6 +48,9 @@ function initUnitPage() {
 
   // 3. Initialize Galeri / Brosur Sekolah Juara Modal
   initSekolahJuaraBrosurModal();
+
+  // 4. Initialize Unit Banner Slide-Up Entrance Animation
+  initUnitBannerAnimation();
 }
 
 if (document.readyState === 'loading') {
@@ -713,4 +716,44 @@ ${currentBrosurData.shareUrl}`,
   checkUrlAndOpenBrosur();
 }
 
+/**
+ * Unit Pendidikan Banner Content Entrance Animation (Slide up from bottom)
+ * Mengaktifkan efek teks masuk dari bawah dan dapat berulang saat di-scroll kembali ke atas.
+ */
+function initUnitBannerAnimation() {
+  const banner = document.querySelector('.unit-header-banner');
+  if (!banner) return;
 
+  const animatedElements = banner.querySelectorAll('.section-label, h1, .unit-banner-title, p, .unit-banner-desc');
+  if (animatedElements.length === 0) return;
+
+  function triggerBannerAnimation() {
+    animatedElements.forEach(el => {
+      el.style.animation = 'none';
+      void el.offsetHeight; // force reflow
+      el.style.animation = '';
+    });
+    banner.classList.add('is-animated');
+  }
+
+  // Initial trigger
+  triggerBannerAnimation();
+
+  if ('IntersectionObserver' in window) {
+    let hasLeft = false;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (hasLeft) {
+            triggerBannerAnimation();
+          }
+        } else {
+          hasLeft = true;
+          banner.classList.remove('is-animated');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    observer.observe(banner);
+  }
+}

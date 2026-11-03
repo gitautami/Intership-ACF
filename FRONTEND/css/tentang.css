@@ -87,6 +87,24 @@
   color: #FFD166;
 }
 
+/* Staggered Slide-Up Entrance Animations for Page Hero Content (Kisah Kami & Visi Misi) */
+@keyframes pageHeroSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(42px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-hero .section-label,
+.page-hero .page-hero-breadcrumb {
+  animation: pageHeroSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  will-change: transform, opacity;
+}
+
 .page-hero-title {
   font-size: clamp(2.1rem, 4.2vw, 3rem);
   font-weight: 800;
@@ -96,6 +114,8 @@
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
   position: relative;
   z-index: 2;
+  animation: pageHeroSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+  will-change: transform, opacity;
 }
 
 .page-hero-subtitle {
@@ -106,6 +126,22 @@
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 2;
+  animation: pageHeroSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+  will-change: transform, opacity;
+}
+
+/* Re-triggered saat scroll balik ke atas */
+.page-hero.is-animated .section-label,
+.page-hero.is-animated .page-hero-breadcrumb {
+  animation: pageHeroSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.page-hero.is-animated .page-hero-title {
+  animation: pageHeroSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+}
+
+.page-hero.is-animated .page-hero-subtitle {
+  animation: pageHeroSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
 }
 
 /* Visi Misi Specific */
@@ -224,21 +260,52 @@
 }
 
 @media (max-width: 768px) {
+  @keyframes pageHeroSlideUpMobile {
+    0% {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .page-hero,
   .page-hero.visi-misi-hero {
     min-height: auto;
     padding: 105px 0 42px;
   }
 
+  .page-hero .section-label,
+  .page-hero .page-hero-breadcrumb {
+    animation: pageHeroSlideUpMobile 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+  }
+
   .page-hero-title {
     font-size: clamp(1.65rem, 5.5vw, 2.2rem) !important;
     line-height: 1.25 !important;
     margin-bottom: 10px !important;
+    animation: pageHeroSlideUpMobile 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
   }
 
   .page-hero-subtitle {
     font-size: 0.92rem !important;
     line-height: 1.6 !important;
+    animation: pageHeroSlideUpMobile 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.36s both;
+  }
+
+  .page-hero.is-animated .section-label,
+  .page-hero.is-animated .page-hero-breadcrumb {
+    animation: pageHeroSlideUpMobile 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+  }
+
+  .page-hero.is-animated .page-hero-title {
+    animation: pageHeroSlideUpMobile 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+  }
+
+  .page-hero.is-animated .page-hero-subtitle {
+    animation: pageHeroSlideUpMobile 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.36s both;
   }
 }
 

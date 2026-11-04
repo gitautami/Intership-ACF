@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ACF EDUHUB - Navigation Controller (Navbar & Sidebar Drawer)
  */
 
@@ -262,6 +262,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // Align cookie state immediately on load
         setTranslateCookie(currentLang);
 
+        // Flag SVG Icons (Indonesia 🇮🇩 & United Kingdom 🇬🇧)
+        const flagIdSvg = `<svg class="lang-flag" viewBox="0 0 640 480" width="17" height="12" aria-hidden="true" focusable="false"><rect width="640" height="240" fill="#E11D48"/><rect y="240" width="640" height="240" fill="#FFFFFF"/></svg>`;
+        const flagEnSvg = `<svg class="lang-flag" viewBox="0 0 60 36" width="17" height="12" aria-hidden="true" focusable="false"><rect width="60" height="36" fill="#012169"/><path d="M0 0 L60 36 M60 0 L0 36" stroke="#FFFFFF" stroke-width="7"/><path d="M0 0 L60 36 M60 0 L0 36" stroke="#C8102E" stroke-width="2.5"/><path d="M30 0 v36 M0 18 h60" stroke="#FFFFFF" stroke-width="11"/><path d="M30 0 v36 M0 18 h60" stroke="#C8102E" stroke-width="6.5"/></svg>`;
+
+        // Helper: Ensure flags are present inside all language pill buttons
+        const enhanceLanguageButtons = () => {
+            document.querySelectorAll('.lang-pill-btn').forEach(btn => {
+                if (btn.querySelector('.lang-flag')) return;
+                const lang = btn.getAttribute('data-lang');
+                if (lang === 'id') {
+                    btn.innerHTML = `${flagIdSvg}<span>ID</span>`;
+                } else if (lang === 'en') {
+                    btn.innerHTML = `${flagEnSvg}<span>EN</span>`;
+                }
+            });
+        };
+
         // Helper: Synchronize active state on all pill buttons
         const syncButtonStates = (lang) => {
             document.querySelectorAll('.lang-pill-btn').forEach(btn => {
@@ -313,8 +330,8 @@ document.addEventListener('DOMContentLoaded', () => {
             switcher.setAttribute('role', 'group');
             switcher.setAttribute('aria-label', 'Pilihan Bahasa');
             switcher.innerHTML = `
-                <button type="button" class="lang-pill-btn ${currentLang === 'id' ? 'active' : ''}" data-lang="id" aria-pressed="${currentLang === 'id'}" title="Bahasa Indonesia">ID</button>
-                <button type="button" class="lang-pill-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" aria-pressed="${currentLang === 'en'}" title="English">EN</button>
+                <button type="button" class="lang-pill-btn ${currentLang === 'id' ? 'active' : ''}" data-lang="id" aria-pressed="${currentLang === 'id'}" title="Bahasa Indonesia">${flagIdSvg}<span>ID</span></button>
+                <button type="button" class="lang-pill-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" aria-pressed="${currentLang === 'en'}" title="English">${flagEnSvg}<span>EN</span></button>
             `;
             if (btnDonasi && btnDonasi.nextSibling) {
                 navActions.insertBefore(switcher, btnDonasi.nextSibling);
@@ -334,8 +351,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>Bahasa / Language</span>
                 </div>
                 <div class="lang-pill-switch" role="group" aria-label="Pilihan Bahasa Mobile">
-                    <button type="button" class="lang-pill-btn ${currentLang === 'id' ? 'active' : ''}" data-lang="id" aria-pressed="${currentLang === 'id'}" title="Bahasa Indonesia">ID</button>
-                    <button type="button" class="lang-pill-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" aria-pressed="${currentLang === 'en'}" title="English">EN</button>
+                    <button type="button" class="lang-pill-btn ${currentLang === 'id' ? 'active' : ''}" data-lang="id" aria-pressed="${currentLang === 'id'}" title="Bahasa Indonesia">${flagIdSvg}<span>ID</span></button>
+                    <button type="button" class="lang-pill-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" aria-pressed="${currentLang === 'en'}" title="English">${flagEnSvg}<span>EN</span></button>
                 </div>
             `;
             const searchBox = document.querySelector('.sidebar-search-box');
@@ -347,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Immediately update visual button state & instant translations
+        enhanceLanguageButtons();
         syncButtonStates(currentLang);
         applyInstantUITranslation(currentLang);
 

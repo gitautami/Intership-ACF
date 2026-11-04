@@ -344,7 +344,8 @@
     font-family: var(--font-primary, 'Poppins', sans-serif) !important;
     font-size: 0.78rem !important;
     font-weight: 700 !important;
-    padding: 5px 12px !important;
+    padding: 4px 10px !important;
+    gap: 6px !important;
     border-radius: 9999px !important;
     cursor: pointer !important;
     transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -364,6 +365,33 @@
     background: linear-gradient(135deg, #7D2280 0%, #A22DA5 100%) !important;
     color: #FFFFFF !important;
     box-shadow: 0 2px 6px rgba(125, 34, 128, 0.35) !important;
+}
+
+.lang-pill-btn > span {
+    display: inline-block !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+}
+
+.lang-flag {
+    width: 17px !important;
+    height: 12px !important;
+    border-radius: 2px !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    pointer-events: none !important;
+    transition: transform 0.2s ease !important;
+}
+
+.lang-pill-btn.active .lang-flag {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+}
+
+.lang-pill-btn:hover .lang-flag {
+    transform: scale(1.08);
 }
 
 /* Sidebar Drawer Specific Lang Switcher (Mobile) */

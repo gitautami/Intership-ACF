@@ -359,6 +359,94 @@
         padding: 110px 14px 40px;
       }
     }
+    /* =============================================
+       Mitra Section Header Entrance Animation
+       (Slide-Up Staggered Fade-In)
+       ============================================= */
+    @keyframes mitraHeaderSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(38px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-header.mitra-header-animated {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+
+    .section-header.mitra-header-animated .section-label,
+    .section-header.mitra-header-animated .mitra-main-title,
+    .section-header.mitra-header-animated .section-subtitle {
+      opacity: 0;
+      transform: translateY(38px);
+      will-change: transform, opacity;
+    }
+
+    /* Staggered entrance delays */
+    .section-header.mitra-header-animated.is-visible .section-label,
+    .section-header.mitra-header-animated.visible .section-label {
+      animation: mitraHeaderSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+    }
+
+    .section-header.mitra-header-animated.is-visible .mitra-main-title,
+    .section-header.mitra-header-animated.visible .mitra-main-title {
+      animation: mitraHeaderSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+    }
+
+    .section-header.mitra-header-animated.is-visible .section-subtitle,
+    .section-header.mitra-header-animated.visible .section-subtitle {
+      animation: mitraHeaderSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.44s both;
+    }
+
+    @media (max-width: 768px) {
+      @keyframes mitraHeaderSlideUpMobile {
+        0% {
+          opacity: 0;
+          transform: translateY(26px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .section-header.mitra-header-animated .section-label,
+      .section-header.mitra-header-animated .mitra-main-title,
+      .section-header.mitra-header-animated .section-subtitle {
+        transform: translateY(26px);
+      }
+
+      .section-header.mitra-header-animated.is-visible .section-label,
+      .section-header.mitra-header-animated.visible .section-label {
+        animation-name: mitraHeaderSlideUpMobile;
+      }
+
+      .section-header.mitra-header-animated.is-visible .mitra-main-title,
+      .section-header.mitra-header-animated.visible .mitra-main-title {
+        animation-name: mitraHeaderSlideUpMobile;
+      }
+
+      .section-header.mitra-header-animated.is-visible .section-subtitle,
+      .section-header.mitra-header-animated.visible .section-subtitle {
+        animation-name: mitraHeaderSlideUpMobile;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .section-header.mitra-header-animated .section-label,
+      .section-header.mitra-header-animated .mitra-main-title,
+      .section-header.mitra-header-animated .section-subtitle {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -659,7 +747,7 @@
       <div class="container">
         
         <!-- Main Section Header -->
-        <div class="section-header centered reveal">
+        <div class="section-header centered mitra-header-animated" id="mitraMainHeader">
           <span class="section-label">MITRA</span>
           <h2 class="section-title mitra-main-title">Pendidikan Terbaik untuk Semua</h2>
           <p class="section-subtitle">
@@ -1064,6 +1152,25 @@
   <script src="../js/main.js?v=20261028_mitra_v1"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // 1. Mitra Main Header Slide-Up Entrance Animation (Replay saat scroll)
+      const mitraHeader = document.getElementById('mitraMainHeader');
+      if (mitraHeader && 'IntersectionObserver' in window) {
+        const headerObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              mitraHeader.classList.add('is-visible');
+            } else {
+              mitraHeader.classList.remove('is-visible');
+              mitraHeader.classList.remove('visible');
+            }
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        headerObserver.observe(mitraHeader);
+      } else if (mitraHeader) {
+        mitraHeader.classList.add('is-visible');
+      }
+
+      // 2. Mitra CTA Box Observer
       const ctaBox = document.getElementById('mitraCtaBox');
       if (ctaBox && 'IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {

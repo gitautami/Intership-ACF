@@ -1974,6 +1974,91 @@
   text-transform: none !important;
 }
 
+/* Mitra Header Entrance Animation (Slide-Up Staggered Fade-In) */
+@keyframes mitraHeaderSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(38px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-header.mitra-header-animated {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+.section-header.mitra-header-animated .section-label,
+.section-header.mitra-header-animated .mitra-main-title,
+.section-header.mitra-header-animated .section-subtitle {
+  opacity: 0;
+  transform: translateY(38px);
+  will-change: transform, opacity;
+}
+
+.section-header.mitra-header-animated.is-visible .section-label,
+.section-header.mitra-header-animated.visible .section-label {
+  animation: mitraHeaderSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+.section-header.mitra-header-animated.is-visible .mitra-main-title,
+.section-header.mitra-header-animated.visible .mitra-main-title {
+  animation: mitraHeaderSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+}
+
+.section-header.mitra-header-animated.is-visible .section-subtitle,
+.section-header.mitra-header-animated.visible .section-subtitle {
+  animation: mitraHeaderSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.44s both;
+}
+
+@media (max-width: 768px) {
+  @keyframes mitraHeaderSlideUpMobile {
+    0% {
+      opacity: 0;
+      transform: translateY(26px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .section-header.mitra-header-animated .section-label,
+  .section-header.mitra-header-animated .mitra-main-title,
+  .section-header.mitra-header-animated .section-subtitle {
+    transform: translateY(26px);
+  }
+
+  .section-header.mitra-header-animated.is-visible .section-label,
+  .section-header.mitra-header-animated.visible .section-label {
+    animation-name: mitraHeaderSlideUpMobile;
+  }
+
+  .section-header.mitra-header-animated.is-visible .mitra-main-title,
+  .section-header.mitra-header-animated.visible .mitra-main-title {
+    animation-name: mitraHeaderSlideUpMobile;
+  }
+
+  .section-header.mitra-header-animated.is-visible .section-subtitle,
+  .section-header.mitra-header-animated.visible .section-subtitle {
+    animation-name: mitraHeaderSlideUpMobile;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-header.mitra-header-animated .section-label,
+  .section-header.mitra-header-animated .mitra-main-title,
+  .section-header.mitra-header-animated .section-subtitle {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
 .mitra-slider-heading {
   display: inline-flex;
   align-items: center;

@@ -4,6 +4,46 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 0. Hero Banner Slide-Up Entrance Animation (Replay on scroll)
+  function initDonasiHeroAnimation() {
+    const hero = document.querySelector('.donasi-hero');
+    if (!hero) return;
+
+    const animatedElements = hero.querySelectorAll('.donasi-hero-badge, .donasi-hero-title, .donasi-hero-desc');
+    if (animatedElements.length === 0) return;
+
+    function triggerHeroAnimation() {
+      animatedElements.forEach(el => {
+        el.style.animation = 'none';
+        void el.offsetHeight; // force reflow
+        el.style.animation = '';
+      });
+      hero.classList.add('is-animated');
+    }
+
+    // Initial trigger
+    triggerHeroAnimation();
+
+    if ('IntersectionObserver' in window) {
+      let hasLeft = false;
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            if (hasLeft) {
+              triggerHeroAnimation();
+            }
+          } else {
+            hasLeft = true;
+            hero.classList.remove('is-animated');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      observer.observe(hero);
+    }
+  }
+  initDonasiHeroAnimation();
+
   // Elements
   const toastMsg = document.getElementById('toastMsg');
   const anonCheckbox = document.getElementById('anonCheckbox');

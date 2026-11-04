@@ -131,6 +131,98 @@
 }
 
 /* =============================================
+   Animasi Masuk dari Bawah (Slide-Up Staggered Fade-In)
+   ============================================= */
+@keyframes donasiHeroSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(42px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.donasi-hero .donasi-hero-badge {
+  animation: donasiHeroSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  will-change: transform, opacity;
+}
+
+.donasi-hero .donasi-hero-title {
+  animation: donasiHeroSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  will-change: transform, opacity;
+}
+
+.donasi-hero .donasi-hero-desc {
+  animation: donasiHeroSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+  will-change: transform, opacity;
+}
+
+/* Re-triggered saat scroll bolak-balik */
+.donasi-hero.is-animated .donasi-hero-badge {
+  animation: donasiHeroSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.donasi-hero.is-animated .donasi-hero-title {
+  animation: donasiHeroSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+}
+
+.donasi-hero.is-animated .donasi-hero-desc {
+  animation: donasiHeroSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+}
+
+@media (max-width: 768px) {
+  @keyframes donasiHeroSlideUpMobile {
+    0% {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .donasi-hero .donasi-hero-badge {
+    animation-name: donasiHeroSlideUpMobile;
+  }
+
+  .donasi-hero .donasi-hero-title {
+    animation-name: donasiHeroSlideUpMobile;
+  }
+
+  .donasi-hero .donasi-hero-desc {
+    animation-name: donasiHeroSlideUpMobile;
+  }
+
+  .donasi-hero.is-animated .donasi-hero-badge {
+    animation-name: donasiHeroSlideUpMobile;
+  }
+
+  .donasi-hero.is-animated .donasi-hero-title {
+    animation-name: donasiHeroSlideUpMobile;
+  }
+
+  .donasi-hero.is-animated .donasi-hero-desc {
+    animation-name: donasiHeroSlideUpMobile;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .donasi-hero .donasi-hero-badge,
+  .donasi-hero .donasi-hero-title,
+  .donasi-hero .donasi-hero-desc,
+  .donasi-hero.is-animated .donasi-hero-badge,
+  .donasi-hero.is-animated .donasi-hero-title,
+  .donasi-hero.is-animated .donasi-hero-desc {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* =============================================
    2. QRIS Donation Section (Direct Scan & Pay)
    ============================================= */
 .donasi-qris-section {

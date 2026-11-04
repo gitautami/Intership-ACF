@@ -59,6 +59,104 @@
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
+/* Staggered Slide-Up Entrance Animation for Kerjasama Banner Content */
+@keyframes kerjasamaBannerSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(42px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kerjasama-header-banner .section-label {
+  animation: kerjasamaBannerSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  will-change: transform, opacity;
+}
+
+.kerjasama-header-banner h1,
+.kerjasama-header-banner .kerjasama-banner-title {
+  animation: kerjasamaBannerSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+  will-change: transform, opacity;
+}
+
+.kerjasama-header-banner p,
+.kerjasama-header-banner .kerjasama-banner-desc {
+  animation: kerjasamaBannerSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+  will-change: transform, opacity;
+}
+
+/* Re-triggered saat scroll balik ke atas */
+.kerjasama-header-banner.is-animated .section-label {
+  animation: kerjasamaBannerSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.kerjasama-header-banner.is-animated h1,
+.kerjasama-header-banner.is-animated .kerjasama-banner-title {
+  animation: kerjasamaBannerSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+}
+
+.kerjasama-header-banner.is-animated p,
+.kerjasama-header-banner.is-animated .kerjasama-banner-desc {
+  animation: kerjasamaBannerSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+}
+
+@media (max-width: 768px) {
+  @keyframes kerjasamaBannerSlideUpMobile {
+    0% {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .kerjasama-header-banner .section-label {
+    animation-name: kerjasamaBannerSlideUpMobile;
+  }
+
+  .kerjasama-header-banner h1,
+  .kerjasama-header-banner .kerjasama-banner-title {
+    animation-name: kerjasamaBannerSlideUpMobile;
+  }
+
+  .kerjasama-header-banner p,
+  .kerjasama-header-banner .kerjasama-banner-desc {
+    animation-name: kerjasamaBannerSlideUpMobile;
+  }
+
+  .kerjasama-header-banner.is-animated .section-label {
+    animation-name: kerjasamaBannerSlideUpMobile;
+  }
+
+  .kerjasama-header-banner.is-animated h1,
+  .kerjasama-header-banner.is-animated .kerjasama-banner-title {
+    animation-name: kerjasamaBannerSlideUpMobile;
+  }
+
+  .kerjasama-header-banner.is-animated p,
+  .kerjasama-header-banner.is-animated .kerjasama-banner-desc {
+    animation-name: kerjasamaBannerSlideUpMobile;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kerjasama-header-banner .section-label,
+  .kerjasama-header-banner h1,
+  .kerjasama-header-banner p,
+  .kerjasama-header-banner.is-animated .section-label,
+  .kerjasama-header-banner.is-animated h1,
+  .kerjasama-header-banner.is-animated p {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 .kerjasama-header-banner p {
   color: rgba(255, 255, 255, 0.95) !important;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);

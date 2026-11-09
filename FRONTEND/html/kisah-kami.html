@@ -21,6 +21,11 @@
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/navbar.css?v=33">
   <link rel="stylesheet" href="../css/tentang.css?v=9">
+  <link rel="stylesheet" href="../css/flipbook.css">
+
+  <!-- PDF.js & StPageFlip (HTML5 3D Flipbook Engine) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 </head>
 <body>
 
@@ -336,6 +341,26 @@
             <p style="font-size: 1.05rem; line-height: 1.85; color: var(--text-body); text-align: justify; text-justify: inter-word;">
               Model kerja kami dirancang agar berkelanjutan secara finansial, sambil tetap membuka akses pendidikan bagi mereka yang membutuhkan.
             </p>
+
+            <!-- Tombol Profil Lembaga ACF Eduhub -->
+            <div class="profil-lembaga-btn-wrap" style="margin-top: 26px;">
+              <a href="#profil-lembaga" class="btn-profil-lembaga" id="btnProfilLembaga" title="Buka Profil Lembaga ACF Eduhub" data-open-flipbook="profil-lembaga">
+                <span class="btn-profil-icon-book">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    <line x1="12" y1="6" x2="16" y2="6"></line>
+                    <line x1="12" y1="10" x2="16" y2="10"></line>
+                  </svg>
+                </span>
+                <span class="btn-profil-text">Profil Lembaga ACF Eduhub</span>
+                <span class="btn-profil-icon-arrow">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </span>
+              </a>
+            </div>
           </div>
           <div class="reveal">
             <div class="sejarah-img-box">
@@ -830,9 +855,108 @@
     </div>
   </footer>
 
+  <!-- ==========================================================================
+       MODAL FLIPBOOK 3D PROFIL LEMBAGA ACF EDUHUB (SESUAI VIDEO REFERENSI)
+       ========================================================================== -->
+  <div class="flipbook-modal" id="flipbookModal" role="dialog" aria-modal="true" aria-labelledby="flipbookModalTitle">
+    <!-- Header Bar -->
+    <div class="flipbook-header">
+      <div class="flipbook-header-left">
+        <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="flipbook-logo-mini">
+        <div class="flipbook-title-group">
+          <span class="flipbook-doc-title" id="flipbookModalTitle">Profil Lembaga — ACF Eduhub</span>
+          <span class="flipbook-doc-subtitle">Dokumen Resmi Profil & Portofolio Dampak Yayasan</span>
+        </div>
+      </div>
+
+      <div class="flipbook-header-right">
+        <span class="flipbook-page-badge" id="flipbookPageBadge">Memuat...</span>
+
+        <!-- Unduh PDF Asli -->
+        <a href="../assets/tentang/Profil Lembaga - ACF Eduhub.pdf" download="Profil Lembaga - ACF Eduhub.pdf" class="flipbook-btn-tool btn-download-pdf" title="Unduh Dokumen PDF Resmi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Unduh PDF</span>
+        </a>
+
+        <!-- Fullscreen Toggle -->
+        <button type="button" class="flipbook-btn-tool" id="btnFlipbookFullscreen" title="Layar Penuh" aria-label="Layar Penuh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+        </button>
+
+        <!-- Tombol Tutup Modal -->
+        <button type="button" class="flipbook-btn-close" id="btnFlipbookClose" title="Tutup Flipbook" aria-label="Tutup Flipbook">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Stage Area -->
+    <div class="flipbook-stage" id="flipbookStage">
+      <!-- Loading Screen Overlay -->
+      <div class="flipbook-loading-screen" id="flipbookLoading">
+        <div class="flipbook-spinner"></div>
+        <div class="flipbook-loading-title">Membuka Profil Lembaga ACF Eduhub</div>
+        <div class="flipbook-loading-desc" id="flipbookLoadingDesc">Sedang menyiapkan tampilan lembaran buku...</div>
+        <div class="flipbook-progress-bar-bg">
+          <div class="flipbook-progress-bar-fill" id="flipbookProgressFill"></div>
+        </div>
+      </div>
+
+      <!-- Tombol Navigasi Panah Bulat Kiri (Sesuai Video Referensi) -->
+      <button type="button" class="flipbook-nav-btn nav-prev" id="btnNavPrev" aria-label="Halaman Sebelumnya" title="Halaman Sebelumnya">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Flipbook Viewport & Canvas Book Container -->
+      <div class="flipbook-viewport" id="flipbookViewport">
+        <div class="flipbook-container" id="flipbookBook"></div>
+      </div>
+
+      <!-- Tombol Navigasi Panah Bulat Kanan (Sesuai Video Referensi) -->
+      <button type="button" class="flipbook-nav-btn nav-next" id="btnNavNext" aria-label="Halaman Selanjutnya" title="Halaman Selanjutnya">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="flipbook-bottom-bar">
+      <button type="button" class="flipbook-btn-mini" id="btnNavFirst" title="Ke Halaman Pertama" aria-label="Halaman Pertama">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="11 17 6 12 11 7"></polyline>
+          <polyline points="18 17 13 12 18 7"></polyline>
+        </svg>
+      </button>
+
+      <div class="flipbook-range-wrap">
+        <input type="range" class="flipbook-range-slider" id="flipbookRange" min="1" max="31" value="1" title="Geser Halaman">
+      </div>
+
+      <button type="button" class="flipbook-btn-mini" id="btnNavLast" title="Ke Halaman Terakhir" aria-label="Halaman Terakhir">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="13 17 18 12 13 7"></polyline>
+          <polyline points="6 17 11 12 6 7"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
   <!-- ========== JAVASCRIPT FILES (Separated per module) ========== -->
   <script src="../js/navbar.js?v=11"></script>
   <script src="../js/main.js?v=20261028_dampak_cerita_v1"></script>
   <script src="../js/tentang.js?v=2"></script>
+  <script src="../js/flipbook.js?v=1"></script>
 </body>
 </html>

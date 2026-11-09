@@ -1,0 +1,526 @@
+/* ==========================================================================
+   ACF EDUHUB — INTERACTIVE PDF FLIPBOOK VIEWER
+   Sesuai Layout Flipbook 3D Dokumen Profil Lembaga (Seperti Video Referensi)
+   ========================================================================== */
+
+/* 1. Modal Overlay & Container */
+.flipbook-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.flipbook-modal.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* 2. Top Header Bar */
+.flipbook-header {
+  height: 64px;
+  background: rgba(24, 18, 30, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  color: #FFFFFF;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.flipbook-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.flipbook-logo-mini {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+.flipbook-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.flipbook-doc-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.25;
+}
+
+.flipbook-doc-subtitle {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.flipbook-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Page Indicator Badge */
+.flipbook-page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 30px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.flipbook-btn-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.flipbook-btn-tool:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.flipbook-btn-tool.btn-download-pdf {
+  background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);
+}
+
+.flipbook-btn-tool.btn-download-pdf:hover {
+  background: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%);
+  box-shadow: 0 6px 18px rgba(225, 29, 72, 0.6);
+}
+
+.flipbook-btn-tool svg {
+  width: 17px;
+  height: 17px;
+}
+
+.flipbook-btn-close {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.flipbook-btn-close:hover {
+  background: #E11D48;
+  border-color: #E11D48;
+  transform: rotate(90deg);
+}
+
+.flipbook-btn-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* 3. Main Stage Area */
+.flipbook-stage {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #E2E8F0;
+  background: radial-gradient(circle at center, #F1F5F9 0%, #CBD5E1 100%);
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* Standalone Page specific background */
+.flipbook-standalone-body {
+  margin: 0;
+  padding: 0;
+  background: #CBD5E1;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.flipbook-standalone-body .flipbook-stage {
+  height: calc(100vh - 64px - 56px);
+}
+
+/* 4. Book Wrapper & StPageFlip Container */
+.flipbook-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 1280px;
+  max-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flipbook-container {
+  margin: 0 auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: #FFFFFF;
+  position: relative;
+}
+
+/* Flipbook Single Page Container */
+.page-sheet {
+  background-color: #FFFFFF;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.04);
+}
+
+.page-sheet canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  object-fit: contain;
+}
+
+.page-sheet-num {
+  position: absolute;
+  bottom: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748B;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.page-sheet-num.left {
+  left: 14px;
+}
+
+.page-sheet-num.right {
+  right: 14px;
+}
+
+/* Spine Shadow effect between 2 pages */
+.page-sheet.--left {
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.page-sheet.--right {
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* 5. Circular Navigation Buttons (SESUAI VIDEO REFERENSI) */
+.flipbook-nav-btn {
+  position: absolute;
+  bottom: 28px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.45), 0 2px 8px rgba(0, 0, 0, 0.18);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 25;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, opacity 0.2s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.flipbook-nav-btn:hover:not(:disabled) {
+  transform: scale(1.12);
+  box-shadow: 0 10px 28px rgba(225, 29, 72, 0.65), 0 4px 12px rgba(0, 0, 0, 0.22);
+}
+
+.flipbook-nav-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.flipbook-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.flipbook-nav-btn.nav-prev {
+  left: 32px;
+}
+
+.flipbook-nav-btn.nav-next {
+  right: 32px;
+}
+
+.flipbook-nav-btn svg {
+  width: 26px;
+  height: 26px;
+  stroke: #FFFFFF;
+  stroke-width: 3;
+}
+
+/* 6. Bottom Controls Bar */
+.flipbook-bottom-bar {
+  height: 56px;
+  background: rgba(24, 18, 30, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 20px;
+  z-index: 10;
+  flex-shrink: 0;
+  color: #FFFFFF;
+}
+
+.flipbook-range-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 260px;
+  max-width: 100%;
+}
+
+.flipbook-range-slider {
+  width: 100%;
+  accent-color: #E11D48;
+  cursor: pointer;
+}
+
+.flipbook-btn-mini {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.flipbook-btn-mini:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.flipbook-btn-mini:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.flipbook-btn-mini svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* 7. Loading Overlay */
+.flipbook-loading-screen {
+  position: absolute;
+  inset: 0;
+  background: rgba(241, 245, 249, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  transition: opacity 0.4s ease;
+}
+
+.flipbook-loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.flipbook-spinner {
+  width: 52px;
+  height: 52px;
+  border: 4px solid #E2E8F0;
+  border-top-color: #E11D48;
+  border-radius: 50%;
+  animation: flipbookSpin 0.8s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes flipbookSpin {
+  to { transform: rotate(360deg); }
+}
+
+.flipbook-loading-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 6px;
+}
+
+.flipbook-loading-desc {
+  font-size: 0.85rem;
+  color: #64748B;
+  margin-bottom: 16px;
+}
+
+.flipbook-progress-bar-bg {
+  width: 220px;
+  height: 6px;
+  background: #E2E8F0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.flipbook-progress-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #7D2280, #E11D48);
+  border-radius: 10px;
+  transition: width 0.2s ease;
+}
+
+/* 8. Fallback iframe mode if canvas/flipbook cannot load */
+.flipbook-iframe-fallback {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* 9. Tombol Pemicu di Halaman Cerita Kami (kisah-kami.html) */
+.btn-profil-lembaga {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #7D2280 0%, #A22DA5 48%, #E11D48 100%);
+  color: #FFFFFF !important;
+  font-weight: 700;
+  font-size: 0.98rem;
+  padding: 13px 26px;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(125, 34, 128, 0.35);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.btn-profil-lembaga:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(225, 29, 72, 0.5);
+  background: linear-gradient(135deg, #631766 0%, #832086 48%, #BE123C 100%);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-profil-icon-book {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-profil-icon-book svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.btn-profil-icon-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+}
+
+.btn-profil-icon-arrow svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.btn-profil-lembaga:hover .btn-profil-icon-arrow {
+  transform: translateX(4px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .flipbook-header {
+    height: 56px;
+    padding: 0 14px;
+  }
+
+  .flipbook-doc-title {
+    font-size: 0.88rem;
+  }
+
+  .flipbook-doc-subtitle {
+    display: none;
+  }
+
+  .flipbook-btn-tool span {
+    display: none;
+  }
+
+  .flipbook-btn-tool {
+    padding: 0 10px;
+  }
+
+  .flipbook-nav-btn {
+    bottom: 20px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .flipbook-nav-btn.nav-prev {
+    left: 16px;
+  }
+
+  .flipbook-nav-btn.nav-next {
+    right: 16px;
+  }
+
+  .flipbook-stage {
+    padding: 10px;
+  }
+
+  .btn-profil-lembaga {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 0.92rem;
+    padding: 12px 20px;
+  }
+}
+

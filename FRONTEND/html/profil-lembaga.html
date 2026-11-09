@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Profil Lembaga Yayasan ACF Eduhub — Menghadirkan Solusi Pendidikan Berkelanjutan dan Berkeadilan Sejak 2016.">
+  <title>Profil Lembaga — ACF Eduhub</title>
+
+  <!-- Favicon / Tab Icon -->
+  <link rel="icon" type="image/png" href="../assets/logo-acf/icon tab.png">
+  <link rel="shortcut icon" type="image/png" href="../assets/logo-acf/icon tab.png">
+  <link rel="apple-touch-icon" href="../assets/logo-acf/icon tab.png">
+
+  <!-- Google Fonts (Poppins) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/flipbook.css">
+
+  <!-- PDF.js & StPageFlip (HTML5 3D Flipbook Engine) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+</head>
+<body class="flipbook-standalone-body">
+
+  <!-- Top Header Bar -->
+  <header class="flipbook-header">
+    <div class="flipbook-header-left">
+      <a href="kisah-kami.html" class="flipbook-btn-tool" title="Kembali ke Halaman Cerita Kami">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Kembali ke Cerita Kami</span>
+      </a>
+      <div class="flipbook-title-group" style="margin-left: 8px;">
+        <span class="flipbook-doc-title">Profil Lembaga — ACF Eduhub</span>
+        <span class="flipbook-doc-subtitle">Dokumen Resmi Profil & Portofolio Dampak Yayasan</span>
+      </div>
+    </div>
+
+    <div class="flipbook-header-right">
+      <span class="flipbook-page-badge" id="flipbookPageBadge">Memuat...</span>
+
+      <!-- Unduh PDF Asli -->
+      <a href="../assets/tentang/Profil Lembaga - ACF Eduhub.pdf" download="Profil Lembaga - ACF Eduhub.pdf" class="flipbook-btn-tool btn-download-pdf" title="Unduh Dokumen PDF Resmi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Unduh PDF</span>
+      </a>
+
+      <!-- Fullscreen Toggle -->
+      <button type="button" class="flipbook-btn-tool" id="btnFlipbookFullscreen" title="Layar Penuh / Fullscreen" aria-label="Layar Penuh">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Stage Area -->
+  <main class="flipbook-stage" id="flipbookStage">
+
+    <!-- Loading Screen Overlay -->
+    <div class="flipbook-loading-screen" id="flipbookLoading">
+      <div class="flipbook-spinner"></div>
+      <div class="flipbook-loading-title">Membuka Profil Lembaga ACF Eduhub</div>
+      <div class="flipbook-loading-desc" id="flipbookLoadingDesc">Sedang menyiapkan tampilan lembaran buku...</div>
+      <div class="flipbook-progress-bar-bg">
+        <div class="flipbook-progress-bar-fill" id="flipbookProgressFill"></div>
+      </div>
+    </div>
+
+    <!-- Tombol Navigasi Panah Bulat Kiri (Sesuai Video Referensi) -->
+    <button type="button" class="flipbook-nav-btn nav-prev" id="btnNavPrev" aria-label="Halaman Sebelumnya" title="Halaman Sebelumnya">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+
+    <!-- Flipbook Viewport & Canvas Book Container -->
+    <div class="flipbook-viewport" id="flipbookViewport">
+      <div class="flipbook-container" id="flipbookBook"></div>
+    </div>
+
+    <!-- Tombol Navigasi Panah Bulat Kanan (Sesuai Video Referensi) -->
+    <button type="button" class="flipbook-nav-btn nav-next" id="btnNavNext" aria-label="Halaman Selanjutnya" title="Halaman Selanjutnya">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <footer class="flipbook-bottom-bar">
+    <button type="button" class="flipbook-btn-mini" id="btnNavFirst" title="Ke Halaman Pertama" aria-label="Halaman Pertama">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="11 17 6 12 11 7"></polyline>
+        <polyline points="18 17 13 12 18 7"></polyline>
+      </svg>
+    </button>
+
+    <div class="flipbook-range-wrap">
+      <input type="range" class="flipbook-range-slider" id="flipbookRange" min="1" max="31" value="1" title="Geser Halaman">
+    </div>
+
+    <button type="button" class="flipbook-btn-mini" id="btnNavLast" title="Ke Halaman Terakhir" aria-label="Halaman Terakhir">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="13 17 18 12 13 7"></polyline>
+        <polyline points="6 17 11 12 6 7"></polyline>
+      </svg>
+    </button>
+  </footer>
+
+  <!-- Flipbook Script -->
+  <script src="../js/flipbook.js"></script>
+</body>
+</html>
+

@@ -171,6 +171,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Toggle "Lainnya" Input untuk Bentuk Dukungan Utama
+  const jenisKemitraanSelect = document.getElementById('jenisKemitraan');
+  const jenisKemitraanLainnyaWrapper = document.getElementById('jenisKemitraanLainnyaWrapper');
+  const jenisKemitraanLainnyaInput = document.getElementById('jenisKemitraanLainnya');
+
+  if (jenisKemitraanSelect && jenisKemitraanLainnyaWrapper) {
+    jenisKemitraanSelect.addEventListener('change', () => {
+      const val = jenisKemitraanSelect.value;
+      if (val === 'Lainnya' || val.toLowerCase().includes('lainnya')) {
+        jenisKemitraanLainnyaWrapper.style.display = 'block';
+        if (jenisKemitraanLainnyaInput) {
+          jenisKemitraanLainnyaInput.required = true;
+          jenisKemitraanLainnyaInput.focus();
+        }
+      } else {
+        jenisKemitraanLainnyaWrapper.style.display = 'none';
+        if (jenisKemitraanLainnyaInput) {
+          jenisKemitraanLainnyaInput.required = false;
+          jenisKemitraanLainnyaInput.value = '';
+        }
+      }
+    });
+  }
+
   const profesiSelect = document.getElementById('profesiRelawan');
   const profesiLainnyaWrapper = document.getElementById('profesiRelawanLainnyaWrapper');
   const profesiLainnyaInput = document.getElementById('profesiRelawanLainnya');
@@ -224,7 +248,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const jabatanPIC = document.getElementById('jabatanPIC')?.value.trim() || '';
       const emailPIC = document.getElementById('emailPIC')?.value.trim() || '';
       const noWA = document.getElementById('noWA')?.value.trim() || '';
-      const jenisKemitraan = document.getElementById('jenisKemitraan')?.value || '';
+      let jenisKemitraan = document.getElementById('jenisKemitraan')?.value || '';
+      const jenisKemitraanLainnya = document.getElementById('jenisKemitraanLainnya')?.value.trim() || '';
+      if ((jenisKemitraan === 'Lainnya' || jenisKemitraan.toLowerCase().includes('lainnya')) && jenisKemitraanLainnya) {
+        jenisKemitraan = `Lainnya (${jenisKemitraanLainnya})`;
+      }
       const estimasiWaktu = document.getElementById('estimasiWaktu')?.value || '';
       const pesan = document.getElementById('pesanKemitraan')?.value.trim() || '';
 
@@ -311,6 +339,9 @@ document.addEventListener('DOMContentLoaded', () => {
       formMitra.reset();
       if (jenisInstansiLainnyaWrapper) {
         jenisInstansiLainnyaWrapper.style.display = 'none';
+      }
+      if (jenisKemitraanLainnyaWrapper) {
+        jenisKemitraanLainnyaWrapper.style.display = 'none';
       }
     });
   }

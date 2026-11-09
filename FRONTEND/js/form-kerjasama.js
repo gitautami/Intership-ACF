@@ -195,6 +195,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Toggle "Lainnya" Input untuk Target Waktu Pelaksanaan
+  const estimasiWaktuSelect = document.getElementById('estimasiWaktu');
+  const estimasiWaktuLainnyaWrapper = document.getElementById('estimasiWaktuLainnyaWrapper');
+  const estimasiWaktuLainnyaInput = document.getElementById('estimasiWaktuLainnya');
+
+  if (estimasiWaktuSelect && estimasiWaktuLainnyaWrapper) {
+    estimasiWaktuSelect.addEventListener('change', () => {
+      const val = estimasiWaktuSelect.value;
+      if (val === 'Lainnya' || val.toLowerCase().includes('lainnya')) {
+        estimasiWaktuLainnyaWrapper.style.display = 'block';
+        if (estimasiWaktuLainnyaInput) {
+          estimasiWaktuLainnyaInput.required = true;
+          estimasiWaktuLainnyaInput.focus();
+        }
+      } else {
+        estimasiWaktuLainnyaWrapper.style.display = 'none';
+        if (estimasiWaktuLainnyaInput) {
+          estimasiWaktuLainnyaInput.required = false;
+          estimasiWaktuLainnyaInput.value = '';
+        }
+      }
+    });
+  }
+
   const profesiSelect = document.getElementById('profesiRelawan');
   const profesiLainnyaWrapper = document.getElementById('profesiRelawanLainnyaWrapper');
   const profesiLainnyaInput = document.getElementById('profesiRelawanLainnya');
@@ -253,7 +277,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if ((jenisKemitraan === 'Lainnya' || jenisKemitraan.toLowerCase().includes('lainnya')) && jenisKemitraanLainnya) {
         jenisKemitraan = `Lainnya (${jenisKemitraanLainnya})`;
       }
-      const estimasiWaktu = document.getElementById('estimasiWaktu')?.value || '';
+      let estimasiWaktu = document.getElementById('estimasiWaktu')?.value || '';
+      const estimasiWaktuLainnya = document.getElementById('estimasiWaktuLainnya')?.value.trim() || '';
+      if ((estimasiWaktu === 'Lainnya' || estimasiWaktu.toLowerCase().includes('lainnya')) && estimasiWaktuLainnya) {
+        estimasiWaktu = `Lainnya (${estimasiWaktuLainnya})`;
+      }
       const pesan = document.getElementById('pesanKemitraan')?.value.trim() || '';
 
       // Selected programs
@@ -342,6 +370,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (jenisKemitraanLainnyaWrapper) {
         jenisKemitraanLainnyaWrapper.style.display = 'none';
+      }
+      if (estimasiWaktuLainnyaWrapper) {
+        estimasiWaktuLainnyaWrapper.style.display = 'none';
       }
     });
   }

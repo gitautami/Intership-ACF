@@ -3141,7 +3141,7 @@ CREATE TABLE IF NOT EXISTS `mitra` (
   `no_wa` VARCHAR(30) NOT NULL,
   `fokus_program` TEXT NULL,
   `jenis_kemitraan` VARCHAR(255) NULL,
-  `estimasi_waktu` VARCHAR(100) NULL,
+  `estimasi_waktu` VARCHAR(255) NULL,
   `pesan` TEXT NULL,
   `status` ENUM('Menunggu', 'Dihubungi', 'Diproses', 'Selesai', 'Ditolak') DEFAULT 'Menunggu',
   `catatan_admin` TEXT NULL,

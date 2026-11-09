@@ -36,10 +36,11 @@
   function getCurrentPageName() {
     const path = window.location.pathname;
     let filename = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
-    if (!filename.endsWith('.html')) {
+    filename = filename.split('?')[0].split('#')[0];
+    if (!filename || !filename.includes('.html')) {
       filename = 'index.html';
     }
-    return filename;
+    return filename.toLowerCase();
   }
 
   /**

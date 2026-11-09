@@ -310,6 +310,8 @@
   const flipbookCurrentFileName = document.getElementById('flipbookCurrentFileName');
   const flipbookCurrentFileSize = document.getElementById('flipbookCurrentFileSize');
   const flipbookFormTargetHalaman = document.getElementById('flipbookFormTargetHalaman');
+  const wrapFlipbookTargetHalamanLainnya = document.getElementById('wrapFlipbookTargetHalamanLainnya');
+  const flipbookFormTargetHalamanLainnya = document.getElementById('flipbookFormTargetHalamanLainnya');
   const flipbookFormPosisi = document.getElementById('flipbookFormPosisi');
   const flipbookFormButtonLabel = document.getElementById('flipbookFormButtonLabel');
   const flipbookFormStatus = document.getElementById('flipbookFormStatus');
@@ -4133,9 +4135,22 @@
       'index.html': 'Beranda Utama',
       'program-layanan.html': 'Program Layanan',
       'visi-misi.html': 'Visi Misi',
-      'unit-pendidikan.html': 'Unit Pendidikan'
+      'unit-pendidikan.html': 'Unit Pendidikan',
+      'donasi.html': 'Donasi',
+      'kabar.html': 'Kabar & Berita',
+      'mitra.html': 'Mitra',
+      'kerjasama.html': 'Kerjasama',
+      'sekolah-juara.html': 'Sekolah Juara',
+      'sekolah-daya-setara.html': 'Sekolah Daya Setara',
+      'jadi-mitra-program.html': 'Form Mitra Program',
+      'jadi-relawan.html': 'Form Relawan'
     };
-    return map[page] || page || '-';
+    if (map[page]) return map[page];
+    if (page) {
+      const base = page.replace('.html', '').replace(/[-_]/g, ' ');
+      return base.charAt(0).toUpperCase() + base.slice(1);
+    }
+    return '-';
   }
 
   function getPositionLabel(pos) {
@@ -4210,8 +4225,47 @@
       ];
     }
 
+    updateTargetHalamanFilterOptions();
     renderTableFlipbooks();
     updateFlipbookMetrics();
+  }
+
+  function updateTargetHalamanFilterOptions() {
+    if (!filterFlipbookHalaman) return;
+    const currentVal = filterFlipbookHalaman.value;
+    const standardPages = [
+      { val: 'all', label: 'Semua Halaman Target' },
+      { val: 'kisah-kami.html', label: 'Cerita Kami (kisah-kami.html)' },
+      { val: 'index.html', label: 'Beranda (index.html)' },
+      { val: 'program-layanan.html', label: 'Program Layanan (program-layanan.html)' },
+      { val: 'visi-misi.html', label: 'Visi Misi (visi-misi.html)' },
+      { val: 'unit-pendidikan.html', label: 'Unit Pendidikan (unit-pendidikan.html)' }
+    ];
+
+    const standardSet = new Set(standardPages.map(p => p.val));
+    const customPages = [];
+    dataFlipbooks.forEach(f => {
+      if (f.target_page && !standardSet.has(f.target_page) && !customPages.includes(f.target_page)) {
+        customPages.push(f.target_page);
+      }
+    });
+
+    filterFlipbookHalaman.innerHTML = '';
+    standardPages.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.val;
+      opt.textContent = p.label;
+      filterFlipbookHalaman.appendChild(opt);
+    });
+
+    customPages.forEach(cp => {
+      const opt = document.createElement('option');
+      opt.value = cp;
+      opt.textContent = `${getTargetPageLabel(cp)} (${cp})`;
+      filterFlipbookHalaman.appendChild(opt);
+    });
+
+    filterFlipbookHalaman.value = currentVal || 'all';
   }
 
   function updateFlipbookMetrics() {
@@ -4339,6 +4393,8 @@
     if (flipbookFormJudul) flipbookFormJudul.value = '';
     if (flipbookFormDeskripsi) flipbookFormDeskripsi.value = '';
     if (flipbookFormTargetHalaman) flipbookFormTargetHalaman.value = 'kisah-kami.html';
+    if (flipbookFormTargetHalamanLainnya) flipbookFormTargetHalamanLainnya.value = '';
+    if (wrapFlipbookTargetHalamanLainnya) wrapFlipbookTargetHalamanLainnya.style.display = 'none';
     if (flipbookFormPosisi) flipbookFormPosisi.value = 'bawah_deskripsi_sejarah';
     if (flipbookFormButtonLabel) flipbookFormButtonLabel.value = 'Profil Lembaga ACF Eduhub';
     if (flipbookFormStatus) flipbookFormStatus.value = 'aktif';
@@ -4374,7 +4430,18 @@
     if (flipbookFormId) flipbookFormId.value = item.id;
     if (flipbookFormJudul) flipbookFormJudul.value = item.title || '';
     if (flipbookFormDeskripsi) flipbookFormDeskripsi.value = item.description || '';
-    if (flipbookFormTargetHalaman) flipbookFormTargetHalaman.value = item.target_page || 'kisah-kami.html';
+
+    const standardPages = ['kisah-kami.html', 'index.html', 'program-layanan.html', 'visi-misi.html', 'unit-pendidikan.html'];
+    if (standardPages.includes(item.target_page)) {
+      if (flipbookFormTargetHalaman) flipbookFormTargetHalaman.value = item.target_page;
+      if (wrapFlipbookTargetHalamanLainnya) wrapFlipbookTargetHalamanLainnya.style.display = 'none';
+      if (flipbookFormTargetHalamanLainnya) flipbookFormTargetHalamanLainnya.value = '';
+    } else {
+      if (flipbookFormTargetHalaman) flipbookFormTargetHalaman.value = 'lainnya';
+      if (wrapFlipbookTargetHalamanLainnya) wrapFlipbookTargetHalamanLainnya.style.display = 'block';
+      if (flipbookFormTargetHalamanLainnya) flipbookFormTargetHalamanLainnya.value = item.target_page || '';
+    }
+
     if (flipbookFormPosisi) flipbookFormPosisi.value = item.position || 'bawah_deskripsi_sejarah';
     if (flipbookFormButtonLabel) flipbookFormButtonLabel.value = item.button_label || 'Profil Lembaga ACF Eduhub';
     if (flipbookFormStatus) flipbookFormStatus.value = item.status || 'aktif';
@@ -4416,7 +4483,21 @@
     const id = (flipbookFormId?.value || '').trim();
     const title = (flipbookFormJudul?.value || '').trim();
     const description = (flipbookFormDeskripsi?.value || '').trim();
-    const targetPage = flipbookFormTargetHalaman?.value || 'kisah-kami.html';
+    
+    let targetPage = flipbookFormTargetHalaman?.value || 'kisah-kami.html';
+    if (targetPage === 'lainnya') {
+      let customPage = (flipbookFormTargetHalamanLainnya?.value || '').trim();
+      if (!customPage) {
+        showToast('Harap masukkan nama file halaman target untuk opsi Lainnya!', 'warning');
+        flipbookFormTargetHalamanLainnya?.focus();
+        return;
+      }
+      if (!customPage.includes('.')) {
+        customPage += '.html';
+      }
+      targetPage = customPage.toLowerCase();
+    }
+
     const position = flipbookFormPosisi?.value || 'bawah_deskripsi_sejarah';
     const buttonLabel = (flipbookFormButtonLabel?.value || '').trim() || 'Profil Lembaga ACF Eduhub';
     const status = flipbookFormStatus?.value || 'aktif';
@@ -4900,6 +4981,17 @@
     }
     if (formFlipbookAdmin) {
       formFlipbookAdmin.addEventListener('submit', handleSaveFlipbook);
+    }
+
+    if (flipbookFormTargetHalaman) {
+      flipbookFormTargetHalaman.addEventListener('change', () => {
+        if (flipbookFormTargetHalaman.value === 'lainnya') {
+          if (wrapFlipbookTargetHalamanLainnya) wrapFlipbookTargetHalamanLainnya.style.display = 'block';
+          if (flipbookFormTargetHalamanLainnya) flipbookFormTargetHalamanLainnya.focus();
+        } else {
+          if (wrapFlipbookTargetHalamanLainnya) wrapFlipbookTargetHalamanLainnya.style.display = 'none';
+        }
+      });
     }
 
     // Flipbook Drag & Drop + File selection

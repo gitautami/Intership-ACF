@@ -39,8 +39,15 @@ if ($method === 'GET') {
 
     // B. Public Page Consumer (Mengambil flipbook aktif untuk halaman tertentu)
     if (!empty($targetPage)) {
-        $cleanPage = basename($targetPage);
-        $stmt = $db->prepare("SELECT * FROM flipbooks WHERE target_halaman = :page AND status = 'Aktif' ORDER BY updated_at DESC, id DESC LIMIT 1");
+        $cleanPage = strtolower(trim(basename($targetPage)));
+        if ($cleanPage === '' || $cleanPage === '/') {
+            $cleanPage = 'index.html';
+        }
+        if (!str_contains($cleanPage, '.')) {
+            $cleanPage .= '.html';
+        }
+
+        $stmt = $db->prepare("SELECT * FROM flipbooks WHERE LOWER(target_halaman) = :page AND status = 'Aktif' ORDER BY updated_at DESC, id DESC LIMIT 1");
         $stmt->execute([':page' => $cleanPage]);
         $activeDoc = $stmt->fetch();
         jsonSuccess($activeDoc ?: null, $activeDoc ? 'Flipbook aktif ditemukan' : 'Tidak ada flipbook aktif untuk halaman ini');

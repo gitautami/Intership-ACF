@@ -3161,7 +3161,7 @@ CREATE TABLE IF NOT EXISTS `relawan` (
   `domisili` VARCHAR(100) NOT NULL,
   `profesi` VARCHAR(100) NOT NULL,
   `peran_relawan` TEXT NULL,
-  `komitmen_waktu` VARCHAR(100) NULL,
+  `komitmen_waktu` VARCHAR(255) NULL,
   `keahlian_utama` TEXT NULL,
   `motivasi` TEXT NULL,
   `status` ENUM('Menunggu', 'Dihubungi', 'Diproses', 'Diterima', 'Ditolak') DEFAULT 'Menunggu',

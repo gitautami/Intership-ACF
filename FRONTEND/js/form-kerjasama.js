@@ -242,6 +242,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Toggle "Lainnya" Input untuk Ketersediaan Waktu Relawan
+  const komitmenWaktuSelect = document.getElementById('komitmenWaktu');
+  const komitmenWaktuLainnyaWrapper = document.getElementById('komitmenWaktuLainnyaWrapper');
+  const komitmenWaktuLainnyaInput = document.getElementById('komitmenWaktuLainnya');
+
+  if (komitmenWaktuSelect && komitmenWaktuLainnyaWrapper) {
+    komitmenWaktuSelect.addEventListener('change', () => {
+      const val = komitmenWaktuSelect.value;
+      if (val === 'Lainnya' || val.toLowerCase().includes('lainnya')) {
+        komitmenWaktuLainnyaWrapper.style.display = 'block';
+        if (komitmenWaktuLainnyaInput) {
+          komitmenWaktuLainnyaInput.required = true;
+          komitmenWaktuLainnyaInput.focus();
+        }
+      } else {
+        komitmenWaktuLainnyaWrapper.style.display = 'none';
+        if (komitmenWaktuLainnyaInput) {
+          komitmenWaktuLainnyaInput.required = false;
+          komitmenWaktuLainnyaInput.value = '';
+        }
+      }
+    });
+  }
+
   // ----------------------------------------------------------------------------
   // 2. Handle Form Mitra Program
   // ----------------------------------------------------------------------------
@@ -405,7 +429,11 @@ document.addEventListener('DOMContentLoaded', () => {
         profesi = `Lainnya (${profesiLainnya})`;
       }
 
-      const komitmenWaktu = document.getElementById('komitmenWaktu')?.value || '';
+      let komitmenWaktu = document.getElementById('komitmenWaktu')?.value || '';
+      const komitmenWaktuLainnya = document.getElementById('komitmenWaktuLainnya')?.value.trim() || '';
+      if ((komitmenWaktu === 'Lainnya' || komitmenWaktu.toLowerCase().includes('lainnya')) && komitmenWaktuLainnya) {
+        komitmenWaktu = `Lainnya (${komitmenWaktuLainnya})`;
+      }
       const keahlianUtama = document.getElementById('keahlianUtama')?.value.trim() || '';
       const motivasi = document.getElementById('motivasiRelawan')?.value.trim() || '';
 
@@ -493,6 +521,9 @@ document.addEventListener('DOMContentLoaded', () => {
       formRelawan.reset();
       if (profesiLainnyaWrapper) {
         profesiLainnyaWrapper.style.display = 'none';
+      }
+      if (komitmenWaktuLainnyaWrapper) {
+        komitmenWaktuLainnyaWrapper.style.display = 'none';
       }
     });
   }

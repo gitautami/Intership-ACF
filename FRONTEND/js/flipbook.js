@@ -329,8 +329,7 @@
       } else {
         document.body.appendChild(btnWrap);
       }
-    } else {
-      // Default: 'bawah_deskripsi_sejarah'
+    } else if (position === 'bawah_deskripsi_sejarah') {
       if (currentPage === 'kisah-kami.html') {
         const deskripsi = document.querySelector('#sejarahSingkatDeskripsi, .sejarah-text');
         if (deskripsi && deskripsi.parentNode) {
@@ -338,15 +337,57 @@
           btnWrap.style.display = 'block';
           btnWrap.style.textAlign = 'left';
           deskripsi.parentNode.insertBefore(btnWrap, deskripsi.nextSibling);
+          return;
         }
-      } else {
+      }
+      btnWrap.style.textAlign = 'center';
+      btnWrap.style.margin = '28px auto';
+      btnWrap.style.display = 'flex';
+      btnWrap.style.justifyContent = 'center';
+      const firstSection = document.querySelector('main > section, section');
+      if (firstSection && firstSection.parentNode) {
+        firstSection.parentNode.insertBefore(btnWrap, firstSection.nextSibling);
+      }
+    } else {
+      // Posisi KUSTOM (dari opsi "Lainnya")
+      let targetEl = null;
+      try {
+        targetEl = document.querySelector(position);
+      } catch (e) {
+        // Selector CSS biasa jika gagal
+      }
+      if (!targetEl) {
+        targetEl = document.getElementById(position);
+      }
+      if (!targetEl) {
+        try {
+          targetEl = document.querySelector(`.${position}`);
+        } catch (e) {}
+      }
+      if (!targetEl) {
+        try {
+          targetEl = document.querySelector(`[id*="${position}"]`) || document.querySelector(`[class*="${position}"]`);
+        } catch (e) {}
+      }
+
+      if (targetEl && targetEl.parentNode) {
         btnWrap.style.textAlign = 'center';
         btnWrap.style.margin = '28px auto';
         btnWrap.style.display = 'flex';
         btnWrap.style.justifyContent = 'center';
-        const firstSection = document.querySelector('main > section, section');
-        if (firstSection && firstSection.parentNode) {
-          firstSection.parentNode.insertBefore(btnWrap, firstSection.nextSibling);
+        targetEl.parentNode.insertBefore(btnWrap, targetEl.nextSibling);
+      } else {
+        // Fallback jika elemen kustom tidak ditemukan: di bawah hero / section pertama
+        btnWrap.style.textAlign = 'center';
+        btnWrap.style.margin = '28px auto';
+        btnWrap.style.display = 'flex';
+        btnWrap.style.justifyContent = 'center';
+        const fallbackSection = document.querySelector('.hero, .hero-section, main > section, section');
+        if (fallbackSection && fallbackSection.parentNode) {
+          fallbackSection.parentNode.insertBefore(btnWrap, fallbackSection.nextSibling);
+        } else {
+          const main = document.querySelector('main') || document.body;
+          main.appendChild(btnWrap);
         }
       }
     }

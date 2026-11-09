@@ -13,7 +13,7 @@
     localStorage.removeItem('acf_admin_data_relawan');
     localStorage.removeItem('acf_articles_data');
     localStorage.removeItem('acf_custom_categories');
-  } catch (e) {}
+  } catch (e) { }
 
   // Google Apps Script Web App Endpoint
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBPKjNYHI1M3NifBOQJnH2Rjt_HUzxyZroYxLb2iPt7XMp72leWUjVtDACrqlxfadT/exec';
@@ -140,7 +140,7 @@
       if (saved === 'viewDashboardFlipbooks' || saved === 'viewDashboardPrograms' || saved === 'viewDashboardForms' || saved === 'viewDashboardArticles') {
         return saved;
       }
-    } catch (e) {}
+    } catch (e) { }
     return 'viewDashboardArticles';
   }
 
@@ -148,7 +148,7 @@
     try {
       const saved = localStorage.getItem('acf_admin_active_form_tab');
       if (saved === 'tabMitra' || saved === 'tabRelawan') return saved;
-    } catch (e) {}
+    } catch (e) { }
     return 'tabMitra';
   }
 
@@ -313,6 +313,8 @@
   const wrapFlipbookTargetHalamanLainnya = document.getElementById('wrapFlipbookTargetHalamanLainnya');
   const flipbookFormTargetHalamanLainnya = document.getElementById('flipbookFormTargetHalamanLainnya');
   const flipbookFormPosisi = document.getElementById('flipbookFormPosisi');
+  const wrapFlipbookPosisiLainnya = document.getElementById('wrapFlipbookPosisiLainnya');
+  const flipbookFormPosisiLainnya = document.getElementById('flipbookFormPosisiLainnya');
   const flipbookFormButtonLabel = document.getElementById('flipbookFormButtonLabel');
   const flipbookFormStatus = document.getElementById('flipbookFormStatus');
   const btnSubmitFlipbookModal = document.getElementById('btnSubmitFlipbookModal');
@@ -749,7 +751,7 @@
       if (window.ACF_API && window.ACF_API.auth) {
         await window.ACF_API.auth.logout();
       }
-    } catch (_) {}
+    } catch (_) { }
 
     sessionStorage.removeItem('acf_admin_session');
     if (adminUsername) adminUsername.value = '';
@@ -787,7 +789,7 @@
       }
       const preStyle = document.getElementById('preRenderViewStyle');
       if (preStyle) preStyle.remove();
-    } catch (e) {}
+    } catch (e) { }
 
     if (viewId === 'viewDashboardFlipbooks') {
       if (btnNavFlipbooks) btnNavFlipbooks.classList.add('active');
@@ -988,7 +990,7 @@
     const cleanLabel = (label || '').trim();
     if (!cleanLabel) return null;
     const slug = customSlug || cleanLabel.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    
+
     // Jangan izinkan membuat pecahan kategori per-sekolah / SD Juara
     if (isSchoolCategory(slug, cleanLabel)) {
       if (slug.includes('daya-setara') || cleanLabel.toLowerCase().includes('daya setara')) {
@@ -1003,7 +1005,7 @@
       dataCategories.push(existing);
       saveCategories();
       if (window.ACF_API && window.ACF_API.categories) {
-        window.ACF_API.categories.create(cleanLabel, slug).catch(() => {});
+        window.ACF_API.categories.create(cleanLabel, slug).catch(() => { });
       }
     }
     renderCategorySelects(existing.slug);
@@ -1108,7 +1110,7 @@
     dataCategories.forEach(cat => {
       // Hitung jumlah artikel dengan kategori ini
       const count = dataArticles.filter(a => a.category === cat.slug).length;
-      
+
       const card = document.createElement('div');
       card.className = 'category-item-card';
       card.innerHTML = `
@@ -1167,7 +1169,7 @@
     dataCategories = dataCategories.filter(c => c.slug !== slug);
     saveCategories();
     if (window.ACF_API && window.ACF_API.categories) {
-      window.ACF_API.categories.delete(slug).catch(() => {});
+      window.ACF_API.categories.delete(slug).catch(() => { });
     }
 
     // Re-render antarmuka
@@ -1195,7 +1197,7 @@
     dataCategories.push({ slug, label: cleanLabel });
     saveCategories();
     if (window.ACF_API && window.ACF_API.categories) {
-      window.ACF_API.categories.create(cleanLabel, slug).catch(() => {});
+      window.ACF_API.categories.create(cleanLabel, slug).catch(() => { });
     }
     renderCategorySelects(slug);
     renderCategoryManagerList();
@@ -1358,7 +1360,7 @@
     // Data artikel dikelola langsung lewat MySQL Backend API
     try {
       localStorage.setItem('acf_article_updated', Date.now().toString());
-    } catch (e) {}
+    } catch (e) { }
     localStorage.removeItem('acf_articles_data');
   }
 
@@ -1649,7 +1651,7 @@
 
   function triggerAutosave() {
     if (!articleModal || !articleModal.classList.contains('show')) return;
-    
+
     // Jangan autosave jika sedang mengedit artikel yang sudah ada (hanya untuk naskah baru/draf aktif)
     const isExistingEdit = articleEditId && articleEditId.value;
     if (isExistingEdit) return;
@@ -1725,7 +1727,7 @@
     // 3. Resolve Date & Snippet Description
     const dateVal = articleDateInput ? articleDateInput.value.trim() : '';
     if (googleSnippetDate) googleSnippetDate.textContent = dateVal || '20 Okt 2026';
-    
+
     let snippetDesc = rawMetaDesc;
     if (!snippetDesc && rawExcerpt) snippetDesc = rawExcerpt;
     if (!snippetDesc && rawContentText) {
@@ -1932,7 +1934,7 @@
       localStorage.removeItem(DRAFT_STORAGE_KEY);
       if (wpAutosaveIndicator) wpAutosaveIndicator.style.display = 'none';
       if (wpDraftRecoveryBanner) wpDraftRecoveryBanner.style.display = 'none';
-    } catch (e) {}
+    } catch (e) { }
   }
 
   function checkAndRestoreDraft() {
@@ -2010,7 +2012,7 @@
         try {
           const isActive = document.queryCommandState(cmd);
           btn.classList.toggle('active', Boolean(isActive));
-        } catch(e) {}
+        } catch (e) { }
       }
     });
 
@@ -2065,7 +2067,7 @@
           c.classList.toggle('active', dataCol === hex || dataCol === foreColor);
         });
       }
-    } catch(e) {}
+    } catch (e) { }
   }
 
   // Yoast Subtabs Controller (SEO, Keterbacaan, Schema, Sosial)
@@ -2109,7 +2111,7 @@
     if (articleAuthor) articleAuthor.value = 'Tim Redaksi ACF';
     if (newCategoryInputWrap) newCategoryInputWrap.style.display = 'none';
     if (newCategoryName) newCategoryName.value = '';
-    
+
     // Set default tanggal hari ini
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     const now = new Date();
@@ -2173,8 +2175,8 @@
     const isDraft = (art.status === 'Draf');
     if (previewArticleStatusBadge) {
       previewArticleStatusBadge.textContent = isDraft ? 'Draf' : 'Terpublikasi';
-      previewArticleStatusBadge.className = isDraft 
-        ? 'preview-badge-status preview-status-draf' 
+      previewArticleStatusBadge.className = isDraft
+        ? 'preview-badge-status preview-status-draf'
         : 'preview-badge-status preview-status-terbit';
     }
 
@@ -2284,7 +2286,7 @@
     if (articleDateInput) articleDateInput.value = art.date || '';
     if (articleCover) articleCover.value = art.cover || '';
     if (articleExcerpt) articleExcerpt.value = art.excerpt || '';
-    
+
     // Populate Yoast SEO fields
     if (yoastFocusKeyphrase) yoastFocusKeyphrase.value = art.focus_keyphrase || '';
     if (yoastSeoTitle) yoastSeoTitle.value = art.seo_title || '';
@@ -2373,7 +2375,7 @@
     const cover = articleCover?.value.trim() || 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80';
     const excerpt = articleExcerpt?.value.trim() || (articleVisualEditor ? articleVisualEditor.innerText.slice(0, 140) + '...' : '');
     const content = (articleVisualEditor && articleVisualEditor.innerHTML.trim()) || excerpt;
-    
+
     // Pastikan status akurat sesuai tombol yang ditekan (Draf vs Terbit)
     let status = 'Terbit';
     if (typeof targetStatus === 'string' && (targetStatus === 'Draf' || targetStatus === 'Terbit')) {
@@ -2750,7 +2752,7 @@
               const fallbackCatUrl = `https://public-api.wordpress.com/wp/v2/sites/${hostname}/categories?per_page=100`;
               const fbCat = await fetch(fallbackCatUrl);
               if (fbCat.ok) catRes = fbCat;
-            } catch (_) {}
+            } catch (_) { }
           }
           if (catRes && catRes.ok) {
             const rawCats = await catRes.json();
@@ -2759,7 +2761,7 @@
                 const cleanName = decodeHtmlEntities(c.name || '').trim();
                 let catSlug = (c.slug || '').trim();
                 if (!cleanName || catSlug === 'uncategorized') return;
-                
+
                 if (isSchoolCategory(catSlug, cleanName)) {
                   if (catSlug.includes('daya-setara') || cleanName.toLowerCase().includes('daya setara')) {
                     categoryMap[c.id] = { id: c.id, name: 'Artikel Sekolah Daya Setara', slug: 'kabar-sekolah-daya-setara' };
@@ -2768,7 +2770,7 @@
                   }
                   return;
                 }
-                
+
                 const reg = registerCategory(cleanName, catSlug);
                 categoryMap[c.id] = { id: c.id, name: reg ? reg.label : cleanName, slug: reg ? reg.slug : catSlug };
               });
@@ -2793,7 +2795,7 @@
           if (fallbackRes.ok) {
             res = fallbackRes;
           }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
@@ -2932,17 +2934,17 @@
       const rawDate = p.date ? new Date(p.date) : new Date();
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
       const dateStr = `${rawDate.getDate()} ${months[rawDate.getMonth()]} ${rawDate.getFullYear()}`;
-      
+
       let cover = p.jetpack_featured_media_url || (p._embedded && p._embedded['wp:featuredmedia'] && p._embedded['wp:featuredmedia'][0]?.source_url) || 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80';
 
       const isAlreadyInKabar = dataArticles.some(a => (a.title || '').trim().toLowerCase() === cleanTitle.trim().toLowerCase());
 
       // Tentukan kategori terpilih: Jika user memilih kategori spesifik di top selector, ikuti top selector; jika __auto__, gunakan p._wpDetectedCategorySlug
-      const activeCatSlug = (globalSelectedCat && globalSelectedCat !== '__auto__') 
-        ? globalSelectedCat 
+      const activeCatSlug = (globalSelectedCat && globalSelectedCat !== '__auto__')
+        ? globalSelectedCat
         : (p._wpDetectedCategorySlug || 'artikel');
 
-      const optionsHTML = dataCategories.map(cat => 
+      const optionsHTML = dataCategories.map(cat =>
         `<option value="${cat.slug}" ${cat.slug === activeCatSlug ? 'selected' : ''}>${escapeHTML(cat.label)}</option>`
       ).join('');
 
@@ -2992,7 +2994,7 @@
 
     // Cek apakah artikel dengan judul sama sudah ada agar tidak terjadi duplikasi ganda
     const existingIndex = dataArticles.findIndex(a => (a.title || '').trim().toLowerCase() === cleanTitle.trim().toLowerCase());
-    
+
     if (existingIndex !== -1) {
       // Perbarui artikel yang sudah ada
       const existingId = dataArticles[existingIndex].id;
@@ -3208,11 +3210,11 @@
         item.status = newStatus;
         if (type === 'mitra') {
           if (window.ACF_API && window.ACF_API.mitra) {
-            window.ACF_API.mitra.updateStatus(item.id, newStatus).catch(() => {});
+            window.ACF_API.mitra.updateStatus(item.id, newStatus).catch(() => { });
           }
         } else {
           if (window.ACF_API && window.ACF_API.relawan) {
-            window.ACF_API.relawan.updateStatus(item.id, newStatus).catch(() => {});
+            window.ACF_API.relawan.updateStatus(item.id, newStatus).catch(() => { });
           }
         }
         renderAll();
@@ -3250,12 +3252,12 @@
           if (type === 'mitra') {
             dataMitra = dataMitra.filter(m => m.id !== item.id);
             if (window.ACF_API && window.ACF_API.mitra) {
-              window.ACF_API.mitra.delete(item.id).catch(() => {});
+              window.ACF_API.mitra.delete(item.id).catch(() => { });
             }
           } else {
             dataRelawan = dataRelawan.filter(r => r.id !== item.id);
             if (window.ACF_API && window.ACF_API.relawan) {
-              window.ACF_API.relawan.delete(item.id).catch(() => {});
+              window.ACF_API.relawan.delete(item.id).catch(() => { });
             }
           }
           renderAll();
@@ -3881,7 +3883,7 @@
 
     const cleanedCat = rawCat.replace(/^\d+[\.\-\s]+/, '').trim() || rawCat;
     const existingCat = DEFAULT_PROGRAM_CATEGORIES.find(c => c.title.toLowerCase() === cleanedCat.toLowerCase()) ||
-                        dataPrograms.find(p => (p.categoryTitle || '').toLowerCase() === cleanedCat.toLowerCase());
+      dataPrograms.find(p => (p.categoryTitle || '').toLowerCase() === cleanedCat.toLowerCase());
 
     let categoryId = '';
     let categoryNum = 1;
@@ -4112,16 +4114,16 @@
   window.closeProgramPreviewModal = closeProgramPreviewModal;
 
   // Global helper bindings for onclick in table rows
-  window.handleToggleProgramStatusDirect = function(id) {
+  window.handleToggleProgramStatusDirect = function (id) {
     handleToggleProgramStatus(id);
   };
-  window.handlePreviewProgramDirect = function(id) {
+  window.handlePreviewProgramDirect = function (id) {
     openProgramPreviewModal(id);
   };
-  window.handleEditProgramDirect = function(id) {
+  window.handleEditProgramDirect = function (id) {
     openEditProgramModal(id);
   };
-  window.handleDeleteProgramDirect = function(id) {
+  window.handleDeleteProgramDirect = function (id) {
     handleDeleteProgram(id);
   };
 
@@ -4160,7 +4162,9 @@
       'tengah_konten': 'Tengah Konten',
       'atas_footer': 'Atas Footer'
     };
-    return map[pos] || pos || '-';
+    if (map[pos]) return map[pos];
+    if (pos) return `Kustom (${pos})`;
+    return '-';
   }
 
   function formatFileSize(bytes) {
@@ -4345,13 +4349,13 @@
           </div>
         </td>
         <td>
-          <div style="display: inline-flex; flex-direction: column; gap: 2px;">
-            <span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: #1E293B; font-size: 0.85rem;">
+          <a href="../html/${encodeURIComponent(item.target_page || 'kisah-kami.html')}" target="_blank" style="display: inline-flex; flex-direction: column; gap: 2px; text-decoration: none;" title="Buka Halaman Target (${item.target_page})">
+            <span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: #7D2280; font-size: 0.85rem;">
               <svg viewBox="0 0 24 24" fill="none" stroke="#7D2280" stroke-width="2" style="width: 14px; height: 14px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-              ${escapeHTML(targetLabel)}
+              ${escapeHTML(targetLabel)} <span style="font-size: 0.75rem; color: #7D2280;">↗</span>
             </span>
             <span style="font-size: 0.72rem; color: #94A3B8;">${escapeHTML(item.target_page || '')}</span>
-          </div>
+          </a>
         </td>
         <td>
           <span style="display: inline-block; padding: 4px 10px; border-radius: 6px; background: #F1F5F9; color: #334155; font-size: 0.78rem; font-weight: 500;">
@@ -4367,6 +4371,10 @@
           ${statusBadge}
         </td>
         <td style="text-align: center; white-space: nowrap;">
+          <a href="../html/${encodeURIComponent(item.target_page || 'kisah-kami.html')}" target="_blank" class="btn-action-preview" style="margin-right: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; background: #FAF5FF; color: #7D2280; border: 1px solid #E9D5FF;" title="Buka Halaman Web Target">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 13px; height: 13px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Buka Web</span>
+          </a>
           <button type="button" class="btn-action-preview" onclick="handlePreviewFlipbookDirect('${item.id}')" style="margin-right: 6px;" title="Uji Pratinjau 3D Flipbook">
             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             <span>Pratinjau 3D</span>
@@ -4396,6 +4404,8 @@
     if (flipbookFormTargetHalamanLainnya) flipbookFormTargetHalamanLainnya.value = '';
     if (wrapFlipbookTargetHalamanLainnya) wrapFlipbookTargetHalamanLainnya.style.display = 'none';
     if (flipbookFormPosisi) flipbookFormPosisi.value = 'bawah_deskripsi_sejarah';
+    if (flipbookFormPosisiLainnya) flipbookFormPosisiLainnya.value = '';
+    if (wrapFlipbookPosisiLainnya) wrapFlipbookPosisiLainnya.style.display = 'none';
     if (flipbookFormButtonLabel) flipbookFormButtonLabel.value = 'Profil Lembaga ACF Eduhub';
     if (flipbookFormStatus) flipbookFormStatus.value = 'aktif';
 
@@ -4442,7 +4452,17 @@
       if (flipbookFormTargetHalamanLainnya) flipbookFormTargetHalamanLainnya.value = item.target_page || '';
     }
 
-    if (flipbookFormPosisi) flipbookFormPosisi.value = item.position || 'bawah_deskripsi_sejarah';
+    const standardPositions = ['bawah_deskripsi_sejarah', 'bawah_hero', 'tengah_konten', 'atas_footer'];
+    if (standardPositions.includes(item.position)) {
+      if (flipbookFormPosisi) flipbookFormPosisi.value = item.position;
+      if (wrapFlipbookPosisiLainnya) wrapFlipbookPosisiLainnya.style.display = 'none';
+      if (flipbookFormPosisiLainnya) flipbookFormPosisiLainnya.value = '';
+    } else {
+      if (flipbookFormPosisi) flipbookFormPosisi.value = 'lainnya';
+      if (wrapFlipbookPosisiLainnya) wrapFlipbookPosisiLainnya.style.display = 'block';
+      if (flipbookFormPosisiLainnya) flipbookFormPosisiLainnya.value = item.position || '';
+    }
+
     if (flipbookFormButtonLabel) flipbookFormButtonLabel.value = item.button_label || 'Profil Lembaga ACF Eduhub';
     if (flipbookFormStatus) flipbookFormStatus.value = item.status || 'aktif';
 
@@ -4483,7 +4503,7 @@
     const id = (flipbookFormId?.value || '').trim();
     const title = (flipbookFormJudul?.value || '').trim();
     const description = (flipbookFormDeskripsi?.value || '').trim();
-    
+
     let targetPage = flipbookFormTargetHalaman?.value || 'kisah-kami.html';
     if (targetPage === 'lainnya') {
       let customPage = (flipbookFormTargetHalamanLainnya?.value || '').trim();
@@ -4498,7 +4518,16 @@
       targetPage = customPage.toLowerCase();
     }
 
-    const position = flipbookFormPosisi?.value || 'bawah_deskripsi_sejarah';
+    let position = flipbookFormPosisi?.value || 'bawah_deskripsi_sejarah';
+    if (position === 'lainnya') {
+      let customPos = (flipbookFormPosisiLainnya?.value || '').trim();
+      if (!customPos) {
+        showToast('Harap masukkan posisi penempatan untuk opsi Lainnya!', 'warning');
+        flipbookFormPosisiLainnya?.focus();
+        return;
+      }
+      position = customPos;
+    }
     const buttonLabel = (flipbookFormButtonLabel?.value || '').trim() || 'Profil Lembaga ACF Eduhub';
     const status = flipbookFormStatus?.value || 'aktif';
     const file = flipbookFormPdfFile?.files && flipbookFormPdfFile.files[0];
@@ -4579,6 +4608,12 @@
 
       closeFlipbookFormModal();
       await loadFlipbooksData();
+
+      // Berikan notifikasi & langsung buka halaman target flipbook
+      showToast(`Membuka halaman target (${targetPage})...`, 'info');
+      setTimeout(() => {
+        window.open(`../html/${encodeURI(targetPage)}`, '_blank');
+      }, 700);
     } catch (err) {
       console.error('Error saving flipbook:', err);
       showToast('Gagal menyimpan flipbook: ' + (err.message || err), 'error');
@@ -4653,7 +4688,7 @@
     if (adminFlipbookLoadingDesc) adminFlipbookLoadingDesc.textContent = 'Membuka dokumen PDF...';
 
     if (adminFlipbookInstance) {
-      try { adminFlipbookInstance.destroy(); } catch (e) {}
+      try { adminFlipbookInstance.destroy(); } catch (e) { }
       adminFlipbookInstance = null;
     }
     if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
@@ -4794,7 +4829,7 @@
     }
     document.body.style.overflow = '';
     if (adminFlipbookInstance) {
-      try { adminFlipbookInstance.destroy(); } catch (e) {}
+      try { adminFlipbookInstance.destroy(); } catch (e) { }
       adminFlipbookInstance = null;
     }
     if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
@@ -4923,7 +4958,7 @@
         }
 
         const reader = new FileReader();
-        reader.onload = function(evt) {
+        reader.onload = function (evt) {
           const base64 = evt.target.result;
           if (programCoverUrlInput) programCoverUrlInput.value = base64;
           if (programCoverPreviewImg) programCoverPreviewImg.src = base64;
@@ -4994,6 +5029,17 @@
       });
     }
 
+    if (flipbookFormPosisi) {
+      flipbookFormPosisi.addEventListener('change', () => {
+        if (flipbookFormPosisi.value === 'lainnya') {
+          if (wrapFlipbookPosisiLainnya) wrapFlipbookPosisiLainnya.style.display = 'block';
+          if (flipbookFormPosisiLainnya) flipbookFormPosisiLainnya.focus();
+        } else {
+          if (wrapFlipbookPosisiLainnya) wrapFlipbookPosisiLainnya.style.display = 'none';
+        }
+      });
+    }
+
     // Flipbook Drag & Drop + File selection
     if (flipbookDropArea) {
       flipbookDropArea.addEventListener('click', () => {
@@ -5024,7 +5070,7 @@
               const dt = new DataTransfer();
               dt.items.add(file);
               flipbookFormPdfFile.files = dt.files;
-            } catch (err) {}
+            } catch (err) { }
           }
           if (flipbookFileSelectedName) {
             flipbookFileSelectedName.textContent = `${file.name} (${formatFileSize(file.size)})`;
@@ -5181,10 +5227,10 @@
         const val = e.target.value;
         if (!articleVisualEditor) return;
         articleVisualEditor.focus();
-        
+
         try {
           document.execCommand('defaultParagraphSeparator', false, 'p');
-        } catch(err) {}
+        } catch (err) { }
 
         if (val === 'p') {
           document.execCommand('formatBlock', false, '<p>');
@@ -5545,7 +5591,7 @@
           // Ada teks yang diblok -> gunakan styleWithCSS agar inline style span dibuat
           try {
             document.execCommand('styleWithCSS', false, true);
-          } catch(e) {}
+          } catch (e) { }
           document.execCommand('foreColor', false, color);
           // Konversi font tag menjadi span style
           articleVisualEditor.querySelectorAll('font[color]').forEach(f => {
@@ -5585,7 +5631,7 @@
             } else {
               try {
                 document.execCommand('styleWithCSS', false, true);
-              } catch(e) {}
+              } catch (e) { }
               document.execCommand('foreColor', false, color);
             }
           }
@@ -5630,7 +5676,7 @@
           } else {
             try {
               document.execCommand('hiliteColor', false, bg);
-            } catch(err) {
+            } catch (err) {
               document.execCommand('backColor', false, bg);
             }
           }
@@ -6013,7 +6059,7 @@
         activeTab = targetTab;
         try {
           localStorage.setItem('acf_admin_active_form_tab', targetTab);
-        } catch (e) {}
+        } catch (e) { }
 
         formTabBtns.forEach(b => b.classList.remove('active'));
         formTabPanels.forEach(p => {
@@ -6356,11 +6402,11 @@
       btnGetRelatedKeyphrases.addEventListener('click', () => {
         const rawTitle = articleTitle ? articleTitle.value.trim() : '';
         const text = (articleVisualEditor ? articleVisualEditor.innerText : '') || '';
-        
+
         const combined = `${rawTitle} ${text}`.replace(/[^\w\s]/g, ' ');
         const words = combined.split(/\s+/).filter(w => w.length > 3);
         const uniqueWords = [...new Set(words.map(w => w.toLowerCase()))];
-        
+
         const suggestions = [];
         if (rawTitle) suggestions.push(rawTitle.split(' ').slice(0, 3).join(' '));
         if (uniqueWords[0] && uniqueWords[1]) suggestions.push(`${uniqueWords[0]} ${uniqueWords[1]}`);

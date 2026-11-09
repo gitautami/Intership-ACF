@@ -13,8 +13,9 @@ function loadProjectEnvFile() {
     ];
 
     foreach ($possiblePaths as $envPath) {
-        if (file_exists($envPath) && is_readable($envPath)) {
-            $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (file_exists($envPath)) {
+            $lines = @file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            if ($lines === false) continue;
             foreach ($lines as $line) {
                 $line = trim($line);
                 if ($line === '' || strpos($line, '#') === 0) continue;
@@ -23,7 +24,7 @@ function loadProjectEnvFile() {
                     $name = trim($name);
                     $value = trim($value);
                     $value = trim($value, "\"' \t\n\r\0\x0B");
-                    if (!empty($name) && getenv($name) === false) {
+                    if (!empty($name)) {
                         putenv("{$name}={$value}");
                         $_ENV[$name] = $value;
                         $_SERVER[$name] = $value;
@@ -53,8 +54,11 @@ if (!$gemini_api_key) {
     }
 }
 
-// 3. Model Gemini (default gemini-3.1-flash-lite)
+// 3. Model Gemini (default gemini-3.1-flash-lite sesuai Google AI Studio)
 $gemini_model = getenv('GEMINI_MODEL') ?: 'gemini-3.1-flash-lite';
+if ($gemini_model === 'gemini-1.5-flash') {
+    $gemini_model = 'gemini-3.1-flash-lite';
+}
 
 define('GEMINI_API_KEY', $gemini_api_key ?: '');
 define('GEMINI_MODEL', $gemini_model);

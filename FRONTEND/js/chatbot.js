@@ -161,7 +161,13 @@ Gaya Komunikasi & Persona:
     - Jika pengguna menanyakan seputar "relawan", "volunteer", "sahabat eduhub", ataupun FORM/FORMULIR JADI RELAWAN (misalnya 'form jadi relawan', 'cara jadi relawan', 'daftar relawan', 'formulir relawan', dll):
       WAJIB LANGSUNG berikan tautan formulir pendaftaran online di halaman [Jadi Relawan](form-relawan.html) beserta 4 pilihan bidangnya (Pengajar/Tutor, Fasilitator Event, Dokumentasi & Desain, Mentor Karakter)!
       DILARANG KERAS menyuruh pengguna menghubungi WhatsApp untuk meminta formulir!
-13. Selalu nyambung dengan pertanyaan apa pun, komunikatif, solutif, dan gunakan emoji yang pas.`;
+13. ATURAN PERTANYAAN DI LUAR KONTEKS / NGACO / JOKES / PESAN MAKANAN-BARANG (OUT-OF-SCOPE) (SANGAT PENTING):
+    - Jika pengguna bertanya hal di luar konteks yayasan pendidikan ACF Eduhub (seperti pesan makanan/minuman misal 'beli es teh', 'beli kopi', beli pulsa/barang, jokes ngaco, curhat asmara, atau topik yang sama sekali tidak berhubungan dengan ACF):
+      * DILARANG KERAS memuji seperti "Pertanyaan yang bagus banget" atau berpura-pura mengaitkannya dengan pendaftaran sekolah.
+      * Tolak dengan SANTAI, RAMAH, SEDIKIT HUMORIS, dan SINGKAT (maksimal 2-3 kalimat).
+      * Contoh respons yang pas: "Waduh hehe, maaf ya Sahabat Ceria, di sini Ceri-A belum jualan es teh nih! 😄 Ceri-A khusus membantu informasi seputar Sekolah Juara, paket kesetaraan PKBM Daya Setara, beasiswa, relawan, dan donasi di ACF Eduhub. Kalau butuh bantuan tim admin, kamu bisa langsung chat WhatsApp di +62 851-7979-7661 yaa!"
+      * Jaga jawaban agar ringkas, ceria, dan tidak kaku/panjang lebar.
+14. Selalu nyambung dengan pertanyaan apa pun, komunikatif, solutif, dan gunakan emoji yang pas.`;
 
     const systemPromptEn = `You are "Ceri-A", the official AI assistant of the ACF Eduhub educational foundation. You are super friendly, cheerful, warm, and helpful.
 Your signature colors and ACF Eduhub's identity colors are Purple (#7D2280) and Golden Yellow (#F5A623).
@@ -250,7 +256,13 @@ Communication Style & Persona:
     - If asked about "volunteer", "relawan", "sahabat eduhub", or VOLUNTEER FORM (e.g. 'how to volunteer', 'volunteer form', 'join as volunteer', etc.):
       MUST DIRECTLY provide the online registration form link at [Become a Volunteer](form-relawan.html) along with the 4 field options (Teacher/Tutor, Event Facilitator, Documentation & Design, Character Mentor)!
       STRICTLY FORBIDDEN to tell the user to request forms via WhatsApp!
-12. Always keep responses relevant, communicative, solution-driven, and use appropriate friendly emojis.`;
+12. OUT-OF-SCOPE / OFF-TOPIC / JOKES / ORDERING HANDLING RULE (VERY IMPORTANT):
+    - If the user asks about unrelated topics, jokes, food/drink orders (e.g. 'can I buy iced tea?', 'order coffee'), commercial products, personal rants, or anything unrelated to ACF Eduhub educational foundation:
+      * STRICTLY FORBIDDEN to flatter with 'That is a great question' or pretend to relate it to admissions.
+      * Respond CASUALLY, WARMLY, WITH LIGHT HUMOR, and CONCISELY (maximum 2-3 sentences).
+      * Example: "Oops hehe, sorry Cheerful Friend, Ceri-A doesn't sell iced tea here! 😄 Ceri-A is an AI assistant dedicated to ACF Eduhub educational programs, schools, scholarships, volunteering, and donations. If you need help from our team, feel free to chat with our admin on WhatsApp at +62 851-7979-7661!"
+      * Keep the answer concise, cheerful, and helpful.
+13. Always keep responses relevant, communicative, solution-driven, and use appropriate friendly emojis.`;
 
     const activeLang = getCurrentChatLanguage(userText);
     const systemPrompt = (activeLang === 'en') ? systemPromptEn : systemPromptId;
@@ -279,10 +291,7 @@ Communication Style & Persona:
         contents: contents,
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 800,
-          thinkingConfig: {
-            thinkingBudget: 0
-          }
+          maxOutputTokens: 800
         }
       })
     });
@@ -936,6 +945,27 @@ Communication Style & Persona:
       return "Hello Cheerful Friend! 😊 I'm **Ceri-A**, the official cheerful and friendly AI assistant of **ACF Eduhub**! My signature colors are purple and gold, representing ACF. I'm here to help you discover everything about Sekolah Juara, scholarships, volunteer opportunities, CSR partnerships, and our official contacts.";
     }
 
+    // 27. OUT-OF-SCOPE / OFF-TOPIC (Food, Drink, Commercial products, Jokes)
+    if (
+      q.includes('tea') || q.includes('coffee') || q.includes('food') || q.includes('drink') ||
+      q.includes('buy') || q.includes('sell') || q.includes('game') || q.includes('clothes') ||
+      q.includes('weather') || q.includes('dating') || q.includes('girlfriend') || q.includes('boyfriend')
+    ) {
+      return "Oops hehe, sorry Cheerful Friend, Ceri-A doesn't sell or provide services for that here! 😄\n\n" +
+             "As the official AI assistant of **ACF Eduhub**, I'm specifically here to help you with:\n" +
+             "• 🏫 **Sekolah Juara (Elementary)** & **Sekolah Daya Setara (PKBM)**\n" +
+             "• 🎓 **Scholarship Programs & Education Services**\n" +
+             "• 💖 **Donations**, 🙋‍♀️ **Volunteering**, & 🤝 **CSR Partnerships**\n\n" +
+             "If you need further help from our team, feel free to chat with our admin directly on WhatsApp at **+62 851-7979-7661**! ✨";
+    }
+
+    // 28. UNRECOGNIZED QUESTION (with ?)
+    if (q.includes('?')) {
+      return "Sorry Cheerful Friend, Ceri-A doesn't have specific information regarding that topic yet. 😊\n\n" +
+             "As an AI assistant for **ACF Eduhub**, I can help you with school admissions, scholarships, volunteer programs, and donations.\n\n" +
+             "If you'd like to ask our team directly, you can chat with our admin on WhatsApp at **+62 851-7979-7661**! ✨";
+    }
+
     // 30. DEFAULT NATURAL FALLBACK
     return "Thank you for reaching out to Ceri-A, Cheerful Friend! 😊\n\n" +
            "Here are quick topics you might be interested in:\n\n" +
@@ -1334,9 +1364,27 @@ Communication Style & Persona:
       return "Halo Sahabat Ceria! 😊 Kenalin, aku **Ceri-A**, asisten virtual AI resmi yang ceria dan ramah dari **ACF Eduhub**! Warna kebanggaanku ungu dan kuning emas khas ACF. Tugas Ceri-A ngebantuin kamu cari info soal Sekolah Juara, donasi beasiswa, kegiatan relawan, dan kontak kami.";
     }
 
-    // 30. PERTANYAAN EKSPLORATIF (apakah, kenapa, bagaimana, kapan, siapa)
-    if (q.includes('?') || q.includes('apakah') || q.includes('gimana') || q.includes('kenapa') || q.includes('bagaimana') || q.includes('kapan')) {
-      return "Pertanyaan yang bagus banget nih, Sahabat Ceria! Soal hal itu, Ceri-A siap bantu cariin info paling pas di ACF Eduhub. Apakah ini terkait **pendaftaran sekolah**, **kegiatan siswa**, atau **donasi**? 😊\n\nKamu juga bisa langsung ngobrol sama admin kami via WhatsApp di **+62 851-7979-7661** biar dibantu lebih detail yaa!";
+    // 30. PERTANYAAN DI LUAR KONTEKS / NGACO / JOKES / PESAN MAKANAN ATAU BARANG (OUT-OF-SCOPE)
+    if (
+      q.includes('beli') || q.includes('jual') || q.includes('esteh') || q.includes('es teh') ||
+      q.includes('teh') || q.includes('kopi') || q.includes('makan') || q.includes('minum') ||
+      q.includes('gofood') || q.includes('shopee') || q.includes('pulsa') || q.includes('game') ||
+      q.includes('baju') || q.includes('motor') || q.includes('mobil') || q.includes('laundry') ||
+      q.includes('pacar') || q.includes('jodoh') || q.includes('cuaca')
+    ) {
+      return "Waduh hehe, maaf ya Sahabat Ceria, di sini Ceri-A belum jualan atau melayani hal itu nih! 😄\n\n" +
+             "Sebagai asisten AI resmi yayasan **ACF Eduhub**, Ceri-A khusus melayani informasi seputar:\n" +
+             "• 🏫 **Sekolah Juara (SD)** & **Sekolah Daya Setara (PKBM)**\n" +
+             "• 🎓 **Program Beasiswa & Layanan Pendidikan**\n" +
+             "• 💖 **Donasi**, 🙋‍♀️ **Relawan**, & 🤝 **Kemitraan CSR**\n\n" +
+             "Mau kepoin program kami, atau mau langsung ngobrol sama admin via WhatsApp di **+62 851-7979-7661**? 😊";
+    }
+
+    // 31. PERTANYAAN DI LUAR KONTEKS YANG TIDAK DIKENALI (TANDA TANYA)
+    if (q.includes('?')) {
+      return "Maaf ya Sahabat Ceria, Ceri-A belum punya informasi spesifik tentang hal itu nih. 😊\n\n" +
+             "Sebagai asisten AI **ACF Eduhub**, Ceri-A siap bantu seputar info pendaftaran sekolah (SD Juara & PKBM Daya Setara), program beasiswa, donasi, relawan, atau kemitraan.\n\n" +
+             "Kalau ada pertanyaan lain atau ingin dibantu langsung oleh tim kami, yuk chat WhatsApp admin di **+62 851-7979-7661** yaa! ✨";
     }
 
     // 31. DEFAULT NATURAL NYAMBUNG
@@ -1801,6 +1849,9 @@ Communication Style & Persona:
     const chatBody = document.getElementById('cherryBody');
     const chatForm = document.getElementById('cherryForm');
     const chatInput = document.getElementById('cherryInput');
+    if (chatInput) {
+      chatInput.setAttribute('maxlength', '400');
+    }
     const quickChips = document.getElementById('cherryQuickChips');
     const sizeButtons = root.querySelectorAll('.cherry-size-btn');
     const backdrop = document.getElementById('cherryBackdrop');
@@ -1955,11 +2006,25 @@ Communication Style & Persona:
       window.addEventListener('resize', updateChipsNavState);
     }
 
-    // Handle Form Submit
+    // Handle Form Submit (dengan debounce & batas panjang karakter)
+    let lastSubmitTime = 0;
     chatForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      const now = Date.now();
+      if (now - lastSubmitTime < 1500) return; // Anti-spam click cooldown 1.5 detik
+      lastSubmitTime = now;
+
       const message = chatInput.value.trim();
       if (!message || isAwaitingResponse) return;
+
+      if (message.length > 400) {
+        appendMessage('user', message);
+        appendMessage('bot', 'Wah, pertanyaannya panjang banget nih, Sahabat Ceria! 😊 Biar Ceri-A bisa bantu lebih cepat dan tepat, coba ringkas inti pertanyaannya maksimal 400 karakter yaa!');
+        chatInput.value = '';
+        scrollToBottom(true);
+        return;
+      }
+
       chatInput.value = '';
       sendUserMessage(message);
     });
@@ -2073,19 +2138,6 @@ Communication Style & Persona:
       isAwaitingResponse = true;
       showTypingIndicator();
 
-      // Respon instan super cepat untuk sapaan dan tombol menu (220ms natural delay)
-      const instantReply = getInstantLocalReply(userText);
-      if (instantReply) {
-        setTimeout(() => {
-          hideTypingIndicator();
-          appendMessage('bot', instantReply);
-          chatHistory.push({ role: 'model', text: instantReply });
-          isAwaitingResponse = false;
-          chatInput.focus();
-        }, 220);
-        return;
-      }
-
       const clientApiKey = localStorage.getItem(STORAGE_KEY_API) || '';
 
       // 1. Jika ada Google Gemini API Key di browser, gunakan Google Gemini langsung
@@ -2099,14 +2151,14 @@ Communication Style & Persona:
           chatInput.focus();
           return;
         } catch (err) {
-          console.warn('Direct Gemini call failed, falling back:', err);
+          console.warn('Direct Gemini call failed, falling back to backend:', err);
         }
       }
 
-      // 2. Hubungi backend API dengan timeout singkat 2 detik
+      // 2. Hubungi backend API (Sistem Hybrid: konteks resmi yayasan dipoles oleh Gemini)
       const apiUrl = getChatApiUrl();
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7500);
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
 
       try {
         const response = await fetch(apiUrl, {
@@ -2116,8 +2168,11 @@ Communication Style & Persona:
             'Accept': 'application/json'
           },
           body: JSON.stringify({
-            message: userText,
-            history: chatHistory.slice(-6),
+            message: userText.substring(0, 400),
+            history: chatHistory.slice(-4).map(h => ({
+              role: h.role,
+              text: (h.text || '').substring(0, 250)
+            })),
             clientApiKey: clientApiKey,
             lang: getCurrentChatLanguage(userText)
           }),

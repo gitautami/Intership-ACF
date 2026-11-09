@@ -379,6 +379,82 @@
           };
         }
       }
+    },
+
+    // ==========================================
+    // 8. FLIPBOOKS (Dokumen 3D Flipbook)
+    // ==========================================
+    flipbooks: {
+      async getAll(params = {}) {
+        try {
+          const query = new URLSearchParams(params).toString();
+          const res = await apiFetch(`flipbooks.php${query ? '?' + query : ''}`, { method: 'GET' });
+          return res.data?.items || [];
+        } catch (err) {
+          console.warn('Gagal memuat flipbook dari API, fallback ke default:', err);
+          return [
+            {
+              id: 1,
+              judul: 'Profil Lembaga ACF Eduhub',
+              deskripsi: 'Dokumen Resmi Profil & Portofolio Dampak Yayasan',
+              file_url: '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf',
+              file_name: 'Profil Lembaga - ACF Eduhub.pdf',
+              file_size: 35036553,
+              total_pages: 31,
+              target_halaman: 'kisah-kami.html',
+              posisi: 'bawah_deskripsi_sejarah',
+              button_label: 'Profil Lembaga ACF Eduhub',
+              status: 'Aktif'
+            }
+          ];
+        }
+      },
+
+      async getByPage(pageName) {
+        try {
+          const res = await apiFetch(`flipbooks.php?page=${encodeURIComponent(pageName)}`, { method: 'GET' });
+          return res.data;
+        } catch (err) {
+          return null;
+        }
+      },
+
+      async getById(id) {
+        const res = await apiFetch(`flipbooks.php?id=${id}`, { method: 'GET' });
+        return res.data;
+      },
+
+      async upload(formData) {
+        const res = await apiFetch('flipbooks.php', {
+          method: 'POST',
+          body: formData
+        });
+        return res;
+      },
+
+      async create(data) {
+        const res = await apiFetch('flipbooks.php', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+        return res;
+      },
+
+      async update(id, data) {
+        const res = await apiFetch(`flipbooks.php?id=${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({ id, ...data })
+        });
+        return res;
+      },
+
+      async delete(id) {
+        const res = await apiFetch(`flipbooks.php?id=${id}`, {
+          method: 'DELETE',
+          body: JSON.stringify({ id })
+        });
+        return res;
+      }
     }
   };
 

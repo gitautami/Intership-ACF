@@ -69,8 +69,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/admin.css?v=20261027_program_mgr_v7">
+  <link rel="stylesheet" href="../css/admin.css?v=20261109_flipbook_v2">
   <link rel="stylesheet" href="../css/program.css">
+  <link rel="stylesheet" href="../css/flipbook.css?v=20261109_flipbook_v2">
 </head>
 <body>
 
@@ -141,7 +142,7 @@
           <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="admin-brand-logo">
         </div>
 
-        <!-- Triple Dashboard Switcher: Kabar, Formulir, & Program Layanan -->
+        <!-- Quad Dashboard Switcher: Kabar, Formulir, Program Layanan, & Flipbook -->
         <div class="admin-nav-switcher">
           <button type="button" class="admin-nav-tab active" id="btnNavArticles" title="Kelola Publikasi Kabar & Berita">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
@@ -155,6 +156,16 @@
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
             <span>Program Layanan</span>
             <span class="admin-nav-pill-count" id="badgeNavProgramsCount">7</span>
+          </button>
+          <button type="button" class="admin-nav-tab" id="btnNavFlipbooks" title="Kelola & Upload Dokumen Flipbook 3D">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              <line x1="12" y1="6" x2="16" y2="6"></line>
+              <line x1="12" y1="10" x2="16" y2="10"></line>
+            </svg>
+            <span>Flipbook</span>
+            <span class="admin-nav-pill-count" id="badgeNavFlipbooksCount">1</span>
           </button>
         </div>
       </div>
@@ -185,7 +196,8 @@
       (function() {
         try {
           var h = (window.location.hash || '').toLowerCase();
-          var v = (h === '#program' || h === '#programs') ? 'viewDashboardPrograms' :
+          var v = (h === '#flipbook' || h === '#flipbooks') ? 'viewDashboardFlipbooks' :
+                  (h === '#program' || h === '#programs') ? 'viewDashboardPrograms' :
                   (h === '#data-form' || h === '#forms' || h === '#mitra' || h === '#relawan') ? 'viewDashboardForms' :
                   (h === '#kabar' || h === '#artikel') ? 'viewDashboardArticles' :
                   localStorage.getItem('acf_admin_active_view');
@@ -694,6 +706,129 @@
             <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
             <div class="empty-table-title">Belum ada program yang cocok</div>
             <p style="font-size: 0.85rem;">Klik tombol <strong>Buat Program Baru</strong> untuk menambahkan program layanan pendidikan pertama.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           MANAJEMEN & UPLOAD FLIPBOOK 3D DOKUMEN YAYASAN
+           ============================================================ -->
+      <section class="dashboard-view-section" id="viewDashboardFlipbooks" style="display: none;">
+        
+        <!-- Page Header & Action Controls -->
+        <div class="dashboard-header-row">
+          <div>
+            <h2 class="page-title">Manajemen & Upload Flipbook 3D</h2>
+            <p class="page-subtitle">Unggah file PDF dokumen yayasan, otomatis ubah menjadi Flipbook interaktif 3D, dan atur penempatan posisi di halaman publik.</p>
+          </div>
+
+          <div class="header-action-buttons">
+            <a href="profil-lembaga.html" target="_blank" class="btn-outline-action btn-kabar-header-btn" title="Buka halaman baca Profil Lembaga publik">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+              <span>Halaman Baca Flipbook</span>
+            </a>
+
+            <button type="button" class="btn-create-article" id="btnOpenCreateFlipbookModal">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Upload Flipbook Baru</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Flipbook KPI Metrics Grid -->
+        <div class="metric-grid">
+          
+          <div class="metric-card metric-purple">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Total Dokumen Flipbook</span>
+              <span class="metric-value" id="countFlipbooksTotal">0</span>
+              <span class="metric-meta">Terdaftar di sistem</span>
+            </div>
+          </div>
+
+          <div class="metric-card metric-green">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Flipbook Aktif</span>
+              <span class="metric-value" id="countFlipbooksActive">0</span>
+              <span class="metric-meta">Tampil di Halaman Publik</span>
+            </div>
+          </div>
+
+          <div class="metric-card metric-blue">
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Total Halaman PDF</span>
+              <span class="metric-value" id="countFlipbooksPages">0</span>
+              <span class="metric-meta">Lembaran PDF Terdaftar</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Filter & Search Controls Container -->
+        <div class="data-table-container">
+          
+          <div class="table-toolbar">
+            
+            <div class="search-box-wrap">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" class="search-input" id="searchFlipbookInput" placeholder="Cari judul dokumen atau nama file PDF...">
+            </div>
+
+            <div class="toolbar-filters" style="display: flex; gap: 8px; align-items: center;">
+              <select class="select-filter" id="filterFlipbookHalaman">
+                <option value="all">Semua Halaman Target</option>
+                <option value="kisah-kami.html">Cerita Kami (kisah-kami.html)</option>
+                <option value="index.html">Beranda (index.html)</option>
+                <option value="program-layanan.html">Program Layanan (program-layanan.html)</option>
+                <option value="visi-misi.html">Visi Misi (visi-misi.html)</option>
+                <option value="unit-pendidikan.html">Unit Pendidikan (unit-pendidikan.html)</option>
+              </select>
+
+              <select class="select-filter" id="filterFlipbookStatus">
+                <option value="all">Semua Status</option>
+                <option value="aktif">🟢 Aktif</option>
+                <option value="nonaktif">⚪ Nonaktif</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Flipbook Table -->
+          <div class="responsive-table-wrapper">
+            <table class="admin-table" id="tableFlipbooks">
+              <thead>
+                <tr>
+                  <th style="width: 45px; text-align: center;">No</th>
+                  <th>Dokumen & Judul</th>
+                  <th>Target Halaman</th>
+                  <th>Posisi Penempatan</th>
+                  <th>Teks Tombol</th>
+                  <th style="width: 110px; text-align: center;">Status</th>
+                  <th style="width: 170px; text-align: center;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="flipbooksTableBody">
+                <!-- Rendered dynamically via admin.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-table-state" id="emptyFlipbooks" style="display: none;">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#CBD5E1" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
+            <div class="empty-table-title">Belum ada dokumen flipbook</div>
+            <p style="font-size: 0.85rem;">Klik tombol <strong>Upload Flipbook Baru</strong> untuk mengunggah dokumen PDF pertama.</p>
           </div>
 
         </div>
@@ -2086,8 +2221,206 @@
     </div>
   </div>
 
+  <!-- ==========================================
+       MODAL: FORM UPLOAD & EDIT FLIPBOOK 3D
+       ========================================== -->
+  <div class="admin-modal-backdrop" id="flipbookFormModal">
+    <div class="admin-modal-box" style="max-width: 760px; max-height: 90vh; display: flex; flex-direction: column;">
+      
+      <!-- Modal Header -->
+      <div class="modal-header" style="padding: 18px 24px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="background: rgba(125, 34, 128, 0.1); color: #7D2280; font-size: 0.76rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">Flipbook 3D</span>
+          <h3 class="modal-title" id="flipbookFormModalTitle" style="font-size: 1.15rem; font-weight: 700; color: #1E293B; margin: 0;">Upload Dokumen Flipbook Baru</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btnCloseFlipbookFormModal" style="background: transparent; border: none; font-size: 1.5rem; color: #94A3B8; cursor: pointer;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Form) -->
+      <div class="modal-body" style="padding: 24px; overflow-y: auto;">
+        <form id="formFlipbookAdmin" enctype="multipart/form-data">
+          <input type="hidden" id="flipbookFormId" value="">
+
+          <!-- Judul Dokumen -->
+          <div style="margin-bottom: 16px;">
+            <label class="form-label" for="flipbookFormJudul" style="font-size: 0.88rem; font-weight: 600; color: #1E293B; margin-bottom: 6px; display: block;">Judul Dokumen <span style="color: #E11D48;">*</span></label>
+            <input type="text" id="flipbookFormJudul" class="form-input-field" placeholder="Contoh: Profil Lembaga ACF Eduhub" required style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #CBD5E1; font-family: inherit;">
+          </div>
+
+          <!-- Deskripsi Singkat / Subtitle -->
+          <div style="margin-bottom: 16px;">
+            <label class="form-label" for="flipbookFormDeskripsi" style="font-size: 0.88rem; font-weight: 600; color: #1E293B; margin-bottom: 6px; display: block;">Deskripsi Singkat / Subtitle</label>
+            <input type="text" id="flipbookFormDeskripsi" class="form-input-field" placeholder="Contoh: Dokumen Resmi Profil & Portofolio Dampak Yayasan" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #CBD5E1; font-family: inherit;">
+          </div>
+
+          <!-- File Upload PDF Area -->
+          <div style="margin-bottom: 18px;">
+            <label class="form-label" style="font-size: 0.88rem; font-weight: 600; color: #1E293B; margin-bottom: 6px; display: block;">File Dokumen PDF <span style="color: #E11D48;">*</span></label>
+            
+            <div id="flipbookDropArea" style="border: 2px dashed #CBD5E1; border-radius: 12px; padding: 24px 16px; text-align: center; background: #F8FAFC; cursor: pointer; transition: all 0.2s ease;">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#7D2280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 10px;">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              <div style="font-weight: 600; color: #1E293B; margin-bottom: 4px;" id="flipbookFileSelectedName">Pilih file PDF atau seret ke sini</div>
+              <div style="font-size: 0.78rem; color: #64748B;">Maksimal ukuran file 60MB (Format .pdf)</div>
+              <input type="file" id="flipbookFormPdfFile" accept="application/pdf" style="display: none;">
+            </div>
+
+            <!-- Existing file info indicator -->
+            <div id="flipbookCurrentFileInfo" style="display: none; margin-top: 8px; font-size: 0.82rem; color: #475569; background: #EEF2F6; padding: 8px 12px; border-radius: 6px;">
+              File aktif saat ini: <strong id="flipbookCurrentFileName">-</strong> (<span id="flipbookCurrentFileSize">-</span>)
+            </div>
+          </div>
+
+          <!-- Grid: Target Halaman & Posisi Penempatan -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div>
+              <label class="form-label" for="flipbookFormTargetHalaman" style="font-size: 0.88rem; font-weight: 600; color: #1E293B; margin-bottom: 6px; display: block;">Target Halaman Website <span style="color: #E11D48;">*</span></label>
+              <select id="flipbookFormTargetHalaman" class="form-select-field" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #CBD5E1; font-family: inherit;">
+                <option value="kisah-kami.html">Cerita Kami (kisah-kami.html)</option>
+                <option value="index.html">Beranda (index.html)</option>
+                <option value="program-layanan.html">Program Layanan (program-layanan.html)</option>
+                <option value="visi-misi.html">Visi Misi (visi-misi.html)</option>
+                <option value="unit-pendidikan.html">Unit Pendidikan (unit-pendidikan.html)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" for="flipbookFormPosisi" style="font-size: 0.88rem; font-weight: 600; color: #1E293B; margin-bottom: 6px; display: block;">Posisi Penempatan di Halaman <span style="color: #E11D48;">*</span></label>
+              <select id="flipbookFormPosisi" class="form-select-field" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #CBD5E1; font-family: inherit;">
+                <option value="bawah_deskripsi_sejarah">Di Bawah Deskripsi Sejarah Singkat (Cerita Kami)</option>
+                <option value="bawah_hero">Di Bawah Banner Hero Utama</option>
+                <option value="tengah_konten">Di Tengah Konten Halaman</option>
+                <option value="atas_footer">Di Atas Footer (Bagian Bawah Halaman)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Grid: Teks Tombol & Status -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div>
+              <label class="form-label" for="flipbookFormButtonLabel" style="font-size: 0.88rem; font-weight: 600; color: #1E293B; margin-bottom: 6px; display: block;">Teks Tombol / Label CTA <span style="color: #E11D48;">*</span></label>
+              <input type="text" id="flipbookFormButtonLabel" class="form-input-field" value="Profil Lembaga ACF Eduhub" required style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #CBD5E1; font-family: inherit;">
+            </div>
+
+            <div>
+              <label class="form-label" for="flipbookFormStatus" style="font-size: 0.88rem; font-weight: 600; color: #1E293B; margin-bottom: 6px; display: block;">Status Publikasi <span style="color: #E11D48;">*</span></label>
+              <select id="flipbookFormStatus" class="form-select-field" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #CBD5E1; font-family: inherit;">
+                <option value="Aktif">Aktif (Tampilkan di Web)</option>
+                <option value="Nonaktif">Nonaktif (Draf)</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="flipbookUploadProgressBar" style="display: none; margin-top: 10px; margin-bottom: 16px;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: #7D2280; margin-bottom: 4px;" id="flipbookUploadProgressText">Mengunggah file PDF...</div>
+            <div style="height: 6px; background: #E2E8F0; border-radius: 10px; overflow: hidden;">
+              <div id="flipbookUploadProgressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #7D2280, #E11D48); transition: width 0.2s ease;"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #E2E8F0; display: flex; justify-content: flex-end; gap: 12px; background: #F8FAFC;">
+        <button type="button" class="btn-cancel" id="btnCancelFlipbookModal" style="padding: 10px 20px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 600; cursor: pointer; color: #475569;">Batal</button>
+        <button type="submit" form="formFlipbookAdmin" class="btn-create-article" id="btnSubmitFlipbookModal" style="padding: 10px 24px; border-radius: 8px;">
+          <span>Simpan & Upload Flipbook</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: PRATINJAU FLIPBOOK 3D DI PORTAL ADMIN
+       ========================================== -->
+  <div class="flipbook-modal" id="adminFlipbookPreviewModal" role="dialog" aria-modal="true" aria-labelledby="adminFlipbookPreviewTitle">
+    <div class="flipbook-header">
+      <div class="flipbook-header-left">
+        <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="flipbook-logo-mini">
+        <div class="flipbook-title-group">
+          <span class="flipbook-doc-title" id="adminFlipbookPreviewTitle">Pratinjau Flipbook 3D — Portal Admin</span>
+          <span class="flipbook-doc-subtitle" id="adminFlipbookPreviewSubtitle">Uji simulasi lembaran buku 3D interaktif</span>
+        </div>
+      </div>
+
+      <div class="flipbook-header-right">
+        <span class="flipbook-page-badge" id="adminFlipbookPageBadge">Memuat...</span>
+
+        <!-- Tombol Tutup Preview -->
+        <button type="button" class="flipbook-btn-close" id="btnAdminCloseFlipbookPreview" title="Tutup Pratinjau Flipbook" aria-label="Tutup Pratinjau">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Stage Area -->
+    <div class="flipbook-stage" id="adminFlipbookStage">
+      <!-- Loading Screen Overlay -->
+      <div class="flipbook-loading-screen" id="adminFlipbookLoading">
+        <div class="flipbook-spinner"></div>
+        <div class="flipbook-loading-title">Menyiapkan Lembaran Flipbook 3D</div>
+        <div class="flipbook-loading-desc" id="adminFlipbookLoadingDesc">Sedang memproses dokumen PDF...</div>
+        <div class="flipbook-progress-bar-bg">
+          <div class="flipbook-progress-bar-fill" id="adminFlipbookProgressFill"></div>
+        </div>
+      </div>
+
+      <!-- Tombol Navigasi Panah Bulat Kiri -->
+      <button type="button" class="flipbook-nav-btn nav-prev" id="adminBtnNavPrev" aria-label="Halaman Sebelumnya" title="Halaman Sebelumnya">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Viewport & Book Container -->
+      <div class="flipbook-viewport" id="adminFlipbookViewport">
+        <div class="flipbook-container" id="adminFlipbookBook"></div>
+      </div>
+
+      <!-- Tombol Navigasi Panah Bulat Kanan -->
+      <button type="button" class="flipbook-nav-btn nav-next" id="adminBtnNavNext" aria-label="Halaman Selanjutnya" title="Halaman Selanjutnya">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="flipbook-bottom-bar">
+      <button type="button" class="flipbook-btn-mini" id="adminBtnNavFirst" title="Ke Halaman Pertama" aria-label="Halaman Pertama">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="11 17 6 12 11 7"></polyline>
+          <polyline points="18 17 13 12 18 7"></polyline>
+        </svg>
+      </button>
+
+      <div class="flipbook-range-wrap">
+        <input type="range" class="flipbook-range-slider" id="adminFlipbookRange" min="1" max="31" value="1" title="Geser Halaman">
+      </div>
+
+      <button type="button" class="flipbook-btn-mini" id="adminBtnNavLast" title="Ke Halaman Terakhir" aria-label="Halaman Terakhir">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="13 17 18 12 13 7"></polyline>
+          <polyline points="6 17 11 12 6 7"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div class="admin-toast-container" id="toastContainer"></div>
+
+  <!-- PDF.js & StPageFlip (HTML5 3D Flipbook Engine) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 
   <!-- JavaScript Modules -->
   <script src="../js/sweetalert2.all.min.js"></script>
@@ -2096,8 +2429,8 @@
       document.write('<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"><\/script>');
     }
   </script>
-  <script src="../js/api.js?v=20261020_desktop_fix_v2"></script>
-  <script src="../js/admin.js?v=20261027_persist_view_v7"></script>
+  <script src="../js/api.js?v=20261109_flipbook_v2"></script>
+  <script src="../js/admin.js?v=20261109_flipbook_v2"></script>
 
 
 

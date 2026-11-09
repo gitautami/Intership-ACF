@@ -131,12 +131,13 @@
   function getInitialDashboardView() {
     try {
       const hash = (window.location.hash || '').toLowerCase();
+      if (hash === '#flipbook' || hash === '#flipbooks') return 'viewDashboardFlipbooks';
       if (hash === '#program' || hash === '#programs') return 'viewDashboardPrograms';
       if (hash === '#data-form' || hash === '#forms' || hash === '#mitra' || hash === '#relawan') return 'viewDashboardForms';
       if (hash === '#kabar' || hash === '#artikel') return 'viewDashboardArticles';
 
       const saved = localStorage.getItem('acf_admin_active_view');
-      if (saved === 'viewDashboardPrograms' || saved === 'viewDashboardForms' || saved === 'viewDashboardArticles') {
+      if (saved === 'viewDashboardFlipbooks' || saved === 'viewDashboardPrograms' || saved === 'viewDashboardForms' || saved === 'viewDashboardArticles') {
         return saved;
       }
     } catch (e) {}
@@ -275,6 +276,64 @@
 
   // Program State & Default Data
   let dataPrograms = [];
+
+  // Flipbook Elements & State
+  const btnNavFlipbooks = document.getElementById('btnNavFlipbooks');
+  const badgeNavFlipbooksCount = document.getElementById('badgeNavFlipbooksCount');
+  const viewDashboardFlipbooks = document.getElementById('viewDashboardFlipbooks');
+
+  const countFlipbooksTotal = document.getElementById('countFlipbooksTotal');
+  const countFlipbooksActive = document.getElementById('countFlipbooksActive');
+  const countFlipbooksPages = document.getElementById('countFlipbooksPages');
+
+  const searchFlipbookInput = document.getElementById('searchFlipbookInput');
+  const filterFlipbookHalaman = document.getElementById('filterFlipbookHalaman');
+  const filterFlipbookStatus = document.getElementById('filterFlipbookStatus');
+  const flipbooksTableBody = document.getElementById('flipbooksTableBody');
+  const emptyFlipbooks = document.getElementById('emptyFlipbooks');
+
+  const btnOpenCreateFlipbookModal = document.getElementById('btnOpenCreateFlipbookModal');
+
+  // Flipbook Form Modal
+  const flipbookFormModal = document.getElementById('flipbookFormModal');
+  const flipbookFormModalTitle = document.getElementById('flipbookFormModalTitle');
+  const btnCloseFlipbookFormModal = document.getElementById('btnCloseFlipbookFormModal');
+  const btnCancelFlipbookModal = document.getElementById('btnCancelFlipbookModal');
+  const formFlipbookAdmin = document.getElementById('formFlipbookAdmin');
+  const flipbookFormId = document.getElementById('flipbookFormId');
+  const flipbookFormJudul = document.getElementById('flipbookFormJudul');
+  const flipbookFormDeskripsi = document.getElementById('flipbookFormDeskripsi');
+  const flipbookDropArea = document.getElementById('flipbookDropArea');
+  const flipbookFormPdfFile = document.getElementById('flipbookFormPdfFile');
+  const flipbookFileSelectedName = document.getElementById('flipbookFileSelectedName');
+  const flipbookCurrentFileInfo = document.getElementById('flipbookCurrentFileInfo');
+  const flipbookCurrentFileName = document.getElementById('flipbookCurrentFileName');
+  const flipbookCurrentFileSize = document.getElementById('flipbookCurrentFileSize');
+  const flipbookFormTargetHalaman = document.getElementById('flipbookFormTargetHalaman');
+  const flipbookFormPosisi = document.getElementById('flipbookFormPosisi');
+  const flipbookFormButtonLabel = document.getElementById('flipbookFormButtonLabel');
+  const flipbookFormStatus = document.getElementById('flipbookFormStatus');
+  const btnSubmitFlipbookModal = document.getElementById('btnSubmitFlipbookModal');
+
+  // Admin Flipbook 3D Preview Modal
+  const adminFlipbookPreviewModal = document.getElementById('adminFlipbookPreviewModal');
+  const adminFlipbookPreviewTitle = document.getElementById('adminFlipbookPreviewTitle');
+  const adminFlipbookPreviewSubtitle = document.getElementById('adminFlipbookPreviewSubtitle');
+  const btnAdminCloseFlipbookPreview = document.getElementById('btnAdminCloseFlipbookPreview');
+  const adminFlipbookLoading = document.getElementById('adminFlipbookLoading');
+  const adminFlipbookLoadingDesc = document.getElementById('adminFlipbookLoadingDesc');
+  const adminFlipbookProgressFill = document.getElementById('adminFlipbookProgressFill');
+  const adminFlipbookBook = document.getElementById('adminFlipbookBook');
+  const adminBtnNavPrev = document.getElementById('adminBtnNavPrev');
+  const adminBtnNavNext = document.getElementById('adminBtnNavNext');
+  const adminBtnNavFirst = document.getElementById('adminBtnNavFirst');
+  const adminBtnNavLast = document.getElementById('adminBtnNavLast');
+  const adminFlipbookRange = document.getElementById('adminFlipbookRange');
+  const adminFlipbookPageBadge = document.getElementById('adminFlipbookPageBadge');
+
+  let dataFlipbooks = [];
+  let adminFlipbookInstance = null;
+  let adminPdfDocInstance = null;
 
   const DEFAULT_PROGRAM_CATEGORIES = [
     { id: 'kategori-1', num: 1, title: 'Keberlanjutan Unit Pendidikan', desc: 'Penguatan kelembagaan dan pendanaan mandiri untuk memastikan sekolah-sekolah di wilayah prasejahtera dapat beroperasi secara berkelanjutan dengan kualitas prima.' },
@@ -718,7 +777,8 @@
     try {
       localStorage.setItem('acf_admin_active_view', viewId);
       let hash = '#kabar';
-      if (viewId === 'viewDashboardPrograms') hash = '#program';
+      if (viewId === 'viewDashboardFlipbooks') hash = '#flipbook';
+      else if (viewId === 'viewDashboardPrograms') hash = '#program';
       else if (viewId === 'viewDashboardForms') hash = '#data-form';
       if (window.history && window.history.replaceState) {
         window.history.replaceState(null, null, hash);
@@ -727,10 +787,35 @@
       if (preStyle) preStyle.remove();
     } catch (e) {}
 
-    if (viewId === 'viewDashboardPrograms') {
+    if (viewId === 'viewDashboardFlipbooks') {
+      if (btnNavFlipbooks) btnNavFlipbooks.classList.add('active');
+      if (btnNavArticles) btnNavArticles.classList.remove('active');
+      if (btnNavForms) btnNavForms.classList.remove('active');
+      if (btnNavPrograms) btnNavPrograms.classList.remove('active');
+
+      if (viewDashboardFlipbooks) {
+        viewDashboardFlipbooks.style.display = 'block';
+        viewDashboardFlipbooks.classList.add('active');
+      }
+      if (viewDashboardArticles) {
+        viewDashboardArticles.style.display = 'none';
+        viewDashboardArticles.classList.remove('active');
+      }
+      if (viewDashboardForms) {
+        viewDashboardForms.style.display = 'none';
+        viewDashboardForms.classList.remove('active');
+      }
+      if (viewDashboardPrograms) {
+        viewDashboardPrograms.style.display = 'none';
+        viewDashboardPrograms.classList.remove('active');
+      }
+      renderTableFlipbooks();
+      updateFlipbookMetrics();
+    } else if (viewId === 'viewDashboardPrograms') {
       if (btnNavPrograms) btnNavPrograms.classList.add('active');
       if (btnNavArticles) btnNavArticles.classList.remove('active');
       if (btnNavForms) btnNavForms.classList.remove('active');
+      if (btnNavFlipbooks) btnNavFlipbooks.classList.remove('active');
 
       if (viewDashboardPrograms) {
         viewDashboardPrograms.style.display = 'block';
@@ -744,12 +829,17 @@
         viewDashboardForms.style.display = 'none';
         viewDashboardForms.classList.remove('active');
       }
+      if (viewDashboardFlipbooks) {
+        viewDashboardFlipbooks.style.display = 'none';
+        viewDashboardFlipbooks.classList.remove('active');
+      }
       renderTablePrograms();
       updateProgramMetrics();
     } else if (viewId === 'viewDashboardForms') {
       if (btnNavForms) btnNavForms.classList.add('active');
       if (btnNavArticles) btnNavArticles.classList.remove('active');
       if (btnNavPrograms) btnNavPrograms.classList.remove('active');
+      if (btnNavFlipbooks) btnNavFlipbooks.classList.remove('active');
 
       if (viewDashboardForms) {
         viewDashboardForms.style.display = 'block';
@@ -762,6 +852,10 @@
       if (viewDashboardPrograms) {
         viewDashboardPrograms.style.display = 'none';
         viewDashboardPrograms.classList.remove('active');
+      }
+      if (viewDashboardFlipbooks) {
+        viewDashboardFlipbooks.style.display = 'none';
+        viewDashboardFlipbooks.classList.remove('active');
       }
 
       const allTabPanels = document.querySelectorAll('.tab-content-panel');
@@ -791,6 +885,7 @@
       if (btnNavArticles) btnNavArticles.classList.add('active');
       if (btnNavForms) btnNavForms.classList.remove('active');
       if (btnNavPrograms) btnNavPrograms.classList.remove('active');
+      if (btnNavFlipbooks) btnNavFlipbooks.classList.remove('active');
 
       if (viewDashboardArticles) {
         viewDashboardArticles.style.display = 'block';
@@ -803,6 +898,10 @@
       if (viewDashboardPrograms) {
         viewDashboardPrograms.style.display = 'none';
         viewDashboardPrograms.classList.remove('active');
+      }
+      if (viewDashboardFlipbooks) {
+        viewDashboardFlipbooks.style.display = 'none';
+        viewDashboardFlipbooks.classList.remove('active');
       }
       renderTableArticles();
     }
@@ -1230,6 +1329,7 @@
       });
 
       loadProgramsData();
+      await loadFlipbooksData();
       renderCategorySelects();
       renderAll();
 
@@ -1271,6 +1371,8 @@
     renderTableArticles();
     renderTablePrograms();
     updateProgramMetrics();
+    renderTableFlipbooks();
+    updateFlipbookMetrics();
     switchDashboardView(activeDashboard);
   }
 
@@ -4022,6 +4124,612 @@
   };
 
   /* ===================================================
+     8.5 FLIPBOOK 3D MANAGEMENT ENGINE
+     =================================================== */
+
+  function getTargetPageLabel(page) {
+    const map = {
+      'kisah-kami.html': 'Cerita Kami',
+      'index.html': 'Beranda Utama',
+      'program-layanan.html': 'Program Layanan',
+      'visi-misi.html': 'Visi Misi',
+      'unit-pendidikan.html': 'Unit Pendidikan'
+    };
+    return map[page] || page || '-';
+  }
+
+  function getPositionLabel(pos) {
+    const map = {
+      'bawah_deskripsi_sejarah': 'Bawah Deskripsi Sejarah',
+      'bawah_hero': 'Bawah Hero Banner',
+      'tengah_konten': 'Tengah Konten',
+      'atas_footer': 'Atas Footer'
+    };
+    return map[pos] || pos || '-';
+  }
+
+  function formatFileSize(bytes) {
+    if (!bytes || isNaN(bytes)) return '-';
+    const b = parseInt(bytes, 10);
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+    return (b / 1048576).toFixed(1) + ' MB';
+  }
+
+  function normalizeFlipbookItem(raw) {
+    if (!raw) return {};
+    const item = { ...raw };
+    item.title = raw.judul || raw.title || '';
+    item.judul = item.title;
+    item.description = raw.deskripsi || raw.description || '';
+    item.deskripsi = item.description;
+    item.target_page = raw.target_halaman || raw.target_page || 'kisah-kami.html';
+    item.target_halaman = item.target_page;
+    item.position = raw.posisi || raw.position || 'bawah_deskripsi_sejarah';
+    item.posisi = item.position;
+    item.button_label = raw.button_label || raw.buttonLabel || 'Profil Lembaga ACF Eduhub';
+    item.status = String(raw.status || 'aktif').toLowerCase();
+    item.total_pages = parseInt(raw.total_pages, 10) || 1;
+    item.file_size = parseInt(raw.file_size, 10) || 0;
+    return item;
+  }
+
+  async function loadFlipbooksData() {
+    try {
+      if (window.ACF_API && window.ACF_API.flipbooks) {
+        const res = await window.ACF_API.flipbooks.getAll();
+        if (Array.isArray(res) && res.length > 0) {
+          dataFlipbooks = res.map(normalizeFlipbookItem);
+        } else {
+          dataFlipbooks = [];
+        }
+      } else {
+        dataFlipbooks = [];
+      }
+    } catch (err) {
+      console.warn('Gagal memuat flipbook dari API, fallback ke default:', err);
+      dataFlipbooks = [];
+    }
+
+    if (!Array.isArray(dataFlipbooks) || dataFlipbooks.length === 0) {
+      dataFlipbooks = [
+        normalizeFlipbookItem({
+          id: 1,
+          judul: 'Profil Lembaga ACF Eduhub',
+          deskripsi: 'Dokumen Resmi Profil & Portofolio Dampak Yayasan',
+          file_name: 'Profil Lembaga - ACF Eduhub.pdf',
+          file_url: '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf',
+          file_size: 4404019,
+          total_pages: 31,
+          target_halaman: 'kisah-kami.html',
+          posisi: 'bawah_deskripsi_sejarah',
+          button_label: 'Profil Lembaga ACF Eduhub',
+          status: 'aktif',
+          created_at: new Date().toISOString()
+        })
+      ];
+    }
+
+    renderTableFlipbooks();
+    updateFlipbookMetrics();
+  }
+
+  function updateFlipbookMetrics() {
+    const total = dataFlipbooks.length;
+    const active = dataFlipbooks.filter(f => String(f.status).toLowerCase() === 'aktif').length;
+    const pages = dataFlipbooks.reduce((acc, f) => acc + (parseInt(f.total_pages, 10) || 0), 0);
+
+    if (countFlipbooksTotal) countFlipbooksTotal.textContent = total;
+    if (countFlipbooksActive) countFlipbooksActive.textContent = active;
+    if (countFlipbooksPages) countFlipbooksPages.textContent = pages;
+    if (badgeNavFlipbooksCount) badgeNavFlipbooksCount.textContent = active;
+  }
+
+  function renderTableFlipbooks() {
+    if (!flipbooksTableBody) return;
+    flipbooksTableBody.innerHTML = '';
+
+    const query = (searchFlipbookInput?.value || '').toLowerCase().trim();
+    const filterHalaman = filterFlipbookHalaman?.value || 'all';
+    const filterStatus = (filterFlipbookStatus?.value || 'all').toLowerCase();
+
+    const filtered = dataFlipbooks.filter(item => {
+      const matchQuery = !query ||
+        (item.title && item.title.toLowerCase().includes(query)) ||
+        (item.description && item.description.toLowerCase().includes(query)) ||
+        (item.file_name && item.file_name.toLowerCase().includes(query)) ||
+        (item.button_label && item.button_label.toLowerCase().includes(query));
+
+      const matchHalaman = filterHalaman === 'all' || !filterHalaman || item.target_page === filterHalaman;
+      const itemStatus = String(item.status || 'aktif').toLowerCase();
+      const matchStatus = filterStatus === 'all' || !filterStatus || itemStatus === filterStatus;
+
+      return matchQuery && matchHalaman && matchStatus;
+    });
+
+    const tableEl = document.getElementById('tableFlipbooks');
+    if (emptyFlipbooks) {
+      emptyFlipbooks.style.display = filtered.length === 0 ? 'block' : 'none';
+    }
+    if (tableEl) {
+      tableEl.style.display = filtered.length === 0 ? 'none' : 'table';
+    }
+
+    filtered.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      const isActive = String(item.status).toLowerCase() === 'aktif';
+      const statusBadge = isActive
+        ? `<span class="status-badge status-diterima status-badge-terbit" style="cursor: pointer;" onclick="handleToggleFlipbookDirect('${item.id}')" title="Klik untuk menonaktifkan"><span class="badge-dot dot-published"></span>Aktif</span>`
+        : `<span class="status-badge status-menunggu status-badge-draf" style="cursor: pointer;" onclick="handleToggleFlipbookDirect('${item.id}')" title="Klik untuk mengaktifkan"><span class="badge-dot dot-draft"></span>Nonaktif</span>`;
+
+      const targetLabel = getTargetPageLabel(item.target_page);
+      const posLabel = getPositionLabel(item.position);
+      const fileSize = formatFileSize(item.file_size);
+      const pagesText = item.total_pages ? `${item.total_pages} Halaman` : '-';
+
+      tr.innerHTML = `
+        <td style="font-weight: 600; color: #475569; width: 45px; text-align: center;">${index + 1}</td>
+        <td>
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <div style="width: 40px; height: 48px; border-radius: 6px; background: linear-gradient(135deg, #7D2280 0%, #E11D48 100%); display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; box-shadow: 0 4px 10px rgba(125, 34, 128, 0.2);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </div>
+            <div>
+              <div style="font-weight: 700; color: #1E293B; font-size: 0.95rem; line-height: 1.3;">${escapeHTML(item.title || 'Dokumen Tanpa Judul')}</div>
+              ${item.description ? `<div style="font-size: 0.8rem; color: #64748B; margin-top: 2px;">${escapeHTML(item.description)}</div>` : ''}
+              <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px; display: flex; align-items: center; gap: 8px;">
+                <span>📄 ${escapeHTML(item.file_name || 'document.pdf')}</span>
+                <span>•</span>
+                <span>📖 ${pagesText}</span>
+                <span>•</span>
+                <span>💾 ${fileSize}</span>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div style="display: inline-flex; flex-direction: column; gap: 2px;">
+            <span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: #1E293B; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#7D2280" stroke-width="2" style="width: 14px; height: 14px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              ${escapeHTML(targetLabel)}
+            </span>
+            <span style="font-size: 0.72rem; color: #94A3B8;">${escapeHTML(item.target_page || '')}</span>
+          </div>
+        </td>
+        <td>
+          <span style="display: inline-block; padding: 4px 10px; border-radius: 6px; background: #F1F5F9; color: #334155; font-size: 0.78rem; font-weight: 500;">
+            📍 ${escapeHTML(posLabel)}
+          </span>
+        </td>
+        <td>
+          <span style="font-weight: 600; font-size: 0.82rem; color: #7D2280; background: rgba(125, 34, 128, 0.08); padding: 4px 10px; border-radius: 6px; display: inline-block;">
+            ${escapeHTML(item.button_label || 'Profil Lembaga')}
+          </span>
+        </td>
+        <td style="text-align: center;">
+          ${statusBadge}
+        </td>
+        <td style="text-align: center; white-space: nowrap;">
+          <button type="button" class="btn-action-preview" onclick="handlePreviewFlipbookDirect('${item.id}')" style="margin-right: 6px;" title="Uji Pratinjau 3D Flipbook">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Pratinjau 3D</span>
+          </button>
+          <button type="button" class="btn-action-view" onclick="handleEditFlipbookDirect('${item.id}')" style="margin-right: 6px;" title="Edit Pengaturan Flipbook">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <span>Edit</span>
+          </button>
+          <button type="button" class="btn-action-delete" onclick="handleDeleteFlipbookDirect('${item.id}')" title="Hapus Dokumen Flipbook">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            <span>Hapus</span>
+          </button>
+        </td>
+      `;
+      flipbooksTableBody.appendChild(tr);
+    });
+  }
+
+  function openCreateFlipbookModal() {
+    if (!flipbookFormModal) return;
+    if (formFlipbookAdmin) formFlipbookAdmin.reset();
+
+    if (flipbookFormId) flipbookFormId.value = '';
+    if (flipbookFormJudul) flipbookFormJudul.value = '';
+    if (flipbookFormDeskripsi) flipbookFormDeskripsi.value = '';
+    if (flipbookFormTargetHalaman) flipbookFormTargetHalaman.value = 'kisah-kami.html';
+    if (flipbookFormPosisi) flipbookFormPosisi.value = 'bawah_deskripsi_sejarah';
+    if (flipbookFormButtonLabel) flipbookFormButtonLabel.value = 'Profil Lembaga ACF Eduhub';
+    if (flipbookFormStatus) flipbookFormStatus.value = 'aktif';
+
+    if (flipbookFormPdfFile) {
+      flipbookFormPdfFile.value = '';
+      flipbookFormPdfFile.required = true;
+    }
+    if (flipbookFileSelectedName) {
+      flipbookFileSelectedName.textContent = 'Pilih file PDF atau seret ke sini';
+    }
+    if (flipbookCurrentFileInfo) {
+      flipbookCurrentFileInfo.style.display = 'none';
+    }
+    if (flipbookFormModalTitle) {
+      flipbookFormModalTitle.textContent = 'Upload Dokumen Flipbook Baru';
+    }
+
+    flipbookFormModal.classList.add('show');
+    updateBodyScrollLock();
+  }
+
+  function openEditFlipbookModal(id) {
+    const item = dataFlipbooks.find(f => String(f.id) === String(id));
+    if (!item) {
+      showToast('Data flipbook tidak ditemukan.', 'error');
+      return;
+    }
+
+    if (!flipbookFormModal) return;
+    if (formFlipbookAdmin) formFlipbookAdmin.reset();
+
+    if (flipbookFormId) flipbookFormId.value = item.id;
+    if (flipbookFormJudul) flipbookFormJudul.value = item.title || '';
+    if (flipbookFormDeskripsi) flipbookFormDeskripsi.value = item.description || '';
+    if (flipbookFormTargetHalaman) flipbookFormTargetHalaman.value = item.target_page || 'kisah-kami.html';
+    if (flipbookFormPosisi) flipbookFormPosisi.value = item.position || 'bawah_deskripsi_sejarah';
+    if (flipbookFormButtonLabel) flipbookFormButtonLabel.value = item.button_label || 'Profil Lembaga ACF Eduhub';
+    if (flipbookFormStatus) flipbookFormStatus.value = item.status || 'aktif';
+
+    if (flipbookFormPdfFile) {
+      flipbookFormPdfFile.value = '';
+      flipbookFormPdfFile.required = false;
+    }
+    if (flipbookFileSelectedName) {
+      flipbookFileSelectedName.textContent = 'Pilih file PDF baru untuk mengganti file lama (opsional)';
+    }
+
+    if (flipbookCurrentFileInfo) {
+      if (flipbookCurrentFileName) flipbookCurrentFileName.textContent = item.file_name || '-';
+      if (flipbookCurrentFileSize) {
+        flipbookCurrentFileSize.textContent = `${item.total_pages ? item.total_pages + ' hal • ' : ''}${formatFileSize(item.file_size)}`;
+      }
+      flipbookCurrentFileInfo.style.display = 'block';
+    }
+
+    if (flipbookFormModalTitle) {
+      flipbookFormModalTitle.textContent = 'Edit Pengaturan Flipbook';
+    }
+
+    flipbookFormModal.classList.add('show');
+    updateBodyScrollLock();
+  }
+
+  function closeFlipbookFormModal() {
+    if (flipbookFormModal) {
+      flipbookFormModal.classList.remove('show');
+    }
+    updateBodyScrollLock();
+  }
+
+  async function handleSaveFlipbook(e) {
+    if (e) e.preventDefault();
+
+    const id = (flipbookFormId?.value || '').trim();
+    const title = (flipbookFormJudul?.value || '').trim();
+    const description = (flipbookFormDeskripsi?.value || '').trim();
+    const targetPage = flipbookFormTargetHalaman?.value || 'kisah-kami.html';
+    const position = flipbookFormPosisi?.value || 'bawah_deskripsi_sejarah';
+    const buttonLabel = (flipbookFormButtonLabel?.value || '').trim() || 'Profil Lembaga ACF Eduhub';
+    const status = flipbookFormStatus?.value || 'aktif';
+    const file = flipbookFormPdfFile?.files && flipbookFormPdfFile.files[0];
+
+    if (!title) {
+      showToast('Judul dokumen wajib diisi!', 'warning');
+      flipbookFormJudul?.focus();
+      return;
+    }
+
+    if (!id && !file) {
+      showToast('Silakan pilih file PDF dokumen yang akan diunggah!', 'warning');
+      return;
+    }
+
+    if (file && file.size > 60 * 1024 * 1024) {
+      showToast('Ukuran file PDF terlalu besar! Maksimal 60MB.', 'warning');
+      return;
+    }
+
+    const progressBar = document.getElementById('flipbookUploadProgressBar');
+    const progressFill = document.getElementById('flipbookUploadProgressFill');
+    const progressText = document.getElementById('flipbookUploadProgressText');
+    const submitBtn = btnSubmitFlipbookModal;
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Menyimpan...';
+    }
+
+    try {
+      if (file) {
+        if (progressBar) progressBar.style.display = 'block';
+        if (progressFill) progressFill.style.width = '30%';
+        if (progressText) progressText.textContent = 'Mengunggah file PDF dokumen...';
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('title', title);
+        formData.append('judul', title);
+        formData.append('description', description);
+        formData.append('deskripsi', description);
+        formData.append('target_page', targetPage);
+        formData.append('target_halaman', targetPage);
+        formData.append('position', position);
+        formData.append('posisi', position);
+        formData.append('button_label', buttonLabel);
+        formData.append('status', status);
+        if (id) formData.append('id', id);
+
+        if (progressFill) progressFill.style.width = '65%';
+
+        if (window.ACF_API && window.ACF_API.flipbooks) {
+          await window.ACF_API.flipbooks.upload(formData);
+          if (progressFill) progressFill.style.width = '100%';
+          showToast(id ? 'Dokumen flipbook berhasil diperbarui!' : 'Dokumen PDF berhasil diunggah & dijadikan Flipbook!', 'success');
+        } else {
+          showToast('Koneksi API Flipbook tidak tersedia.', 'error');
+        }
+      } else {
+        if (window.ACF_API && window.ACF_API.flipbooks) {
+          await window.ACF_API.flipbooks.update({
+            id: id,
+            title: title,
+            judul: title,
+            description: description,
+            deskripsi: description,
+            target_page: targetPage,
+            target_halaman: targetPage,
+            position: position,
+            posisi: position,
+            button_label: buttonLabel,
+            status: status
+          });
+          showToast('Pengaturan flipbook berhasil diperbarui!', 'success');
+        }
+      }
+
+      closeFlipbookFormModal();
+      await loadFlipbooksData();
+    } catch (err) {
+      console.error('Error saving flipbook:', err);
+      showToast('Gagal menyimpan flipbook: ' + (err.message || err), 'error');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Simpan Flipbook';
+      }
+      if (progressBar) progressBar.style.display = 'none';
+      if (progressFill) progressFill.style.width = '0%';
+    }
+  }
+
+  async function handleToggleFlipbookStatus(id) {
+    const item = dataFlipbooks.find(f => String(f.id) === String(id));
+    if (!item) return;
+
+    const newStatus = item.status === 'aktif' ? 'nonaktif' : 'aktif';
+    try {
+      if (window.ACF_API && window.ACF_API.flipbooks) {
+        await window.ACF_API.flipbooks.update({ id: item.id, status: newStatus });
+      }
+      item.status = newStatus;
+      renderTableFlipbooks();
+      updateFlipbookMetrics();
+      showToast(`Status flipbook diubah menjadi ${newStatus}.`, 'success');
+    } catch (err) {
+      console.error('Error toggling status:', err);
+      showToast('Gagal mengubah status flipbook.', 'error');
+    }
+  }
+
+  async function handleDeleteFlipbook(id) {
+    const item = dataFlipbooks.find(f => String(f.id) === String(id));
+    if (!item) return;
+
+    const confirmed = window.confirm(`Apakah Anda yakin ingin menghapus flipbook "${item.title}"?\n\nFile PDF dan penempatan pada halaman terkait akan dihapus.`);
+    if (!confirmed) return;
+
+    try {
+      if (window.ACF_API && window.ACF_API.flipbooks) {
+        await window.ACF_API.flipbooks.delete(item.id);
+      }
+      dataFlipbooks = dataFlipbooks.filter(f => String(f.id) !== String(id));
+      renderTableFlipbooks();
+      updateFlipbookMetrics();
+      showToast(`Flipbook "${item.title}" berhasil dihapus.`, 'info');
+    } catch (err) {
+      console.error('Error deleting flipbook:', err);
+      showToast('Gagal menghapus flipbook: ' + (err.message || err), 'error');
+    }
+  }
+
+  async function openAdminFlipbookPreview(id) {
+    const item = dataFlipbooks.find(f => String(f.id) === String(id));
+    if (!item) {
+      showToast('Data dokumen flipbook tidak ditemukan.', 'error');
+      return;
+    }
+
+    if (!adminFlipbookPreviewModal) return;
+    adminFlipbookPreviewModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    if (adminFlipbookPreviewTitle) adminFlipbookPreviewTitle.textContent = item.title || 'Pratinjau Flipbook 3D';
+    if (adminFlipbookPreviewSubtitle) {
+      adminFlipbookPreviewSubtitle.textContent = item.description || `Halaman Target: ${getTargetPageLabel(item.target_page)}`;
+    }
+
+    if (adminFlipbookLoading) adminFlipbookLoading.classList.remove('hidden');
+    if (adminFlipbookProgressFill) adminFlipbookProgressFill.style.width = '0%';
+    if (adminFlipbookLoadingDesc) adminFlipbookLoadingDesc.textContent = 'Membuka dokumen PDF...';
+
+    if (adminFlipbookInstance) {
+      try { adminFlipbookInstance.destroy(); } catch (e) {}
+      adminFlipbookInstance = null;
+    }
+    if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
+
+    if (typeof window.pdfjsLib === 'undefined') {
+      if (adminFlipbookLoadingDesc) {
+        adminFlipbookLoadingDesc.textContent = 'Memuat engine PDF.js...';
+      }
+      setTimeout(() => openAdminFlipbookPreview(id), 500);
+      return;
+    }
+
+    try {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+      const fileUrl = item.file_url;
+      const loadingTask = window.pdfjsLib.getDocument(fileUrl);
+      adminPdfDocInstance = await loadingTask.promise;
+      const totalPages = adminPdfDocInstance.numPages;
+
+      if (adminFlipbookPageBadge) {
+        adminFlipbookPageBadge.textContent = `1 dari ${totalPages} Halaman`;
+      }
+      if (adminFlipbookRange) {
+        adminFlipbookRange.max = totalPages;
+        adminFlipbookRange.value = 1;
+      }
+
+      const isMobile = window.innerWidth <= 768;
+      const baseWidth = isMobile ? Math.min(window.innerWidth - 40, 420) : 520;
+      const baseHeight = Math.round(baseWidth * 1.414);
+
+      for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+        const sheet = document.createElement('div');
+        sheet.className = 'page-sheet';
+        sheet.setAttribute('data-density', (pageNum === 1 || pageNum === totalPages) ? 'hard' : 'soft');
+
+        const canvas = document.createElement('canvas');
+        canvas.id = `admin_flip_canvas_${pageNum}`;
+        sheet.appendChild(canvas);
+
+        const pageNumBadge = document.createElement('div');
+        pageNumBadge.className = `page-sheet-num ${pageNum % 2 === 0 ? 'left' : 'right'}`;
+        pageNumBadge.textContent = pageNum;
+        sheet.appendChild(pageNumBadge);
+
+        if (adminFlipbookBook) adminFlipbookBook.appendChild(sheet);
+      }
+
+      let rendered = 0;
+      for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+        const page = await adminPdfDocInstance.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1.3 });
+        const canvas = document.getElementById(`admin_flip_canvas_${pageNum}`);
+        if (canvas) {
+          const context = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({ canvasContext: context, viewport }).promise;
+        }
+        rendered++;
+        const pct = Math.round((rendered / totalPages) * 100);
+        if (adminFlipbookProgressFill) adminFlipbookProgressFill.style.width = `${pct}%`;
+        if (adminFlipbookLoadingDesc) {
+          adminFlipbookLoadingDesc.textContent = `Menyiapkan lembaran ${rendered} dari ${totalPages} (${pct}%)`;
+        }
+      }
+
+      if (typeof window.St !== 'undefined' && typeof window.St.PageFlip !== 'undefined') {
+        adminFlipbookInstance = new window.St.PageFlip(adminFlipbookBook, {
+          width: baseWidth,
+          height: baseHeight,
+          size: 'stretch',
+          minWidth: 260,
+          maxWidth: 850,
+          minHeight: 380,
+          maxHeight: 1100,
+          maxShadowOpacity: 0.6,
+          showCover: true,
+          mobileScrollSupport: false,
+          usePortrait: isMobile,
+          flippingTime: 650,
+          drawShadow: true,
+          autoSize: true
+        });
+
+        const sheets = adminFlipbookBook.querySelectorAll('.page-sheet');
+        adminFlipbookInstance.loadFromHTML(sheets);
+
+        adminFlipbookInstance.on('flip', (e) => {
+          updateAdminNavButtonsState(e.data, totalPages);
+        });
+
+        updateAdminNavButtonsState(0, totalPages);
+      }
+
+      if (adminFlipbookLoading) {
+        setTimeout(() => adminFlipbookLoading.classList.add('hidden'), 250);
+      }
+    } catch (err) {
+      console.error('Error rendering flipbook in admin:', err);
+      if (adminFlipbookLoadingDesc) {
+        adminFlipbookLoadingDesc.textContent = 'Gagal memuat visual 3D. Menampilkan pratinjau standar...';
+      }
+      setTimeout(() => {
+        if (adminFlipbookLoading) adminFlipbookLoading.classList.add('hidden');
+        if (adminFlipbookBook) {
+          adminFlipbookBook.innerHTML = `
+            <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+              <iframe src="${item.file_url}#toolbar=1" style="width: 100%; height: 500px; border: none; border-radius: 8px;"></iframe>
+            </div>
+          `;
+        }
+      }, 500);
+    }
+  }
+
+  function updateAdminNavButtonsState(currentPageIndex, totalPages) {
+    const humanPage = currentPageIndex + 1;
+    if (adminFlipbookPageBadge) {
+      adminFlipbookPageBadge.textContent = `Halaman ${humanPage} dari ${totalPages}`;
+    }
+    if (adminFlipbookRange) {
+      adminFlipbookRange.value = humanPage;
+    }
+    if (adminBtnNavPrev) {
+      adminBtnNavPrev.disabled = currentPageIndex <= 0;
+    }
+    if (adminBtnNavNext) {
+      adminBtnNavNext.disabled = currentPageIndex >= totalPages - 1;
+    }
+  }
+
+  function closeAdminFlipbookPreview() {
+    if (adminFlipbookPreviewModal) {
+      adminFlipbookPreviewModal.classList.remove('active');
+    }
+    document.body.style.overflow = '';
+    if (adminFlipbookInstance) {
+      try { adminFlipbookInstance.destroy(); } catch (e) {}
+      adminFlipbookInstance = null;
+    }
+    if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
+  }
+
+  // Global helper bindings for flipbook
+  window.openCreateFlipbookModal = openCreateFlipbookModal;
+  window.closeFlipbookFormModal = closeFlipbookFormModal;
+  window.openAdminFlipbookPreview = openAdminFlipbookPreview;
+  window.closeAdminFlipbookPreview = closeAdminFlipbookPreview;
+  window.handlePreviewFlipbookDirect = openAdminFlipbookPreview;
+  window.handleEditFlipbookDirect = openEditFlipbookModal;
+  window.handleToggleFlipbookDirect = handleToggleFlipbookStatus;
+  window.handleDeleteFlipbookDirect = handleDeleteFlipbook;
+
+  /* ===================================================
      9. EVENT LISTENERS
      =================================================== */
   function setupEventListeners() {
@@ -4079,6 +4787,9 @@
     }
     if (btnNavPrograms) {
       btnNavPrograms.addEventListener('click', () => switchDashboardView('viewDashboardPrograms'));
+    }
+    if (btnNavFlipbooks) {
+      btnNavFlipbooks.addEventListener('click', () => switchDashboardView('viewDashboardFlipbooks'));
     }
 
     // Program Layanan Listeners
@@ -4165,6 +4876,135 @@
     if (programModal) {
       programModal.addEventListener('click', (e) => {
         if (e.target === programModal) closeProgramModal();
+      });
+    }
+
+    // Flipbook Listeners
+    if (searchFlipbookInput) {
+      searchFlipbookInput.addEventListener('input', renderTableFlipbooks);
+    }
+    if (filterFlipbookHalaman) {
+      filterFlipbookHalaman.addEventListener('change', renderTableFlipbooks);
+    }
+    if (filterFlipbookStatus) {
+      filterFlipbookStatus.addEventListener('change', renderTableFlipbooks);
+    }
+    if (btnOpenCreateFlipbookModal) {
+      btnOpenCreateFlipbookModal.addEventListener('click', openCreateFlipbookModal);
+    }
+    if (btnCloseFlipbookFormModal) {
+      btnCloseFlipbookFormModal.addEventListener('click', closeFlipbookFormModal);
+    }
+    if (btnCancelFlipbookModal) {
+      btnCancelFlipbookModal.addEventListener('click', closeFlipbookFormModal);
+    }
+    if (formFlipbookAdmin) {
+      formFlipbookAdmin.addEventListener('submit', handleSaveFlipbook);
+    }
+
+    // Flipbook Drag & Drop + File selection
+    if (flipbookDropArea) {
+      flipbookDropArea.addEventListener('click', () => {
+        if (flipbookFormPdfFile) flipbookFormPdfFile.click();
+      });
+      flipbookDropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        flipbookDropArea.style.borderColor = 'var(--admin-purple, #7D2280)';
+        flipbookDropArea.style.background = 'rgba(125, 34, 128, 0.05)';
+      });
+      flipbookDropArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        flipbookDropArea.style.borderColor = '#CBD5E1';
+        flipbookDropArea.style.background = '#F8FAFC';
+      });
+      flipbookDropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        flipbookDropArea.style.borderColor = '#CBD5E1';
+        flipbookDropArea.style.background = '#F8FAFC';
+        const file = e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) {
+          if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+            showToast('Hanya file PDF yang diizinkan untuk dokumen Flipbook!', 'warning');
+            return;
+          }
+          if (flipbookFormPdfFile) {
+            try {
+              const dt = new DataTransfer();
+              dt.items.add(file);
+              flipbookFormPdfFile.files = dt.files;
+            } catch (err) {}
+          }
+          if (flipbookFileSelectedName) {
+            flipbookFileSelectedName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+          }
+          showToast(`File "${file.name}" terpilih.`, 'info');
+        }
+      });
+    }
+
+    if (flipbookFormPdfFile) {
+      flipbookFormPdfFile.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+          if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+            showToast('Hanya file PDF yang diizinkan untuk dokumen Flipbook!', 'warning');
+            flipbookFormPdfFile.value = '';
+            if (flipbookFileSelectedName) flipbookFileSelectedName.textContent = 'Pilih file PDF atau seret ke sini';
+            return;
+          }
+          if (flipbookFileSelectedName) {
+            flipbookFileSelectedName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+          }
+          showToast(`File "${file.name}" terpilih.`, 'info');
+        }
+      });
+    }
+
+    // Modal backdrop clicks
+    if (flipbookFormModal) {
+      flipbookFormModal.addEventListener('click', (e) => {
+        if (e.target === flipbookFormModal) closeFlipbookFormModal();
+      });
+    }
+
+    // Admin 3D Preview Modal Listeners
+    if (btnAdminCloseFlipbookPreview) {
+      btnAdminCloseFlipbookPreview.addEventListener('click', closeAdminFlipbookPreview);
+    }
+    if (adminFlipbookPreviewModal) {
+      adminFlipbookPreviewModal.addEventListener('click', (e) => {
+        if (e.target === adminFlipbookPreviewModal) closeAdminFlipbookPreview();
+      });
+    }
+
+    if (adminBtnNavPrev) {
+      adminBtnNavPrev.addEventListener('click', () => {
+        if (adminFlipbookInstance) adminFlipbookInstance.flipPrev();
+      });
+    }
+    if (adminBtnNavNext) {
+      adminBtnNavNext.addEventListener('click', () => {
+        if (adminFlipbookInstance) adminFlipbookInstance.flipNext();
+      });
+    }
+    if (adminBtnNavFirst) {
+      adminBtnNavFirst.addEventListener('click', () => {
+        if (adminFlipbookInstance) adminFlipbookInstance.flip(0);
+      });
+    }
+    if (adminBtnNavLast) {
+      adminBtnNavLast.addEventListener('click', () => {
+        if (adminFlipbookInstance && adminPdfDocInstance) {
+          adminFlipbookInstance.flip(adminPdfDocInstance.numPages - 1);
+        }
+      });
+    }
+    if (adminFlipbookRange) {
+      adminFlipbookRange.addEventListener('input', (e) => {
+        const targetPage = parseInt(e.target.value, 10);
+        if (adminFlipbookInstance && !isNaN(targetPage)) {
+          adminFlipbookInstance.flip(Math.max(0, targetPage - 1));
+        }
       });
     }
 

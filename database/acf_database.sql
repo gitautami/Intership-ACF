@@ -3232,3 +3232,27 @@ ON DUPLICATE KEY UPDATE
   `action_link` = VALUES(`action_link`),
   `action_text` = VALUES(`action_text`),
   `status` = VALUES(`status`);
+
+-- ------------------------------------------------------------------------------
+-- 8. TABEL: flipbooks (Manajemen Dokumen 3D Flipbook Publik)
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `flipbooks` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `judul` VARCHAR(255) NOT NULL,
+  `deskripsi` TEXT NULL,
+  `file_url` VARCHAR(500) NOT NULL,
+  `file_name` VARCHAR(255) NOT NULL,
+  `file_size` BIGINT NULL DEFAULT 0,
+  `total_pages` INT DEFAULT 0,
+  `target_halaman` VARCHAR(100) NOT NULL DEFAULT 'kisah-kami.html',
+  `posisi` VARCHAR(100) NOT NULL DEFAULT 'bawah_deskripsi_sejarah',
+  `button_label` VARCHAR(100) NOT NULL DEFAULT 'Profil Lembaga ACF Eduhub',
+  `status` ENUM('Aktif', 'Nonaktif') DEFAULT 'Aktif',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_flipbooks_target` (`target_halaman`, `status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `flipbooks` (`id`, `judul`, `deskripsi`, `file_url`, `file_name`, `file_size`, `total_pages`, `target_halaman`, `posisi`, `button_label`, `status`)
+VALUES (1, 'Profil Lembaga ACF Eduhub', 'Dokumen Resmi Profil & Portofolio Dampak Yayasan', '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf', 'Profil Lembaga - ACF Eduhub.pdf', 35036553, 31, 'kisah-kami.html', 'bawah_deskripsi_sejarah', 'Profil Lembaga ACF Eduhub', 'Aktif')
+ON DUPLICATE KEY UPDATE `id` = `id`;

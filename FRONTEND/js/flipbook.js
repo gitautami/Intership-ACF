@@ -158,7 +158,7 @@
       modal.innerHTML = `
         <div class="flipbook-header">
           <div class="flipbook-header-left">
-            <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="flipbook-logo-mini" onerror="this.style.display='none'">
+            <img src="../assets/logo-acf/logo-acf-white-text.png" alt="ACF Eduhub Logo" class="flipbook-logo-mini" onerror="this.style.display='none'">
             <div class="flipbook-title-group">
               <span class="flipbook-doc-title" id="flipbookModalTitle">${escapeHTML(doc.title || 'Profil Lembaga — ACF Eduhub')}</span>
               <span class="flipbook-doc-subtitle">${escapeHTML(doc.description || 'Dokumen Resmi Profil & Portofolio Dampak Yayasan')}</span>
@@ -234,11 +234,15 @@
       const titleEl = modal.querySelector('.flipbook-doc-title');
       const subtitleEl = modal.querySelector('.flipbook-doc-subtitle');
       const downloadLink = modal.querySelector('.btn-download-pdf');
+      const logoEl = modal.querySelector('.flipbook-logo-mini');
       if (titleEl && doc.title) titleEl.textContent = doc.title;
       if (subtitleEl && doc.description) subtitleEl.textContent = doc.description;
       if (downloadLink && doc.file_url) {
         downloadLink.href = doc.file_url;
         if (doc.file_name) downloadLink.download = doc.file_name;
+      }
+      if (logoEl) {
+        logoEl.src = '../assets/logo-acf/logo-acf-white-text.png';
       }
     }
 

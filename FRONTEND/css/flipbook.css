@@ -44,9 +44,12 @@
 }
 
 .flipbook-logo-mini {
-  height: 34px;
+  height: 38px;
+  max-width: 140px;
   width: auto;
   display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .flipbook-title-group {
@@ -479,6 +482,10 @@
   .flipbook-header {
     height: 56px;
     padding: 0 14px;
+  }
+
+  .flipbook-logo-mini {
+    height: 32px;
   }
 
   .flipbook-doc-title {

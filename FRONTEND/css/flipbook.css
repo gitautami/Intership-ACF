@@ -230,6 +230,7 @@
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28), 0 3px 10px rgba(0, 0, 0, 0.12);
   border-radius: 4px;
+  position: relative;
 }
 
 .page-sheet[data-density="hard"] {
@@ -237,11 +238,24 @@
   border-radius: 6px;
 }
 
+.page-sheet picture,
+.page-sheet-picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.page-sheet img,
+.page-sheet-img,
 .page-sheet canvas {
   width: 100% !important;
   height: 100% !important;
   display: block;
   object-fit: contain;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 .page-sheet-num {
@@ -554,62 +568,186 @@
   transform: translateX(4px);
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments untuk Mobile / Layar HP */
 @media (max-width: 768px) {
+  /* 1. Header Atas Ramping & Rapi untuk Layar HP */
   .flipbook-header {
-    height: 56px;
-    padding: 0 14px;
+    height: 40px;
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .flipbook-header-left {
+    gap: 8px;
+    min-width: 0;
+    flex-shrink: 1;
   }
 
   .flipbook-logo-mini {
-    height: 32px;
+    height: 22px;
+    max-width: 65px;
+    width: auto;
+  }
+
+  .flipbook-title-group {
+    min-width: 0;
+    max-width: 110px;
   }
 
   .flipbook-doc-title {
-    font-size: 0.88rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
   }
 
   .flipbook-doc-subtitle {
     display: none;
   }
 
+  .flipbook-header-right {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  /* Badge Halaman Mobile */
+  .flipbook-page-badge {
+    padding: 3px 8px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* Tombol-tombol di navbar atas diperkecil agar proporsional dan hemat ruang */
+  .flipbook-btn-tool {
+    height: 28px;
+    width: 28px;
+    min-width: 28px;
+    padding: 0;
+    border-radius: 6px;
+    gap: 0;
+  }
+
   .flipbook-btn-tool span {
     display: none;
   }
 
-  .flipbook-btn-tool {
-    padding: 0 10px;
+  .flipbook-btn-tool svg {
+    width: 14px;
+    height: 14px;
   }
 
+  .flipbook-btn-tool.btn-download-pdf {
+    box-shadow: 0 2px 8px rgba(225, 29, 72, 0.4);
+  }
+
+  /* Tombol Layar Penuh di HP disembunyikan agar navbar tidak sesak */
+  #btnFlipbookFullscreen,
+  #adminBtnFlipbookFullscreen {
+    display: none !important;
+  }
+
+  /* Tombol Close di Navbar Atas diperkecil */
+  .flipbook-btn-close {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    padding: 0;
+  }
+
+  .flipbook-btn-close svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  /* Tombol Floating Minimalist Close diperkecil */
+  .flipbook-floating-close {
+    width: 32px;
+    height: 32px;
+    top: 8px;
+    right: 10px;
+  }
+
+  .flipbook-floating-close svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Area Stage & Viewport Mobile */
+  .flipbook-stage {
+    padding: 6px;
+  }
+
+  .flipbook-viewport {
+    max-height: 94vh;
+    padding: 0;
+  }
+
+  /* Lembaran Halaman Buku Mobile */
+  .page-sheet {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22), 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .page-sheet-num {
+    bottom: 8px;
+    font-size: 0.68rem;
+    padding: 1px 6px;
+  }
+
+  /* Bottom Controls Bar Mobile */
+  .flipbook-bottom-bar {
+    height: 40px;
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .flipbook-btn-mini {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+  }
+
+  .flipbook-btn-mini svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .flipbook-range-wrap {
+    width: 130px;
+    max-width: 45vw;
+  }
+
+  /* Tombol Panah Navigasi Bulat Mobile */
   .flipbook-nav-btn {
-    bottom: 20px;
-    width: 44px;
-    height: 44px;
+    bottom: 14px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .flipbook-nav-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.6;
   }
 
   .flipbook-nav-btn.nav-prev {
-    left: 16px;
+    left: 10px;
   }
 
   .flipbook-nav-btn.nav-next {
-    right: 16px;
+    right: 10px;
   }
 
-  .flipbook-stage {
-    padding: 10px;
-  }
-
+  /* Tombol Profil Lembaga di Halaman Web */
   .btn-profil-lembaga {
     width: 100%;
     justify-content: center;
     box-sizing: border-box;
     font-size: 0.92rem;
     padding: 12px 20px;
-  }
-
-  .flipbook-container {
-    transform: none !important;
-    transition: none !important;
   }
 }
 

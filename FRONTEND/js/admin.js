@@ -4671,17 +4671,23 @@
   let adminRenderingPromises = new Map();
   let adminHintTimeout = null;
 
-  async function renderAdminSinglePage(pageNum, scale = 1.3) {
+  function getAdminOptimalRenderScale() {
+    return window.innerWidth <= 768 ? 0.8 : 1.0;
+  }
+
+  async function renderAdminSinglePage(pageNum, scale = null) {
     if (!adminPdfDocInstance) return;
     if (adminRenderedPages.has(pageNum)) return;
     if (adminRenderingPromises.has(pageNum)) {
       return adminRenderingPromises.get(pageNum);
     }
 
+    const actualScale = scale || getAdminOptimalRenderScale();
+
     const promise = (async () => {
       try {
         const page = await adminPdfDocInstance.getPage(pageNum);
-        const viewport = page.getViewport({ scale });
+        const viewport = page.getViewport({ scale: actualScale });
         const canvas = document.getElementById(`admin_flip_canvas_${pageNum}`);
         if (!canvas) return;
 
@@ -4691,6 +4697,8 @@
         await page.render({ canvasContext: context, viewport }).promise;
 
         adminRenderedPages.add(pageNum);
+        const sheet = canvas.closest('.page-sheet');
+        if (sheet) sheet.classList.add('rendered');
       } catch (err) {
         console.warn(`Admin preview render page ${pageNum} error:`, err);
       } finally {
@@ -4703,27 +4711,40 @@
   }
 
   async function renderAdminRemainingPagesInBackground(totalPages) {
-    for (let pageNum = 4; pageNum <= totalPages; pageNum++) {
+    const scale = getAdminOptimalRenderScale();
+    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
       if (!adminRenderedPages.has(pageNum)) {
-        await renderAdminSinglePage(pageNum, 1.3);
-        await new Promise(r => setTimeout(r, 20));
+        await renderAdminSinglePage(pageNum, scale);
+        await new Promise(r => setTimeout(r, 30));
       }
     }
   }
 
   async function ensureAdminNearbyPages(pageIndex, totalPages) {
-    const pageNum = pageIndex + 1;
-    const targetPages = [
-      pageNum,
-      pageNum + 1,
-      pageNum + 2,
-      pageNum + 3,
-      pageNum - 1,
-      pageNum - 2
+    const scale = getAdminOptimalRenderScale();
+    let leftPage, rightPage;
+    if (pageIndex === 0) {
+      leftPage = 1;
+      rightPage = 1;
+    } else {
+      leftPage = pageIndex % 2 === 1 ? pageIndex + 1 : pageIndex;
+      rightPage = Math.min(leftPage + 1, totalPages);
+    }
+
+    // 1. Render halaman yang sedang dilihat admin SECARA PARALEL!
+    const currentSpread = [leftPage, rightPage].filter(p => p >= 1 && p <= totalPages && !adminRenderedPages.has(p));
+    if (currentSpread.length > 0) {
+      await Promise.all(currentSpread.map(p => renderAdminSinglePage(p, scale)));
+    }
+
+    // 2. Prefetch lembaran berikutnya dan sebelumnya secara paralel tanpa menunggu
+    const nearby = [
+      leftPage - 2, leftPage - 1,
+      rightPage + 1, rightPage + 2, rightPage + 3, rightPage + 4
     ].filter(p => p >= 1 && p <= totalPages && !adminRenderedPages.has(p));
 
-    for (const p of targetPages) {
-      await renderAdminSinglePage(p, 1.3);
+    if (nearby.length > 0) {
+      Promise.all(nearby.map(p => renderAdminSinglePage(p, scale))).catch(() => {});
     }
   }
 
@@ -4795,6 +4816,21 @@
     }
     if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
 
+    const isMobile = window.innerWidth <= 768;
+    let baseWidth, baseHeight;
+
+    if (isMobile) {
+      const availW = window.innerWidth - 24;
+      const availH = window.innerHeight - 100;
+      const maxWByScreenW = Math.floor(availW / 2);
+      const maxWByScreenH = Math.floor(availH / 1.414);
+      baseWidth = Math.min(maxWByScreenW, maxWByScreenH);
+      baseHeight = Math.round(baseWidth * 1.414);
+    } else {
+      baseWidth = 520;
+      baseHeight = Math.round(baseWidth * 1.414);
+    }
+
     if (typeof window.pdfjsLib === 'undefined') {
       setTimeout(() => openAdminFlipbookPreview(id), 500);
       return;
@@ -4817,10 +4853,6 @@
         adminFlipbookRange.value = 1;
       }
 
-      const isMobile = window.innerWidth <= 768;
-      const baseWidth = isMobile ? Math.min(window.innerWidth - 40, 420) : 520;
-      const baseHeight = Math.round(baseWidth * 1.414);
-
       for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
         const sheet = document.createElement('div');
         sheet.className = 'page-sheet';
@@ -4840,10 +4872,12 @@
         if (adminFlipbookBook) adminFlipbookBook.appendChild(sheet);
       }
 
-      // Render 3 Halaman Pertama secara Instan (< 150ms)
-      const initialPages = Math.min(3, totalPages);
-      for (let p = 1; p <= initialPages; p++) {
-        await renderAdminSinglePage(p, 1.3);
+      const scale = getAdminOptimalRenderScale();
+
+      // Render 3 Halaman Pertama secara Paralel Instan (< 150ms)
+      const initialPages = [1, 2, 3].filter(p => p <= totalPages && !adminRenderedPages.has(p));
+      if (initialPages.length > 0) {
+        await Promise.all(initialPages.map(p => renderAdminSinglePage(p, scale)));
       }
 
       if (typeof window.St !== 'undefined' && typeof window.St.PageFlip !== 'undefined') {
@@ -4851,14 +4885,14 @@
           width: baseWidth,
           height: baseHeight,
           size: 'stretch',
-          minWidth: 260,
-          maxWidth: 850,
-          minHeight: 380,
-          maxHeight: 1100,
+          minWidth: isMobile ? Math.min(100, baseWidth) : 260,
+          maxWidth: isMobile ? baseWidth : 850,
+          minHeight: isMobile ? Math.min(140, baseHeight) : 380,
+          maxHeight: isMobile ? baseHeight : 1100,
           maxShadowOpacity: 0.6,
           showCover: true,
           mobileScrollSupport: false,
-          usePortrait: isMobile,
+          usePortrait: false,
           flippingTime: 650,
           drawShadow: true,
           autoSize: true
@@ -4885,8 +4919,17 @@
         updateAdminNavButtonsState(0, totalPages);
       }
 
-      // Lanjutkan render sisa halaman di background tanpa memblokir UI
-      renderAdminRemainingPagesInBackground(totalPages);
+      // Langsung siapkan halaman 4 dan 5 di background secara paralel
+      if (totalPages >= 5) {
+        Promise.all([
+          renderAdminSinglePage(4, scale),
+          renderAdminSinglePage(5, scale)
+        ]).then(() => {
+          renderAdminRemainingPagesInBackground(totalPages);
+        }).catch(() => {});
+      } else {
+        renderAdminRemainingPagesInBackground(totalPages);
+      }
 
     } catch (err) {
       console.error('Error rendering flipbook in admin:', err);
@@ -4901,13 +4944,7 @@
   }
 
   function updateAdminCoverCentering(pageIndex, totalPages) {
-    const isMobile = window.innerWidth <= 768;
     if (!adminFlipbookBook) return;
-
-    if (isMobile) {
-      adminFlipbookBook.style.transform = 'translateX(0)';
-      return;
-    }
 
     const total = totalPages || 31;
     if (pageIndex === 0) {
@@ -4931,15 +4968,13 @@
 
     if (adminFlipbookPageBadge) {
       if (currentPageIndex === 0) {
-        adminFlipbookPageBadge.textContent = `Cover Depan • Hal 1 dari ${total}`;
+        adminFlipbookPageBadge.textContent = isMobile ? `Cover • 1 / ${total}` : `Cover Depan • Hal 1 dari ${total}`;
       } else if (currentPageIndex >= total - 1) {
-        adminFlipbookPageBadge.textContent = `Cover Belakang • Hal ${total}`;
-      } else if (isMobile) {
-        adminFlipbookPageBadge.textContent = `Halaman ${humanPage} dari ${total}`;
+        adminFlipbookPageBadge.textContent = isMobile ? `Belakang • ${total}` : `Cover Belakang • Hal ${total}`;
       } else {
         const leftPage = currentPageIndex % 2 === 1 ? currentPageIndex + 1 : currentPageIndex;
         const rightPage = Math.min(leftPage + 1, total);
-        adminFlipbookPageBadge.textContent = `Halaman ${leftPage}-${rightPage} dari ${total}`;
+        adminFlipbookPageBadge.textContent = isMobile ? `Hal ${leftPage}-${rightPage} / ${total}` : `Halaman ${leftPage}-${rightPage} dari ${total}`;
       }
     }
     if (adminFlipbookRange) {

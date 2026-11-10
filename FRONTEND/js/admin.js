@@ -4731,10 +4731,12 @@
         canvas.id = `admin_flip_canvas_${pageNum}`;
         sheet.appendChild(canvas);
 
-        const pageNumBadge = document.createElement('div');
-        pageNumBadge.className = `page-sheet-num ${pageNum % 2 === 0 ? 'left' : 'right'}`;
-        pageNumBadge.textContent = pageNum;
-        sheet.appendChild(pageNumBadge);
+        if (pageNum !== 1 && pageNum !== totalPages) {
+          const pageNumBadge = document.createElement('div');
+          pageNumBadge.className = `page-sheet-num ${pageNum % 2 === 0 ? 'left' : 'right'}`;
+          pageNumBadge.textContent = pageNum;
+          sheet.appendChild(pageNumBadge);
+        }
 
         if (adminFlipbookBook) adminFlipbookBook.appendChild(sheet);
       }
@@ -4783,6 +4785,15 @@
           updateAdminNavButtonsState(e.data, totalPages);
         });
 
+        adminFlipbookInstance.on('changeState', () => {
+          if (adminFlipbookInstance) {
+            try {
+              const cur = adminFlipbookInstance.getCurrentPageIndex();
+              updateAdminCoverCentering(cur, totalPages);
+            } catch (err) {}
+          }
+        });
+
         updateAdminNavButtonsState(0, totalPages);
       }
 
@@ -4807,10 +4818,47 @@
     }
   }
 
+  function updateAdminCoverCentering(pageIndex, totalPages) {
+    const isMobile = window.innerWidth <= 768;
+    if (!adminFlipbookBook) return;
+
+    if (isMobile) {
+      adminFlipbookBook.style.transform = 'translateX(0)';
+      return;
+    }
+
+    const total = totalPages || 31;
+    if (pageIndex === 0) {
+      // 1 halaman cover di tengah layar
+      adminFlipbookBook.style.transform = 'translateX(-25%)';
+    } else if (pageIndex >= total - 1) {
+      // 1 halaman cover belakang di tengah layar
+      adminFlipbookBook.style.transform = 'translateX(25%)';
+    } else {
+      // Saat cover dibuka, langsung 2 halaman seperti buku terbuka
+      adminFlipbookBook.style.transform = 'translateX(0)';
+    }
+  }
+
   function updateAdminNavButtonsState(currentPageIndex, totalPages) {
+    const isMobile = window.innerWidth <= 768;
+    const total = totalPages || 31;
     const humanPage = currentPageIndex + 1;
+
+    updateAdminCoverCentering(currentPageIndex, total);
+
     if (adminFlipbookPageBadge) {
-      adminFlipbookPageBadge.textContent = `Halaman ${humanPage} dari ${totalPages}`;
+      if (currentPageIndex === 0) {
+        adminFlipbookPageBadge.textContent = `Cover Depan • Hal 1 dari ${total}`;
+      } else if (currentPageIndex >= total - 1) {
+        adminFlipbookPageBadge.textContent = `Cover Belakang • Hal ${total}`;
+      } else if (isMobile) {
+        adminFlipbookPageBadge.textContent = `Halaman ${humanPage} dari ${total}`;
+      } else {
+        const leftPage = currentPageIndex % 2 === 1 ? currentPageIndex + 1 : currentPageIndex;
+        const rightPage = Math.min(leftPage + 1, total);
+        adminFlipbookPageBadge.textContent = `Halaman ${leftPage}-${rightPage} dari ${total}`;
+      }
     }
     if (adminFlipbookRange) {
       adminFlipbookRange.value = humanPage;
@@ -5114,6 +5162,16 @@
         if (e.target === adminFlipbookPreviewModal) closeAdminFlipbookPreview();
       });
     }
+
+    window.addEventListener('resize', () => {
+      if (adminFlipbookInstance) {
+        try {
+          const cur = adminFlipbookInstance.getCurrentPageIndex();
+          const total = adminFlipbookInstance.getPageCount() || 31;
+          updateAdminCoverCentering(cur, total);
+        } catch (e) {}
+      }
+    });
 
     if (adminBtnNavPrev) {
       adminBtnNavPrev.addEventListener('click', () => {

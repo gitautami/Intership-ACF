@@ -599,10 +599,12 @@
         canvas.id = `flip_canvas_${pageNum}`;
         sheet.appendChild(canvas);
 
-        const pageNumBadge = document.createElement('div');
-        pageNumBadge.className = `page-sheet-num ${pageNum % 2 === 0 ? 'left' : 'right'}`;
-        pageNumBadge.textContent = pageNum;
-        sheet.appendChild(pageNumBadge);
+        if (pageNum !== 1 && pageNum !== totalDocPages) {
+          const pageNumBadge = document.createElement('div');
+          pageNumBadge.className = `page-sheet-num ${pageNum % 2 === 0 ? 'left' : 'right'}`;
+          pageNumBadge.textContent = pageNum;
+          sheet.appendChild(pageNumBadge);
+        }
 
         if (bookContainer) bookContainer.appendChild(sheet);
       }
@@ -697,6 +699,15 @@
       updateNavButtonsState(e.data);
     });
 
+    flipBookInstance.on('changeState', () => {
+      if (flipBookInstance) {
+        try {
+          const cur = flipBookInstance.getCurrentPageIndex();
+          updateCoverCentering(cur);
+        } catch (err) {}
+      }
+    });
+
     // Update state awal
     updateNavButtonsState(0);
   }
@@ -765,6 +776,32 @@
   }
 
   /**
+   * Menyesuaikan posisi cover (1 halaman tunggal di tengah) vs saat buku dibuka (2 halaman spread)
+   */
+  function updateCoverCentering(pageIndex) {
+    const isMobile = window.innerWidth <= 768;
+    const container = document.getElementById('flipbookBook');
+    if (!container) return;
+
+    if (isMobile) {
+      container.style.transform = 'translateX(0)';
+      return;
+    }
+
+    const total = totalDocPages || 31;
+    if (pageIndex === 0) {
+      // 1 halaman cover saja di tengah
+      container.style.transform = 'translateX(-25%)';
+    } else if (pageIndex >= total - 1) {
+      // 1 halaman cover belakang di tengah
+      container.style.transform = 'translateX(25%)';
+    } else {
+      // Ketika cover dibuka, langsung 2 halaman seperti buku terbuka
+      container.style.transform = 'translateX(0)';
+    }
+  }
+
+  /**
    * 9. Perbarui Teks Indikator Halaman & Kondisi Tombol
    */
   function updateNavButtonsState(currentPageIndex) {
@@ -772,11 +809,25 @@
     const rangeSlider = document.getElementById('flipbookRange');
     const prevBtn = document.getElementById('btnNavPrev');
     const nextBtn = document.getElementById('btnNavNext');
+    const total = totalDocPages || 31;
+    const isMobile = window.innerWidth <= 768;
+
+    updateCoverCentering(currentPageIndex);
 
     const humanPage = currentPageIndex + 1;
 
     if (pageBadge) {
-      pageBadge.textContent = `Halaman ${humanPage} dari ${totalDocPages}`;
+      if (currentPageIndex === 0) {
+        pageBadge.textContent = `Cover Depan • Hal 1 dari ${total}`;
+      } else if (currentPageIndex >= total - 1) {
+        pageBadge.textContent = `Cover Belakang • Hal ${total}`;
+      } else if (isMobile) {
+        pageBadge.textContent = `Halaman ${humanPage} dari ${total}`;
+      } else {
+        const leftPage = currentPageIndex % 2 === 1 ? currentPageIndex + 1 : currentPageIndex;
+        const rightPage = Math.min(leftPage + 1, total);
+        pageBadge.textContent = `Halaman ${leftPage}-${rightPage} dari ${total}`;
+      }
     }
 
     if (rangeSlider) {
@@ -826,6 +877,16 @@
       `;
     }
   }
+
+  // Responsif resize untuk perataan posisi cover
+  window.addEventListener('resize', () => {
+    if (flipBookInstance) {
+      try {
+        const cur = flipBookInstance.getCurrentPageIndex();
+        updateCoverCentering(cur);
+      } catch (e) {}
+    }
+  });
 
   // Ekspor fungsi ke window agar dapat dipanggil dari luar
   window.openProfilLembagaFlipbook = openFlipbookModal;

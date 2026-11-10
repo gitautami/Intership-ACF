@@ -11,30 +11,38 @@
   display: none;
   opacity: 0;
   transition: opacity 0.3s ease;
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
-  flex-direction: column;
 }
 
 .flipbook-modal.active {
-  display: flex;
+  display: block;
   opacity: 1;
 }
 
-/* 2. Top Header Bar */
+/* 2. Top Header Bar (Floating Glassmorphism Overlay) */
 .flipbook-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 64px;
-  background: rgba(24, 18, 30, 0.85);
+  background: rgba(17, 9, 28, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
   color: #FFFFFF;
-  z-index: 10;
-  flex-shrink: 0;
+  z-index: 60;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
 }
 
 .flipbook-header-left {
@@ -155,17 +163,19 @@
   height: 20px;
 }
 
-/* 3. Main Stage Area */
+/* 3. Main Stage Area (Full Viewport Immersion) */
 .flipbook-stage {
-  flex: 1;
-  position: relative;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #E2E8F0;
   background: radial-gradient(circle at center, #F1F5F9 0%, #CBD5E1 100%);
   overflow: hidden;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 /* Standalone Page specific background */
@@ -174,13 +184,15 @@
   padding: 0;
   background: #CBD5E1;
   font-family: 'Poppins', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
 .flipbook-standalone-body .flipbook-stage {
-  height: calc(100vh - 64px - 56px);
+  position: absolute;
+  inset: 0;
+  height: 100%;
 }
 
 /* 4. Book Wrapper & StPageFlip Container */
@@ -311,19 +323,110 @@
   stroke-width: 3;
 }
 
-/* 6. Bottom Controls Bar */
+/* 6. Bottom Controls Bar (Floating Glassmorphism Overlay) */
 .flipbook-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 56px;
-  background: rgba(24, 18, 30, 0.9);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(17, 9, 28, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
   padding: 0 20px;
-  z-index: 10;
-  flex-shrink: 0;
+  z-index: 60;
   color: #FFFFFF;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+
+/* State Navbars Visible saat diklik */
+.flipbook-modal.navbars-visible .flipbook-header,
+.flipbook-standalone-body.navbars-visible .flipbook-header {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.flipbook-modal.navbars-visible .flipbook-bottom-bar,
+.flipbook-standalone-body.navbars-visible .flipbook-bottom-bar {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Floating minimalist close button (selalu siap diklik saat navbar disembunyikan) */
+.flipbook-floating-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  z-index: 65;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(17, 9, 28, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.flipbook-floating-close:hover {
+  background: rgba(225, 29, 72, 0.9);
+  border-color: rgba(225, 29, 72, 1);
+  transform: scale(1.08);
+}
+
+.flipbook-modal.navbars-visible .flipbook-floating-close,
+.flipbook-standalone-body.navbars-visible .flipbook-floating-close {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+}
+
+/* Hint Pill: "Klik untuk menu" */
+.flipbook-nav-hint {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 55;
+  background: rgba(17, 9, 28, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.88);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.flipbook-nav-hint.show {
+  opacity: 1;
+}
+
+.flipbook-modal.navbars-visible .flipbook-nav-hint,
+.flipbook-standalone-body.navbars-visible .flipbook-nav-hint {
+  opacity: 0 !important;
 }
 
 .flipbook-range-wrap {
@@ -368,65 +471,12 @@
   height: 16px;
 }
 
-/* 7. Loading Overlay */
+/* 7. Loading Overlay — Dihilangkan (Gambar 1) agar instan tanpa loading screen */
 .flipbook-loading-screen {
-  position: absolute;
-  inset: 0;
-  background: rgba(241, 245, 249, 0.95);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-  transition: opacity 0.4s ease;
-}
-
-.flipbook-loading-screen.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.flipbook-spinner {
-  width: 52px;
-  height: 52px;
-  border: 4px solid #E2E8F0;
-  border-top-color: #E11D48;
-  border-radius: 50%;
-  animation: flipbookSpin 0.8s linear infinite;
-  margin-bottom: 20px;
-}
-
-@keyframes flipbookSpin {
-  to { transform: rotate(360deg); }
-}
-
-.flipbook-loading-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1E293B;
-  margin-bottom: 6px;
-}
-
-.flipbook-loading-desc {
-  font-size: 0.85rem;
-  color: #64748B;
-  margin-bottom: 16px;
-}
-
-.flipbook-progress-bar-bg {
-  width: 220px;
-  height: 6px;
-  background: #E2E8F0;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.flipbook-progress-bar-fill {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, #7D2280, #E11D48);
-  border-radius: 10px;
-  transition: width 0.2s ease;
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 /* 8. Fallback iframe mode if canvas/flipbook cannot load */

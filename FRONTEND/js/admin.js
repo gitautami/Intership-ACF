@@ -4667,6 +4667,95 @@
     }
   }
 
+  let adminRenderedPages = new Set();
+  let adminRenderingPromises = new Map();
+  let adminHintTimeout = null;
+
+  async function renderAdminSinglePage(pageNum, scale = 1.3) {
+    if (!adminPdfDocInstance) return;
+    if (adminRenderedPages.has(pageNum)) return;
+    if (adminRenderingPromises.has(pageNum)) {
+      return adminRenderingPromises.get(pageNum);
+    }
+
+    const promise = (async () => {
+      try {
+        const page = await adminPdfDocInstance.getPage(pageNum);
+        const viewport = page.getViewport({ scale });
+        const canvas = document.getElementById(`admin_flip_canvas_${pageNum}`);
+        if (!canvas) return;
+
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: context, viewport }).promise;
+
+        adminRenderedPages.add(pageNum);
+      } catch (err) {
+        console.warn(`Admin preview render page ${pageNum} error:`, err);
+      } finally {
+        adminRenderingPromises.delete(pageNum);
+      }
+    })();
+
+    adminRenderingPromises.set(pageNum, promise);
+    return promise;
+  }
+
+  async function renderAdminRemainingPagesInBackground(totalPages) {
+    for (let pageNum = 4; pageNum <= totalPages; pageNum++) {
+      if (!adminRenderedPages.has(pageNum)) {
+        await renderAdminSinglePage(pageNum, 1.3);
+        await new Promise(r => setTimeout(r, 20));
+      }
+    }
+  }
+
+  async function ensureAdminNearbyPages(pageIndex, totalPages) {
+    const pageNum = pageIndex + 1;
+    const targetPages = [
+      pageNum,
+      pageNum + 1,
+      pageNum + 2,
+      pageNum + 3,
+      pageNum - 1,
+      pageNum - 2
+    ].filter(p => p >= 1 && p <= totalPages && !adminRenderedPages.has(p));
+
+    for (const p of targetPages) {
+      await renderAdminSinglePage(p, 1.3);
+    }
+  }
+
+  function initAdminNavbarToggle() {
+    const stage = document.getElementById('adminFlipbookStage');
+    if (stage && !stage.getAttribute('data-admin-stage-toggle-bound')) {
+      stage.setAttribute('data-admin-stage-toggle-bound', 'true');
+      stage.addEventListener('click', (e) => {
+        if (e.target.closest('.flipbook-header, .flipbook-bottom-bar, .flipbook-nav-btn, .flipbook-floating-close, a, button, input')) {
+          return;
+        }
+        if (e.target.closest('.page-sheet')) {
+          return;
+        }
+        if (adminFlipbookPreviewModal) {
+          adminFlipbookPreviewModal.classList.toggle('navbars-visible');
+          const hint = document.getElementById('adminFlipbookNavHint');
+          if (hint) hint.classList.remove('show');
+        }
+      });
+    }
+
+    const floatClose = document.getElementById('btnAdminFloatingClose');
+    if (floatClose && !floatClose.getAttribute('data-admin-float-close-bound')) {
+      floatClose.setAttribute('data-admin-float-close-bound', 'true');
+      floatClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAdminFlipbookPreview();
+      });
+    }
+  }
+
   async function openAdminFlipbookPreview(id) {
     const item = dataFlipbooks.find(f => String(f.id) === String(id));
     if (!item) {
@@ -4676,16 +4765,29 @@
 
     if (!adminFlipbookPreviewModal) return;
     adminFlipbookPreviewModal.classList.add('active');
+    // Mulai dengan mode navbar transparan/tersembunyi (Gambar 2)
+    adminFlipbookPreviewModal.classList.remove('navbars-visible');
     document.body.style.overflow = 'hidden';
+
+    // Tampilkan hint navigasi sebentar
+    const hint = document.getElementById('adminFlipbookNavHint');
+    if (hint) {
+      hint.classList.add('show');
+      clearTimeout(adminHintTimeout);
+      adminHintTimeout = setTimeout(() => {
+        hint.classList.remove('show');
+      }, 2500);
+    }
+
+    initAdminNavbarToggle();
 
     if (adminFlipbookPreviewTitle) adminFlipbookPreviewTitle.textContent = item.title || 'Pratinjau Flipbook 3D';
     if (adminFlipbookPreviewSubtitle) {
       adminFlipbookPreviewSubtitle.textContent = item.description || `Halaman Target: ${getTargetPageLabel(item.target_page)}`;
     }
 
-    if (adminFlipbookLoading) adminFlipbookLoading.classList.remove('hidden');
-    if (adminFlipbookProgressFill) adminFlipbookProgressFill.style.width = '0%';
-    if (adminFlipbookLoadingDesc) adminFlipbookLoadingDesc.textContent = 'Membuka dokumen PDF...';
+    adminRenderedPages.clear();
+    adminRenderingPromises.clear();
 
     if (adminFlipbookInstance) {
       try { adminFlipbookInstance.destroy(); } catch (e) { }
@@ -4694,9 +4796,6 @@
     if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
 
     if (typeof window.pdfjsLib === 'undefined') {
-      if (adminFlipbookLoadingDesc) {
-        adminFlipbookLoadingDesc.textContent = 'Memuat engine PDF.js...';
-      }
       setTimeout(() => openAdminFlipbookPreview(id), 500);
       return;
     }
@@ -4741,23 +4840,10 @@
         if (adminFlipbookBook) adminFlipbookBook.appendChild(sheet);
       }
 
-      let rendered = 0;
-      for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-        const page = await adminPdfDocInstance.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 1.3 });
-        const canvas = document.getElementById(`admin_flip_canvas_${pageNum}`);
-        if (canvas) {
-          const context = canvas.getContext('2d');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          await page.render({ canvasContext: context, viewport }).promise;
-        }
-        rendered++;
-        const pct = Math.round((rendered / totalPages) * 100);
-        if (adminFlipbookProgressFill) adminFlipbookProgressFill.style.width = `${pct}%`;
-        if (adminFlipbookLoadingDesc) {
-          adminFlipbookLoadingDesc.textContent = `Menyiapkan lembaran ${rendered} dari ${totalPages} (${pct}%)`;
-        }
+      // Render 3 Halaman Pertama secara Instan (< 150ms)
+      const initialPages = Math.min(3, totalPages);
+      for (let p = 1; p <= initialPages; p++) {
+        await renderAdminSinglePage(p, 1.3);
       }
 
       if (typeof window.St !== 'undefined' && typeof window.St.PageFlip !== 'undefined') {
@@ -4783,6 +4869,7 @@
 
         adminFlipbookInstance.on('flip', (e) => {
           updateAdminNavButtonsState(e.data, totalPages);
+          ensureAdminNearbyPages(e.data, totalPages);
         });
 
         adminFlipbookInstance.on('changeState', () => {
@@ -4790,6 +4877,7 @@
             try {
               const cur = adminFlipbookInstance.getCurrentPageIndex();
               updateAdminCoverCentering(cur, totalPages);
+              ensureAdminNearbyPages(cur, totalPages);
             } catch (err) {}
           }
         });
@@ -4797,24 +4885,18 @@
         updateAdminNavButtonsState(0, totalPages);
       }
 
-      if (adminFlipbookLoading) {
-        setTimeout(() => adminFlipbookLoading.classList.add('hidden'), 250);
-      }
+      // Lanjutkan render sisa halaman di background tanpa memblokir UI
+      renderAdminRemainingPagesInBackground(totalPages);
+
     } catch (err) {
       console.error('Error rendering flipbook in admin:', err);
-      if (adminFlipbookLoadingDesc) {
-        adminFlipbookLoadingDesc.textContent = 'Gagal memuat visual 3D. Menampilkan pratinjau standar...';
+      if (adminFlipbookBook) {
+        adminFlipbookBook.innerHTML = `
+          <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+            <iframe src="${item.file_url}#toolbar=1" style="width: 100%; height: 500px; border: none; border-radius: 8px;"></iframe>
+          </div>
+        `;
       }
-      setTimeout(() => {
-        if (adminFlipbookLoading) adminFlipbookLoading.classList.add('hidden');
-        if (adminFlipbookBook) {
-          adminFlipbookBook.innerHTML = `
-            <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
-              <iframe src="${item.file_url}#toolbar=1" style="width: 100%; height: 500px; border: none; border-radius: 8px;"></iframe>
-            </div>
-          `;
-        }
-      }, 500);
     }
   }
 

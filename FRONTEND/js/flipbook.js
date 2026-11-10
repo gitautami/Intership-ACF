@@ -11,9 +11,12 @@
   let activeFlipbookDoc = null;
   let flipBookInstance = null;
   let pdfDocInstance = null;
+  let currentLoadedPdfPath = null;
   let isRendering = false;
-  let renderedPagesCount = 0;
   let totalDocPages = 0;
+  const renderedPages = new Set();
+  const renderingPromises = new Map();
+  let hintTimeout = null;
 
   // Initialize when DOM ready
   document.addEventListener('DOMContentLoaded', async () => {
@@ -24,8 +27,12 @@
     initTriggerButtons();
     initUrlHashCheck();
 
+    // 3. Preload dokumen PDF di background agar saat dibuka buku langsung instan
+    preloadPdfInBackground();
+
     // If we are on the standalone page (profil-lembaga.html), auto-load
     if (document.body.classList.contains('flipbook-standalone-body')) {
+      initNavbarToggle();
       loadAndRenderFlipbook();
     }
   });
@@ -57,13 +64,33 @@
   }
 
   /**
+   * Helper: Normalisasi data dokumen flipbook agar seragam baik dari database maupun API
+   * Mendukung semua dokumen PDF baru yang diupload oleh admin
+   */
+  function normalizeFlipbookDoc(doc) {
+    if (!doc) return null;
+    return {
+      id: doc.id,
+      title: doc.judul || doc.title || 'Dokumen Flipbook — ACF Eduhub',
+      description: doc.deskripsi || doc.description || 'Dokumen Resmi Yayasan ACF Eduhub',
+      file_url: doc.file_url || doc.fileUrl || PDF_FILE_PATH,
+      file_name: doc.file_name || doc.fileName || 'Profil Lembaga - ACF Eduhub.pdf',
+      total_pages: parseInt(doc.total_pages || doc.totalPages || 0, 10),
+      target_page: (doc.target_halaman || doc.target_page || 'kisah-kami.html').toLowerCase(),
+      position: doc.posisi || doc.position || 'bawah_deskripsi_sejarah',
+      button_label: doc.button_label || doc.buttonLabel || 'Profil Lembaga ACF Eduhub',
+      status: String(doc.status || 'aktif').toLowerCase()
+    };
+  }
+
+  /**
    * Mengambil data flipbook aktif untuk halaman ini dari API
    */
   async function fetchActiveFlipbook(pageName) {
     if (window.ACF_API && window.ACF_API.flipbooks && typeof window.ACF_API.flipbooks.getByPage === 'function') {
       try {
         const doc = await window.ACF_API.flipbooks.getByPage(pageName);
-        if (doc && doc.id) return doc;
+        if (doc && doc.id) return normalizeFlipbookDoc(doc);
       } catch (e) {
         console.warn('API flipbook getByPage fallback:', e);
       }
@@ -74,14 +101,14 @@
       if (res.ok) {
         const data = await res.json();
         if (data && data.success && data.data) {
-          return data.data;
+          return normalizeFlipbookDoc(data.data);
         }
       }
     } catch (e) {}
 
     // Fallback khusus untuk kisah-kami.html & profil-lembaga.html bila backend offline
     if (pageName === 'kisah-kami.html' || pageName === 'profil-lembaga.html') {
-      return {
+      return normalizeFlipbookDoc({
         id: 1,
         title: 'Profil Lembaga ACF Eduhub',
         description: 'Dokumen Resmi Profil & Portofolio Dampak Yayasan',
@@ -92,7 +119,7 @@
         position: 'bawah_deskripsi_sejarah',
         button_label: 'Profil Lembaga ACF Eduhub',
         status: 'aktif'
-      };
+      });
     }
 
     return null;
@@ -144,6 +171,24 @@
   }
 
   /**
+   * Preload PDF di background segera setelah halaman dimuat
+   */
+  async function preloadPdfInBackground() {
+    try {
+      await ensureDependenciesLoaded();
+      if (typeof window.pdfjsLib !== 'undefined' && !pdfDocInstance) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const doc = await window.pdfjsLib.getDocument(PDF_FILE_PATH).promise;
+        pdfDocInstance = doc;
+        totalDocPages = doc.numPages;
+      }
+    } catch (e) {
+      // Preload background dapat diabaikan bila gagal
+    }
+  }
+
+  /**
    * Memastikan elemen Modal Flipbook 3D ada di dalam dokumen DOM
    */
   function ensureFlipbookModalExists(doc) {
@@ -156,6 +201,18 @@
       modal.setAttribute('aria-modal', 'true');
       modal.setAttribute('aria-labelledby', 'flipbookModalTitle');
       modal.innerHTML = `
+        <!-- Floating Minimalist Close Button (Selalu tersedia saat navbar disembunyikan) -->
+        <button type="button" class="flipbook-floating-close" id="btnFloatingClose" title="Tutup Flipbook" aria-label="Tutup Flipbook">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <!-- Hint Petunjuk Navigasi Otomatis Hilang -->
+        <div class="flipbook-nav-hint" id="flipbookNavHint">Klik latar belakang untuk melihat / menyembunyikan menu</div>
+
+        <!-- Top Header Bar (Floating Glassmorphism Overlay) -->
         <div class="flipbook-header">
           <div class="flipbook-header-left">
             <img src="../assets/logo-acf/logo-acf-white-text.png" alt="ACF Eduhub Logo" class="flipbook-logo-mini" onerror="this.style.display='none'">
@@ -187,15 +244,10 @@
             </button>
           </div>
         </div>
+
+        <!-- Main Stage Area -->
         <div class="flipbook-stage" id="flipbookStage">
-          <div class="flipbook-loading-screen" id="flipbookLoading">
-            <div class="flipbook-spinner"></div>
-            <div class="flipbook-loading-title">${escapeHTML(doc.title || 'Membuka Profil Lembaga ACF Eduhub')}</div>
-            <div class="flipbook-loading-desc" id="flipbookLoadingDesc">Sedang menyiapkan tampilan lembaran buku...</div>
-            <div class="flipbook-progress-bar-bg">
-              <div class="flipbook-progress-bar-fill" id="flipbookProgressFill"></div>
-            </div>
-          </div>
+          <!-- Circular Navigation Buttons -->
           <button type="button" class="flipbook-nav-btn nav-prev" id="btnNavPrev" aria-label="Halaman Sebelumnya" title="Halaman Sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
@@ -210,6 +262,8 @@
             </svg>
           </button>
         </div>
+
+        <!-- Bottom Controls Bar (Floating Glassmorphism Overlay) -->
         <div class="flipbook-bottom-bar">
           <button type="button" class="flipbook-btn-mini" id="btnNavFirst" title="Ke Halaman Pertama" aria-label="Halaman Pertama">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -243,6 +297,31 @@
       }
       if (logoEl) {
         logoEl.src = '../assets/logo-acf/logo-acf-white-text.png';
+      }
+
+      // Pastikan floating close & nav hint ada
+      if (!modal.querySelector('#btnFloatingClose')) {
+        const floatBtn = document.createElement('button');
+        floatBtn.type = 'button';
+        floatBtn.className = 'flipbook-floating-close';
+        floatBtn.id = 'btnFloatingClose';
+        floatBtn.title = 'Tutup Flipbook';
+        floatBtn.setAttribute('aria-label', 'Tutup Flipbook');
+        floatBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        `;
+        modal.appendChild(floatBtn);
+      }
+
+      if (!modal.querySelector('#flipbookNavHint')) {
+        const hintEl = document.createElement('div');
+        hintEl.className = 'flipbook-nav-hint';
+        hintEl.id = 'flipbookNavHint';
+        hintEl.textContent = 'Klik latar belakang untuk melihat / menyembunyikan menu';
+        modal.appendChild(hintEl);
       }
     }
 
@@ -357,21 +436,13 @@
       let targetEl = null;
       try {
         targetEl = document.querySelector(position);
-      } catch (e) {
-        // Selector CSS biasa jika gagal
+      } catch (e) {}
+      if (!targetEl) targetEl = document.getElementById(position);
+      if (!targetEl) {
+        try { targetEl = document.querySelector(`.${position}`); } catch (e) {}
       }
       if (!targetEl) {
-        targetEl = document.getElementById(position);
-      }
-      if (!targetEl) {
-        try {
-          targetEl = document.querySelector(`.${position}`);
-        } catch (e) {}
-      }
-      if (!targetEl) {
-        try {
-          targetEl = document.querySelector(`[id*="${position}"]`) || document.querySelector(`[class*="${position}"]`);
-        } catch (e) {}
+        try { targetEl = document.querySelector(`[id*="${position}"]`) || document.querySelector(`[class*="${position}"]`); } catch (e) {}
       }
 
       if (targetEl && targetEl.parentNode) {
@@ -381,7 +452,6 @@
         btnWrap.style.justifyContent = 'center';
         targetEl.parentNode.insertBefore(btnWrap, targetEl.nextSibling);
       } else {
-        // Fallback jika elemen kustom tidak ditemukan: di bawah hero / section pertama
         btnWrap.style.textAlign = 'center';
         btnWrap.style.margin = '28px auto';
         btnWrap.style.display = 'flex';
@@ -412,7 +482,6 @@
       ensureFlipbookModalExists(doc);
       applyFlipbookPlacement(doc);
     } else {
-      // Jika tidak ada flipbook aktif untuk halaman ini
       if (pageName !== 'kisah-kami.html') {
         const existingWrap = document.getElementById('wrapProfilLembagaBtn');
         if (existingWrap) existingWrap.style.display = 'none';
@@ -426,7 +495,6 @@
   function initTriggerButtons() {
     const triggerBtns = document.querySelectorAll('.btn-profil-lembaga, [data-open-flipbook="profil-lembaga"]');
     triggerBtns.forEach((btn) => {
-      // Hindari multiple listener
       if (btn.getAttribute('data-flipbook-bound') === 'true') return;
       btn.setAttribute('data-flipbook-bound', 'true');
 
@@ -439,21 +507,20 @@
       });
     });
 
-    // Tombol close modal
+    // Tombol close modal di header
     const closeBtn = document.getElementById('btnFlipbookClose');
     if (closeBtn && !closeBtn.getAttribute('data-flipbook-bound')) {
       closeBtn.setAttribute('data-flipbook-bound', 'true');
       closeBtn.addEventListener('click', closeFlipbookModal);
     }
 
-    // Klik di luar container untuk menutup (backdrop)
-    const modal = document.getElementById('flipbookModal');
-    if (modal && !modal.getAttribute('data-flipbook-bound')) {
-      modal.setAttribute('data-flipbook-bound', 'true');
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          closeFlipbookModal();
-        }
+    // Tombol floating close (minimalist close)
+    const floatClose = document.getElementById('btnFloatingClose');
+    if (floatClose && !floatClose.getAttribute('data-flipbook-bound')) {
+      floatClose.setAttribute('data-flipbook-bound', 'true');
+      floatClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeFlipbookModal();
       });
     }
 
@@ -479,6 +546,51 @@
   }
 
   /**
+   * Hubungkan toggle klik untuk Navbar atas & bawah (Gambar 2: transparan / bisa dihilangkan saat diklik baru muncul)
+   */
+  function initNavbarToggle() {
+    const stage = document.getElementById('flipbookStage') || document.querySelector('.flipbook-stage');
+
+    if (stage && !stage.getAttribute('data-nav-toggle-bound')) {
+      stage.setAttribute('data-nav-toggle-bound', 'true');
+      stage.addEventListener('click', (e) => {
+        // Abaikan klik pada navbar header, bottom bar, tombol panah bulat, tombol close, dan kontrol
+        if (e.target.closest('.flipbook-header, .flipbook-bottom-bar, .flipbook-nav-btn, .flipbook-floating-close, a, button, input')) {
+          return;
+        }
+        // Abaikan klik pada lembaran buku (karena lembaran buku memicu efek balik halaman PageFlip)
+        if (e.target.closest('.page-sheet')) {
+          return;
+        }
+        toggleNavbars();
+      });
+    }
+
+    const floatClose = document.getElementById('btnFloatingClose');
+    if (floatClose && !floatClose.getAttribute('data-flipbook-bound')) {
+      floatClose.setAttribute('data-flipbook-bound', 'true');
+      floatClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeFlipbookModal();
+      });
+    }
+  }
+
+  function toggleNavbars() {
+    const modal = document.getElementById('flipbookModal');
+    if (modal) {
+      modal.classList.toggle('navbars-visible');
+    }
+    if (document.body.classList.contains('flipbook-standalone-body')) {
+      document.body.classList.toggle('navbars-visible');
+    }
+    const hint = document.querySelector('.flipbook-nav-hint');
+    if (hint) {
+      hint.classList.remove('show');
+    }
+  }
+
+  /**
    * 2. Buka Modal Flipbook
    */
   async function openFlipbookModal() {
@@ -492,7 +604,19 @@
     if (!modal) return;
 
     modal.classList.add('active');
+    // Mode transparan/tersembunyi secara default (Gambar 2)
+    modal.classList.remove('navbars-visible');
     document.body.style.overflow = 'hidden';
+
+    // Tampilkan hint petunjuk sebentar lalu hilangkan otomatis
+    const hint = modal.querySelector('.flipbook-nav-hint');
+    if (hint) {
+      hint.classList.add('show');
+      clearTimeout(hintTimeout);
+      hintTimeout = setTimeout(() => {
+        hint.classList.remove('show');
+      }, 2500);
+    }
 
     // Update history state
     if (window.history && window.history.replaceState) {
@@ -503,10 +627,20 @@
       } catch (err) {}
     }
 
-    // Hubungkan kontrol tombol jika modal baru saja diinjeksi
+    // Hubungkan kontrol tombol & toggle navbar
     initTriggerButtons();
+    initNavbarToggle();
 
-    // Muat flipbook jika belum ada
+    // Jika path file PDF berbeda dari yang sedang dimuat (misal admin baru upload PDF baru)
+    if (flipBookInstance && currentLoadedPdfPath !== PDF_FILE_PATH) {
+      try { flipBookInstance.destroy(); } catch (e) {}
+      flipBookInstance = null;
+      pdfDocInstance = null;
+      renderedPages.clear();
+      renderingPromises.clear();
+    }
+
+    // Muat flipbook secara instan tanpa loading screen
     if (!flipBookInstance) {
       loadAndRenderFlipbook();
     }
@@ -520,6 +654,7 @@
     if (!modal) return;
 
     modal.classList.remove('active');
+    modal.classList.remove('navbars-visible');
     document.body.style.overflow = '';
 
     // Bersihkan hash di URL
@@ -544,7 +679,7 @@
   }
 
   /**
-   * 5. Muat PDF dan Render ke Canvas untuk StPageFlip
+   * 5. Muat PDF dan Render secara Progresif Cepat (Instan tanpa Loading Screen)
    */
   async function loadAndRenderFlipbook() {
     if (isRendering) return;
@@ -552,16 +687,12 @@
 
     await ensureDependenciesLoaded();
 
-    const loadingScreen = document.getElementById('flipbookLoading');
-    const loadingDesc = document.getElementById('flipbookLoadingDesc');
-    const progressBar = document.getElementById('flipbookProgressFill');
     const bookContainer = document.getElementById('flipbookBook');
-
-    if (loadingScreen) loadingScreen.classList.remove('hidden');
 
     if (typeof window.pdfjsLib === 'undefined') {
       console.warn('PDF.js belum termuat, mencoba memuat fallback iframe.');
       renderIframeFallback();
+      isRendering = false;
       return;
     }
 
@@ -569,14 +700,13 @@
       window.pdfjsLib.GlobalWorkerOptions.workerSrc =
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-      if (loadingDesc) {
-        loadingDesc.textContent = `Membuka dokumen ${activeFlipbookDoc?.title || 'Profil Lembaga'}...`;
+      // Load PDF Document jika belum di-preload
+      if (!pdfDocInstance) {
+        const loadingTask = window.pdfjsLib.getDocument(PDF_FILE_PATH);
+        pdfDocInstance = await loadingTask.promise;
       }
-
-      // Load PDF Document
-      const loadingTask = window.pdfjsLib.getDocument(PDF_FILE_PATH);
-      pdfDocInstance = await loadingTask.promise;
       totalDocPages = pdfDocInstance.numPages;
+      currentLoadedPdfPath = PDF_FILE_PATH;
 
       if (bookContainer) bookContainer.innerHTML = '';
 
@@ -609,27 +739,18 @@
         if (bookContainer) bookContainer.appendChild(sheet);
       }
 
-      // Render halaman satu per satu
-      renderedPagesCount = 0;
-      for (let pageNum = 1; pageNum <= totalDocPages; pageNum++) {
-        await renderSinglePdfPage(pageNum, 1.4);
-        renderedPagesCount++;
-
-        const percent = Math.round((renderedPagesCount / totalDocPages) * 100);
-        if (progressBar) progressBar.style.width = `${percent}%`;
-        if (loadingDesc) {
-          loadingDesc.textContent = `Menyiapkan lembaran buku: ${renderedPagesCount} dari ${totalDocPages} (${percent}%)`;
-        }
+      // Render 3 HALAMAN PERTAMA DULU secara instan (< 150ms)
+      const initialPages = Math.min(3, totalDocPages);
+      for (let p = 1; p <= initialPages; p++) {
+        await renderSinglePdfPage(p, 1.35);
       }
 
-      // Inisialisasi StPageFlip setelah semua lembaran siap
+      // LANGSUNG Inisialisasi StPageFlip agar buku segera tampil di hadapan user tanpa menunggu 31 halaman!
       initStPageFlip(bookContainer, baseWidth, baseHeight);
 
-      if (loadingScreen) {
-        setTimeout(() => {
-          loadingScreen.classList.add('hidden');
-        }, 300);
-      }
+      // Lanjutkan render sisa halaman di background secara asinkron tanpa memblokir
+      renderRemainingPagesInBackground();
+
     } catch (err) {
       console.error('Gagal merender Flipbook PDF:', err);
       renderIframeFallback();
@@ -639,25 +760,72 @@
   }
 
   /**
-   * 6. Render satu halaman PDF ke canvas
+   * 6. Render satu halaman PDF ke canvas secara cached & aman dari duplikasi
    */
-  async function renderSinglePdfPage(pageNum, scale = 1.4) {
+  async function renderSinglePdfPage(pageNum, scale = 1.35) {
     if (!pdfDocInstance) return;
-    const page = await pdfDocInstance.getPage(pageNum);
-    const viewport = page.getViewport({ scale });
-    const canvas = document.getElementById(`flip_canvas_${pageNum}`);
-    if (!canvas) return;
+    if (renderedPages.has(pageNum)) return;
+    if (renderingPromises.has(pageNum)) {
+      return renderingPromises.get(pageNum);
+    }
 
-    const context = canvas.getContext('2d');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    const promise = (async () => {
+      try {
+        const page = await pdfDocInstance.getPage(pageNum);
+        const viewport = page.getViewport({ scale });
+        const canvas = document.getElementById(`flip_canvas_${pageNum}`);
+        if (!canvas) return;
 
-    const renderContext = {
-      canvasContext: context,
-      viewport: viewport
-    };
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-    await page.render(renderContext).promise;
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
+
+        renderedPages.add(pageNum);
+      } catch (err) {
+        console.warn(`Gagal render lembar ${pageNum}:`, err);
+      } finally {
+        renderingPromises.delete(pageNum);
+      }
+    })();
+
+    renderingPromises.set(pageNum, promise);
+    return promise;
+  }
+
+  /**
+   * Render sisa halaman di background
+   */
+  async function renderRemainingPagesInBackground() {
+    for (let pageNum = 4; pageNum <= totalDocPages; pageNum++) {
+      if (!renderedPages.has(pageNum)) {
+        await renderSinglePdfPage(pageNum, 1.35);
+        await new Promise(r => setTimeout(r, 20)); // Beri ruang bernapas untuk render UI
+      }
+    }
+  }
+
+  /**
+   * Pastikan halaman sekitar target sudah ter-render saat user membalik halaman
+   */
+  async function ensureNearbyPages(pageIndex) {
+    const pageNum = pageIndex + 1;
+    const targetPages = [
+      pageNum,
+      pageNum + 1,
+      pageNum + 2,
+      pageNum + 3,
+      pageNum - 1,
+      pageNum - 2
+    ].filter(p => p >= 1 && p <= totalDocPages && !renderedPages.has(p));
+
+    for (const p of targetPages) {
+      await renderSinglePdfPage(p, 1.35);
+    }
   }
 
   /**
@@ -697,6 +865,7 @@
     // Event saat halaman berganti
     flipBookInstance.on('flip', (e) => {
       updateNavButtonsState(e.data);
+      ensureNearbyPages(e.data);
     });
 
     flipBookInstance.on('changeState', () => {
@@ -704,6 +873,7 @@
         try {
           const cur = flipBookInstance.getCurrentPageIndex();
           updateCoverCentering(cur);
+          ensureNearbyPages(cur);
         } catch (err) {}
       }
     });
@@ -741,6 +911,7 @@
       lastBtn.setAttribute('data-flipbook-bound', 'true');
       lastBtn.addEventListener('click', () => {
         if (flipBookInstance && totalDocPages > 0) {
+          ensureNearbyPages(totalDocPages - 1);
           flipBookInstance.flip(totalDocPages - 1);
         }
       });
@@ -752,7 +923,9 @@
       rangeSlider.addEventListener('input', (e) => {
         const targetPage = parseInt(e.target.value, 10);
         if (flipBookInstance && !isNaN(targetPage)) {
-          flipBookInstance.flip(Math.max(0, targetPage - 1));
+          const targetIndex = Math.max(0, targetPage - 1);
+          ensureNearbyPages(targetIndex);
+          flipBookInstance.flip(targetIndex);
         }
       });
     }
@@ -865,9 +1038,6 @@
    * 11. Fallback jika PDF.js / StPageFlip gagal memuat
    */
   function renderIframeFallback() {
-    const loadingScreen = document.getElementById('flipbookLoading');
-    if (loadingScreen) loadingScreen.classList.add('hidden');
-
     const viewport = document.getElementById('flipbookViewport');
     if (viewport) {
       viewport.innerHTML = `
@@ -892,4 +1062,5 @@
   window.openProfilLembagaFlipbook = openFlipbookModal;
   window.closeProfilLembagaFlipbook = closeFlipbookModal;
   window.initACFFlipbook = initDynamicPageFlipbook;
+  window.toggleFlipbookNavbars = toggleNavbars;
 })();

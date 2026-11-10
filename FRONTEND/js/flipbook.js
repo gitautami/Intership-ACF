@@ -412,14 +412,24 @@
       } else {
         document.body.appendChild(btnWrap);
       }
-    } else if (position === 'bawah_deskripsi_sejarah') {
+    } else if (position === 'bawah_deskripsi_sejarah' || position === 'bawah_sejarah' || (!position && currentPage === 'kisah-kami.html')) {
       if (currentPage === 'kisah-kami.html') {
-        const deskripsi = document.querySelector('#sejarahSingkatDeskripsi, .sejarah-text');
-        if (deskripsi && deskripsi.parentNode) {
+        const deskripsi = document.getElementById('sejarahSingkatDeskripsi') ||
+                          document.querySelector('.sejarah-grid .reveal p:last-of-type') ||
+                          document.querySelector('.sejarah-grid .reveal');
+        if (deskripsi) {
           btnWrap.style.margin = '26px 0 0 0';
           btnWrap.style.display = 'block';
           btnWrap.style.textAlign = 'left';
-          deskripsi.parentNode.insertBefore(btnWrap, deskripsi.nextSibling);
+          btnWrap.style.justifyContent = 'flex-start';
+          if (deskripsi.id === 'wrapProfilLembagaBtn') {
+            return;
+          }
+          if (deskripsi.tagName === 'P') {
+            deskripsi.parentNode.insertBefore(btnWrap, deskripsi.nextSibling);
+          } else {
+            deskripsi.appendChild(btnWrap);
+          }
           return;
         }
       }

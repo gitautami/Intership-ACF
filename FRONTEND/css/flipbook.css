@@ -489,6 +489,18 @@
 }
 
 /* 9. Tombol Pemicu di Halaman Cerita Kami (kisah-kami.html) */
+.profil-lembaga-btn-wrap {
+  margin-top: 26px;
+  display: block;
+  text-align: left;
+}
+
+.sejarah-grid .profil-lembaga-btn-wrap {
+  margin-top: 26px !important;
+  display: block !important;
+  text-align: left !important;
+}
+
 .btn-profil-lembaga {
   display: inline-flex;
   align-items: center;

@@ -1,7 +1,7 @@
 /**
  * ACF EDUHUB — Interactive PDF Flipbook Engine
  * Mengubah Dokumen PDF (Profil Lembaga ACF Eduhub & Dokumen Lainnya) menjadi Flipbook 3D interaktif.
- * Mendukung penempatan dinamis per halaman dan posisi sesuai pengaturan admin portal.
+ * Mendukung penempatan dinamis per halaman, responsif mobile, serta Fitur Mode Landscape untuk HP.
  */
 
 (function () {
@@ -42,6 +42,26 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  /**
+   * Helper: Tampilkan Toast Notifikasi Cepat di Layar Flipbook
+   */
+  function showFlipbookToast(message) {
+    let toast = document.getElementById('flipbookQuickToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'flipbookQuickToast';
+      toast.className = 'flipbook-quick-toast';
+      const target = document.getElementById('flipbookModal') || document.body;
+      target.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
   }
 
   /**
@@ -115,7 +135,7 @@
     if (!document.querySelector('link[href*="flipbook.css"]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = '../css/flipbook.css?v=20261110_pdf_orig_v1';
+      link.href = '../css/flipbook.css?v=20261111_landscape_v2';
       document.head.appendChild(link);
     }
 
@@ -275,6 +295,15 @@
                 <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
               </svg>
             </button>
+            <button type="button" class="flipbook-btn-tool btn-tool-landscape" id="btnFlipbookLandscape" title="Mode Landscape / Putar Layar (Tampilan Lebih Jelas)" aria-label="Mode Landscape">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="12" x="3" y="6" rx="2.5"></rect>
+                <path d="m13 2 3 2-3 2"></path>
+                <path d="M7 4h9"></path>
+                <path d="m11 22-3-2 3-2"></path>
+                <path d="M17 20H8"></path>
+              </svg>
+            </button>
             <button type="button" class="flipbook-btn-close" id="btnFlipbookClose" title="Tutup Flipbook" aria-label="Tutup Flipbook">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -337,6 +366,34 @@
         }
         if (logoEl) {
           logoEl.src = '../assets/logo-acf/logo-acf-white-text.png';
+        }
+      }
+
+      // Pastikan tombol landscape ada
+      if (!modal.querySelector('#btnFlipbookLandscape')) {
+        const headerRight = modal.querySelector('.flipbook-header-right');
+        const closeBtn = modal.querySelector('#btnFlipbookClose');
+        if (headerRight) {
+          const lBtn = document.createElement('button');
+          lBtn.type = 'button';
+          lBtn.className = 'flipbook-btn-tool btn-tool-landscape';
+          lBtn.id = 'btnFlipbookLandscape';
+          lBtn.title = 'Mode Landscape / Putar Layar (Tampilan Lebih Jelas)';
+          lBtn.setAttribute('aria-label', 'Mode Landscape');
+          lBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="12" x="3" y="6" rx="2.5"></rect>
+              <path d="m13 2 3 2-3 2"></path>
+              <path d="M7 4h9"></path>
+              <path d="m11 22-3-2 3-2"></path>
+              <path d="M17 20H8"></path>
+            </svg>
+          `;
+          if (closeBtn) {
+            headerRight.insertBefore(lBtn, closeBtn);
+          } else {
+            headerRight.appendChild(lBtn);
+          }
         }
       }
 
@@ -575,7 +632,7 @@
       document.addEventListener('keydown', (e) => {
         const modal = document.getElementById('flipbookModal');
         const isActive = modal && modal.classList.contains('active');
-        const isStandalone = document.body.classList.contains('flipbook-standalone-body');
+        const isStandalone = document.body && document.body.classList.contains('flipbook-standalone-body');
 
         if (!isActive && !isStandalone) return;
 
@@ -604,6 +661,15 @@
       if (trigger) {
         e.preventDefault();
         openFlipbookModal();
+        return;
+      }
+
+      const landscapeTrigger = e.target.closest('#btnFlipbookLandscape, .btn-tool-landscape');
+      if (landscapeTrigger) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleLandscapeMode();
+        return;
       }
     });
   }
@@ -652,6 +718,57 @@
   }
 
   /**
+   * FITUR MODE LANDSCAPE:
+   * Mengubah orientasi dan memaksimalkan tampilan buku di HP/Mobile
+   */
+  async function toggleLandscapeMode() {
+    const modal = document.getElementById('flipbookModal');
+    if (!modal) return;
+
+    const btn = document.getElementById('btnFlipbookLandscape');
+    const isLandscape = window.innerWidth > window.innerHeight;
+
+    // 1. Coba Screen Orientation API (Android Chrome & browser modern)
+    if (screen.orientation && screen.orientation.lock) {
+      try {
+        if (!isLandscape) {
+          if (!document.fullscreenElement) {
+            const req = (modal && (modal.requestFullscreen || modal.webkitRequestFullscreen)) || document.documentElement.requestFullscreen;
+            if (req) await req.call(modal || document.documentElement);
+          }
+          await screen.orientation.lock('landscape');
+          if (btn) btn.classList.add('active');
+          showFlipbookToast('Layar diputar ke Mode Landscape');
+          return;
+        } else {
+          if (screen.orientation.unlock) {
+            screen.orientation.unlock();
+          }
+          if (document.fullscreenElement && document.exitFullscreen) {
+            await document.exitFullscreen().catch(() => {});
+          }
+          if (btn) btn.classList.remove('active');
+          showFlipbookToast('Kembali ke Mode Portrait');
+          return;
+        }
+      } catch (err) {
+        console.log('Screen orientation lock fallback:', err);
+      }
+    }
+
+    // 2. Fallback untuk browser yang tidak mendukung lock orientasi (misal iOS Safari):
+    if (!document.fullscreenElement) {
+      const req = (modal && (modal.requestFullscreen || modal.webkitRequestFullscreen)) || document.documentElement.requestFullscreen;
+      if (req) {
+        try {
+          await req.call(modal || document.documentElement);
+        } catch (e) {}
+      }
+    }
+    showFlipbookToast('Silakan putar HP Anda ke samping (Landscape)');
+  }
+
+  /**
    * 2. Buka Modal Flipbook — Langsung tampil instan tanpa lag
    */
   async function openFlipbookModal() {
@@ -686,6 +803,13 @@
       hintTimeout = setTimeout(() => {
         hint.classList.remove('show');
       }, 2500);
+    }
+
+    // Tampilkan tip landscape khusus untuk pengguna HP portrait
+    if (window.innerWidth <= 768 && window.innerHeight > window.innerWidth) {
+      setTimeout(() => {
+        showFlipbookToast('💡 Tip: Gunakan tombol Landscape untuk tampilan lebih jelas');
+      }, 1200);
     }
 
     // Update history state
@@ -726,6 +850,8 @@
 
     modal.classList.remove('active');
     modal.classList.remove('navbars-visible');
+    const btn = document.getElementById('btnFlipbookLandscape');
+    if (btn) btn.classList.remove('active');
     document.body.style.overflow = '';
 
     // Bersihkan hash di URL
@@ -782,17 +908,34 @@
       totalDocPages = pdfDocInstance.numPages;
       currentLoadedPdfPath = PDF_FILE_PATH;
 
-      const isMobile = window.innerWidth <= 768;
+      const isMobile = window.innerWidth <= 768 || (window.innerHeight <= 550 && window.innerWidth <= 1024);
       let baseWidth, baseHeight;
 
       if (isMobile) {
-        const availW = window.innerWidth - 24;
-        const availH = window.innerHeight - 100;
-        const maxWByScreenW = Math.floor(availW / 2);
-        const maxWByScreenH = Math.floor(availH / 1.414);
-        baseWidth = Math.min(maxWByScreenW, maxWByScreenH);
-        baseHeight = Math.round(baseWidth * 1.414);
+        const isLandscape = window.innerWidth > window.innerHeight;
+        if (isLandscape) {
+          // Pada posisi mendatar (landscape HP): maksimalkan tinggi agar lembaran besar
+          const availH = window.innerHeight - 50;
+          const availW = window.innerWidth - 30;
+          let pageH = availH;
+          let pageW = Math.floor(pageH / 1.414);
+          if (pageW * 2 > availW) {
+            pageW = Math.floor(availW / 2);
+            pageH = Math.round(pageW * 1.414);
+          }
+          baseWidth = Math.max(140, pageW);
+          baseHeight = Math.round(baseWidth * 1.414);
+        } else {
+          // Pada posisi tegak (portrait HP): lebar 2 halaman muat pas tanpa kepotong
+          const availW = window.innerWidth - 24;
+          const availH = window.innerHeight - 100;
+          const maxWByScreenW = Math.floor(availW / 2);
+          const maxWByScreenH = Math.floor(availH / 1.414);
+          baseWidth = Math.min(maxWByScreenW, maxWByScreenH);
+          baseHeight = Math.round(baseWidth * 1.414);
+        }
       } else {
+        // Desktop: 550 x 778
         baseWidth = 550;
         baseHeight = Math.round(baseWidth * 1.414);
       }
@@ -926,16 +1069,16 @@
       return;
     }
 
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = window.innerWidth <= 768 || (window.innerHeight <= 550 && window.innerWidth <= 1024);
 
     flipBookInstance = new window.St.PageFlip(container, {
       width: width,
       height: height,
       size: 'stretch',
       minWidth: isMobile ? Math.min(100, width) : 280,
-      maxWidth: isMobile ? width : 900,
+      maxWidth: 900,
       minHeight: isMobile ? Math.min(140, height) : 400,
-      maxHeight: isMobile ? height : 1200,
+      maxHeight: 1200,
       maxShadowOpacity: 0.6,
       showCover: true,
       mobileScrollSupport: false,
@@ -972,7 +1115,7 @@
   }
 
   /**
-   * 8. Kontrol Navigasi (Tombol Panah Bulat, Slider, Fullscreen)
+   * 8. Kontrol Navigasi (Tombol Panah Bulat, Slider, Fullscreen, Landscape)
    */
   function initFlipControls() {
     const prevBtn = document.getElementById('btnNavPrev');
@@ -981,6 +1124,7 @@
     const lastBtn = document.getElementById('btnNavLast');
     const rangeSlider = document.getElementById('flipbookRange');
     const fullscreenBtn = document.getElementById('btnFlipbookFullscreen');
+    const landscapeBtn = document.getElementById('btnFlipbookLandscape');
 
     if (prevBtn && !prevBtn.getAttribute('data-flipbook-bound')) {
       prevBtn.setAttribute('data-flipbook-bound', 'true');
@@ -1022,6 +1166,14 @@
     if (fullscreenBtn && !fullscreenBtn.getAttribute('data-flipbook-bound')) {
       fullscreenBtn.setAttribute('data-flipbook-bound', 'true');
       fullscreenBtn.addEventListener('click', toggleFullscreen);
+    }
+
+    if (landscapeBtn && !landscapeBtn.getAttribute('data-flipbook-bound')) {
+      landscapeBtn.setAttribute('data-flipbook-bound', 'true');
+      landscapeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleLandscapeMode();
+      });
     }
   }
 
@@ -1129,7 +1281,7 @@
     }
   }
 
-  // Responsif resize untuk perataan posisi cover
+  // Responsif resize dan rotasi layar perangkat — Hanya perbarui posisi cover, jangan pernah destroy instance!
   window.addEventListener('resize', () => {
     if (flipBookInstance) {
       try {
@@ -1139,6 +1291,17 @@
     }
   });
 
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      if (flipBookInstance) {
+        try {
+          const cur = flipBookInstance.getCurrentPageIndex();
+          updateCoverCentering(cur);
+        } catch (e) {}
+      }
+    }, 200);
+  });
+
   // Ekspor fungsi ke window agar dapat dipanggil dari luar
   window.openProfilLembagaFlipbook = openFlipbookModal;
   window.openFlipbookModal = openFlipbookModal;
@@ -1146,6 +1309,7 @@
   window.closeFlipbookModal = closeFlipbookModal;
   window.initACFFlipbook = initDynamicPageFlipbook;
   window.toggleFlipbookNavbars = toggleNavbars;
+  window.toggleFlipbookLandscape = toggleLandscapeMode;
 
   // Inisialisasi awal saat script dimuat
   function bootFlipbook() {

@@ -4670,6 +4670,119 @@
   let adminRenderedPages = new Set();
   let adminRenderingPromises = new Map();
   let adminHintTimeout = null;
+  let adminResizeDebounceTimer = null;
+
+  function calculateAdminBookDimensions() {
+    const modal = document.getElementById('adminFlipbookPreviewModal');
+    const isForcedLandscape = modal && modal.classList.contains('is-forced-landscape');
+
+    let screenW = window.innerWidth;
+    let screenH = window.innerHeight;
+
+    if (isForcedLandscape && screenW < screenH) {
+      const temp = screenW;
+      screenW = screenH;
+      screenH = temp;
+    }
+
+    const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const isMobile = screenW <= 768 || (screenH <= 550 && screenW <= 1024) || (hasTouch && screenW <= 1024);
+    const isLandscape = screenW > screenH;
+
+    let baseWidth, baseHeight;
+
+    if (isMobile) {
+      if (isLandscape) {
+        const availH = screenH - 46;
+        const availW = screenW - 24;
+
+        let pageH = availH;
+        let pageW = Math.floor(pageH / 1.414);
+
+        if (pageW * 2 > availW) {
+          pageW = Math.floor(availW / 2);
+          pageH = Math.round(pageW * 1.414);
+        }
+
+        baseWidth = Math.max(120, pageW);
+        baseHeight = Math.round(baseWidth * 1.414);
+      } else {
+        const availW = screenW - 24;
+        const availH = screenH - 96;
+        const maxWByScreenW = Math.floor(availW / 2);
+        const maxWByScreenH = Math.floor(availH / 1.414);
+        baseWidth = Math.min(maxWByScreenW, maxWByScreenH);
+        baseHeight = Math.round(baseWidth * 1.414);
+      }
+    } else {
+      baseWidth = 520;
+      baseHeight = Math.round(baseWidth * 1.414);
+    }
+
+    return { baseWidth, baseHeight, isMobile, isLandscape, isForcedLandscape };
+  }
+
+  async function toggleAdminLandscapeMode() {
+    const modal = document.getElementById('adminFlipbookPreviewModal');
+    const btn = document.getElementById('adminBtnFlipbookLandscape');
+    if (!modal) return;
+
+    const isLandscape = window.innerWidth > window.innerHeight;
+
+    if (screen.orientation && screen.orientation.lock) {
+      try {
+        if (!isLandscape) {
+          if (!document.fullscreenElement) {
+            const req = modal.requestFullscreen || modal.webkitRequestFullscreen || document.documentElement.requestFullscreen;
+            if (req) await req.call(modal);
+          }
+          await screen.orientation.lock('landscape');
+          if (btn) btn.classList.add('active');
+          return;
+        } else {
+          if (screen.orientation.unlock) {
+            screen.orientation.unlock();
+          }
+          if (document.fullscreenElement && document.exitFullscreen) {
+            await document.exitFullscreen().catch(() => {});
+          }
+          if (btn) btn.classList.remove('active');
+          return;
+        }
+      } catch (err) {
+        console.log('Admin screen orientation lock:', err);
+      }
+    }
+
+    if (!document.fullscreenElement) {
+      const req = modal.requestFullscreen || modal.webkitRequestFullscreen || document.documentElement.requestFullscreen;
+      if (req) {
+        try { await req.call(modal); } catch (e) {}
+      }
+    }
+  }
+
+  window.addEventListener('resize', () => {
+    if (adminFlipbookInstance) {
+      try {
+        const cur = adminFlipbookInstance.getCurrentPageIndex();
+        const total = adminPdfDocInstance ? adminPdfDocInstance.numPages : 31;
+        updateAdminCoverCentering(cur, total);
+      } catch (e) {}
+    }
+  });
+
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      if (adminFlipbookInstance) {
+        try {
+          const cur = adminFlipbookInstance.getCurrentPageIndex();
+          const total = adminPdfDocInstance ? adminPdfDocInstance.numPages : 31;
+          updateAdminCoverCentering(cur, total);
+        } catch (e) {}
+      }
+    }, 200);
+  });
 
   function getAdminOptimalRenderScale() {
     return window.innerWidth <= 768 ? 0.8 : 1.0;
@@ -4775,6 +4888,15 @@
         closeAdminFlipbookPreview();
       });
     }
+
+    const adminLandscapeBtn = document.getElementById('adminBtnFlipbookLandscape');
+    if (adminLandscapeBtn && !adminLandscapeBtn.getAttribute('data-admin-landscape-bound')) {
+      adminLandscapeBtn.setAttribute('data-admin-landscape-bound', 'true');
+      adminLandscapeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleAdminLandscapeMode();
+      });
+    }
   }
 
   async function openAdminFlipbookPreview(id) {
@@ -4816,20 +4938,7 @@
     }
     if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
 
-    const isMobile = window.innerWidth <= 768;
-    let baseWidth, baseHeight;
-
-    if (isMobile) {
-      const availW = window.innerWidth - 24;
-      const availH = window.innerHeight - 100;
-      const maxWByScreenW = Math.floor(availW / 2);
-      const maxWByScreenH = Math.floor(availH / 1.414);
-      baseWidth = Math.min(maxWByScreenW, maxWByScreenH);
-      baseHeight = Math.round(baseWidth * 1.414);
-    } else {
-      baseWidth = 520;
-      baseHeight = Math.round(baseWidth * 1.414);
-    }
+    const { baseWidth, baseHeight, isMobile, isLandscape } = calculateAdminBookDimensions();
 
     if (typeof window.pdfjsLib === 'undefined') {
       setTimeout(() => openAdminFlipbookPreview(id), 500);
@@ -4886,9 +4995,9 @@
           height: baseHeight,
           size: 'stretch',
           minWidth: isMobile ? Math.min(100, baseWidth) : 260,
-          maxWidth: isMobile ? baseWidth : 850,
+          maxWidth: 850,
           minHeight: isMobile ? Math.min(140, baseHeight) : 380,
-          maxHeight: isMobile ? baseHeight : 1100,
+          maxHeight: 1100,
           maxShadowOpacity: 0.6,
           showCover: true,
           mobileScrollSupport: false,
@@ -4991,7 +5100,10 @@
   function closeAdminFlipbookPreview() {
     if (adminFlipbookPreviewModal) {
       adminFlipbookPreviewModal.classList.remove('active');
+      adminFlipbookPreviewModal.classList.remove('is-forced-landscape');
     }
+    const adminLandscapeBtn = document.getElementById('adminBtnFlipbookLandscape');
+    if (adminLandscapeBtn) adminLandscapeBtn.classList.remove('active');
     document.body.style.overflow = '';
     if (adminFlipbookInstance) {
       try { adminFlipbookInstance.destroy(); } catch (e) { }

@@ -37,7 +37,7 @@ if ($method === 'GET') {
         }
     }
 
-    // B. Public Page Consumer (Mengambil flipbook aktif untuk halaman tertentu)
+    // B. Public Page Consumer (Mengambil flipbook aktif untuk halaman tertentu secara cerdas & fleksibel)
     if (!empty($targetPage)) {
         $cleanPage = strtolower(trim(basename($targetPage)));
         if ($cleanPage === '' || $cleanPage === '/') {
@@ -47,8 +47,47 @@ if ($method === 'GET') {
             $cleanPage .= '.html';
         }
 
-        $stmt = $db->prepare("SELECT * FROM flipbooks WHERE LOWER(target_halaman) = :page AND status = 'Aktif' ORDER BY updated_at DESC, id DESC LIMIT 1");
-        $stmt->execute([':page' => $cleanPage]);
+        $baseName = pathinfo($cleanPage, PATHINFO_FILENAME);
+
+        // Buat daftar kata kunci pencocokan cerdas untuk halaman terkait
+        $keywords = [$cleanPage, $baseName];
+        if (strpos($cleanPage, 'kabar') !== false) {
+            $keywords[] = 'berita';
+            $keywords[] = 'artikel';
+        } elseif (strpos($cleanPage, 'kisah') !== false || strpos($cleanPage, 'cerita') !== false) {
+            $keywords[] = 'sejarah';
+            $keywords[] = 'cerita';
+            $keywords[] = 'kisah';
+        } elseif (strpos($cleanPage, 'donasi') !== false) {
+            $keywords[] = 'infaq';
+            $keywords[] = 'sedekah';
+        } elseif (strpos($cleanPage, 'relawan') !== false) {
+            $keywords[] = 'volunteer';
+            $keywords[] = 'sahabat';
+        } elseif (strpos($cleanPage, 'mitra') !== false) {
+            $keywords[] = 'kerjasama';
+            $keywords[] = 'partner';
+        } elseif (strpos($cleanPage, 'index') !== false) {
+            $keywords[] = 'beranda';
+            $keywords[] = 'home';
+            $keywords[] = 'utama';
+        }
+
+        $conditions = ["LOWER(target_halaman) = :exactPage", "LOWER(target_halaman) = :exactBase"];
+        $params = [
+            ':exactPage' => $cleanPage,
+            ':exactBase' => $baseName
+        ];
+
+        foreach ($keywords as $idx => $kw) {
+            $paramKey = ":kw_{$idx}";
+            $conditions[] = "LOWER(target_halaman) LIKE {$paramKey}";
+            $params[$paramKey] = "%{$kw}%";
+        }
+
+        $whereClause = "(" . implode(" OR ", $conditions) . ")";
+        $stmt = $db->prepare("SELECT * FROM flipbooks WHERE {$whereClause} AND status = 'Aktif' ORDER BY updated_at DESC, id DESC LIMIT 1");
+        $stmt->execute($params);
         $activeDoc = $stmt->fetch();
         if ($activeDoc) {
             $activeDoc['position'] = $activeDoc['posisi'];

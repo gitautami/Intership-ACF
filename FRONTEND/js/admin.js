@@ -4131,7 +4131,29 @@
      8.5 FLIPBOOK 3D MANAGEMENT ENGINE
      =================================================== */
 
+  function resolveSmartCanonicalPage(input) {
+    if (!input) return 'kisah-kami.html';
+    const s = String(input).trim().toLowerCase();
+    if (s.endsWith('.html') || s.endsWith('.php')) return s;
+    if (s.includes('kabar') || s.includes('berita') || s.includes('artikel')) return 'kabar.html';
+    if (s.includes('donasi') || s.includes('infaq') || s.includes('sedekah')) return 'donasi.html';
+    if (s.includes('kisah') || s.includes('cerita') || s.includes('sejarah')) return 'kisah-kami.html';
+    if (s.includes('profil') || s.includes('tentang')) return 'profil-lembaga.html';
+    if (s.includes('visi') || s.includes('misi')) return 'visi-misi.html';
+    if (s.includes('program') || s.includes('layanan')) return 'program-layanan.html';
+    if (s.includes('relawan') || s.includes('volunteer') || s.includes('sahabat')) return 'jadi-relawan.html';
+    if (s.includes('mitra') || s.includes('kerjasama') || s.includes('partner')) return 'jadi-mitra-program.html';
+    if (s.includes('juara')) return 'sekolah-juara.html';
+    if (s.includes('setara')) return 'sekolah-daya-setara.html';
+    if (s.includes('unit') || s.includes('sekolah')) return 'unit-pendidikan.html';
+    if (s.includes('kegiatan') || s.includes('acara') || s.includes('event')) return 'kegiatan.html';
+    if (s.includes('beranda') || s.includes('home') || s.includes('depan') || s.includes('utama')) return 'index.html';
+    return s.replace(/\.+$/, '').trim() + '.html';
+  }
+
   function getTargetPageLabel(page) {
+    if (!page) return '-';
+    const s = String(page).trim().toLowerCase();
     const map = {
       'kisah-kami.html': 'Cerita Kami',
       'index.html': 'Beranda Utama',
@@ -4147,15 +4169,17 @@
       'jadi-mitra-program.html': 'Form Mitra Program',
       'jadi-relawan.html': 'Form Relawan'
     };
-    if (map[page]) return map[page];
-    if (page) {
-      const base = page.replace('.html', '').replace(/[-_]/g, ' ');
-      return base.charAt(0).toUpperCase() + base.slice(1);
+    if (map[s]) return map[s];
+    if (s.includes(':')) {
+      const parts = page.split(':');
+      return parts[0].trim().toUpperCase() + ' • ' + parts.slice(1).join(':').trim();
     }
-    return '-';
+    const base = page.replace('.html', '').replace('.php', '').replace(/[-_]/g, ' ');
+    return base.charAt(0).toUpperCase() + base.slice(1);
   }
 
   function getPositionLabel(pos) {
+    if (!pos) return '-';
     const map = {
       'bawah_deskripsi_sejarah': 'Bawah Deskripsi Sejarah',
       'bawah_hero': 'Bawah Hero Banner',
@@ -4163,8 +4187,7 @@
       'atas_footer': 'Atas Footer'
     };
     if (map[pos]) return map[pos];
-    if (pos) return `Kustom (${pos})`;
-    return '-';
+    return pos.charAt(0).toUpperCase() + pos.slice(1);
   }
 
   function formatFileSize(bytes) {
@@ -4373,7 +4396,7 @@
           </div>
         </td>
         <td>
-          <a href="../html/${encodeURIComponent(item.target_page || 'kisah-kami.html')}" target="_blank" style="display: inline-flex; flex-direction: column; gap: 2px; text-decoration: none;" title="Buka Halaman Target (${item.target_page})">
+          <a href="../html/${encodeURIComponent(resolveSmartCanonicalPage(item.target_page || 'kisah-kami.html'))}" target="_blank" style="display: inline-flex; flex-direction: column; gap: 2px; text-decoration: none;" title="Buka Halaman Target (${item.target_page})">
             <span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: #7D2280; font-size: 0.85rem;">
               <svg viewBox="0 0 24 24" fill="none" stroke="#7D2280" stroke-width="2" style="width: 14px; height: 14px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
               ${escapeHTML(targetLabel)} <span style="font-size: 0.75rem; color: #7D2280;">↗</span>
@@ -4461,7 +4484,7 @@
     if (flipbookFormJudul) flipbookFormJudul.value = item.title || '';
     if (flipbookFormDeskripsi) flipbookFormDeskripsi.value = item.description || '';
 
-    const standardPages = ['kisah-kami.html', 'index.html', 'program-layanan.html', 'visi-misi.html', 'unit-pendidikan.html'];
+    const standardPages = ['kisah-kami.html', 'kabar.html', 'donasi.html', 'index.html', 'program-layanan.html', 'visi-misi.html', 'unit-pendidikan.html'];
     if (standardPages.includes(item.target_page)) {
       if (flipbookFormTargetHalaman) flipbookFormTargetHalaman.value = item.target_page;
       if (wrapFlipbookTargetHalamanLainnya) wrapFlipbookTargetHalamanLainnya.style.display = 'none';
@@ -4529,16 +4552,11 @@
     if (targetPage === 'lainnya') {
       let customPage = (flipbookFormTargetHalamanLainnya?.value || '').trim();
       if (!customPage) {
-        showToast('Harap masukkan nama file halaman target untuk opsi Lainnya!', 'warning');
+        showToast('Harap masukkan nama halaman atau berita untuk opsi Lainnya!', 'warning');
         flipbookFormTargetHalamanLainnya?.focus();
         return;
       }
-      // Hapus titik atau spasi di akhir jika tidak sengaja terketik
-      customPage = customPage.replace(/\.+$/, '').trim();
-      if (!customPage.toLowerCase().endsWith('.html') && !customPage.toLowerCase().endsWith('.php')) {
-        customPage += '.html';
-      }
-      targetPage = customPage.toLowerCase();
+      targetPage = customPage;
     }
 
     let position = flipbookFormPosisi?.value || 'bawah_deskripsi_sejarah';
@@ -4646,10 +4664,16 @@
           updated_at: new Date().toISOString()
         };
 
+        const canonicalPage = resolveSmartCanonicalPage(targetPage);
+
         if (String(status).toLowerCase() === 'aktif') {
           localStorage.setItem(`acf_active_flipbook_${targetPage}`, JSON.stringify(cachedItem));
+          if (canonicalPage && canonicalPage !== targetPage) {
+            localStorage.setItem(`acf_active_flipbook_${canonicalPage}`, JSON.stringify(cachedItem));
+          }
         } else {
           localStorage.removeItem(`acf_active_flipbook_${targetPage}`);
+          if (canonicalPage) localStorage.removeItem(`acf_active_flipbook_${canonicalPage}`);
         }
 
         let localFlipbooks = [];

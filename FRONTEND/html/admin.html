@@ -2280,17 +2280,19 @@
             <div>
               <label class="form-label" for="flipbookFormTargetHalaman" style="font-size: 0.88rem; font-weight: 600; color: #1E293B; margin-bottom: 6px; display: block;">Target Halaman Website <span style="color: #E11D48;">*</span></label>
               <select id="flipbookFormTargetHalaman" class="form-select-field" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #CBD5E1; font-family: inherit;">
-                <option value="kisah-kami.html">Cerita Kami (kisah-kami.html)</option>
-                <option value="index.html">Beranda (index.html)</option>
-                <option value="program-layanan.html">Program Layanan (program-layanan.html)</option>
-                <option value="visi-misi.html">Visi Misi (visi-misi.html)</option>
-                <option value="unit-pendidikan.html">Unit Pendidikan (unit-pendidikan.html)</option>
-                <option value="lainnya">Lainnya (Ketik Halaman Sendiri...)</option>
+                <option value="kisah-kami.html">Cerita Kami (Kisah Kami)</option>
+                <option value="kabar.html">Halaman Kabar / Berita & Artikel</option>
+                <option value="donasi.html">Halaman Donasi</option>
+                <option value="index.html">Beranda Utama</option>
+                <option value="program-layanan.html">Program Layanan</option>
+                <option value="visi-misi.html">Visi Misi</option>
+                <option value="unit-pendidikan.html">Unit Pendidikan</option>
+                <option value="lainnya">Lainnya (Ketik Bebas Halaman / Berita Apapun...)</option>
               </select>
-              <!-- Input text untuk 'Lainnya' -->
+              <!-- Input text untuk 'Lainnya' Target Halaman -->
               <div id="wrapFlipbookTargetHalamanLainnya" style="display: none; margin-top: 8px;">
-                <input type="text" id="flipbookFormTargetHalamanLainnya" class="form-input-field" placeholder="Contoh: donasi.html, kabar.html, sekolah-juara.html" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #7D2280; font-family: inherit; font-size: 0.88rem; background: #FAF5FF;">
-                <span style="font-size: 0.74rem; color: #64748B; margin-top: 4px; display: block;">Masukkan nama file halaman web (misal: <code>donasi.html</code> atau <code>kabar.html</code>).</span>
+                <input type="text" id="flipbookFormTargetHalamanLainnya" class="form-input-field" placeholder="Ketik bebas: kabar, judul artikel, donasi, kisah kami, dll" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #7D2280; font-family: inherit; font-size: 0.88rem; background: #FAF5FF;">
+                <span style="font-size: 0.74rem; color: #64748B; margin-top: 4px; display: block;">Ketik bebas nama halaman atau berita (misal: <strong>kabar</strong>, <strong>judul artikel</strong>, <strong>donasi</strong>). Tombol akan otomatis diarahkan dan tampil di sana.</span>
               </div>
             </div>
 
@@ -2300,13 +2302,13 @@
                 <option value="bawah_deskripsi_sejarah">Di Bawah Deskripsi Sejarah Singkat (Cerita Kami)</option>
                 <option value="bawah_hero">Di Bawah Banner Hero Utama</option>
                 <option value="tengah_konten">Di Tengah Konten Halaman</option>
-                <option value="atas_footer">Di Atas Footer (Bagian Bawah Halaman)</option>
-                <option value="lainnya">Lainnya (Ketik Posisi / Elemen Sendiri...)</option>
+                <option value="atas_footer">Di Bagian Bawah / Di Atas Footer</option>
+                <option value="lainnya">Lainnya (Ketik Bebas Posisi Mana Saja...)</option>
               </select>
               <!-- Input text untuk 'Lainnya' Posisi -->
               <div id="wrapFlipbookPosisiLainnya" style="display: none; margin-top: 8px;">
-                <input type="text" id="flipbookFormPosisiLainnya" class="form-input-field" placeholder="Contoh: #milestone, .sejarah-grid, atau nama seksi (sejarah, milestone, tim, footer)" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #7D2280; font-family: inherit; font-size: 0.88rem; background: #FAF5FF;">
-                <span style="font-size: 0.74rem; color: #64748B; margin-top: 4px; display: block;">Masukkan ID (#), Class (.), atau nama posisi/seksi halaman (contoh: <code>#milestone</code>, <code>sejarah</code>, <code>tim</code>, atau <code>footer</code>).</span>
+                <input type="text" id="flipbookFormPosisiLainnya" class="form-input-field" placeholder="Ketik bebas: kiri atas sosial media, bawah artikel, atas donasi, dll" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #7D2280; font-family: inherit; font-size: 0.88rem; background: #FAF5FF;">
+                <span style="font-size: 0.74rem; color: #64748B; margin-top: 4px; display: block;">Ketik bebas posisi yang diinginkan (contoh: <strong>kiri atas sosial media</strong>, <strong>bawah deskripsi</strong>, <strong>atas footer</strong>, <strong>tengah</strong>). Tombol akan langsung terpasang rapi di sana.</span>
               </div>
             </div>
           </div>
@@ -2464,7 +2466,7 @@
     }
   </script>
   <script src="../js/api.js?v=20261111_upload_v1"></script>
-  <script src="../js/admin.js?v=20261111_upload_v1"></script>
+  <script src="../js/admin.js?v=20261111_nlp_posisi_v1"></script>
 
 
 

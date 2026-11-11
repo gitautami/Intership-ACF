@@ -4395,10 +4395,6 @@
           ${statusBadge}
         </td>
         <td style="text-align: center; white-space: nowrap;">
-          <a href="../html/${encodeURIComponent(item.target_page || 'kisah-kami.html')}" target="_blank" class="btn-action-preview" style="margin-right: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; background: #FAF5FF; color: #7D2280; border: 1px solid #E9D5FF;" title="Buka Halaman Web Target">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 13px; height: 13px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            <span>Buka Web</span>
-          </a>
           <button type="button" class="btn-action-preview" onclick="handlePreviewFlipbookDirect('${item.id}')" style="margin-right: 6px;" title="Uji Pratinjau 3D Flipbook">
             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             <span>Pratinjau 3D</span>
@@ -4677,11 +4673,6 @@
       const targetLabel = getTargetPageLabel(targetPage);
       const posLabel = getPositionLabel(position);
       showToast(`Pengaturan Flipbook berhasil disimpan di ${posLabel} (${targetLabel})!`, 'success', 3500);
-
-      // Jeda 2.2 detik sebelum membuka halaman target di tab baru agar notifikasi terbaca jelas
-      setTimeout(() => {
-        window.open(`../html/${encodeURI(targetPage)}`, '_blank');
-      }, 2200);
     } catch (err) {
       console.error('Error saving flipbook:', err);
       showToast('Gagal menyimpan flipbook: ' + (err.message || err), 'error');

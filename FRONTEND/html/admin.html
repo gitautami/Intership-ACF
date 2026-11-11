@@ -71,7 +71,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/admin.css?v=20261109_flipbook_v2">
   <link rel="stylesheet" href="../css/program.css">
-  <link rel="stylesheet" href="../css/flipbook.css?v=20261111_fix_blank_v3">
+  <link rel="stylesheet" href="../css/flipbook.css?v=20261111_posisi_v1">
 </head>
 <body>
 
@@ -2305,8 +2305,8 @@
               </select>
               <!-- Input text untuk 'Lainnya' Posisi -->
               <div id="wrapFlipbookPosisiLainnya" style="display: none; margin-top: 8px;">
-                <input type="text" id="flipbookFormPosisiLainnya" class="form-input-field" placeholder="Contoh: #id-elemen, .nama-class, atau nama posisi" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #7D2280; font-family: inherit; font-size: 0.88rem; background: #FAF5FF;">
-                <span style="font-size: 0.74rem; color: #64748B; margin-top: 4px; display: block;">Masukkan ID (#), Class (.), atau nama posisi khusus di halaman target.</span>
+                <input type="text" id="flipbookFormPosisiLainnya" class="form-input-field" placeholder="Contoh: #milestone, .sejarah-grid, atau nama seksi (sejarah, milestone, tim, footer)" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #7D2280; font-family: inherit; font-size: 0.88rem; background: #FAF5FF;">
+                <span style="font-size: 0.74rem; color: #64748B; margin-top: 4px; display: block;">Masukkan ID (#), Class (.), atau nama posisi/seksi halaman (contoh: <code>#milestone</code>, <code>sejarah</code>, <code>tim</code>, atau <code>footer</code>).</span>
               </div>
             </div>
           </div>
@@ -2321,8 +2321,8 @@
             <div>
               <label class="form-label" for="flipbookFormStatus" style="font-size: 0.88rem; font-weight: 600; color: #1E293B; margin-bottom: 6px; display: block;">Status Publikasi <span style="color: #E11D48;">*</span></label>
               <select id="flipbookFormStatus" class="form-select-field" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #CBD5E1; font-family: inherit;">
-                <option value="Aktif">Aktif (Tampilkan di Web)</option>
-                <option value="Nonaktif">Nonaktif (Draf)</option>
+                <option value="aktif">Aktif (Tampilkan di Web)</option>
+                <option value="nonaktif">Nonaktif (Draf)</option>
               </select>
             </div>
           </div>
@@ -2464,7 +2464,7 @@
     }
   </script>
   <script src="../js/api.js?v=20261109_flipbook_v2"></script>
-  <script src="../js/admin.js?v=20261111_fix_blank_v3"></script>
+  <script src="../js/admin.js?v=20261111_posisi_v1"></script>
 
 
 

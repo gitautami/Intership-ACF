@@ -502,7 +502,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* 9. Tombol Pemicu di Halaman Cerita Kami (kisah-kami.html) */
+/* 9. Tombol Pemicu di Halaman Cerita Kami & Halaman Publik */
 .profil-lembaga-btn-wrap {
   margin-top: 26px;
   display: block;
@@ -513,6 +513,34 @@
   margin-top: 26px !important;
   display: block !important;
   text-align: left !important;
+}
+
+/* Dedicated placement wrapper for dynamic page positions (bawah_hero, tengah_konten, atas_footer, kustom) */
+.flipbook-placement-wrapper {
+  width: 100%;
+  clear: both;
+  position: relative;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+.flipbook-placement-wrapper .container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.flipbook-placement-wrapper .profil-lembaga-btn-wrap {
+  margin: 0 auto !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+  text-align: center !important;
 }
 
 .btn-profil-lembaga {

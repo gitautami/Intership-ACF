@@ -4199,6 +4199,9 @@
         const res = await window.ACF_API.flipbooks.getAll();
         if (Array.isArray(res) && res.length > 0) {
           dataFlipbooks = res.map(normalizeFlipbookItem);
+          try {
+            localStorage.setItem('acf_flipbooks_data', JSON.stringify(dataFlipbooks));
+          } catch (e) {}
         } else {
           dataFlipbooks = [];
         }
@@ -4208,6 +4211,18 @@
     } catch (err) {
       console.warn('Gagal memuat flipbook dari API, fallback ke default:', err);
       dataFlipbooks = [];
+    }
+
+    if (!Array.isArray(dataFlipbooks) || dataFlipbooks.length === 0) {
+      try {
+        const cached = localStorage.getItem('acf_flipbooks_data');
+        if (cached) {
+          const list = JSON.parse(cached);
+          if (Array.isArray(list) && list.length > 0) {
+            dataFlipbooks = list.map(normalizeFlipbookItem);
+          }
+        }
+      } catch (e) {}
     }
 
     if (!Array.isArray(dataFlipbooks) || dataFlipbooks.length === 0) {
@@ -4228,6 +4243,15 @@
         })
       ];
     }
+
+    // Pastikan active flipbook tersimpan di cache
+    dataFlipbooks.forEach(item => {
+      if (item.status === 'aktif') {
+        try {
+          localStorage.setItem(`acf_active_flipbook_${item.target_page}`, JSON.stringify(item));
+        } catch (e) {}
+      }
+    });
 
     updateTargetHalamanFilterOptions();
     renderTableFlipbooks();
@@ -4452,19 +4476,20 @@
       if (flipbookFormTargetHalamanLainnya) flipbookFormTargetHalamanLainnya.value = item.target_page || '';
     }
 
+    const currentPos = (item.position || item.posisi || 'bawah_deskripsi_sejarah').trim();
     const standardPositions = ['bawah_deskripsi_sejarah', 'bawah_hero', 'tengah_konten', 'atas_footer'];
-    if (standardPositions.includes(item.position)) {
-      if (flipbookFormPosisi) flipbookFormPosisi.value = item.position;
+    if (standardPositions.includes(currentPos)) {
+      if (flipbookFormPosisi) flipbookFormPosisi.value = currentPos;
       if (wrapFlipbookPosisiLainnya) wrapFlipbookPosisiLainnya.style.display = 'none';
       if (flipbookFormPosisiLainnya) flipbookFormPosisiLainnya.value = '';
     } else {
       if (flipbookFormPosisi) flipbookFormPosisi.value = 'lainnya';
       if (wrapFlipbookPosisiLainnya) wrapFlipbookPosisiLainnya.style.display = 'block';
-      if (flipbookFormPosisiLainnya) flipbookFormPosisiLainnya.value = item.position || '';
+      if (flipbookFormPosisiLainnya) flipbookFormPosisiLainnya.value = currentPos || '';
     }
 
-    if (flipbookFormButtonLabel) flipbookFormButtonLabel.value = item.button_label || 'Profil Lembaga ACF Eduhub';
-    if (flipbookFormStatus) flipbookFormStatus.value = item.status || 'aktif';
+    if (flipbookFormButtonLabel) flipbookFormButtonLabel.value = item.button_label || item.label_tombol || 'Profil Lembaga ACF Eduhub';
+    if (flipbookFormStatus) flipbookFormStatus.value = String(item.status || 'aktif').toLowerCase() === 'nonaktif' ? 'nonaktif' : 'aktif';
 
     if (flipbookFormPdfFile) {
       flipbookFormPdfFile.value = '';
@@ -4606,6 +4631,46 @@
         }
       }
 
+      // Simpan langsung ke cache localStorage agar penempatan baru segera aktif di halaman publik
+      try {
+        const cachedItem = {
+          id: id || Date.now(),
+          title: title,
+          judul: title,
+          description: description,
+          deskripsi: description,
+          target_page: targetPage,
+          target_halaman: targetPage,
+          position: position,
+          posisi: position,
+          button_label: buttonLabel,
+          status: status,
+          file_name: file ? file.name : (flipbookCurrentFileName?.textContent || 'Profil Lembaga - ACF Eduhub.pdf'),
+          updated_at: new Date().toISOString()
+        };
+
+        if (String(status).toLowerCase() === 'aktif') {
+          localStorage.setItem(`acf_active_flipbook_${targetPage}`, JSON.stringify(cachedItem));
+        } else {
+          localStorage.removeItem(`acf_active_flipbook_${targetPage}`);
+        }
+
+        let localFlipbooks = [];
+        try {
+          localFlipbooks = JSON.parse(localStorage.getItem('acf_flipbooks_data') || '[]');
+        } catch (e) { localFlipbooks = []; }
+
+        const existingIdx = localFlipbooks.findIndex(f => String(f.id) === String(id));
+        if (existingIdx >= 0) {
+          localFlipbooks[existingIdx] = { ...localFlipbooks[existingIdx], ...cachedItem };
+        } else {
+          localFlipbooks.unshift(cachedItem);
+        }
+        localStorage.setItem('acf_flipbooks_data', JSON.stringify(localFlipbooks));
+      } catch (eCache) {
+        console.warn('Cache local flipbook warning:', eCache);
+      }
+
       closeFlipbookFormModal();
       await loadFlipbooksData();
 
@@ -4637,6 +4702,15 @@
         await window.ACF_API.flipbooks.update({ id: item.id, status: newStatus });
       }
       item.status = newStatus;
+      if (newStatus === 'aktif') {
+        localStorage.setItem(`acf_active_flipbook_${item.target_page}`, JSON.stringify(item));
+      } else {
+        localStorage.removeItem(`acf_active_flipbook_${item.target_page}`);
+      }
+      try {
+        localStorage.setItem('acf_flipbooks_data', JSON.stringify(dataFlipbooks));
+      } catch (e) {}
+
       renderTableFlipbooks();
       updateFlipbookMetrics();
       showToast(`Status flipbook diubah menjadi ${newStatus}.`, 'success');
@@ -4658,6 +4732,13 @@
         await window.ACF_API.flipbooks.delete(item.id);
       }
       dataFlipbooks = dataFlipbooks.filter(f => String(f.id) !== String(id));
+      if (item.target_page) {
+        localStorage.removeItem(`acf_active_flipbook_${item.target_page}`);
+      }
+      try {
+        localStorage.setItem('acf_flipbooks_data', JSON.stringify(dataFlipbooks));
+      } catch (e) {}
+
       renderTableFlipbooks();
       updateFlipbookMetrics();
       showToast(`Flipbook "${item.title}" berhasil dihapus.`, 'info');

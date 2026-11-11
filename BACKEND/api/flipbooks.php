@@ -50,6 +50,12 @@ if ($method === 'GET') {
         $stmt = $db->prepare("SELECT * FROM flipbooks WHERE LOWER(target_halaman) = :page AND status = 'Aktif' ORDER BY updated_at DESC, id DESC LIMIT 1");
         $stmt->execute([':page' => $cleanPage]);
         $activeDoc = $stmt->fetch();
+        if ($activeDoc) {
+            $activeDoc['position'] = $activeDoc['posisi'];
+            $activeDoc['target_page'] = $activeDoc['target_halaman'];
+            $activeDoc['title'] = $activeDoc['judul'];
+            $activeDoc['description'] = $activeDoc['deskripsi'];
+        }
         jsonSuccess($activeDoc ?: null, $activeDoc ? 'Flipbook aktif ditemukan' : 'Tidak ada flipbook aktif untuk halaman ini');
     }
 
@@ -66,6 +72,13 @@ if ($method === 'GET') {
     $stmt = $db->prepare("SELECT * FROM flipbooks {$whereSql} ORDER BY updated_at DESC, id DESC");
     $stmt->execute($params);
     $items = $stmt->fetchAll();
+
+    foreach ($items as &$it) {
+        $it['position'] = $it['posisi'];
+        $it['target_page'] = $it['target_halaman'];
+        $it['title'] = $it['judul'];
+        $it['description'] = $it['deskripsi'];
+    }
 
     jsonSuccess([
         'total' => count($items),
@@ -255,8 +268,12 @@ if ($method === 'PUT' || $method === 'PATCH') {
     jsonSuccess([
         'id'             => $id,
         'judul'          => $judul,
+        'title'          => $judul,
         'target_halaman' => $targetHalaman,
+        'target_page'    => $targetHalaman,
         'posisi'         => $posisi,
+        'position'       => $posisi,
+        'button_label'   => $buttonLabel,
         'status'         => $status
     ], 'Data flipbook berhasil diperbarui.');
 }

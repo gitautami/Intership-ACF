@@ -7,16 +7,21 @@
 (function () {
   'use strict';
 
-  let PDF_FILE_PATH = '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf';
+  let PDF_FILE_PATH = '';
   let activeFlipbookDoc = null;
   let flipBookInstance = null;
   let pdfDocInstance = null;
   let currentLoadedPdfPath = null;
   let isRendering = false;
   let totalDocPages = 0;
+  let activePdfPageWidth = 595;
+  let activePdfPageHeight = 842;
+  let currentBaseWidth = 0;
+  let currentBaseHeight = 0;
   const renderedPages = new Set();
   const renderingPromises = new Map();
   let hintTimeout = null;
+  let resizeDebounceTimer = null;
 
   /**
    * Helper: Dapatkan nama file halaman saat ini
@@ -72,30 +77,54 @@
     const rawStatus = String(doc.status || 'aktif').trim().toLowerCase();
     let resolvedUrl = doc.file_url || doc.fileUrl || '';
 
-    // Jika file_url kosong dari cache lama, tapi file_name adalah file upload kustom (bukan default profil lembaga)
-    if (!resolvedUrl && doc.file_name && !doc.file_name.toLowerCase().includes('profil lembaga')) {
+    // Resolusi file_url dari localStorage jika hilang atau terpotong
+    if (!resolvedUrl && doc.file_name) {
       try {
-        const allCached = JSON.parse(localStorage.getItem('acf_flipbooks_data') || '[]');
-        const found = allCached.find(f => (f.id && String(f.id) === String(doc.id)) || (f.file_name && f.file_name === doc.file_name));
-        if (found && (found.file_url || found.fileUrl)) {
-          resolvedUrl = found.file_url || found.fileUrl;
+        const latest = JSON.parse(localStorage.getItem('acf_latest_uploaded_flipbook') || 'null');
+        if (latest && (latest.file_url || latest.fileUrl)) {
+          if (latest.file_name === doc.file_name || !doc.file_name.toLowerCase().includes('profil lembaga')) {
+            resolvedUrl = latest.file_url || latest.fileUrl;
+          }
         }
       } catch (e) {}
+
       if (!resolvedUrl) {
-        resolvedUrl = '../assets/uploads/flipbook/flip_20261111_143004_Analisis_Kemampuan_Literasi_da.pdf';
+        try {
+          const allCached = JSON.parse(localStorage.getItem('acf_flipbooks_data') || '[]');
+          const found = allCached.find(f => (f.id && String(f.id) === String(doc.id)) || (f.file_name && f.file_name === doc.file_name));
+          if (found && (found.file_url || found.fileUrl)) {
+            resolvedUrl = found.file_url || found.fileUrl;
+          }
+        } catch (e) {}
+      }
+
+      if (!resolvedUrl && doc.file_name) {
+        if (doc.file_name.toLowerCase().includes('profil lembaga')) {
+          resolvedUrl = '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf';
+        } else {
+          resolvedUrl = `../assets/uploads/flipbook/${doc.file_name}`;
+        }
       }
     }
 
+    // Koreksi path jika belum ada prefix relative '../'
+    if (resolvedUrl && !resolvedUrl.startsWith('http') && !resolvedUrl.startsWith('/') && !resolvedUrl.startsWith('.')) {
+      resolvedUrl = '../' + resolvedUrl;
+    }
+
+    const defaultTitle = 'Dokumen Flipbook — ACF Eduhub';
+    const cleanFileName = doc.file_name || doc.fileName || (resolvedUrl ? resolvedUrl.substring(resolvedUrl.lastIndexOf('/') + 1) : '');
+
     return {
       id: doc.id,
-      title: doc.judul || doc.title || 'Dokumen Flipbook — ACF Eduhub',
+      title: doc.judul || doc.title || defaultTitle,
       description: doc.deskripsi || doc.description || 'Dokumen Resmi Yayasan ACF Eduhub',
-      file_url: resolvedUrl || PDF_FILE_PATH,
-      file_name: doc.file_name || doc.fileName || (resolvedUrl ? resolvedUrl.substring(resolvedUrl.lastIndexOf('/') + 1) : 'Profil Lembaga - ACF Eduhub.pdf'),
+      file_url: resolvedUrl || (doc.file_name ? `../assets/uploads/flipbook/${doc.file_name}` : ''),
+      file_name: cleanFileName,
       total_pages: parseInt(doc.total_pages || doc.totalPages || 0, 10),
       target_page: (doc.target_halaman || doc.target_page || 'kisah-kami.html').toLowerCase(),
       position: (doc.posisi || doc.position || 'bawah_deskripsi_sejarah').trim(),
-      button_label: doc.button_label || doc.label_tombol || 'Baca di sini',
+      button_label: doc.button_label || doc.label_tombol || 'Baca Dokumen',
       status: rawStatus === 'nonaktif' ? 'nonaktif' : 'aktif'
     };
   }
@@ -106,7 +135,61 @@
   async function fetchActiveFlipbook(pageName) {
     const cleanPage = (pageName || 'kisah-kami.html').toLowerCase();
 
-    // 1. Coba dari window.ACF_API jika tersedia
+    // Helper pencocokan target halaman secara cerdas & fleksibel
+    function isTargetPageMatch(targetVal, page) {
+      if (!targetVal) return false;
+      const t = String(targetVal).toLowerCase().trim();
+      const p = String(page).toLowerCase().trim();
+      const base = p.replace('.html', '').replace('.php', '');
+      if (t === p || t === base) return true;
+      if (t.includes(base) || base.includes(t)) return true;
+      if (p.includes('kabar') && (t.includes('kabar') || t.includes('berita') || t.includes('artikel') || t.includes('literasi') || t.includes('analisis'))) return true;
+      if (p.includes('donasi') && (t.includes('donasi') || t.includes('infaq') || t.includes('sedekah'))) return true;
+      if (p.includes('kisah') && (t.includes('kisah') || t.includes('cerita') || t.includes('sejarah') || t.includes('tentang'))) return true;
+      if (p.includes('relawan') && (t.includes('relawan') || t.includes('sahabat'))) return true;
+      if (p.includes('mitra') && (t.includes('mitra') || t.includes('kerjasama'))) return true;
+      if (p.includes('index') && (t.includes('beranda') || t.includes('home') || t.includes('utama'))) return true;
+      return false;
+    }
+
+    // 1. Cek unggahan terbaru admin di localStorage (Prioritas Tertinggi untuk Instant Preview)
+    try {
+      const latestRaw = localStorage.getItem('acf_latest_uploaded_flipbook');
+      if (latestRaw) {
+        const latest = JSON.parse(latestRaw);
+        if (latest && String(latest.status || 'aktif').toLowerCase() === 'aktif') {
+          if (isTargetPageMatch(latest.target_page || latest.target_halaman, cleanPage)) {
+            return normalizeFlipbookDoc(latest);
+          }
+        }
+      }
+    } catch (e) {}
+
+    // 2. Cek cache halaman aktif di localStorage
+    try {
+      const activeKey = `acf_active_flipbook_${cleanPage}`;
+      const cachedActive = localStorage.getItem(activeKey);
+      if (cachedActive) {
+        const parsed = JSON.parse(cachedActive);
+        if (parsed && (String(parsed.status || 'aktif').toLowerCase() === 'aktif')) {
+          return normalizeFlipbookDoc(parsed);
+        }
+      }
+
+      const allCached = localStorage.getItem('acf_flipbooks_data');
+      if (allCached) {
+        const list = JSON.parse(allCached);
+        if (Array.isArray(list)) {
+          const match = list.find(item => 
+            isTargetPageMatch(item.target_halaman || item.target_page || '', cleanPage) &&
+            (String(item.status || 'aktif').toLowerCase() === 'aktif')
+          );
+          if (match) return normalizeFlipbookDoc(match);
+        }
+      }
+    } catch (e) {}
+
+    // 3. Coba dari window.ACF_API jika tersedia
     if (window.ACF_API && window.ACF_API.flipbooks && typeof window.ACF_API.flipbooks.getByPage === 'function') {
       try {
         const doc = await window.ACF_API.flipbooks.getByPage(cleanPage);
@@ -116,7 +199,7 @@
       }
     }
 
-    // 2. Coba direct fetch ke endpoint flipbooks.php
+    // 4. Coba direct fetch ke endpoint flipbooks.php
     try {
       const res = await fetch(`../BACKEND/api/flipbooks.php?page=${encodeURIComponent(cleanPage)}`);
       if (res.ok) {
@@ -127,48 +210,8 @@
       }
     } catch (e) {}
 
-    // 3. Cek localStorage (untuk preview instan dari admin portal atau offline mode)
-    try {
-      const activeKey = `acf_active_flipbook_${cleanPage}`;
-      const cachedActive = localStorage.getItem(activeKey);
-      if (cachedActive) {
-        const parsed = JSON.parse(cachedActive);
-        if (parsed && (String(parsed.status).toLowerCase() === 'aktif')) {
-          return normalizeFlipbookDoc(parsed);
-        }
-      }
-
-      const allCached = localStorage.getItem('acf_flipbooks_data');
-      if (allCached) {
-        const list = JSON.parse(allCached);
-        if (Array.isArray(list)) {
-          function isTargetPageMatch(targetVal, page) {
-            if (!targetVal) return false;
-            const t = String(targetVal).toLowerCase().trim();
-            const p = String(page).toLowerCase().trim();
-            const base = p.replace('.html', '').replace('.php', '');
-            if (t === p || t === base) return true;
-            if (t.includes(base)) return true;
-            if (p.includes('kabar') && (t.includes('kabar') || t.includes('berita') || t.includes('artikel'))) return true;
-            if (p.includes('donasi') && (t.includes('donasi') || t.includes('infaq') || t.includes('sedekah'))) return true;
-            if (p.includes('kisah') && (t.includes('kisah') || t.includes('cerita') || t.includes('sejarah'))) return true;
-            if (p.includes('relawan') && (t.includes('relawan') || t.includes('sahabat'))) return true;
-            if (p.includes('mitra') && (t.includes('mitra') || t.includes('kerjasama'))) return true;
-            if (p.includes('index') && (t.includes('beranda') || t.includes('home') || t.includes('utama'))) return true;
-            return false;
-          }
-
-          const match = list.find(item => 
-            isTargetPageMatch(item.target_halaman || item.target_page || '', cleanPage) &&
-            (String(item.status || 'aktif').toLowerCase() === 'aktif')
-          );
-          if (match) return normalizeFlipbookDoc(match);
-        }
-      }
-    } catch (e) {}
-
-    // 4. Fallback khusus untuk kisah-kami.html & profil-lembaga.html bila backend offline
-    if (cleanPage === 'kisah-kami.html' || cleanPage === 'profil-lembaga.html') {
+    // 5. Fallback khusus untuk profil-lembaga.html HANYA jika tidak ada dokumen custom lain
+    if (cleanPage === 'profil-lembaga.html') {
       return normalizeFlipbookDoc({
         id: 1,
         title: 'Profil Lembaga ACF Eduhub',
@@ -176,7 +219,7 @@
         file_name: 'Profil Lembaga - ACF Eduhub.pdf',
         file_url: '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf',
         total_pages: 31,
-        target_page: 'kisah-kami.html',
+        target_page: 'profil-lembaga.html',
         position: 'bawah_deskripsi_sejarah',
         button_label: 'Profil Lembaga ACF Eduhub',
         status: 'aktif'
@@ -232,10 +275,94 @@
   }
 
   /**
-   * Helper: Dapatkan skala render optimal (0.8 di mobile agar instan & tajam, 1.0 di desktop)
+   * Hitung dimensi optimal Flipbook secara dinamis berdasarkan aspect ratio asli dokumen PDF
+   * Menjamin 100% halaman tidak terpotong (tidak terpotong atas/bawah/samping) dan selalu muat di layar
    */
-  function getOptimalRenderScale() {
-    return window.innerWidth <= 768 ? 0.8 : 1.0;
+  function calculateOptimalBookDimensions(pdfPageW = 595, pdfPageH = 842) {
+    const modal = document.getElementById('flipbookModal');
+    const isForcedLandscape = modal && modal.classList.contains('is-forced-landscape');
+
+    let screenW = window.innerWidth;
+    let screenH = window.innerHeight;
+
+    // Jika user mengaktifkan rotasi virtual landscape di HP
+    if (isForcedLandscape && screenW < screenH) {
+      const temp = screenW;
+      screenW = screenH;
+      screenH = temp;
+    }
+
+    const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const isMobile = screenW <= 768 || (screenH <= 550 && screenW <= 1024) || (hasTouch && screenW <= 1024);
+    const isLandscape = screenW > screenH;
+
+    // Hitung aspect ratio dokumen asli (Tinggi / Lebar per lembar)
+    const validW = Math.max(100, Number(pdfPageW) || 595);
+    const validH = Math.max(100, Number(pdfPageH) || 842);
+    const pageRatio = validH / validW;
+
+    let availW, availH;
+
+    if (isMobile) {
+      if (isLandscape) {
+        // Mode Landscape HP: Navigasi minimalis, maksimalkan tinggi dan lebar
+        // Safe margin: Top/Bottom header & mini controls bar = ~46px, Left/Right = ~36px
+        availH = Math.max(180, screenH - 46);
+        availW = Math.max(260, screenW - 36);
+      } else {
+        // Mode Portrait HP: Dua halaman berdampingan harus muat dalam layar sempit
+        // Safe margin: Header modal + Bottom controls = ~100px, Side margin = ~20px
+        availH = Math.max(240, screenH - 100);
+        availW = Math.max(240, screenW - 20);
+      }
+    } else {
+      // Desktop / Laptop:
+      // Safe margin: Header modal (~64px) + Bottom bar (~54px) + padding = ~134px
+      // Side buttons (Prev/Next floating buttons ~50px each side + padding) = ~140px
+      availH = Math.max(300, screenH - 134);
+      availW = Math.max(300, screenW - 140);
+    }
+
+    // Buku terdiri dari 2 lembar berdampingan (Total Lebar = 2 * baseWidth)
+    // Syarat presisi anti-terpotong:
+    // 1) 2 * baseWidth <= availW  ==> baseWidth <= availW / 2
+    // 2) baseHeight <= availH     ==> baseWidth * pageRatio <= availH ==> baseWidth <= availH / pageRatio
+    let maxWByHeight = Math.floor(availH / pageRatio);
+    let maxWByWidth = Math.floor(availW / 2);
+    let baseWidth = Math.min(maxWByWidth, maxWByHeight);
+
+    // Batasan minimum yang aman
+    const minW = isMobile ? (isLandscape ? 120 : 85) : 180;
+    const maxW = isMobile ? 800 : 750;
+
+    baseWidth = Math.max(minW, Math.min(maxW, baseWidth));
+
+    // KUNCI UTAMA ANTI-TERPOTONG: Jika minW membuat baseHeight > availH, sesuaikan agar tetap muat 100%
+    if (baseWidth * pageRatio > availH) {
+      baseWidth = Math.floor(availH / pageRatio);
+    }
+    const baseHeight = Math.round(baseWidth * pageRatio);
+
+    return {
+      baseWidth,
+      baseHeight,
+      pageRatio,
+      isMobile,
+      isLandscape,
+      isForcedLandscape
+    };
+  }
+
+  /**
+   * Helper: Dapatkan skala render optimal beresolusi tinggi (High-DPI / Retina) agar teks tajam & jelas dibaca
+   */
+  function getOptimalRenderScale(baseWidth = null, pdfUnscaledW = null) {
+    const w = baseWidth || currentBaseWidth || (window.innerWidth <= 768 ? 260 : 500);
+    const naturalW = Math.max(100, Number(pdfUnscaledW || activePdfPageWidth) || 595);
+    const dpr = Math.max(window.devicePixelRatio || 1, 1.5);
+    const targetPixelWidth = Math.max(w * dpr, 1200);
+    const computedScale = targetPixelWidth / naturalW;
+    return Math.max(2.0, Math.min(3.2, computedScale));
   }
 
   /**
@@ -298,9 +425,13 @@
   }
 
   /**
-   * Preload PDF asli di background segera setelah halaman dimuat
+   * Preload PDF asli di background segera setelah dokumen aktif dipastikan
    */
   async function preloadPdfInBackground() {
+    if (!PDF_FILE_PATH || typeof PDF_FILE_PATH !== 'string' || !PDF_FILE_PATH.trim()) {
+      return; // Jangan pernah preload jika belum ada dokumen valid untuk halaman ini!
+    }
+
     try {
       await ensureDependenciesLoaded();
       if (typeof window.pdfjsLib !== 'undefined') {
@@ -312,10 +443,21 @@
           currentLoadedPdfPath = PDF_FILE_PATH;
           totalDocPages = doc.numPages;
 
+          // Deteksi rasio halaman asli dari page 1
+          try {
+            const page1 = await doc.getPage(1);
+            const vp1 = page1.getViewport({ scale: 1.0 });
+            activePdfPageWidth = vp1.width || 595;
+            activePdfPageHeight = vp1.height || 842;
+          } catch (eDim) {}
+
           const bookContainer = document.getElementById('flipbookBook');
           if (bookContainer) {
             createSheetElements(bookContainer);
-            const scale = getOptimalRenderScale();
+            const dims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
+            currentBaseWidth = dims.baseWidth;
+            currentBaseHeight = dims.baseHeight;
+            const scale = getOptimalRenderScale(dims.baseWidth, activePdfPageWidth);
             // Pra-render 3 halaman pertama di background sebelum user mengklik tombol
             const initialPages = [1, 2, 3].filter(p => p <= totalDocPages);
             await Promise.all(initialPages.map(p => renderSinglePdfPage(p, scale)));
@@ -1250,42 +1392,29 @@
         pageRange.value = 1;
       }
 
-      const isMobile = window.innerWidth <= 768 || (window.innerHeight <= 550 && window.innerWidth <= 1024);
-      let baseWidth, baseHeight;
-
-      if (isMobile) {
-        const isLandscape = window.innerWidth > window.innerHeight;
-        if (isLandscape) {
-          // Pada posisi mendatar (landscape HP): maksimalkan tinggi agar lembaran besar
-          const availH = window.innerHeight - 50;
-          const availW = window.innerWidth - 30;
-          let pageH = availH;
-          let pageW = Math.floor(pageH / 1.414);
-          if (pageW * 2 > availW) {
-            pageW = Math.floor(availW / 2);
-            pageH = Math.round(pageW * 1.414);
-          }
-          baseWidth = Math.max(140, pageW);
-          baseHeight = Math.round(baseWidth * 1.414);
-        } else {
-          // Pada posisi tegak (portrait HP): lebar 2 halaman muat pas tanpa kepotong
-          const availW = window.innerWidth - 24;
-          const availH = window.innerHeight - 100;
-          const maxWByScreenW = Math.floor(availW / 2);
-          const maxWByScreenH = Math.floor(availH / 1.414);
-          baseWidth = Math.min(maxWByScreenW, maxWByScreenH);
-          baseHeight = Math.round(baseWidth * 1.414);
-        }
-      } else {
-        // Desktop: 550 x 778
-        baseWidth = 550;
-        baseHeight = Math.round(baseWidth * 1.414);
+      // 1. Deteksi aspect ratio asli dari PDF Page 1
+      try {
+        const page1 = await pdfDocInstance.getPage(1);
+        const vp1 = page1.getViewport({ scale: 1.0 });
+        activePdfPageWidth = vp1.width || 595;
+        activePdfPageHeight = vp1.height || 842;
+      } catch (eDim) {
+        activePdfPageWidth = 595;
+        activePdfPageHeight = 842;
       }
 
-      // Pastikan elemen sheet & canvas terbuat
+      // 2. Hitung dimensi optimal otomatis agar tidak terpotong sama sekali
+      const dims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
+      const baseWidth = dims.baseWidth;
+      const baseHeight = dims.baseHeight;
+      currentBaseWidth = baseWidth;
+      currentBaseHeight = baseHeight;
+
+      // 3. Pastikan elemen sheet & canvas terbuat
       createSheetElements(bookContainer);
 
-      const scale = getOptimalRenderScale();
+      // 4. Skala render tajam beresolusi tinggi (Retina)
+      const scale = getOptimalRenderScale(baseWidth, activePdfPageWidth);
 
       // Render 3 Halaman Pertama secara Paralel Instan (< 150ms)
       const initialPages = [1, 2, 3].filter(p => p <= totalDocPages && !renderedPages.has(p));
@@ -1338,6 +1467,8 @@
         const context = canvas.getContext('2d');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
 
         await page.render({
           canvasContext: context,
@@ -1411,23 +1542,33 @@
       return;
     }
 
-    const isMobile = window.innerWidth <= 768 || (window.innerHeight <= 550 && window.innerWidth <= 1024);
+    const dims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
+    const bookW = width || dims.baseWidth;
+    const bookH = height || dims.baseHeight;
+    currentBaseWidth = bookW;
+    currentBaseHeight = bookH;
+
+    // KUNCI PRESISI UKURAN: Kunci dimensi fisik container agar buku pas presisi dan tidak pernah overflow viewport
+    container.style.width = (bookW * 2) + 'px';
+    container.style.height = bookH + 'px';
+    container.style.maxWidth = (bookW * 2) + 'px';
+    container.style.maxHeight = bookH + 'px';
 
     flipBookInstance = new window.St.PageFlip(container, {
-      width: width,
-      height: height,
-      size: 'stretch',
-      minWidth: isMobile ? Math.min(100, width) : 280,
-      maxWidth: 900,
-      minHeight: isMobile ? Math.min(140, height) : 400,
-      maxHeight: 1200,
+      width: bookW,
+      height: bookH,
+      size: 'fixed',
+      minWidth: bookW,
+      maxWidth: bookW,
+      minHeight: bookH,
+      maxHeight: bookH,
       maxShadowOpacity: 0.6,
       showCover: true,
       mobileScrollSupport: false,
       usePortrait: false,
-      flippingTime: 700,
+      flippingTime: 650,
       drawShadow: true,
-      autoSize: true
+      autoSize: false
     });
 
     const sheets = container.querySelectorAll('.page-sheet');
@@ -1623,25 +1764,69 @@
     }
   }
 
-  // Responsif resize dan rotasi layar perangkat — Hanya perbarui posisi cover, jangan pernah destroy instance!
-  window.addEventListener('resize', () => {
+  // Responsif resize dan rotasi layar perangkat dengan Auto-Refit Otomatis
+  function handleFlipbookResize() {
+    clearTimeout(resizeDebounceTimer);
+    resizeDebounceTimer = setTimeout(() => {
+      const modal = document.getElementById('flipbookModal');
+      if (!modal || !modal.classList.contains('active')) return;
+      if (!flipBookInstance || !pdfDocInstance) return;
+
+      const curPage = flipBookInstance.getCurrentPageIndex();
+      const newDims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
+
+      // Jika ukuran layar berubah signifikan (> 10px), sesuaikan ulang flipbook agar tidak terpotong
+      if (Math.abs(newDims.baseWidth - currentBaseWidth) > 10 || Math.abs(newDims.baseHeight - currentBaseHeight) > 10) {
+        reFitFlipbook(curPage);
+      } else {
+        updateCoverCentering(curPage);
+      }
+    }, 180);
+  }
+
+  /**
+   * Menyesuaikan ulang ukuran Flipbook saat orientasi HP berubah atau jendela browser di-resize
+   */
+  function reFitFlipbook(targetPageIndex = 0) {
+    if (!flipBookInstance || !pdfDocInstance) return;
+    const bookContainer = document.getElementById('flipbookBook');
+    if (!bookContainer) return;
+
+    const dims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
+    currentBaseWidth = dims.baseWidth;
+    currentBaseHeight = dims.baseHeight;
+
+    try {
+      flipBookInstance.destroy();
+    } catch (e) {}
+    flipBookInstance = null;
+
+    bookContainer.style.width = (dims.baseWidth * 2) + 'px';
+    bookContainer.style.height = dims.baseHeight + 'px';
+    bookContainer.style.maxWidth = (dims.baseWidth * 2) + 'px';
+    bookContainer.style.maxHeight = dims.baseHeight + 'px';
+
+    initStPageFlip(bookContainer, dims.baseWidth, dims.baseHeight);
     if (flipBookInstance) {
       try {
-        const cur = flipBookInstance.getCurrentPageIndex();
-        updateCoverCentering(cur);
-      } catch (e) {}
+        flipBookInstance.turnToPage(targetPageIndex);
+        updateCoverCentering(targetPageIndex);
+        updateNavButtonsState(targetPageIndex);
+      } catch (err) {}
+    }
+  }
+
+  window.addEventListener('resize', handleFlipbookResize);
+  window.addEventListener('orientationchange', handleFlipbookResize);
+
+  // Auto-sinkronisasi bila admin baru saja mengunggah/mengedit flipbook di portal admin
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'acf_flipbooks_data' || (e.key && e.key.startsWith('acf_active_flipbook_')) || e.key === 'acf_latest_uploaded_flipbook') {
+      initDynamicPageFlipbook();
     }
   });
-
-  window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-      if (flipBookInstance) {
-        try {
-          const cur = flipBookInstance.getCurrentPageIndex();
-          updateCoverCentering(cur);
-        } catch (e) {}
-      }
-    }, 200);
+  window.addEventListener('acf_flipbook_updated', () => {
+    initDynamicPageFlipbook();
   });
 
   // Ekspor fungsi ke window agar dapat dipanggil dari luar
@@ -1652,6 +1837,7 @@
   window.initACFFlipbook = initDynamicPageFlipbook;
   window.toggleFlipbookNavbars = toggleNavbars;
   window.toggleFlipbookLandscape = toggleLandscapeMode;
+  window.reFitACFFlipbook = reFitFlipbook;
 
   // Inisialisasi awal saat script dimuat
   async function bootFlipbook() {

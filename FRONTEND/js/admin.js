@@ -4729,6 +4729,8 @@
           localFlipbooks.unshift(cachedItem);
         }
         localStorage.setItem('acf_flipbooks_data', JSON.stringify(localFlipbooks));
+        localStorage.setItem('acf_latest_uploaded_flipbook', JSON.stringify(cachedItem));
+        window.dispatchEvent(new CustomEvent('acf_flipbook_updated', { detail: cachedItem }));
       } catch (eCache) {
         console.warn('Cache local flipbook warning:', eCache);
       }
@@ -4813,8 +4815,12 @@
   let adminRenderingPromises = new Map();
   let adminHintTimeout = null;
   let adminResizeDebounceTimer = null;
+  let adminPdfPageWidth = 595;
+  let adminPdfPageHeight = 842;
+  let currentAdminBaseWidth = 0;
+  let currentAdminBaseHeight = 0;
 
-  function calculateAdminBookDimensions() {
+  function calculateAdminBookDimensions(pdfPageW = 595, pdfPageH = 842) {
     const modal = document.getElementById('adminFlipbookPreviewModal');
     const isForcedLandscape = modal && modal.classList.contains('is-forced-landscape');
 
@@ -4831,103 +4837,49 @@
     const isMobile = screenW <= 768 || (screenH <= 550 && screenW <= 1024) || (hasTouch && screenW <= 1024);
     const isLandscape = screenW > screenH;
 
-    let baseWidth, baseHeight;
+    const validW = Math.max(100, Number(pdfPageW) || 595);
+    const validH = Math.max(100, Number(pdfPageH) || 842);
+    const pageRatio = validH / validW;
+
+    let availW, availH;
 
     if (isMobile) {
       if (isLandscape) {
-        const availH = screenH - 46;
-        const availW = screenW - 24;
-
-        let pageH = availH;
-        let pageW = Math.floor(pageH / 1.414);
-
-        if (pageW * 2 > availW) {
-          pageW = Math.floor(availW / 2);
-          pageH = Math.round(pageW * 1.414);
-        }
-
-        baseWidth = Math.max(120, pageW);
-        baseHeight = Math.round(baseWidth * 1.414);
+        availH = Math.max(180, screenH - 46);
+        availW = Math.max(260, screenW - 36);
       } else {
-        const availW = screenW - 24;
-        const availH = screenH - 96;
-        const maxWByScreenW = Math.floor(availW / 2);
-        const maxWByScreenH = Math.floor(availH / 1.414);
-        baseWidth = Math.min(maxWByScreenW, maxWByScreenH);
-        baseHeight = Math.round(baseWidth * 1.414);
+        availH = Math.max(240, screenH - 96);
+        availW = Math.max(240, screenW - 20);
       }
     } else {
-      baseWidth = 520;
-      baseHeight = Math.round(baseWidth * 1.414);
+      availH = Math.max(300, screenH - 134);
+      availW = Math.max(300, screenW - 140);
     }
 
-    return { baseWidth, baseHeight, isMobile, isLandscape, isForcedLandscape };
+    let maxWByHeight = Math.floor(availH / pageRatio);
+    let maxWByWidth = Math.floor(availW / 2);
+    let baseWidth = Math.min(maxWByWidth, maxWByHeight);
+
+    const minW = isMobile ? (isLandscape ? 120 : 85) : 180;
+    const maxW = isMobile ? 800 : 750;
+
+    baseWidth = Math.max(minW, Math.min(maxW, baseWidth));
+
+    if (baseWidth * pageRatio > availH) {
+      baseWidth = Math.floor(availH / pageRatio);
+    }
+    const baseHeight = Math.round(baseWidth * pageRatio);
+
+    return { baseWidth, baseHeight, pageRatio, isMobile, isLandscape, isForcedLandscape };
   }
 
-  async function toggleAdminLandscapeMode() {
-    const modal = document.getElementById('adminFlipbookPreviewModal');
-    const btn = document.getElementById('adminBtnFlipbookLandscape');
-    if (!modal) return;
-
-    const isLandscape = window.innerWidth > window.innerHeight;
-
-    if (screen.orientation && screen.orientation.lock) {
-      try {
-        if (!isLandscape) {
-          if (!document.fullscreenElement) {
-            const req = modal.requestFullscreen || modal.webkitRequestFullscreen || document.documentElement.requestFullscreen;
-            if (req) await req.call(modal);
-          }
-          await screen.orientation.lock('landscape');
-          if (btn) btn.classList.add('active');
-          return;
-        } else {
-          if (screen.orientation.unlock) {
-            screen.orientation.unlock();
-          }
-          if (document.fullscreenElement && document.exitFullscreen) {
-            await document.exitFullscreen().catch(() => {});
-          }
-          if (btn) btn.classList.remove('active');
-          return;
-        }
-      } catch (err) {
-        console.log('Admin screen orientation lock:', err);
-      }
-    }
-
-    if (!document.fullscreenElement) {
-      const req = modal.requestFullscreen || modal.webkitRequestFullscreen || document.documentElement.requestFullscreen;
-      if (req) {
-        try { await req.call(modal); } catch (e) {}
-      }
-    }
-  }
-
-  window.addEventListener('resize', () => {
-    if (adminFlipbookInstance) {
-      try {
-        const cur = adminFlipbookInstance.getCurrentPageIndex();
-        const total = adminPdfDocInstance ? adminPdfDocInstance.numPages : 31;
-        updateAdminCoverCentering(cur, total);
-      } catch (e) {}
-    }
-  });
-
-  window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-      if (adminFlipbookInstance) {
-        try {
-          const cur = adminFlipbookInstance.getCurrentPageIndex();
-          const total = adminPdfDocInstance ? adminPdfDocInstance.numPages : 31;
-          updateAdminCoverCentering(cur, total);
-        } catch (e) {}
-      }
-    }, 200);
-  });
-
-  function getAdminOptimalRenderScale() {
-    return window.innerWidth <= 768 ? 0.8 : 1.0;
+  function getAdminOptimalRenderScale(baseWidth = null, pdfUnscaledW = null) {
+    const w = baseWidth || currentAdminBaseWidth || (window.innerWidth <= 768 ? 260 : 500);
+    const naturalW = Math.max(100, Number(pdfUnscaledW || adminPdfPageWidth) || 595);
+    const dpr = Math.max(window.devicePixelRatio || 1, 1.5);
+    const targetPixelWidth = Math.max(w * dpr, 1200);
+    const computedScale = targetPixelWidth / naturalW;
+    return Math.max(2.0, Math.min(3.2, computedScale));
   }
 
   async function renderAdminSinglePage(pageNum, scale = null) {
@@ -4949,6 +4901,8 @@
         const context = canvas.getContext('2d');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
         await page.render({ canvasContext: context, viewport }).promise;
 
         adminRenderedPages.add(pageNum);
@@ -5081,8 +5035,6 @@
     adminPdfDocInstance = null;
     if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
 
-    const { baseWidth, baseHeight, isMobile, isLandscape } = calculateAdminBookDimensions();
-
     if (typeof window.pdfjsLib === 'undefined') {
       setTimeout(() => openAdminFlipbookPreview(id), 500);
       return;
@@ -5092,10 +5044,49 @@
       window.pdfjsLib.GlobalWorkerOptions.workerSrc =
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-      const fileUrl = item.file_url || item.fileUrl || '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf';
+      // Resolusi URL dokumen asli tanpa fallback keliru
+      let fileUrl = item.file_url || item.fileUrl || '';
+      if (!fileUrl && item.file_name) {
+        if (item.file_name.toLowerCase().includes('profil lembaga')) {
+          fileUrl = '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf';
+        } else {
+          fileUrl = `../assets/uploads/flipbook/${item.file_name}`;
+        }
+      }
+      if (!fileUrl) {
+        try {
+          const latest = JSON.parse(localStorage.getItem('acf_latest_uploaded_flipbook') || 'null');
+          if (latest && (latest.file_url || latest.fileUrl)) {
+            fileUrl = latest.file_url || latest.fileUrl;
+          }
+        } catch (e) {}
+      }
+      if (!fileUrl) {
+        fileUrl = '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf';
+      }
+
+      if (!fileUrl.startsWith('http') && !fileUrl.startsWith('/') && !fileUrl.startsWith('.')) {
+        fileUrl = '../' + fileUrl;
+      }
+
       const loadingTask = window.pdfjsLib.getDocument(fileUrl);
       adminPdfDocInstance = await loadingTask.promise;
       const totalPages = adminPdfDocInstance.numPages;
+
+      // Deteksi aspect ratio asli dari PDF Page 1
+      try {
+        const p1 = await adminPdfDocInstance.getPage(1);
+        const vp1 = p1.getViewport({ scale: 1.0 });
+        adminPdfPageWidth = vp1.width || 595;
+        adminPdfPageHeight = vp1.height || 842;
+      } catch (eDim) {
+        adminPdfPageWidth = 595;
+        adminPdfPageHeight = 842;
+      }
+
+      const { baseWidth, baseHeight, isMobile, isLandscape } = calculateAdminBookDimensions(adminPdfPageWidth, adminPdfPageHeight);
+      currentAdminBaseWidth = baseWidth;
+      currentAdminBaseHeight = baseHeight;
 
       if (adminFlipbookPageBadge) {
         adminFlipbookPageBadge.textContent = `1 dari ${totalPages} Halaman`;
@@ -5124,7 +5115,7 @@
         if (adminFlipbookBook) adminFlipbookBook.appendChild(sheet);
       }
 
-      const scale = getAdminOptimalRenderScale();
+      const scale = getAdminOptimalRenderScale(baseWidth, adminPdfPageWidth);
 
       // Render 3 Halaman Pertama secara Paralel Instan (< 150ms)
       const initialPages = [1, 2, 3].filter(p => p <= totalPages && !adminRenderedPages.has(p));
@@ -5133,21 +5124,26 @@
       }
 
       if (typeof window.St !== 'undefined' && typeof window.St.PageFlip !== 'undefined') {
+        adminFlipbookBook.style.width = (baseWidth * 2) + 'px';
+        adminFlipbookBook.style.height = baseHeight + 'px';
+        adminFlipbookBook.style.maxWidth = (baseWidth * 2) + 'px';
+        adminFlipbookBook.style.maxHeight = baseHeight + 'px';
+
         adminFlipbookInstance = new window.St.PageFlip(adminFlipbookBook, {
           width: baseWidth,
           height: baseHeight,
-          size: 'stretch',
-          minWidth: isMobile ? Math.min(100, baseWidth) : 260,
-          maxWidth: 850,
-          minHeight: isMobile ? Math.min(140, baseHeight) : 380,
-          maxHeight: 1100,
+          size: 'fixed',
+          minWidth: baseWidth,
+          maxWidth: baseWidth,
+          minHeight: baseHeight,
+          maxHeight: baseHeight,
           maxShadowOpacity: 0.6,
           showCover: true,
           mobileScrollSupport: false,
           usePortrait: false,
           flippingTime: 650,
           drawShadow: true,
-          autoSize: true
+          autoSize: false
         });
 
         const sheets = adminFlipbookBook.querySelectorAll('.page-sheet');
@@ -5493,7 +5489,27 @@
             } catch (err) { }
           }
           if (flipbookFileSelectedName) {
-            flipbookFileSelectedName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+            flipbookFileSelectedName.innerHTML = `<strong>${escapeHTML(file.name)}</strong> (${formatFileSize(file.size)})`;
+          }
+
+          // Otomatis deteksi info halaman & judul dari file PDF
+          if (typeof window.pdfjsLib !== 'undefined') {
+            const fr = new FileReader();
+            fr.onload = async function() {
+              try {
+                const typedarray = new Uint8Array(this.result);
+                const pdf = await window.pdfjsLib.getDocument(typedarray).promise;
+                if (flipbookFileSelectedName) {
+                  flipbookFileSelectedName.innerHTML = `<strong>${escapeHTML(file.name)}</strong> (${formatFileSize(file.size)}) &bull; <span style="color:#7D2280; font-weight:600;">${pdf.numPages} Halaman terdeteksi</span>`;
+                }
+                flipbookFormPdfFile._detectedPages = pdf.numPages;
+                if (flipbookFormJudul && !flipbookFormJudul.value.trim()) {
+                  const cleanName = file.name.replace(/\.pdf$/i, '').replace(/[_-]+/g, ' ');
+                  flipbookFormJudul.value = cleanName;
+                }
+              } catch (e) {}
+            };
+            fr.readAsArrayBuffer(file);
           }
           showToast(`File "${file.name}" terpilih.`, 'info');
         }
@@ -5511,7 +5527,27 @@
             return;
           }
           if (flipbookFileSelectedName) {
-            flipbookFileSelectedName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+            flipbookFileSelectedName.innerHTML = `<strong>${escapeHTML(file.name)}</strong> (${formatFileSize(file.size)})`;
+          }
+
+          // Otomatis deteksi info halaman & judul dari file PDF
+          if (typeof window.pdfjsLib !== 'undefined') {
+            const fr = new FileReader();
+            fr.onload = async function() {
+              try {
+                const typedarray = new Uint8Array(this.result);
+                const pdf = await window.pdfjsLib.getDocument(typedarray).promise;
+                if (flipbookFileSelectedName) {
+                  flipbookFileSelectedName.innerHTML = `<strong>${escapeHTML(file.name)}</strong> (${formatFileSize(file.size)}) &bull; <span style="color:#7D2280; font-weight:600;">${pdf.numPages} Halaman terdeteksi</span>`;
+                }
+                flipbookFormPdfFile._detectedPages = pdf.numPages;
+                if (flipbookFormJudul && !flipbookFormJudul.value.trim()) {
+                  const cleanName = file.name.replace(/\.pdf$/i, '').replace(/[_-]+/g, ' ');
+                  flipbookFormJudul.value = cleanName;
+                }
+              } catch (e) {}
+            };
+            fr.readAsArrayBuffer(file);
           }
           showToast(`File "${file.name}" terpilih.`, 'info');
         }

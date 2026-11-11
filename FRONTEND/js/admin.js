@@ -3453,7 +3453,7 @@
 
     toast.addEventListener('mouseenter', () => clearTimeout(hideTimer));
     toast.addEventListener('mouseleave', () => {
-      hideTimer = setTimeout(() => removeToastElement(toast), 1500);
+      hideTimer = setTimeout(() => removeToastElement(toast), 2200);
     });
 
     toastContainer.appendChild(toast);
@@ -4614,7 +4614,7 @@
         }
       } else {
         if (window.ACF_API && window.ACF_API.flipbooks) {
-          await window.ACF_API.flipbooks.update({
+          await window.ACF_API.flipbooks.update(id, {
             id: id,
             title: title,
             judul: title,
@@ -4627,7 +4627,6 @@
             button_label: buttonLabel,
             status: status
           });
-          showToast('Pengaturan flipbook berhasil diperbarui!', 'success');
         }
       }
 
@@ -4674,11 +4673,15 @@
       closeFlipbookFormModal();
       await loadFlipbooksData();
 
-      // Berikan notifikasi & langsung buka halaman target flipbook
-      showToast(`Membuka halaman target (${targetPage})...`, 'info');
+      // Berikan SATU notifikasi sukses yang proporsional, ramah, dan nyaman dibaca (durasi 3.5 detik)
+      const targetLabel = getTargetPageLabel(targetPage);
+      const posLabel = getPositionLabel(position);
+      showToast(`Pengaturan Flipbook berhasil disimpan di ${posLabel} (${targetLabel})!`, 'success', 3500);
+
+      // Jeda 2.2 detik sebelum membuka halaman target di tab baru agar notifikasi terbaca jelas
       setTimeout(() => {
         window.open(`../html/${encodeURI(targetPage)}`, '_blank');
-      }, 700);
+      }, 2200);
     } catch (err) {
       console.error('Error saving flipbook:', err);
       showToast('Gagal menyimpan flipbook: ' + (err.message || err), 'error');

@@ -522,6 +522,9 @@
   position: relative;
   z-index: 10;
   box-sizing: border-box;
+  background: #FAF5FF;
+  border-top: 1px solid rgba(125, 34, 128, 0.08);
+  border-bottom: 1px solid rgba(125, 34, 128, 0.08);
 }
 
 .flipbook-placement-wrapper .container {

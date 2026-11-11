@@ -524,8 +524,13 @@
     // 1. Posisi: Di Bawah Deskripsi Sejarah Singkat (Cerita Kami)
     if (position === 'bawah_deskripsi_sejarah' || position === 'bawah_sejarah' || position === 'cerita_kami') {
       const oldWrapper = document.getElementById('flipbookPlacementWrapper');
-      if (oldWrapper && oldWrapper.parentNode) {
-        oldWrapper.remove();
+      if (oldWrapper) {
+        if (oldWrapper.contains && oldWrapper.contains(btnWrap)) {
+          document.body.appendChild(btnWrap);
+        }
+        if (oldWrapper.parentNode) {
+          oldWrapper.remove();
+        }
       }
 
       // Halaman Cerita Kami (kisah-kami.html)

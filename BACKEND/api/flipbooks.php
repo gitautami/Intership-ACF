@@ -173,38 +173,86 @@ if ($method === 'POST') {
         }
     }
 
+    $existingId = intval($_POST['id'] ?? ($input['id'] ?? 0));
+
     // Jika diset sebagai Aktif, kita bisa opsional menonaktifkan flipbook lain pada target_halaman yang sama
     if ($status === 'Aktif') {
-        $deactivateStmt = $db->prepare("UPDATE flipbooks SET status = 'Nonaktif' WHERE target_halaman = :target");
-        $deactivateStmt->execute([':target' => $targetHalaman]);
+        $deactivateStmt = $db->prepare("UPDATE flipbooks SET status = 'Nonaktif' WHERE target_halaman = :target" . ($existingId > 0 ? " AND id != :exId" : ""));
+        $params = [':target' => $targetHalaman];
+        if ($existingId > 0) $params[':exId'] = $existingId;
+        $deactivateStmt->execute($params);
     }
 
-    $stmt = $db->prepare("INSERT INTO flipbooks (judul, deskripsi, file_url, file_name, file_size, total_pages, target_halaman, posisi, button_label, status)
-                          VALUES (:judul, :deskripsi, :file_url, :file_name, :file_size, :total_pages, :target_halaman, :posisi, :button_label, :status)");
+    if ($existingId > 0) {
+        $stmt = $db->prepare("UPDATE flipbooks 
+                              SET judul = :judul, 
+                                  deskripsi = :deskripsi, 
+                                  file_url = :file_url, 
+                                  file_name = :file_name, 
+                                  file_size = :file_size, 
+                                  total_pages = :total_pages, 
+                                  target_halaman = :target_halaman, 
+                                  posisi = :posisi, 
+                                  button_label = :button_label, 
+                                  status = :status,
+                                  updated_at = CURRENT_TIMESTAMP
+                              WHERE id = :id");
+        $stmt->execute([
+            ':judul'          => $judul,
+            ':deskripsi'      => $deskripsi ?: null,
+            ':file_url'       => $fileUrl,
+            ':file_name'      => $fileName ?: basename($fileUrl),
+            ':file_size'      => $fileSize,
+            ':total_pages'    => $totalPages,
+            ':target_halaman' => $targetHalaman,
+            ':posisi'         => $posisi,
+            ':button_label'   => $buttonLabel ?: 'Profil Lembaga ACF Eduhub',
+            ':status'         => $status === 'Aktif' ? 'Aktif' : 'Nonaktif',
+            ':id'             => $existingId
+        ]);
 
-    $stmt->execute([
-        ':judul'          => $judul,
-        ':deskripsi'      => $deskripsi ?: null,
-        ':file_url'       => $fileUrl,
-        ':file_name'      => $fileName ?: basename($fileUrl),
-        ':file_size'      => $fileSize,
-        ':total_pages'    => $totalPages,
-        ':target_halaman' => $targetHalaman,
-        ':posisi'         => $posisi,
-        ':button_label'   => $buttonLabel ?: 'Profil Lembaga ACF Eduhub',
-        ':status'         => $status === 'Aktif' ? 'Aktif' : 'Nonaktif'
-    ]);
+        jsonSuccess([
+            'id'             => $existingId,
+            'judul'          => $judul,
+            'title'          => $judul,
+            'file_url'       => $fileUrl,
+            'target_halaman' => $targetHalaman,
+            'target_page'    => $targetHalaman,
+            'posisi'         => $posisi,
+            'position'       => $posisi,
+            'status'         => $status
+        ], 'Dokumen Flipbook berhasil diperbarui.');
+    } else {
+        $stmt = $db->prepare("INSERT INTO flipbooks (judul, deskripsi, file_url, file_name, file_size, total_pages, target_halaman, posisi, button_label, status)
+                              VALUES (:judul, :deskripsi, :file_url, :file_name, :file_size, :total_pages, :target_halaman, :posisi, :button_label, :status)");
 
-    $newId = (int) $db->lastInsertId();
+        $stmt->execute([
+            ':judul'          => $judul,
+            ':deskripsi'      => $deskripsi ?: null,
+            ':file_url'       => $fileUrl,
+            ':file_name'      => $fileName ?: basename($fileUrl),
+            ':file_size'      => $fileSize,
+            ':total_pages'    => $totalPages,
+            ':target_halaman' => $targetHalaman,
+            ':posisi'         => $posisi,
+            ':button_label'   => $buttonLabel ?: 'Profil Lembaga ACF Eduhub',
+            ':status'         => $status === 'Aktif' ? 'Aktif' : 'Nonaktif'
+        ]);
 
-    jsonSuccess([
-        'id'             => $newId,
-        'judul'          => $judul,
-        'file_url'       => $fileUrl,
-        'target_halaman' => $targetHalaman,
-        'posisi'         => $posisi,
-        'status'         => $status
-    ], 'Dokumen Flipbook berhasil diunggah dan dikonfigurasi.', 201);
+        $newId = (int) $db->lastInsertId();
+
+        jsonSuccess([
+            'id'             => $newId,
+            'judul'          => $judul,
+            'title'          => $judul,
+            'file_url'       => $fileUrl,
+            'target_halaman' => $targetHalaman,
+            'target_page'    => $targetHalaman,
+            'posisi'         => $posisi,
+            'position'       => $posisi,
+            'status'         => $status
+        ], 'Dokumen Flipbook berhasil diunggah dan dikonfigurasi.', 201);
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -212,7 +260,16 @@ if ($method === 'POST') {
 // -----------------------------------------------------------------------------
 if ($method === 'PUT' || $method === 'PATCH') {
     $input = getJsonInput();
-    $id = intval($input['id'] ?? ($_GET['id'] ?? ($_POST['id'] ?? 0)));
+
+    // Jika parameter bersarang di dalam key 'id'
+    if (isset($input['id']) && is_array($input['id'])) {
+        $nested = $input['id'];
+        unset($input['id']);
+        $input = array_merge($nested, $input);
+    }
+
+    $rawId = $_GET['id'] ?? ($input['id'] ?? ($_POST['id'] ?? 0));
+    $id = is_numeric($rawId) ? intval($rawId) : intval($input['id'] ?? 0);
 
     if ($id <= 0) {
         jsonError('ID flipbook tidak valid.', 400);

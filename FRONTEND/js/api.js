@@ -441,9 +441,19 @@
       },
 
       async update(id, data) {
-        const res = await apiFetch(`flipbooks.php?id=${id}`, {
+        let updateId = id;
+        let updateData = data;
+        if (typeof id === 'object' && id !== null) {
+          updateId = id.id;
+          updateData = { ...id };
+        } else if (typeof data === 'object' && data !== null) {
+          updateData = { id: updateId, ...data };
+        } else {
+          updateData = { id: updateId };
+        }
+        const res = await apiFetch(`flipbooks.php?id=${updateId}`, {
           method: 'PUT',
-          body: JSON.stringify({ id, ...data })
+          body: JSON.stringify(updateData)
         });
         return res;
       },

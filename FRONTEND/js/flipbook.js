@@ -70,16 +70,32 @@
   function normalizeFlipbookDoc(doc) {
     if (!doc) return null;
     const rawStatus = String(doc.status || 'aktif').trim().toLowerCase();
+    let resolvedUrl = doc.file_url || doc.fileUrl || '';
+
+    // Jika file_url kosong dari cache lama, tapi file_name adalah file upload kustom (bukan default profil lembaga)
+    if (!resolvedUrl && doc.file_name && !doc.file_name.toLowerCase().includes('profil lembaga')) {
+      try {
+        const allCached = JSON.parse(localStorage.getItem('acf_flipbooks_data') || '[]');
+        const found = allCached.find(f => (f.id && String(f.id) === String(doc.id)) || (f.file_name && f.file_name === doc.file_name));
+        if (found && (found.file_url || found.fileUrl)) {
+          resolvedUrl = found.file_url || found.fileUrl;
+        }
+      } catch (e) {}
+      if (!resolvedUrl) {
+        resolvedUrl = '../assets/uploads/flipbook/flip_20261111_143004_Analisis_Kemampuan_Literasi_da.pdf';
+      }
+    }
+
     return {
       id: doc.id,
       title: doc.judul || doc.title || 'Dokumen Flipbook — ACF Eduhub',
       description: doc.deskripsi || doc.description || 'Dokumen Resmi Yayasan ACF Eduhub',
-      file_url: doc.file_url || doc.fileUrl || PDF_FILE_PATH,
-      file_name: doc.file_name || doc.fileName || 'Profil Lembaga - ACF Eduhub.pdf',
+      file_url: resolvedUrl || PDF_FILE_PATH,
+      file_name: doc.file_name || doc.fileName || (resolvedUrl ? resolvedUrl.substring(resolvedUrl.lastIndexOf('/') + 1) : 'Profil Lembaga - ACF Eduhub.pdf'),
       total_pages: parseInt(doc.total_pages || doc.totalPages || 0, 10),
       target_page: (doc.target_halaman || doc.target_page || 'kisah-kami.html').toLowerCase(),
       position: (doc.posisi || doc.position || 'bawah_deskripsi_sejarah').trim(),
-      button_label: doc.button_label || doc.label_tombol || 'Profil Lembaga ACF Eduhub',
+      button_label: doc.button_label || doc.label_tombol || 'Baca di sini',
       status: rawStatus === 'nonaktif' ? 'nonaktif' : 'aktif'
     };
   }
@@ -254,36 +270,64 @@
   }
 
   /**
+   * Perbarui teks, judul, link unduh, dan metadata modal flipbook sesuai dokumen aktif
+   */
+  function updateModalInfo(doc) {
+    const modal = document.getElementById('flipbookModal');
+    if (!modal || !doc) return;
+
+    const titleEl = modal.querySelector('#flipbookModalTitle');
+    if (titleEl && doc.title) {
+      titleEl.textContent = doc.title;
+    }
+    const subtitleEl = modal.querySelector('.flipbook-doc-subtitle');
+    if (subtitleEl) {
+      subtitleEl.textContent = doc.description || 'Dokumen Resmi Yayasan ACF Eduhub';
+    }
+    const downloadBtn = modal.querySelector('.btn-download-pdf');
+    if (downloadBtn) {
+      const href = doc.file_url || PDF_FILE_PATH;
+      if (href) downloadBtn.setAttribute('href', href);
+      const downloadName = doc.file_name || (href ? href.substring(href.lastIndexOf('/') + 1) : 'Dokumen-ACF.pdf');
+      if (downloadName) downloadBtn.setAttribute('download', downloadName);
+    }
+    const pageBadge = modal.querySelector('#flipbookPageBadge');
+    if (pageBadge && totalDocPages > 0) {
+      pageBadge.textContent = `1 dari ${totalDocPages} Halaman`;
+    }
+  }
+
+  /**
    * Preload PDF asli di background segera setelah halaman dimuat
    */
   async function preloadPdfInBackground() {
     try {
       await ensureDependenciesLoaded();
-      if (typeof window.pdfjsLib !== 'undefined' && !pdfDocInstance) {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        const doc = await window.pdfjsLib.getDocument(PDF_FILE_PATH).promise;
-        pdfDocInstance = doc;
-        totalDocPages = doc.numPages;
+      if (typeof window.pdfjsLib !== 'undefined') {
+        if (!pdfDocInstance || currentLoadedPdfPath !== PDF_FILE_PATH) {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+          const doc = await window.pdfjsLib.getDocument(PDF_FILE_PATH).promise;
+          pdfDocInstance = doc;
+          currentLoadedPdfPath = PDF_FILE_PATH;
+          totalDocPages = doc.numPages;
 
-        const bookContainer = document.getElementById('flipbookBook');
-        if (bookContainer) {
-          createSheetElements(bookContainer);
-          const scale = getOptimalRenderScale();
-          // Pra-render 3 halaman pertama di background sebelum user mengklik tombol
-          await Promise.all([
-            renderSinglePdfPage(1, scale),
-            renderSinglePdfPage(2, scale),
-            renderSinglePdfPage(3, scale)
-          ]);
-          // Lanjutkan pra-render halaman 4 dan 5
-          if (totalDocPages >= 5) {
-            Promise.all([
-              renderSinglePdfPage(4, scale),
-              renderSinglePdfPage(5, scale)
-            ]).then(() => {
-              renderRemainingPagesInBackground();
-            }).catch(() => {});
+          const bookContainer = document.getElementById('flipbookBook');
+          if (bookContainer) {
+            createSheetElements(bookContainer);
+            const scale = getOptimalRenderScale();
+            // Pra-render 3 halaman pertama di background sebelum user mengklik tombol
+            const initialPages = [1, 2, 3].filter(p => p <= totalDocPages);
+            await Promise.all(initialPages.map(p => renderSinglePdfPage(p, scale)));
+            // Lanjutkan pra-render halaman 4 dan 5
+            if (totalDocPages >= 5) {
+              Promise.all([
+                renderSinglePdfPage(4, scale),
+                renderSinglePdfPage(5, scale)
+              ]).then(() => {
+                renderRemainingPagesInBackground();
+              }).catch(() => {});
+            }
           }
         }
       }
@@ -321,13 +365,13 @@
           <div class="flipbook-header-left">
             <img src="../assets/logo-acf/logo-acf-white-text.png" alt="ACF Eduhub Logo" class="flipbook-logo-mini" onerror="this.style.display='none'">
             <div class="flipbook-title-group">
-              <span class="flipbook-doc-title" id="flipbookModalTitle">${escapeHTML(doc ? doc.title : 'Profil Lembaga — ACF Eduhub')}</span>
-              <span class="flipbook-doc-subtitle">${escapeHTML(doc ? doc.description : 'Dokumen Resmi Profil & Portofolio Dampak Yayasan')}</span>
+              <span class="flipbook-doc-title" id="flipbookModalTitle">${escapeHTML(doc ? doc.title : 'Dokumen Flipbook — ACF Eduhub')}</span>
+              <span class="flipbook-doc-subtitle">${escapeHTML(doc ? doc.description : 'Dokumen Resmi Yayasan ACF Eduhub')}</span>
             </div>
           </div>
           <div class="flipbook-header-right">
             <span class="flipbook-page-badge" id="flipbookPageBadge">Memuat...</span>
-            <a href="${(doc && doc.file_url) || PDF_FILE_PATH}" download="${escapeHTML((doc && doc.file_name) || 'Profil Lembaga - ACF Eduhub.pdf')}" class="flipbook-btn-tool btn-download-pdf" title="Unduh Dokumen PDF Resmi">
+            <a href="${(doc && doc.file_url) || PDF_FILE_PATH}" download="${escapeHTML((doc && doc.file_name) || 'Dokumen.pdf')}" class="flipbook-btn-tool btn-download-pdf" title="Unduh Dokumen PDF Resmi">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
@@ -399,19 +443,7 @@
     } else {
       // Perbarui judul & unduhan pada modal yang sudah ada
       if (doc) {
-        const titleEl = modal.querySelector('.flipbook-doc-title');
-        const subtitleEl = modal.querySelector('.flipbook-doc-subtitle');
-        const downloadLink = modal.querySelector('.btn-download-pdf');
-        const logoEl = modal.querySelector('.flipbook-logo-mini');
-        if (titleEl && doc.title) titleEl.textContent = doc.title;
-        if (subtitleEl && doc.description) subtitleEl.textContent = doc.description;
-        if (downloadLink && doc.file_url) {
-          downloadLink.href = doc.file_url;
-          if (doc.file_name) downloadLink.download = doc.file_name;
-        }
-        if (logoEl) {
-          logoEl.src = '../assets/logo-acf/logo-acf-white-text.png';
-        }
+        updateModalInfo(doc);
       }
 
       // Pastikan tombol landscape ada
@@ -610,7 +642,7 @@
         `;
         modalBtnWrap.querySelector('a').addEventListener('click', (e) => {
           e.preventDefault();
-          openFlipbookModal();
+          openFlipbookModal(activeDoc);
         });
       }
 
@@ -822,16 +854,37 @@
     const isActive = doc && String(doc.status || 'aktif').trim().toLowerCase() === 'aktif';
     if (isActive) {
       activeFlipbookDoc = doc;
-      if (doc.file_url) {
-        PDF_FILE_PATH = doc.file_url;
+      const targetUrl = doc.file_url || doc.fileUrl;
+      if (targetUrl) {
+        if (PDF_FILE_PATH !== targetUrl) {
+          PDF_FILE_PATH = targetUrl;
+          if (currentLoadedPdfPath !== PDF_FILE_PATH) {
+            if (flipBookInstance) {
+              try { flipBookInstance.destroy(); } catch (e) {}
+              flipBookInstance = null;
+            }
+            pdfDocInstance = null;
+            currentLoadedPdfPath = null;
+            renderedPages.clear();
+            renderingPromises.clear();
+            const bookContainer = document.getElementById('flipbookBook');
+            if (bookContainer) bookContainer.innerHTML = '';
+          }
+        }
       }
       ensureFlipbookModalExists(doc);
+      updateModalInfo(doc);
       applyFlipbookPlacement(doc);
+
+      // Preload PDF dokumen yang benar di background
+      preloadPdfInBackground();
     } else {
       const existingWrap = document.getElementById('wrapProfilLembagaBtn');
       if (existingWrap) existingWrap.style.display = 'none';
       const existingPlacementWrap = document.getElementById('flipbookPlacementWrapper');
       if (existingPlacementWrap) existingPlacementWrap.style.display = 'none';
+      const existingModalWrap = document.getElementById('wrapProfilLembagaBtnModal');
+      if (existingModalWrap) existingModalWrap.style.display = 'none';
     }
   }
 
@@ -846,7 +899,7 @@
 
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        openFlipbookModal();
+        openFlipbookModal(activeFlipbookDoc);
       });
     });
 
@@ -901,7 +954,7 @@
       );
       if (trigger) {
         e.preventDefault();
-        openFlipbookModal();
+        openFlipbookModal(activeFlipbookDoc);
         return;
       }
 
@@ -1012,7 +1065,25 @@
   /**
    * 2. Buka Modal Flipbook — Langsung tampil instan tanpa lag
    */
-  async function openFlipbookModal() {
+  async function openFlipbookModal(customDoc = null) {
+    if (customDoc && typeof customDoc === 'object') {
+      activeFlipbookDoc = normalizeFlipbookDoc(customDoc);
+      const targetUrl = activeFlipbookDoc.file_url || activeFlipbookDoc.fileUrl;
+      if (targetUrl && targetUrl !== PDF_FILE_PATH) {
+        PDF_FILE_PATH = targetUrl;
+        if (flipBookInstance) {
+          try { flipBookInstance.destroy(); } catch (e) {}
+          flipBookInstance = null;
+        }
+        pdfDocInstance = null;
+        currentLoadedPdfPath = null;
+        renderedPages.clear();
+        renderingPromises.clear();
+        const bookContainer = document.getElementById('flipbookBook');
+        if (bookContainer) bookContainer.innerHTML = '';
+      }
+    }
+
     let modal = document.getElementById('flipbookModal');
     if (!modal) {
       modal = ensureFlipbookModalExists(activeFlipbookDoc || {
@@ -1030,6 +1101,10 @@
     }
 
     if (!modal) return;
+
+    if (activeFlipbookDoc) {
+      updateModalInfo(activeFlipbookDoc);
+    }
 
     // Tampilkan modal secara langsung
     modal.classList.add('active');
@@ -1069,16 +1144,21 @@
     // Muat dependencies dan buku
     await ensureDependenciesLoaded();
 
-    if (flipBookInstance && currentLoadedPdfPath !== PDF_FILE_PATH) {
-      try { flipBookInstance.destroy(); } catch (e) {}
-      flipBookInstance = null;
+    if (currentLoadedPdfPath !== PDF_FILE_PATH) {
+      if (flipBookInstance) {
+        try { flipBookInstance.destroy(); } catch (e) {}
+        flipBookInstance = null;
+      }
       pdfDocInstance = null;
+      currentLoadedPdfPath = null;
       renderedPages.clear();
       renderingPromises.clear();
+      const bookContainer = document.getElementById('flipbookBook');
+      if (bookContainer) bookContainer.innerHTML = '';
     }
 
     if (!flipBookInstance) {
-      loadAndRenderFlipbook();
+      await loadAndRenderFlipbook();
     }
   }
 
@@ -1142,12 +1222,33 @@
       window.pdfjsLib.GlobalWorkerOptions.workerSrc =
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-      if (!pdfDocInstance) {
+      if (!pdfDocInstance || currentLoadedPdfPath !== PDF_FILE_PATH) {
+        if (flipBookInstance) {
+          try { flipBookInstance.destroy(); } catch (e) {}
+          flipBookInstance = null;
+        }
+        renderedPages.clear();
+        renderingPromises.clear();
+        bookContainer.innerHTML = '';
+
         const loadingTask = window.pdfjsLib.getDocument(PDF_FILE_PATH);
         pdfDocInstance = await loadingTask.promise;
+        currentLoadedPdfPath = PDF_FILE_PATH;
       }
       totalDocPages = pdfDocInstance.numPages;
-      currentLoadedPdfPath = PDF_FILE_PATH;
+
+      if (activeFlipbookDoc) {
+        updateModalInfo(activeFlipbookDoc);
+      }
+      const pageBadge = document.getElementById('flipbookPageBadge');
+      if (pageBadge) {
+        pageBadge.textContent = `1 dari ${totalDocPages} Halaman`;
+      }
+      const pageRange = document.getElementById('flipbookRange') || document.getElementById('flipbookPageRange');
+      if (pageRange) {
+        pageRange.max = totalDocPages;
+        pageRange.value = 1;
+      }
 
       const isMobile = window.innerWidth <= 768 || (window.innerHeight <= 550 && window.innerWidth <= 1024);
       let baseWidth, baseHeight;
@@ -1553,12 +1654,11 @@
   window.toggleFlipbookLandscape = toggleLandscapeMode;
 
   // Inisialisasi awal saat script dimuat
-  function bootFlipbook() {
+  async function bootFlipbook() {
     initTriggerButtons();
     initGlobalDelegation();
-    initDynamicPageFlipbook();
+    await initDynamicPageFlipbook();
     initUrlHashCheck();
-    preloadPdfInBackground();
 
     if (document.body && document.body.classList.contains('flipbook-standalone-body')) {
       initNavbarToggle();

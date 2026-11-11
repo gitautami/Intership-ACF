@@ -4213,6 +4213,8 @@
     item.status = String(raw.status || 'aktif').toLowerCase();
     item.total_pages = parseInt(raw.total_pages, 10) || 1;
     item.file_size = parseInt(raw.file_size, 10) || 0;
+    item.file_url = raw.file_url || raw.fileUrl || '';
+    item.file_name = raw.file_name || raw.fileName || (item.file_url ? item.file_url.substring(item.file_url.lastIndexOf('/') + 1) : '');
     return item;
   }
 
@@ -4272,6 +4274,10 @@
       if (item.status === 'aktif') {
         try {
           localStorage.setItem(`acf_active_flipbook_${item.target_page}`, JSON.stringify(item));
+          const canonical = resolveSmartCanonicalPage(item.target_page);
+          if (canonical && canonical !== item.target_page) {
+            localStorage.setItem(`acf_active_flipbook_${canonical}`, JSON.stringify(item));
+          }
         } catch (e) {}
       }
     });
@@ -4621,16 +4627,35 @@
 
         if (progressFill) progressFill.style.width = '65%';
 
+        let uploadedFileUrl = '';
+        let uploadedFileName = '';
+        let uploadedFileSize = 0;
+        let uploadedTotalPages = 0;
+        let returnedId = id;
+
         if (window.ACF_API && window.ACF_API.flipbooks) {
-          await window.ACF_API.flipbooks.upload(formData);
+          const apiRes = await window.ACF_API.flipbooks.upload(formData);
           if (progressFill) progressFill.style.width = '100%';
+          if (apiRes && apiRes.data) {
+            if (apiRes.data.file_url) uploadedFileUrl = apiRes.data.file_url;
+            if (apiRes.data.file_name) uploadedFileName = apiRes.data.file_name;
+            if (apiRes.data.file_size) uploadedFileSize = apiRes.data.file_size;
+            if (apiRes.data.total_pages) uploadedTotalPages = apiRes.data.total_pages;
+            if (apiRes.data.id) returnedId = apiRes.data.id;
+          }
           showToast(id ? 'Dokumen flipbook berhasil diperbarui!' : 'Dokumen PDF berhasil diunggah & dijadikan Flipbook!', 'success');
         } else {
           showToast('Koneksi API Flipbook tidak tersedia.', 'error');
         }
       } else {
+        let uploadedFileUrl = '';
+        let uploadedFileName = '';
+        let uploadedFileSize = 0;
+        let uploadedTotalPages = 0;
+        let returnedId = id;
+
         if (window.ACF_API && window.ACF_API.flipbooks) {
-          await window.ACF_API.flipbooks.update(id, {
+          const apiRes = await window.ACF_API.flipbooks.update(id, {
             id: id,
             title: title,
             judul: title,
@@ -4643,13 +4668,26 @@
             button_label: buttonLabel,
             status: status
           });
+          if (apiRes && apiRes.data) {
+            if (apiRes.data.file_url) uploadedFileUrl = apiRes.data.file_url;
+            if (apiRes.data.file_name) uploadedFileName = apiRes.data.file_name;
+            if (apiRes.data.file_size) uploadedFileSize = apiRes.data.file_size;
+            if (apiRes.data.total_pages) uploadedTotalPages = apiRes.data.total_pages;
+          }
         }
       }
+
+      // Ambil existingItem bila ada untuk melengkapi file info
+      const existingItem = dataFlipbooks.find(f => String(f.id) === String(id || returnedId));
+      const finalFileUrl = uploadedFileUrl || (existingItem ? (existingItem.file_url || existingItem.fileUrl) : '') || (file ? `../assets/uploads/flipbook/${file.name}` : '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf');
+      const finalFileName = uploadedFileName || (file ? file.name : (existingItem ? (existingItem.file_name || existingItem.fileName) : (flipbookCurrentFileName?.textContent || 'Profil Lembaga - ACF Eduhub.pdf')));
+      const finalFileSize = uploadedFileSize || (file ? file.size : (existingItem ? existingItem.file_size : 0));
+      const finalTotalPages = uploadedTotalPages || (existingItem ? existingItem.total_pages : 0);
 
       // Simpan langsung ke cache localStorage agar penempatan baru segera aktif di halaman publik
       try {
         const cachedItem = {
-          id: id || Date.now(),
+          id: returnedId || id || Date.now(),
           title: title,
           judul: title,
           description: description,
@@ -4660,7 +4698,10 @@
           posisi: position,
           button_label: buttonLabel,
           status: status,
-          file_name: file ? file.name : (flipbookCurrentFileName?.textContent || 'Profil Lembaga - ACF Eduhub.pdf'),
+          file_name: finalFileName,
+          file_url: finalFileUrl,
+          file_size: finalFileSize,
+          total_pages: finalTotalPages,
           updated_at: new Date().toISOString()
         };
 
@@ -5037,6 +5078,7 @@
       try { adminFlipbookInstance.destroy(); } catch (e) { }
       adminFlipbookInstance = null;
     }
+    adminPdfDocInstance = null;
     if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
 
     const { baseWidth, baseHeight, isMobile, isLandscape } = calculateAdminBookDimensions();
@@ -5050,7 +5092,7 @@
       window.pdfjsLib.GlobalWorkerOptions.workerSrc =
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-      const fileUrl = item.file_url;
+      const fileUrl = item.file_url || item.fileUrl || '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf';
       const loadingTask = window.pdfjsLib.getDocument(fileUrl);
       adminPdfDocInstance = await loadingTask.promise;
       const totalPages = adminPdfDocInstance.numPages;

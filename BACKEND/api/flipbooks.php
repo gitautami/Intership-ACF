@@ -90,168 +90,187 @@ if ($method === 'GET') {
 // 2. POST: Upload Dokumen PDF Baru & Buat Flipbook
 // -----------------------------------------------------------------------------
 if ($method === 'POST') {
-    $isMultipart = !empty($_FILES);
+    try {
+        $isMultipart = !empty($_FILES);
 
-    $judul = trim($_POST['judul'] ?? ($_POST['title'] ?? ''));
-    $deskripsi = trim($_POST['deskripsi'] ?? ($_POST['description'] ?? ''));
-    $targetHalaman = trim($_POST['target_halaman'] ?? ($_POST['target_page'] ?? 'kisah-kami.html'));
-    $posisi = trim($_POST['posisi'] ?? ($_POST['position'] ?? 'bawah_deskripsi_sejarah'));
-    $buttonLabel = trim($_POST['button_label'] ?? ($_POST['buttonLabel'] ?? 'Profil Lembaga ACF Eduhub'));
-    $rawStatus = trim($_POST['status'] ?? 'Aktif');
-    $status = (strcasecmp($rawStatus, 'nonaktif') === 0) ? 'Nonaktif' : 'Aktif';
-
-    if (!$isMultipart) {
-        $input = getJsonInput();
-        $judul = trim($input['judul'] ?? ($input['title'] ?? ''));
-        $deskripsi = trim($input['deskripsi'] ?? ($input['description'] ?? ''));
-        $targetHalaman = trim($input['target_halaman'] ?? ($input['target_page'] ?? 'kisah-kami.html'));
-        $posisi = trim($input['posisi'] ?? ($input['position'] ?? 'bawah_deskripsi_sejarah'));
-        $buttonLabel = trim($input['button_label'] ?? ($input['buttonLabel'] ?? 'Profil Lembaga ACF Eduhub'));
-        $rawStatus = trim($input['status'] ?? 'Aktif');
+        $judul = trim($_POST['judul'] ?? ($_POST['title'] ?? ''));
+        $deskripsi = trim($_POST['deskripsi'] ?? ($_POST['description'] ?? ''));
+        $targetHalaman = trim($_POST['target_halaman'] ?? ($_POST['target_page'] ?? 'kisah-kami.html'));
+        $posisi = trim($_POST['posisi'] ?? ($_POST['position'] ?? 'bawah_deskripsi_sejarah'));
+        $buttonLabel = trim($_POST['button_label'] ?? ($_POST['buttonLabel'] ?? 'Profil Lembaga ACF Eduhub'));
+        $rawStatus = trim($_POST['status'] ?? 'Aktif');
         $status = (strcasecmp($rawStatus, 'nonaktif') === 0) ? 'Nonaktif' : 'Aktif';
-    }
 
-    if (empty($judul)) {
-        jsonError('Judul dokumen wajib diisi.', 400);
-    }
-
-    $fileUrl = '';
-    $fileName = '';
-    $fileSize = 0;
-    $totalPages = 0;
-
-    // Handle Upload File PDF
-    if ($isMultipart && (isset($_FILES['pdf']) || isset($_FILES['file']))) {
-        $file = $_FILES['pdf'] ?? $_FILES['file'];
-
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            jsonError('Gagal mengunggah file PDF. Kode error: ' . $file['error'], 400);
+        if (!$isMultipart) {
+            $input = getJsonInput();
+            $judul = trim($input['judul'] ?? ($input['title'] ?? ''));
+            $deskripsi = trim($input['deskripsi'] ?? ($input['description'] ?? ''));
+            $targetHalaman = trim($input['target_halaman'] ?? ($input['target_page'] ?? 'kisah-kami.html'));
+            $posisi = trim($input['posisi'] ?? ($input['position'] ?? 'bawah_deskripsi_sejarah'));
+            $buttonLabel = trim($input['button_label'] ?? ($input['buttonLabel'] ?? 'Profil Lembaga ACF Eduhub'));
+            $rawStatus = trim($input['status'] ?? 'Aktif');
+            $status = (strcasecmp($rawStatus, 'nonaktif') === 0) ? 'Nonaktif' : 'Aktif';
         }
 
-        // Batas maksimal 60MB
-        $maxSize = 60 * 1024 * 1024;
-        if ($file['size'] > $maxSize) {
-            jsonError('Ukuran file PDF terlalu besar. Maksimal 60MB.', 400);
+        if (empty($judul)) {
+            jsonError('Judul dokumen wajib diisi.', 400);
         }
 
-        $origName = $file['name'];
-        $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
-
-        if ($ext !== 'pdf') {
-            jsonError('Format file tidak didukung. Harap unggah file dokumen PDF (.pdf).', 400);
+        // Amankan panjang string agar tidak melebihi kapasitas kolom MySQL (max 255 karakter)
+        if (mb_strlen($targetHalaman) > 250) {
+            $targetHalaman = mb_substr($targetHalaman, 0, 250);
+        }
+        if (mb_strlen($posisi) > 250) {
+            $posisi = mb_substr($posisi, 0, 250);
+        }
+        if (mb_strlen($buttonLabel) > 250) {
+            $buttonLabel = mb_substr($buttonLabel, 0, 250);
         }
 
-        // Target direktori upload
-        $uploadDir = __DIR__ . '/../../FRONTEND/assets/uploads/flipbook/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        $fileUrl = '';
+        $fileName = '';
+        $fileSize = 0;
+        $totalPages = 0;
+
+        // Handle Upload File PDF
+        if ($isMultipart && (isset($_FILES['pdf']) || isset($_FILES['file']))) {
+            $file = $_FILES['pdf'] ?? $_FILES['file'];
+
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                jsonError('Gagal mengunggah file PDF. Kode error: ' . $file['error'], 400);
+            }
+
+            // Batas maksimal 60MB
+            $maxSize = 60 * 1024 * 1024;
+            if ($file['size'] > $maxSize) {
+                jsonError('Ukuran file PDF terlalu besar. Maksimal 60MB.', 400);
+            }
+
+            $origName = $file['name'];
+            $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+
+            if ($ext !== 'pdf') {
+                jsonError('Format file tidak didukung. Harap unggah file dokumen PDF (.pdf).', 400);
+            }
+
+            // Target direktori upload
+            $uploadDir = __DIR__ . '/../../FRONTEND/assets/uploads/flipbook/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $safeBase = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', pathinfo($origName, PATHINFO_FILENAME));
+            $newFileName = 'flip_' . date('Ymd_His') . '_' . substr($safeBase, 0, 30) . '.' . $ext;
+            $targetPath = $uploadDir . $newFileName;
+
+            if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+                jsonError('Gagal menyimpan file PDF ke server.', 500);
+            }
+
+            $fileUrl = '../assets/uploads/flipbook/' . $newFileName;
+            $fileName = $origName;
+            $fileSize = $file['size'];
+
+            // Coba hitung jumlah halaman PDF secara otomatis
+            $totalPages = countPdfPages($targetPath);
+        } else {
+            // Jika menggunakan URL file yang sudah ada
+            $fileUrl = trim($_POST['file_url'] ?? ($input['file_url'] ?? ''));
+            $fileName = trim($_POST['file_name'] ?? ($input['file_name'] ?? basename($fileUrl)));
+            $fileSize = intval($_POST['file_size'] ?? ($input['file_size'] ?? 0));
+            $totalPages = intval($_POST['total_pages'] ?? ($input['total_pages'] ?? 0));
+
+            if (empty($fileUrl)) {
+                jsonError('File PDF dokumen wajib diunggah.', 400);
+            }
         }
 
-        $safeBase = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', pathinfo($origName, PATHINFO_FILENAME));
-        $newFileName = 'flip_' . date('Ymd_His') . '_' . substr($safeBase, 0, 30) . '.' . $ext;
-        $targetPath = $uploadDir . $newFileName;
+        $existingId = intval($_POST['id'] ?? ($input['id'] ?? 0));
 
-        if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-            jsonError('Gagal menyimpan file PDF ke server.', 500);
+        // Jika diset sebagai Aktif, kita bisa opsional menonaktifkan flipbook lain pada target_halaman yang sama
+        if ($status === 'Aktif') {
+            $deactivateStmt = $db->prepare("UPDATE flipbooks SET status = 'Nonaktif' WHERE target_halaman = :target" . ($existingId > 0 ? " AND id != :exId" : ""));
+            $params = [':target' => $targetHalaman];
+            if ($existingId > 0) $params[':exId'] = $existingId;
+            $deactivateStmt->execute($params);
         }
 
-        $fileUrl = '../assets/uploads/flipbook/' . $newFileName;
-        $fileName = $origName;
-        $fileSize = $file['size'];
+        if ($existingId > 0) {
+            $stmt = $db->prepare("UPDATE flipbooks 
+                                  SET judul = :judul, 
+                                      deskripsi = :deskripsi, 
+                                      file_url = :file_url, 
+                                      file_name = :file_name, 
+                                      file_size = :file_size, 
+                                      total_pages = :total_pages, 
+                                      target_halaman = :target_halaman, 
+                                      posisi = :posisi, 
+                                      button_label = :button_label, 
+                                      status = :status,
+                                      updated_at = CURRENT_TIMESTAMP
+                                  WHERE id = :id");
+            $stmt->execute([
+                ':judul'          => $judul,
+                ':deskripsi'      => $deskripsi ?: null,
+                ':file_url'       => $fileUrl,
+                ':file_name'      => $fileName ?: basename($fileUrl),
+                ':file_size'      => $fileSize,
+                ':total_pages'    => $totalPages,
+                ':target_halaman' => $targetHalaman,
+                ':posisi'         => $posisi,
+                ':button_label'   => $buttonLabel ?: 'Profil Lembaga ACF Eduhub',
+                ':status'         => $status === 'Aktif' ? 'Aktif' : 'Nonaktif',
+                ':id'             => $existingId
+            ]);
 
-        // Coba hitung jumlah halaman PDF secara otomatis
-        $totalPages = countPdfPages($targetPath);
-    } else {
-        // Jika menggunakan URL file yang sudah ada
-        $fileUrl = trim($_POST['file_url'] ?? ($input['file_url'] ?? ''));
-        $fileName = trim($_POST['file_name'] ?? ($input['file_name'] ?? basename($fileUrl)));
-        $fileSize = intval($_POST['file_size'] ?? ($input['file_size'] ?? 0));
-        $totalPages = intval($_POST['total_pages'] ?? ($input['total_pages'] ?? 0));
+            jsonSuccess([
+                'id'             => $existingId,
+                'judul'          => $judul,
+                'title'          => $judul,
+                'file_url'       => $fileUrl,
+                'target_halaman' => $targetHalaman,
+                'target_page'    => $targetHalaman,
+                'posisi'         => $posisi,
+                'position'       => $posisi,
+                'status'         => $status
+            ], 'Dokumen Flipbook berhasil diperbarui.');
+        } else {
+            $stmt = $db->prepare("INSERT INTO flipbooks (judul, deskripsi, file_url, file_name, file_size, total_pages, target_halaman, posisi, button_label, status)
+                                  VALUES (:judul, :deskripsi, :file_url, :file_name, :file_size, :total_pages, :target_halaman, :posisi, :button_label, :status)");
 
-        if (empty($fileUrl)) {
-            jsonError('File PDF dokumen wajib diunggah.', 400);
+            $stmt->execute([
+                ':judul'          => $judul,
+                ':deskripsi'      => $deskripsi ?: null,
+                ':file_url'       => $fileUrl,
+                ':file_name'      => $fileName ?: basename($fileUrl),
+                ':file_size'      => $fileSize,
+                ':total_pages'    => $totalPages,
+                ':target_halaman' => $targetHalaman,
+                ':posisi'         => $posisi,
+                ':button_label'   => $buttonLabel ?: 'Profil Lembaga ACF Eduhub',
+                ':status'         => $status === 'Aktif' ? 'Aktif' : 'Nonaktif'
+            ]);
+
+            $newId = (int) $db->lastInsertId();
+
+            jsonSuccess([
+                'id'             => $newId,
+                'judul'          => $judul,
+                'title'          => $judul,
+                'file_url'       => $fileUrl,
+                'target_halaman' => $targetHalaman,
+                'target_page'    => $targetHalaman,
+                'posisi'         => $posisi,
+                'position'       => $posisi,
+                'status'         => $status
+            ], 'Dokumen Flipbook berhasil diunggah dan dikonfigurasi.', 201);
         }
-    }
-
-    $existingId = intval($_POST['id'] ?? ($input['id'] ?? 0));
-
-    // Jika diset sebagai Aktif, kita bisa opsional menonaktifkan flipbook lain pada target_halaman yang sama
-    if ($status === 'Aktif') {
-        $deactivateStmt = $db->prepare("UPDATE flipbooks SET status = 'Nonaktif' WHERE target_halaman = :target" . ($existingId > 0 ? " AND id != :exId" : ""));
-        $params = [':target' => $targetHalaman];
-        if ($existingId > 0) $params[':exId'] = $existingId;
-        $deactivateStmt->execute($params);
-    }
-
-    if ($existingId > 0) {
-        $stmt = $db->prepare("UPDATE flipbooks 
-                              SET judul = :judul, 
-                                  deskripsi = :deskripsi, 
-                                  file_url = :file_url, 
-                                  file_name = :file_name, 
-                                  file_size = :file_size, 
-                                  total_pages = :total_pages, 
-                                  target_halaman = :target_halaman, 
-                                  posisi = :posisi, 
-                                  button_label = :button_label, 
-                                  status = :status,
-                                  updated_at = CURRENT_TIMESTAMP
-                              WHERE id = :id");
-        $stmt->execute([
-            ':judul'          => $judul,
-            ':deskripsi'      => $deskripsi ?: null,
-            ':file_url'       => $fileUrl,
-            ':file_name'      => $fileName ?: basename($fileUrl),
-            ':file_size'      => $fileSize,
-            ':total_pages'    => $totalPages,
-            ':target_halaman' => $targetHalaman,
-            ':posisi'         => $posisi,
-            ':button_label'   => $buttonLabel ?: 'Profil Lembaga ACF Eduhub',
-            ':status'         => $status === 'Aktif' ? 'Aktif' : 'Nonaktif',
-            ':id'             => $existingId
-        ]);
-
-        jsonSuccess([
-            'id'             => $existingId,
-            'judul'          => $judul,
-            'title'          => $judul,
-            'file_url'       => $fileUrl,
-            'target_halaman' => $targetHalaman,
-            'target_page'    => $targetHalaman,
-            'posisi'         => $posisi,
-            'position'       => $posisi,
-            'status'         => $status
-        ], 'Dokumen Flipbook berhasil diperbarui.');
-    } else {
-        $stmt = $db->prepare("INSERT INTO flipbooks (judul, deskripsi, file_url, file_name, file_size, total_pages, target_halaman, posisi, button_label, status)
-                              VALUES (:judul, :deskripsi, :file_url, :file_name, :file_size, :total_pages, :target_halaman, :posisi, :button_label, :status)");
-
-        $stmt->execute([
-            ':judul'          => $judul,
-            ':deskripsi'      => $deskripsi ?: null,
-            ':file_url'       => $fileUrl,
-            ':file_name'      => $fileName ?: basename($fileUrl),
-            ':file_size'      => $fileSize,
-            ':total_pages'    => $totalPages,
-            ':target_halaman' => $targetHalaman,
-            ':posisi'         => $posisi,
-            ':button_label'   => $buttonLabel ?: 'Profil Lembaga ACF Eduhub',
-            ':status'         => $status === 'Aktif' ? 'Aktif' : 'Nonaktif'
-        ]);
-
-        $newId = (int) $db->lastInsertId();
-
-        jsonSuccess([
-            'id'             => $newId,
-            'judul'          => $judul,
-            'title'          => $judul,
-            'file_url'       => $fileUrl,
-            'target_halaman' => $targetHalaman,
-            'target_page'    => $targetHalaman,
-            'posisi'         => $posisi,
-            'position'       => $posisi,
-            'status'         => $status
-        ], 'Dokumen Flipbook berhasil diunggah dan dikonfigurasi.', 201);
+    } catch (PDOException $e) {
+        error_log("[Flipbook API PDOException] " . $e->getMessage());
+        jsonError('Gagal menyimpan dokumen flipbook ke database: ' . $e->getMessage(), 500);
+    } catch (Throwable $e) {
+        error_log("[Flipbook API Error] " . $e->getMessage());
+        jsonError('Terjadi kesalahan saat memproses flipbook: ' . $e->getMessage(), 500);
     }
 }
 
@@ -387,14 +406,20 @@ function ensureFlipbookTableExists($db) {
             `file_name` VARCHAR(255) NOT NULL,
             `file_size` BIGINT NULL DEFAULT 0,
             `total_pages` INT DEFAULT 0,
-            `target_halaman` VARCHAR(100) NOT NULL DEFAULT 'kisah-kami.html',
-            `posisi` VARCHAR(100) NOT NULL DEFAULT 'bawah_deskripsi_sejarah',
-            `button_label` VARCHAR(100) NOT NULL DEFAULT 'Profil Lembaga ACF Eduhub',
+            `target_halaman` VARCHAR(255) NOT NULL DEFAULT 'kisah-kami.html',
+            `posisi` VARCHAR(255) NOT NULL DEFAULT 'bawah_deskripsi_sejarah',
+            `button_label` VARCHAR(255) NOT NULL DEFAULT 'Profil Lembaga ACF Eduhub',
             `status` ENUM('Aktif', 'Nonaktif') DEFAULT 'Aktif',
             `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            INDEX `idx_flipbooks_target` (`target_halaman`, `status`)
+            INDEX `idx_flipbooks_target` (`target_halaman`(191), `status`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        // Pastikan kolom dapat menampung teks panjang (hingga 255 karakter)
+        @$db->exec("ALTER TABLE `flipbooks` 
+            MODIFY COLUMN `target_halaman` VARCHAR(255) NOT NULL DEFAULT 'kisah-kami.html',
+            MODIFY COLUMN `posisi` VARCHAR(255) NOT NULL DEFAULT 'bawah_deskripsi_sejarah',
+            MODIFY COLUMN `button_label` VARCHAR(255) NOT NULL DEFAULT 'Profil Lembaga ACF Eduhub'");
 
         // Cek jika kosong, lakukan seeding profil default
         $count = $db->query("SELECT COUNT(*) FROM flipbooks")->fetchColumn();

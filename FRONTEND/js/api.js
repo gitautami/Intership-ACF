@@ -72,7 +72,13 @@
     try {
       const response = await fetch(url, config);
       clearTimeout(timeoutId);
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (jsonErr) {
+        throw new Error(text ? `Respon server tidak valid: ${text.substring(0, 120)}` : `Respon server kosong (HTTP ${response.status})`);
+      }
       if (!response.ok) {
         throw new Error(data.message || `HTTP Error ${response.status}`);
       }

@@ -4533,7 +4533,9 @@
         flipbookFormTargetHalamanLainnya?.focus();
         return;
       }
-      if (!customPage.includes('.')) {
+      // Hapus titik atau spasi di akhir jika tidak sengaja terketik
+      customPage = customPage.replace(/\.+$/, '').trim();
+      if (!customPage.toLowerCase().endsWith('.html') && !customPage.toLowerCase().endsWith('.php')) {
         customPage += '.html';
       }
       targetPage = customPage.toLowerCase();

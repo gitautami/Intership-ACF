@@ -150,6 +150,12 @@
   height: 17px;
 }
 
+/* Tombol Layar Penuh Dinonaktifkan & Dihapus */
+#btnFlipbookFullscreen,
+#adminBtnFlipbookFullscreen {
+  display: none !important;
+}
+
 .flipbook-btn-close {
   width: 38px;
   height: 38px;

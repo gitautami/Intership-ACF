@@ -521,11 +521,6 @@
               </svg>
               <span>Unduh PDF</span>
             </a>
-            <button type="button" class="flipbook-btn-tool" id="btnFlipbookFullscreen" title="Layar Penuh" aria-label="Layar Penuh">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-              </svg>
-            </button>
             <button type="button" class="flipbook-btn-tool btn-tool-landscape" id="btnFlipbookLandscape" title="Mode Landscape / Putar Layar (Tampilan Lebih Jelas)" aria-label="Mode Landscape">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect width="18" height="12" x="3" y="6" rx="2.5"></rect>
@@ -583,6 +578,10 @@
       `;
       document.body.appendChild(modal);
     } else {
+      // Hapus tombol fullscreen jika ada
+      const existingFsBtn = modal.querySelector('#btnFlipbookFullscreen');
+      if (existingFsBtn) existingFsBtn.remove();
+
       // Perbarui judul & unduhan pada modal yang sudah ada
       if (doc) {
         updateModalInfo(doc);
@@ -1624,7 +1623,6 @@
     const firstBtn = document.getElementById('btnNavFirst');
     const lastBtn = document.getElementById('btnNavLast');
     const rangeSlider = document.getElementById('flipbookRange');
-    const fullscreenBtn = document.getElementById('btnFlipbookFullscreen');
     const landscapeBtn = document.getElementById('btnFlipbookLandscape');
 
     if (prevBtn && !prevBtn.getAttribute('data-flipbook-bound')) {
@@ -1662,11 +1660,6 @@
           flipBookInstance.flip(targetIndex);
         }
       });
-    }
-
-    if (fullscreenBtn && !fullscreenBtn.getAttribute('data-flipbook-bound')) {
-      fullscreenBtn.setAttribute('data-flipbook-bound', 'true');
-      fullscreenBtn.addEventListener('click', toggleFullscreen);
     }
 
     if (landscapeBtn && !landscapeBtn.getAttribute('data-flipbook-bound')) {

@@ -4611,8 +4611,13 @@
       let uploadedFileSize = 0;
       let uploadedTotalPages = 0;
       let returnedId = id;
+      let localBlobUrl = '';
 
       if (file) {
+        try {
+          localBlobUrl = URL.createObjectURL(file);
+        } catch (_) {}
+
         if (progressBar) progressBar.style.display = 'block';
         if (progressFill) progressFill.style.width = '30%';
         if (progressText) progressText.textContent = 'Mengunggah file PDF dokumen...';
@@ -4634,45 +4639,51 @@
         if (progressFill) progressFill.style.width = '65%';
 
         if (window.ACF_API && window.ACF_API.flipbooks) {
-          const apiRes = await window.ACF_API.flipbooks.upload(formData);
-          if (progressFill) progressFill.style.width = '100%';
-          if (apiRes && apiRes.data) {
-            if (apiRes.data.file_url) uploadedFileUrl = apiRes.data.file_url;
-            if (apiRes.data.file_name) uploadedFileName = apiRes.data.file_name;
-            if (apiRes.data.file_size) uploadedFileSize = apiRes.data.file_size;
-            if (apiRes.data.total_pages) uploadedTotalPages = apiRes.data.total_pages;
-            if (apiRes.data.id) returnedId = apiRes.data.id;
+          try {
+            const apiRes = await window.ACF_API.flipbooks.upload(formData);
+            if (progressFill) progressFill.style.width = '100%';
+            if (apiRes && apiRes.data) {
+              if (apiRes.data.file_url) uploadedFileUrl = apiRes.data.file_url;
+              if (apiRes.data.file_name) uploadedFileName = apiRes.data.file_name;
+              if (apiRes.data.file_size) uploadedFileSize = apiRes.data.file_size;
+              if (apiRes.data.total_pages) uploadedTotalPages = apiRes.data.total_pages;
+              if (apiRes.data.id) returnedId = apiRes.data.id;
+            }
+          } catch (apiErr) {
+            console.warn('API flipbook upload offline/fallback, saving to local cache:', apiErr);
           }
-        } else {
-          showToast('Koneksi API Flipbook tidak tersedia.', 'error');
         }
       } else {
         if (window.ACF_API && window.ACF_API.flipbooks) {
-          const apiRes = await window.ACF_API.flipbooks.update(id, {
-            id: id,
-            title: title,
-            judul: title,
-            description: description,
-            deskripsi: description,
-            target_page: targetPage,
-            target_halaman: targetPage,
-            position: position,
-            posisi: position,
-            button_label: buttonLabel,
-            status: status
-          });
-          if (apiRes && apiRes.data) {
-            if (apiRes.data.file_url) uploadedFileUrl = apiRes.data.file_url;
-            if (apiRes.data.file_name) uploadedFileName = apiRes.data.file_name;
-            if (apiRes.data.file_size) uploadedFileSize = apiRes.data.file_size;
-            if (apiRes.data.total_pages) uploadedTotalPages = apiRes.data.total_pages;
+          try {
+            const apiRes = await window.ACF_API.flipbooks.update(id, {
+              id: id,
+              title: title,
+              judul: title,
+              description: description,
+              deskripsi: description,
+              target_page: targetPage,
+              target_halaman: targetPage,
+              position: position,
+              posisi: position,
+              button_label: buttonLabel,
+              status: status
+            });
+            if (apiRes && apiRes.data) {
+              if (apiRes.data.file_url) uploadedFileUrl = apiRes.data.file_url;
+              if (apiRes.data.file_name) uploadedFileName = apiRes.data.file_name;
+              if (apiRes.data.file_size) uploadedFileSize = apiRes.data.file_size;
+              if (apiRes.data.total_pages) uploadedTotalPages = apiRes.data.total_pages;
+            }
+          } catch (apiErr) {
+            console.warn('API flipbook update offline/fallback, saving to local cache:', apiErr);
           }
         }
       }
 
       // Ambil existingItem bila ada untuk melengkapi file info
       const existingItem = dataFlipbooks.find(f => String(f.id) === String(id || returnedId));
-      const finalFileUrl = uploadedFileUrl || (existingItem ? (existingItem.file_url || existingItem.fileUrl) : '') || (file ? `../assets/uploads/flipbook/${file.name}` : '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf');
+      const finalFileUrl = uploadedFileUrl || localBlobUrl || (existingItem ? (existingItem.file_url || existingItem.fileUrl) : '') || (file ? `../assets/uploads/flipbook/${file.name}` : '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf');
       const finalFileName = uploadedFileName || (file ? file.name : (existingItem ? (existingItem.file_name || existingItem.fileName) : (flipbookCurrentFileName?.textContent || 'Profil Lembaga - ACF Eduhub.pdf')));
       const finalFileSize = uploadedFileSize || (file ? file.size : (existingItem ? existingItem.file_size : 0));
       const finalTotalPages = uploadedTotalPages || (existingItem ? existingItem.total_pages : 0);
@@ -4715,7 +4726,7 @@
           localFlipbooks = JSON.parse(localStorage.getItem('acf_flipbooks_data') || '[]');
         } catch (e) { localFlipbooks = []; }
 
-        const existingIdx = localFlipbooks.findIndex(f => String(f.id) === String(id));
+        const existingIdx = localFlipbooks.findIndex(f => String(f.id) === String(id || returnedId));
         if (existingIdx >= 0) {
           localFlipbooks[existingIdx] = { ...localFlipbooks[existingIdx], ...cachedItem };
         } else {
@@ -4723,6 +4734,12 @@
         }
         localStorage.setItem('acf_flipbooks_data', JSON.stringify(localFlipbooks));
         localStorage.setItem('acf_latest_uploaded_flipbook', JSON.stringify(cachedItem));
+
+        // Broadcast perubahan secara real-time ke semua tab yang sedang membuka website
+        try {
+          const channel = new BroadcastChannel('acf_flipbook_channel');
+          channel.postMessage({ type: 'flipbook_updated', data: cachedItem });
+        } catch (_) {}
         window.dispatchEvent(new CustomEvent('acf_flipbook_updated', { detail: cachedItem }));
       } catch (eCache) {
         console.warn('Cache local flipbook warning:', eCache);
@@ -4760,12 +4777,25 @@
       item.status = newStatus;
       if (newStatus === 'aktif') {
         localStorage.setItem(`acf_active_flipbook_${item.target_page}`, JSON.stringify(item));
+        const canonical = resolveSmartCanonicalPage(item.target_page);
+        if (canonical && canonical !== item.target_page) {
+          localStorage.setItem(`acf_active_flipbook_${canonical}`, JSON.stringify(item));
+        }
       } else {
         localStorage.removeItem(`acf_active_flipbook_${item.target_page}`);
+        const canonical = resolveSmartCanonicalPage(item.target_page);
+        if (canonical) localStorage.removeItem(`acf_active_flipbook_${canonical}`);
       }
       try {
         localStorage.setItem('acf_flipbooks_data', JSON.stringify(dataFlipbooks));
       } catch (e) {}
+
+      // Broadcast real-time ke semua tab frontend
+      try {
+        const channel = new BroadcastChannel('acf_flipbook_channel');
+        channel.postMessage({ type: 'flipbook_updated', data: item });
+      } catch (_) {}
+      window.dispatchEvent(new CustomEvent('acf_flipbook_updated', { detail: item }));
 
       renderTableFlipbooks();
       updateFlipbookMetrics();
@@ -4790,10 +4820,19 @@
       dataFlipbooks = dataFlipbooks.filter(f => String(f.id) !== String(id));
       if (item.target_page) {
         localStorage.removeItem(`acf_active_flipbook_${item.target_page}`);
+        const canonical = resolveSmartCanonicalPage(item.target_page);
+        if (canonical) localStorage.removeItem(`acf_active_flipbook_${canonical}`);
       }
       try {
         localStorage.setItem('acf_flipbooks_data', JSON.stringify(dataFlipbooks));
       } catch (e) {}
+
+      // Broadcast real-time ke semua tab frontend
+      try {
+        const channel = new BroadcastChannel('acf_flipbook_channel');
+        channel.postMessage({ type: 'flipbook_updated', data: { id, target_page: item.target_page, status: 'nonaktif' } });
+      } catch (_) {}
+      window.dispatchEvent(new CustomEvent('acf_flipbook_updated', { detail: { id, target_page: item.target_page, status: 'nonaktif' } }));
 
       renderTableFlipbooks();
       updateFlipbookMetrics();

@@ -266,11 +266,17 @@ if ($method === 'POST') {
                 'id'             => $existingId,
                 'judul'          => $judul,
                 'title'          => $judul,
+                'deskripsi'      => $deskripsi,
+                'description'    => $deskripsi,
                 'file_url'       => $fileUrl,
+                'file_name'      => $fileName ?: basename($fileUrl),
+                'file_size'      => $fileSize,
+                'total_pages'    => $totalPages,
                 'target_halaman' => $targetHalaman,
                 'target_page'    => $targetHalaman,
                 'posisi'         => $posisi,
                 'position'       => $posisi,
+                'button_label'   => $buttonLabel ?: 'Profil Lembaga ACF Eduhub',
                 'status'         => $status
             ], 'Dokumen Flipbook berhasil diperbarui.');
         } else {
@@ -296,11 +302,17 @@ if ($method === 'POST') {
                 'id'             => $newId,
                 'judul'          => $judul,
                 'title'          => $judul,
+                'deskripsi'      => $deskripsi,
+                'description'    => $deskripsi,
                 'file_url'       => $fileUrl,
+                'file_name'      => $fileName ?: basename($fileUrl),
+                'file_size'      => $fileSize,
+                'total_pages'    => $totalPages,
                 'target_halaman' => $targetHalaman,
                 'target_page'    => $targetHalaman,
                 'posisi'         => $posisi,
                 'position'       => $posisi,
+                'button_label'   => $buttonLabel ?: 'Profil Lembaga ACF Eduhub',
                 'status'         => $status
             ], 'Dokumen Flipbook berhasil diunggah dan dikonfigurasi.', 201);
         }
@@ -384,6 +396,12 @@ if ($method === 'PUT' || $method === 'PATCH') {
         'id'             => $id,
         'judul'          => $judul,
         'title'          => $judul,
+        'deskripsi'      => $deskripsi,
+        'description'    => $deskripsi,
+        'file_url'       => $current['file_url'],
+        'file_name'      => $current['file_name'],
+        'file_size'      => $current['file_size'],
+        'total_pages'    => $current['total_pages'],
         'target_halaman' => $targetHalaman,
         'target_page'    => $targetHalaman,
         'posisi'         => $posisi,

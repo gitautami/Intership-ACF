@@ -1317,6 +1317,19 @@
     if (btn) btn.classList.remove('active');
     document.body.style.overflow = '';
 
+    const fullElem = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+    if (fullElem) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+
     // Bersihkan hash di URL
     if (window.history && window.history.replaceState) {
       try {
@@ -1505,7 +1518,7 @@
   /**
    * Pastikan halaman yang sedang dibuka user langsung dirender PARALEL dengan prioritas tertinggi
    */
-  async function ensureNearbyPages(pageIndex) {
+  async function ensureNearbyPages(pageIndex, forceRerender = false) {
     const scale = getOptimalRenderScale();
     let leftPage, rightPage;
     if (pageIndex === 0) {
@@ -1514,6 +1527,11 @@
     } else {
       leftPage = pageIndex % 2 === 1 ? pageIndex + 1 : pageIndex;
       rightPage = Math.min(leftPage + 1, totalDocPages);
+    }
+
+    if (forceRerender) {
+      if (leftPage) renderedPages.delete(leftPage);
+      if (rightPage) renderedPages.delete(rightPage);
     }
 
     // 1. PRIORITAS UTAMA: Render 2 halaman yang sedang dilihat user SECARA PARALEL!
@@ -1733,21 +1751,57 @@
   }
 
   /**
-   * 10. Toggle Fullscreen Browser
+   * Helper: Perbarui icon dan status tombol Layar Penuh (Expand / Compress)
    */
-  function toggleFullscreen() {
-    const elem = document.getElementById('flipbookModal') || document.documentElement;
-    if (!document.fullscreenElement) {
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      }
+  function updateFullscreenButtonState() {
+    const btn = document.getElementById('btnFlipbookFullscreen');
+    if (!btn) return;
+    const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+    if (isFull) {
+      btn.classList.add('active');
+      btn.title = 'Keluar Layar Penuh';
+      btn.setAttribute('aria-label', 'Keluar Layar Penuh');
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+        </svg>
+      `;
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
+      btn.classList.remove('active');
+      btn.title = 'Layar Penuh';
+      btn.setAttribute('aria-label', 'Layar Penuh');
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+        </svg>
+      `;
     }
+  }
+
+  /**
+   * 10. Toggle Fullscreen Browser dengan Dukungan Penuh
+   */
+  async function toggleFullscreen() {
+    const modal = document.getElementById('flipbookModal');
+    const elem = modal || document.documentElement;
+    try {
+      const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      if (!isFull) {
+        const req = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.mozRequestFullScreen || elem.msRequestFullscreen;
+        if (req) {
+          await req.call(elem);
+        }
+      } else {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+        if (exit) {
+          await exit.call(document);
+        }
+      }
+    } catch (err) {
+      console.warn('Fullscreen toggle error:', err);
+    }
+    updateFullscreenButtonState();
+    handleFlipbookResize();
   }
 
   /**
@@ -1770,25 +1824,26 @@
     resizeDebounceTimer = setTimeout(() => {
       const modal = document.getElementById('flipbookModal');
       if (!modal || !modal.classList.contains('active')) return;
-      if (!flipBookInstance || !pdfDocInstance) return;
+      if (!pdfDocInstance) return;
 
-      const curPage = flipBookInstance.getCurrentPageIndex();
+      const curPage = flipBookInstance ? flipBookInstance.getCurrentPageIndex() : 0;
       const newDims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
 
-      // Jika ukuran layar berubah signifikan (> 10px), sesuaikan ulang flipbook agar tidak terpotong
-      if (Math.abs(newDims.baseWidth - currentBaseWidth) > 10 || Math.abs(newDims.baseHeight - currentBaseHeight) > 10) {
+      // Jika ukuran layar berubah signifikan (> 8px) atau flipbook belum terinisialisasi
+      if (!flipBookInstance || Math.abs(newDims.baseWidth - currentBaseWidth) > 8 || Math.abs(newDims.baseHeight - currentBaseHeight) > 8) {
         reFitFlipbook(curPage);
       } else {
         updateCoverCentering(curPage);
       }
-    }, 180);
+    }, 150);
   }
 
   /**
-   * Menyesuaikan ulang ukuran Flipbook saat orientasi HP berubah atau jendela browser di-resize
+   * Menyesuaikan ulang ukuran Flipbook saat orientasi HP berubah, jendela browser di-resize, atau mode layar penuh
+   * KUNCI: Menjaga seluruh elemen lembaran & canvas agar BUKU TIDAK HILANG saat resize/fullscreen!
    */
   function reFitFlipbook(targetPageIndex = 0) {
-    if (!flipBookInstance || !pdfDocInstance) return;
+    if (!pdfDocInstance) return;
     const bookContainer = document.getElementById('flipbookBook');
     if (!bookContainer) return;
 
@@ -1796,28 +1851,77 @@
     currentBaseWidth = dims.baseWidth;
     currentBaseHeight = dims.baseHeight;
 
-    try {
-      flipBookInstance.destroy();
-    } catch (e) {}
-    flipBookInstance = null;
+    // 1. Amankan seluruh elemen .page-sheet beserta canvas di dalamnya sebelum instance dihancurkan
+    const existingSheets = Array.from(bookContainer.querySelectorAll('.page-sheet'));
 
+    // 2. Lepaskan sheets dari pembungkus internal StPageFlip (stf__item, stf__block)
+    existingSheets.forEach(sheet => {
+      if (sheet.parentNode) {
+        sheet.parentNode.removeChild(sheet);
+      }
+      sheet.removeAttribute('style');
+      sheet.classList.remove('stf__item', '--simple', '--hard');
+    });
+
+    // 3. Hancurkan instance StPageFlip yang lama
+    if (flipBookInstance) {
+      try {
+        flipBookInstance.destroy();
+      } catch (e) {}
+      flipBookInstance = null;
+    }
+
+    // 4. Bersihkan kontainer dan pasang kembali sheets yang sudah berisi canvas
+    bookContainer.innerHTML = '';
+    if (existingSheets.length > 0) {
+      existingSheets.forEach(sheet => bookContainer.appendChild(sheet));
+    } else {
+      createSheetElements(bookContainer);
+    }
+
+    // 5. Kunci dimensi baru pada kontainer agar pas presisi
     bookContainer.style.width = (dims.baseWidth * 2) + 'px';
     bookContainer.style.height = dims.baseHeight + 'px';
     bookContainer.style.maxWidth = (dims.baseWidth * 2) + 'px';
     bookContainer.style.maxHeight = dims.baseHeight + 'px';
 
+    // 6. Inisialisasi ulang StPageFlip dengan ukuran baru
     initStPageFlip(bookContainer, dims.baseWidth, dims.baseHeight);
     if (flipBookInstance) {
       try {
-        flipBookInstance.turnToPage(targetPageIndex);
-        updateCoverCentering(targetPageIndex);
-        updateNavButtonsState(targetPageIndex);
+        const safeTarget = Math.max(0, Math.min(targetPageIndex, (totalDocPages || 1) - 1));
+        if (typeof flipBookInstance.turnToPage === 'function') {
+          flipBookInstance.turnToPage(safeTarget);
+        } else if (typeof flipBookInstance.flip === 'function') {
+          flipBookInstance.flip(safeTarget);
+        }
+        updateCoverCentering(safeTarget);
+        updateNavButtonsState(safeTarget);
       } catch (err) {}
     }
+
+    // 7. Render ulang halaman aktif agar tajam di ukuran layar penuh
+    ensureNearbyPages(targetPageIndex, true);
   }
 
   window.addEventListener('resize', handleFlipbookResize);
   window.addEventListener('orientationchange', handleFlipbookResize);
+  document.addEventListener('fullscreenchange', () => {
+    updateFullscreenButtonState();
+    handleFlipbookResize();
+  });
+  document.addEventListener('webkitfullscreenchange', () => {
+    updateFullscreenButtonState();
+    handleFlipbookResize();
+  });
+  document.addEventListener('mozfullscreenchange', () => {
+    updateFullscreenButtonState();
+    handleFlipbookResize();
+  });
+  document.addEventListener('MSFullscreenChange', () => {
+    updateFullscreenButtonState();
+    handleFlipbookResize();
+  });
 
   // Auto-sinkronisasi bila admin baru saja mengunggah/mengedit flipbook di portal admin
   window.addEventListener('storage', (e) => {

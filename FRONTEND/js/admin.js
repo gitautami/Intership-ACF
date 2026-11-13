@@ -4606,6 +4606,12 @@
     }
 
     try {
+      let uploadedFileUrl = '';
+      let uploadedFileName = '';
+      let uploadedFileSize = 0;
+      let uploadedTotalPages = 0;
+      let returnedId = id;
+
       if (file) {
         if (progressBar) progressBar.style.display = 'block';
         if (progressFill) progressFill.style.width = '30%';
@@ -4627,12 +4633,6 @@
 
         if (progressFill) progressFill.style.width = '65%';
 
-        let uploadedFileUrl = '';
-        let uploadedFileName = '';
-        let uploadedFileSize = 0;
-        let uploadedTotalPages = 0;
-        let returnedId = id;
-
         if (window.ACF_API && window.ACF_API.flipbooks) {
           const apiRes = await window.ACF_API.flipbooks.upload(formData);
           if (progressFill) progressFill.style.width = '100%';
@@ -4643,17 +4643,10 @@
             if (apiRes.data.total_pages) uploadedTotalPages = apiRes.data.total_pages;
             if (apiRes.data.id) returnedId = apiRes.data.id;
           }
-          showToast(id ? 'Dokumen flipbook berhasil diperbarui!' : 'Dokumen PDF berhasil diunggah & dijadikan Flipbook!', 'success');
         } else {
           showToast('Koneksi API Flipbook tidak tersedia.', 'error');
         }
       } else {
-        let uploadedFileUrl = '';
-        let uploadedFileName = '';
-        let uploadedFileSize = 0;
-        let uploadedTotalPages = 0;
-        let returnedId = id;
-
         if (window.ACF_API && window.ACF_API.flipbooks) {
           const apiRes = await window.ACF_API.flipbooks.update(id, {
             id: id,

@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  let PDF_FILE_PATH = '';
+  let PDF_FILE_PATH = '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf';
   let activeFlipbookDoc = null;
   let flipBookInstance = null;
   let pdfDocInstance = null;
@@ -210,8 +210,8 @@
       }
     } catch (e) {}
 
-    // 5. Fallback khusus untuk profil-lembaga.html HANYA jika tidak ada dokumen custom lain
-    if (cleanPage === 'profil-lembaga.html') {
+    // 5. Fallback resmi default untuk kisah-kami.html, profil-lembaga.html, atau jika elemen tombol sudah ada di halaman
+    if (cleanPage === 'kisah-kami.html' || cleanPage === 'profil-lembaga.html' || isTargetPageMatch('kisah-kami.html', cleanPage) || document.getElementById('wrapProfilLembagaBtn')) {
       return normalizeFlipbookDoc({
         id: 1,
         title: 'Profil Lembaga ACF Eduhub',
@@ -219,7 +219,7 @@
         file_name: 'Profil Lembaga - ACF Eduhub.pdf',
         file_url: '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf',
         total_pages: 31,
-        target_page: 'profil-lembaga.html',
+        target_page: cleanPage,
         position: 'bawah_deskripsi_sejarah',
         button_label: 'Profil Lembaga ACF Eduhub',
         status: 'aktif'
@@ -650,10 +650,12 @@
   function applyFlipbookPlacement(doc) {
     const isActive = doc && String(doc.status || 'aktif').trim().toLowerCase() === 'aktif';
     if (!doc || !isActive) {
-      const existingWrap = document.getElementById('wrapProfilLembagaBtn');
-      if (existingWrap) existingWrap.style.display = 'none';
-      const existingPlacementWrap = document.getElementById('flipbookPlacementWrapper');
-      if (existingPlacementWrap) existingPlacementWrap.style.display = 'none';
+      if (doc && String(doc.status || '').trim().toLowerCase() === 'nonaktif') {
+        const existingWrap = document.getElementById('wrapProfilLembagaBtn');
+        if (existingWrap) existingWrap.style.display = 'none';
+        const existingPlacementWrap = document.getElementById('flipbookPlacementWrapper');
+        if (existingPlacementWrap) existingPlacementWrap.style.display = 'none';
+      }
       return;
     }
 
@@ -797,9 +799,32 @@
       }
     }
 
-    // 1. SOSIAL MEDIA / BAGIKAN / SHARE (contoh: "kiri atas sosial media", "atas sosmed", dsb)
+    // 1. DESKRIPSI SEJARAH SINGKAT / CERITA KAMI (Prioritas Utama untuk kisah-kami.html)
+    if (currentPage === 'kisah-kami.html' || position === 'bawah_deskripsi_sejarah' || lower.includes('sejarah') || lower.includes('cerita') || lower.includes('deskripsi') || lower.includes('kisah')) {
+      const deskripsi = document.getElementById('sejarahSingkatDeskripsi') ||
+                        document.querySelector('.sejarah-grid .reveal p:last-of-type') ||
+                        document.querySelector('#ringkasan-tentang .ringkasan-tentang-body') ||
+                        document.querySelector('.sejarah-grid .reveal') ||
+                        document.querySelector('.sejarah-grid') ||
+                        document.querySelector('.reveal p');
+      if (deskripsi && deskripsi.parentNode) {
+        btnWrap.style.margin = '26px 0 0 0';
+        btnWrap.style.display = 'block';
+        btnWrap.style.textAlign = 'left';
+        btnWrap.style.visibility = 'visible';
+        btnWrap.style.opacity = '1';
+        if (deskripsi.nextElementSibling !== btnWrap) {
+          deskripsi.parentNode.insertBefore(btnWrap, deskripsi.nextSibling);
+        }
+        btnWrap.setAttribute('data-flipbook-placed', 'bawah_deskripsi_sejarah');
+        initTriggerButtons();
+        return;
+      }
+    }
+
+    // 2. SOSIAL MEDIA / BAGIKAN / SHARE (Khusus artikel & berita kabar.html)
     if (lower.includes('sosial') || lower.includes('social') || lower.includes('sosmed') || lower.includes('share') || lower.includes('bagikan') || lower.includes('wa') || lower.includes('instagram')) {
-      const socialEl = document.querySelector('.kabar-share-section, .kabar-share-compact, .sidebar-social-row, .footer-social-boxes, [class*="share"], [class*="social"]');
+      const socialEl = document.querySelector('.kabar-share-section, .kabar-share-compact, .sidebar-social-row, [class*="share"]');
       if (socialEl && socialEl.parentNode) {
         applyBtnAlignment(btnWrap);
         if (isAbove || isLeft || !isBelow) {
@@ -813,9 +838,9 @@
       }
     }
 
-    // 2. ARTIKEL / KONTEN / BERITA (contoh: "bawah artikel", "isi berita", "dalam artikel")
+    // 3. ARTIKEL / KONTEN / BERITA (contoh: "bawah artikel", "isi berita", "dalam artikel")
     if (lower.includes('artikel') || lower.includes('berita') || lower.includes('isi') || lower.includes('paragraf') || lower.includes('konten') || lower.includes('baca')) {
-      const artEl = document.querySelector('#modalArticleContent, .kabar-detail-prose, .kabar-articles-grid, article, .content-container, main .container');
+      const artEl = document.querySelector('#modalArticleContent, .kabar-detail-prose, .kabar-articles-grid, article, .content-container');
       if (artEl && artEl.parentNode) {
         applyBtnAlignment(btnWrap);
         if (isAbove) {
@@ -823,23 +848,6 @@
         } else {
           artEl.parentNode.insertBefore(btnWrap, artEl.nextSibling);
         }
-        btnWrap.setAttribute('data-flipbook-placed', position);
-        initTriggerButtons();
-        return;
-      }
-    }
-
-    // 3. DESKRIPSI SEJARAH SINGKAT / CERITA KAMI
-    if (lower.includes('deskripsi') || lower.includes('sejarah') || lower.includes('cerita') || lower.includes('kisah') || position === 'bawah_deskripsi_sejarah') {
-      const deskripsi = document.getElementById('sejarahSingkatDeskripsi') ||
-                        document.querySelector('.sejarah-grid .reveal p:last-of-type') ||
-                        document.querySelector('#ringkasan-tentang .ringkasan-tentang-body') ||
-                        document.querySelector('.sejarah-grid .reveal') ||
-                        document.querySelector('.sejarah-grid') ||
-                        document.querySelector('.reveal p');
-      if (deskripsi && deskripsi.parentNode) {
-        applyBtnAlignment(btnWrap);
-        deskripsi.parentNode.insertBefore(btnWrap, deskripsi.nextSibling);
         btnWrap.setAttribute('data-flipbook-placed', position);
         initTriggerButtons();
         return;
@@ -1020,12 +1028,15 @@
       // Preload PDF dokumen yang benar di background
       preloadPdfInBackground();
     } else {
-      const existingWrap = document.getElementById('wrapProfilLembagaBtn');
-      if (existingWrap) existingWrap.style.display = 'none';
-      const existingPlacementWrap = document.getElementById('flipbookPlacementWrapper');
-      if (existingPlacementWrap) existingPlacementWrap.style.display = 'none';
-      const existingModalWrap = document.getElementById('wrapProfilLembagaBtnModal');
-      if (existingModalWrap) existingModalWrap.style.display = 'none';
+      // HANYA sembunyikan jika secara eksplisit status dokumennya nonaktif
+      if (doc && String(doc.status || '').toLowerCase() === 'nonaktif') {
+        const existingWrap = document.getElementById('wrapProfilLembagaBtn');
+        if (existingWrap) existingWrap.style.display = 'none';
+        const existingPlacementWrap = document.getElementById('flipbookPlacementWrapper');
+        if (existingPlacementWrap) existingPlacementWrap.style.display = 'none';
+        const existingModalWrap = document.getElementById('wrapProfilLembagaBtnModal');
+        if (existingModalWrap) existingModalWrap.style.display = 'none';
+      }
     }
   }
 
@@ -1942,6 +1953,14 @@
     initGlobalDelegation();
     await initDynamicPageFlipbook();
     initUrlHashCheck();
+
+    // Pastikan tombol di kisah-kami.html selalu tampil terlihat jelas
+    const kisahBtn = document.getElementById('wrapProfilLembagaBtn');
+    if (kisahBtn) {
+      kisahBtn.style.display = 'block';
+      kisahBtn.style.visibility = 'visible';
+      kisahBtn.style.opacity = '1';
+    }
 
     if (document.body && document.body.classList.contains('flipbook-standalone-body')) {
       initNavbarToggle();

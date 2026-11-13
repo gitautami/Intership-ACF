@@ -524,16 +524,21 @@
 }
 
 /* 9. Tombol Pemicu di Halaman Cerita Kami & Halaman Publik */
-.profil-lembaga-btn-wrap {
-  margin-top: 26px;
-  display: block;
-  text-align: left;
+.profil-lembaga-btn-wrap,
+#wrapProfilLembagaBtn {
+  margin-top: 26px !important;
+  display: block !important;
+  text-align: left !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .sejarah-grid .profil-lembaga-btn-wrap {
   margin-top: 26px !important;
   display: block !important;
   text-align: left !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Dedicated placement wrapper for dynamic page positions (bawah_hero, tengah_konten, atas_footer, kustom) */

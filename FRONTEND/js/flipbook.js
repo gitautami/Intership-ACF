@@ -18,6 +18,7 @@
   let activePdfPageHeight = 842;
   let currentBaseWidth = 0;
   let currentBaseHeight = 0;
+  let currentRenderSession = 0;
   const renderedPages = new Set();
   const renderingPromises = new Map();
   let hintTimeout = null;
@@ -368,13 +369,17 @@
   /**
    * Helper: Siapkan semua lembaran (sheet) & canvas langsung dari dokumen PDF asli
    */
-  function createSheetElements(bookContainer) {
-    if (!bookContainer || bookContainer.querySelector('.page-sheet') || totalDocPages <= 0) return;
+  function createSheetElements(bookContainer, force = false) {
+    if (!bookContainer || totalDocPages <= 0) return;
+    if (!force && bookContainer.querySelector('.page-sheet')) return;
     bookContainer.innerHTML = '';
 
     for (let pageNum = 1; pageNum <= totalDocPages; pageNum++) {
       const sheet = document.createElement('div');
       sheet.className = 'page-sheet';
+      sheet.style.position = 'absolute';
+      sheet.style.top = '0';
+      sheet.style.boxSizing = 'border-box';
       if (pageNum === 1 || pageNum === totalDocPages) {
         sheet.setAttribute('data-density', 'hard');
       } else {
@@ -1477,26 +1482,27 @@
 
       // 4. Skala render tajam beresolusi tinggi (Retina)
       const scale = getOptimalRenderScale(baseWidth, activePdfPageWidth);
+      const session = ++currentRenderSession;
 
       // Render 3 Halaman Pertama secara Paralel Instan (< 150ms)
       const initialPages = [1, 2, 3].filter(p => p <= totalDocPages && !renderedPages.has(p));
       if (initialPages.length > 0) {
-        await Promise.all(initialPages.map(p => renderSinglePdfPage(p, scale)));
+        await Promise.all(initialPages.map(p => renderSinglePdfPage(p, scale, session)));
       }
 
       // LANGSUNG Inisialisasi StPageFlip agar buku segera tampil di hadapan user
-      initStPageFlip(bookContainer, baseWidth, baseHeight);
+      initStPageFlip(bookContainer, baseWidth, baseHeight, 0);
 
       // Siapkan halaman 4 dan 5 di background secara paralel
       if (totalDocPages >= 5) {
         Promise.all([
-          renderSinglePdfPage(4, scale),
-          renderSinglePdfPage(5, scale)
+          renderSinglePdfPage(4, scale, session),
+          renderSinglePdfPage(5, scale, session)
         ]).then(() => {
-          renderRemainingPagesInBackground();
+          renderRemainingPagesInBackground(session);
         }).catch(() => {});
       } else {
-        renderRemainingPagesInBackground();
+        renderRemainingPagesInBackground(session);
       }
 
     } catch (err) {
@@ -1510,8 +1516,10 @@
   /**
    * 6. Render satu halaman PDF ke canvas secara cached & aman dari duplikasi
    */
-  async function renderSinglePdfPage(pageNum, scale = null) {
+  async function renderSinglePdfPage(pageNum, scale = null, sessionId = null) {
     if (!pdfDocInstance) return;
+    const session = sessionId !== null ? sessionId : currentRenderSession;
+    if (session !== currentRenderSession) return;
     if (renderedPages.has(pageNum)) return;
     if (renderingPromises.has(pageNum)) {
       return renderingPromises.get(pageNum);
@@ -1522,6 +1530,7 @@
     const promise = (async () => {
       try {
         const page = await pdfDocInstance.getPage(pageNum);
+        if (session !== currentRenderSession) return;
         const viewport = page.getViewport({ scale: actualScale });
         const canvas = document.getElementById(`flip_canvas_${pageNum}`);
         if (!canvas) return;
@@ -1537,6 +1546,7 @@
           viewport: viewport
         }).promise;
 
+        if (session !== currentRenderSession) return;
         renderedPages.add(pageNum);
         const sheet = canvas.closest('.page-sheet');
         if (sheet) sheet.classList.add('rendered');
@@ -1554,11 +1564,14 @@
   /**
    * Render sisa halaman di background secara idle tanpa membebani browser
    */
-  async function renderRemainingPagesInBackground() {
+  async function renderRemainingPagesInBackground(sessionId = null) {
+    const session = sessionId !== null ? sessionId : currentRenderSession;
     const scale = getOptimalRenderScale();
     for (let pageNum = 1; pageNum <= totalDocPages; pageNum++) {
+      if (session !== currentRenderSession) return;
       if (!renderedPages.has(pageNum)) {
-        await renderSinglePdfPage(pageNum, scale);
+        await renderSinglePdfPage(pageNum, scale, session);
+        if (session !== currentRenderSession) return;
         await new Promise(r => setTimeout(r, 35));
       }
     }
@@ -1586,7 +1599,7 @@
     // 1. PRIORITAS UTAMA: Render 2 halaman yang sedang dilihat user SECARA PARALEL!
     const currentSpread = [leftPage, rightPage].filter(p => p >= 1 && p <= totalDocPages && !renderedPages.has(p));
     if (currentSpread.length > 0) {
-      await Promise.all(currentSpread.map(p => renderSinglePdfPage(p, scale)));
+      await Promise.all(currentSpread.map(p => renderSinglePdfPage(p, scale, currentRenderSession)));
     }
 
     // 2. PRIORITAS KEDUA: Prefetch lembaran berikutnya dan sebelumnya secara paralel tanpa menunggu
@@ -1596,14 +1609,14 @@
     ].filter(p => p >= 1 && p <= totalDocPages && !renderedPages.has(p));
 
     if (nearby.length > 0) {
-      Promise.all(nearby.map(p => renderSinglePdfPage(p, scale))).catch(() => {});
+      Promise.all(nearby.map(p => renderSinglePdfPage(p, scale, currentRenderSession))).catch(() => {});
     }
   }
 
   /**
    * 7. Inisialisasi Perpustakaan StPageFlip (Efek 3D Lembaran Berputar)
    */
-  function initStPageFlip(container, width, height) {
+  function initStPageFlip(container, width, height, startPage = 0) {
     if (typeof window.St === 'undefined' || typeof window.St.PageFlip === 'undefined') {
       console.warn('St.PageFlip tidak ditemukan, mengaktifkan mode navigasi standar.');
       return;
@@ -1615,18 +1628,23 @@
     currentBaseWidth = bookW;
     currentBaseHeight = bookH;
 
+    const safeStartPage = Math.max(0, Math.min(startPage || 0, (totalDocPages || 1) - 1));
+    window.__acfLastKnownPageIndex = safeStartPage;
+
     // KUNCI PRESISI UKURAN: Kunci dimensi fisik container agar buku pas presisi dan tidak pernah overflow viewport
     container.style.width = (bookW * 2) + 'px';
     container.style.height = bookH + 'px';
     container.style.maxWidth = (bookW * 2) + 'px';
     container.style.maxHeight = bookH + 'px';
+    container.style.position = 'relative';
 
     flipBookInstance = new window.St.PageFlip(container, {
+      startPage: safeStartPage,
       width: bookW,
       height: bookH,
       size: 'fixed',
       minWidth: bookW,
-      maxWidth: bookW,
+      maxWidth: bookW * 2,
       minHeight: bookH,
       maxHeight: bookH,
       maxShadowOpacity: 0.6,
@@ -1644,24 +1662,65 @@
     // Hubungkan kontrol navigasi
     initFlipControls();
 
+    let initialPageApplied = (safeStartPage === 0);
+
+    function enforceTargetPage() {
+      if (initialPageApplied || safeStartPage === 0 || !flipBookInstance) return;
+      try {
+        const cur = flipBookInstance.getCurrentPageIndex();
+        if (cur !== safeStartPage) {
+          if (typeof flipBookInstance.turnToPage === 'function') {
+            flipBookInstance.turnToPage(safeStartPage);
+            initialPageApplied = true;
+          } else if (typeof flipBookInstance.flip === 'function') {
+            flipBookInstance.flip(safeStartPage);
+            initialPageApplied = true;
+          }
+        } else {
+          initialPageApplied = true;
+        }
+      } catch (_) {}
+      updateCoverCentering(safeStartPage);
+      updateNavButtonsState(safeStartPage);
+    }
+
+    // Event saat buku selesai dimuat / diinisialisasi
+    flipBookInstance.on('init', () => {
+      enforceTargetPage();
+    });
+
     // Event saat halaman berganti
     flipBookInstance.on('flip', (e) => {
+      window.__acfLastKnownPageIndex = e.data;
       updateNavButtonsState(e.data);
       ensureNearbyPages(e.data);
     });
 
-    flipBookInstance.on('changeState', () => {
+    flipBookInstance.on('changeState', (e) => {
       if (flipBookInstance) {
         try {
+          if (!initialPageApplied && e && e.data === 'read') {
+            enforceTargetPage();
+          }
           const cur = flipBookInstance.getCurrentPageIndex();
+          window.__acfLastKnownPageIndex = cur;
           updateCoverCentering(cur);
           ensureNearbyPages(cur);
         } catch (err) {}
       }
     });
 
-    // Update state awal
-    updateNavButtonsState(0);
+    // Update state awal secara langsung
+    updateCoverCentering(safeStartPage);
+    updateNavButtonsState(safeStartPage);
+
+    // Backup checks memastikan halaman target selalu tercapai
+    if (safeStartPage > 0) {
+      requestAnimationFrame(enforceTargetPage);
+      setTimeout(enforceTargetPage, 60);
+      setTimeout(enforceTargetPage, 180);
+      setTimeout(enforceTargetPage, 400);
+    }
   }
 
   /**
@@ -1742,9 +1801,9 @@
 
     const total = totalDocPages || 31;
     if (pageIndex === 0) {
-      // 1 halaman cover saja di tengah
+      // 1 halaman cover depan saja di tengah
       container.style.transform = 'translateX(-25%)';
-    } else if (pageIndex >= total - 1) {
+    } else if (pageIndex >= total - 1 && total > 1) {
       // 1 halaman cover belakang di tengah
       container.style.transform = 'translateX(25%)';
     } else {
@@ -1771,7 +1830,7 @@
     if (pageBadge) {
       if (currentPageIndex === 0) {
         pageBadge.textContent = isMobile ? `Cover • 1 / ${total}` : `Cover Depan • Hal 1 dari ${total}`;
-      } else if (currentPageIndex >= total - 1) {
+      } else if (currentPageIndex >= total - 1 && total > 1) {
         pageBadge.textContent = isMobile ? `Belakang • ${total}` : `Cover Belakang • Hal ${total}`;
       } else {
         const leftPage = currentPageIndex % 2 === 1 ? currentPageIndex + 1 : currentPageIndex;
@@ -1781,7 +1840,8 @@
     }
 
     if (rangeSlider) {
-      rangeSlider.value = humanPage;
+      rangeSlider.max = total;
+      rangeSlider.value = Math.max(1, Math.min(total, humanPage));
     }
 
     if (prevBtn) {
@@ -1789,7 +1849,7 @@
     }
 
     if (nextBtn) {
-      nextBtn.disabled = currentPageIndex >= totalDocPages - 1;
+      nextBtn.disabled = currentPageIndex >= total - 1;
     }
   }
 
@@ -1869,16 +1929,24 @@
       if (!modal || !modal.classList.contains('active')) return;
       if (!pdfDocInstance) return;
 
-      const curPage = flipBookInstance ? flipBookInstance.getCurrentPageIndex() : 0;
+      let curPage = 0;
+      if (flipBookInstance && typeof flipBookInstance.getCurrentPageIndex === 'function') {
+        try {
+          curPage = flipBookInstance.getCurrentPageIndex();
+        } catch (_) {}
+      } else if (typeof window.__acfLastKnownPageIndex === 'number') {
+        curPage = window.__acfLastKnownPageIndex;
+      }
+
       const newDims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
 
-      // Jika ukuran layar berubah signifikan (> 8px) atau flipbook belum terinisialisasi
-      if (!flipBookInstance || Math.abs(newDims.baseWidth - currentBaseWidth) > 8 || Math.abs(newDims.baseHeight - currentBaseHeight) > 8) {
+      // Jika ukuran layar berubah signifikan (> 6px) atau flipbook belum terinisialisasi
+      if (!flipBookInstance || Math.abs(newDims.baseWidth - currentBaseWidth) > 6 || Math.abs(newDims.baseHeight - currentBaseHeight) > 6) {
         reFitFlipbook(curPage);
       } else {
         updateCoverCentering(curPage);
       }
-    }, 150);
+    }, 120);
   }
 
   /**
@@ -1894,19 +1962,13 @@
     currentBaseWidth = dims.baseWidth;
     currentBaseHeight = dims.baseHeight;
 
-    // 1. Amankan seluruh elemen .page-sheet beserta canvas di dalamnya sebelum instance dihancurkan
+    const safeTarget = Math.max(0, Math.min(targetPageIndex, (totalDocPages || 1) - 1));
+    window.__acfLastKnownPageIndex = safeTarget;
+
+    // 1. Amankan elemen lembaran yang sudah ada agar canvas yang sudah dirender TIDAK HILANG
     const existingSheets = Array.from(bookContainer.querySelectorAll('.page-sheet'));
 
-    // 2. Lepaskan sheets dari pembungkus internal StPageFlip (stf__item, stf__block)
-    existingSheets.forEach(sheet => {
-      if (sheet.parentNode) {
-        sheet.parentNode.removeChild(sheet);
-      }
-      sheet.removeAttribute('style');
-      sheet.classList.remove('stf__item', '--simple', '--hard');
-    });
-
-    // 3. Hancurkan instance StPageFlip yang lama
+    // 2. Hancurkan instance StPageFlip yang lama dengan aman
     if (flipBookInstance) {
       try {
         flipBookInstance.destroy();
@@ -1914,37 +1976,49 @@
       flipBookInstance = null;
     }
 
-    // 4. Bersihkan kontainer dan pasang kembali sheets yang sudah berisi canvas
-    bookContainer.innerHTML = '';
-    if (existingSheets.length > 0) {
-      existingSheets.forEach(sheet => bookContainer.appendChild(sheet));
+    // 3. Pasang kembali lembaran bersih langsung di dalam bookContainer
+    if (existingSheets.length === totalDocPages) {
+      bookContainer.innerHTML = '';
+      existingSheets.forEach(sheet => {
+        sheet.classList.remove('stf__item', '--simple', '--hard', '--left', '--right');
+        sheet.removeAttribute('style');
+        sheet.style.cssText = 'position: absolute; top: 0; box-sizing: border-box;';
+        bookContainer.appendChild(sheet);
+      });
+      const oldWrappers = bookContainer.querySelectorAll('.stf__wrapper, .stf__parent, .stf__block');
+      oldWrappers.forEach(w => w.remove());
     } else {
-      createSheetElements(bookContainer);
+      bookContainer.innerHTML = '';
+      createSheetElements(bookContainer, true);
     }
 
-    // 5. Kunci dimensi baru pada kontainer agar pas presisi
+    // 4. Kunci dimensi baru pada kontainer agar pas presisi
     bookContainer.style.width = (dims.baseWidth * 2) + 'px';
     bookContainer.style.height = dims.baseHeight + 'px';
     bookContainer.style.maxWidth = (dims.baseWidth * 2) + 'px';
     bookContainer.style.maxHeight = dims.baseHeight + 'px';
+    bookContainer.style.position = 'relative';
 
-    // 6. Inisialisasi ulang StPageFlip dengan ukuran baru
-    initStPageFlip(bookContainer, dims.baseWidth, dims.baseHeight);
-    if (flipBookInstance) {
-      try {
-        const safeTarget = Math.max(0, Math.min(targetPageIndex, (totalDocPages || 1) - 1));
-        if (typeof flipBookInstance.turnToPage === 'function') {
-          flipBookInstance.turnToPage(safeTarget);
-        } else if (typeof flipBookInstance.flip === 'function') {
-          flipBookInstance.flip(safeTarget);
-        }
-        updateCoverCentering(safeTarget);
-        updateNavButtonsState(safeTarget);
-      } catch (err) {}
+    // 5. LANGSUNG Inisialisasi StPageFlip secara SINKRON!
+    // Buku dan halaman 3D langsung terpasang seketika (0.5ms) tanpa jeda layar kosong!
+    initStPageFlip(bookContainer, dims.baseWidth, dims.baseHeight, safeTarget);
+
+    // 6. Mulai sesi render baru
+    const session = ++currentRenderSession;
+
+    // 7. Tandai canvas yang sudah memiliki pixel valid agar tidak render ulang jika sudah tajam
+    renderedPages.clear();
+    renderingPromises.clear();
+    for (let p = 1; p <= totalDocPages; p++) {
+      const cv = document.getElementById(`flip_canvas_${p}`);
+      if (cv && cv.width > 0 && cv.height > 0) {
+        renderedPages.add(p);
+      }
     }
 
-    // 7. Render ulang halaman aktif agar tajam di ukuran layar penuh
-    ensureNearbyPages(targetPageIndex, true);
+    // 8. Render halaman yang sedang dilihat dan sekitarnya
+    ensureNearbyPages(safeTarget);
+    renderRemainingPagesInBackground(session);
   }
 
   window.addEventListener('resize', handleFlipbookResize);

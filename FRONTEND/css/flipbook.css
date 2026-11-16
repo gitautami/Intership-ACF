@@ -242,15 +242,33 @@
 .stf__block {
   background: transparent !important;
   box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.stf__parent {
+  display: block !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+}
+
+.stf__wrapper {
+  margin: 0 auto !important;
+  position: relative !important;
+  box-sizing: border-box !important;
 }
 
 /* Flipbook Single Page Container */
-.page-sheet {
+.page-sheet,
+.stf__item {
   background-color: #FFFFFF;
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28), 0 3px 10px rgba(0, 0, 0, 0.12);
   border-radius: 4px;
-  position: relative;
+  position: absolute !important;
+  top: 0 !important;
+  box-sizing: border-box;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
 }
 
 .page-sheet[data-density="hard"] {
@@ -742,17 +760,48 @@
 
   /* Area Stage & Viewport Mobile */
   .flipbook-stage {
-    padding: 6px;
+    padding: 4px;
+    overflow: hidden;
   }
 
   .flipbook-viewport {
-    max-height: 94vh;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: visible !important;
     padding: 0;
   }
 
+  .flipbook-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin: 0 auto !important;
+  }
+
   /* Lembaran Halaman Buku Mobile */
-  .page-sheet {
+  .page-sheet,
+  .stf__item {
+    background-color: #FFFFFF;
+    overflow: hidden;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22), 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    position: absolute !important;
+    top: 0 !important;
+    box-sizing: border-box;
+    backface-visibility: visible !important;
+    -webkit-backface-visibility: visible !important;
+  }
+
+  .page-sheet canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   .page-sheet-num {

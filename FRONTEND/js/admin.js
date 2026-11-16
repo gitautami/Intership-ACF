@@ -5138,6 +5138,9 @@
       for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
         const sheet = document.createElement('div');
         sheet.className = 'page-sheet';
+        sheet.style.position = 'absolute';
+        sheet.style.top = '0';
+        sheet.style.boxSizing = 'border-box';
         sheet.setAttribute('data-density', (pageNum === 1 || pageNum === totalPages) ? 'hard' : 'soft');
 
         const canvas = document.createElement('canvas');
@@ -5167,13 +5170,14 @@
         adminFlipbookBook.style.height = baseHeight + 'px';
         adminFlipbookBook.style.maxWidth = (baseWidth * 2) + 'px';
         adminFlipbookBook.style.maxHeight = baseHeight + 'px';
+        adminFlipbookBook.style.position = 'relative';
 
         adminFlipbookInstance = new window.St.PageFlip(adminFlipbookBook, {
           width: baseWidth,
           height: baseHeight,
           size: 'fixed',
           minWidth: baseWidth,
-          maxWidth: baseWidth,
+          maxWidth: baseWidth * 2,
           minHeight: baseHeight,
           maxHeight: baseHeight,
           maxShadowOpacity: 0.6,
@@ -5237,7 +5241,7 @@
     if (pageIndex === 0) {
       // 1 halaman cover di tengah layar
       adminFlipbookBook.style.transform = 'translateX(-25%)';
-    } else if (pageIndex >= total - 1) {
+    } else if (pageIndex >= total - 1 && total > 1) {
       // 1 halaman cover belakang di tengah layar
       adminFlipbookBook.style.transform = 'translateX(25%)';
     } else {
@@ -5256,7 +5260,7 @@
     if (adminFlipbookPageBadge) {
       if (currentPageIndex === 0) {
         adminFlipbookPageBadge.textContent = isMobile ? `Cover • 1 / ${total}` : `Cover Depan • Hal 1 dari ${total}`;
-      } else if (currentPageIndex >= total - 1) {
+      } else if (currentPageIndex >= total - 1 && total > 1) {
         adminFlipbookPageBadge.textContent = isMobile ? `Belakang • ${total}` : `Cover Belakang • Hal ${total}`;
       } else {
         const leftPage = currentPageIndex % 2 === 1 ? currentPageIndex + 1 : currentPageIndex;
@@ -5265,7 +5269,8 @@
       }
     }
     if (adminFlipbookRange) {
-      adminFlipbookRange.value = humanPage;
+      adminFlipbookRange.max = total;
+      adminFlipbookRange.value = Math.max(1, Math.min(total, humanPage));
     }
     if (adminBtnNavPrev) {
       adminBtnNavPrev.disabled = currentPageIndex <= 0;

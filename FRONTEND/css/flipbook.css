@@ -242,33 +242,27 @@
 .stf__block {
   background: transparent !important;
   box-shadow: none !important;
-  overflow: visible !important;
 }
 
-.stf__parent {
-  display: block !important;
-  position: relative !important;
-  box-sizing: border-box !important;
-}
-
-.stf__wrapper {
-  margin: 0 auto !important;
-  position: relative !important;
-  box-sizing: border-box !important;
+/* ANTI-DUPLIKASI KETAT: Menjamin secara absolut tidak pernah ada lebih dari 1 wrapper buku yang tampil di layar */
+.stf__parent ~ .stf__parent,
+.stf__wrapper ~ .stf__wrapper,
+.stf__block ~ .stf__block,
+#flipbookBook > .stf__parent ~ .stf__parent,
+#adminFlipbookBook > .stf__parent ~ .stf__parent {
+  display: none !important;
 }
 
 /* Flipbook Single Page Container */
-.page-sheet,
-.stf__item {
+.page-sheet {
   background-color: #FFFFFF;
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28), 0 3px 10px rgba(0, 0, 0, 0.12);
   border-radius: 4px;
-  position: absolute !important;
-  top: 0 !important;
+  position: absolute;
+  top: 0;
+  left: 0;
   box-sizing: border-box;
-  backface-visibility: visible !important;
-  -webkit-backface-visibility: visible !important;
 }
 
 .page-sheet[data-density="hard"] {
@@ -783,25 +777,15 @@
   }
 
   /* Lembaran Halaman Buku Mobile */
-  .page-sheet,
-  .stf__item {
+  .page-sheet {
     background-color: #FFFFFF;
     overflow: hidden;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22), 0 2px 6px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-    position: absolute !important;
-    top: 0 !important;
+    position: absolute;
+    top: 0;
+    left: 0;
     box-sizing: border-box;
-    backface-visibility: visible !important;
-    -webkit-backface-visibility: visible !important;
-  }
-
-  .page-sheet canvas {
-    width: 100% !important;
-    height: 100% !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
   }
 
   .page-sheet-num {

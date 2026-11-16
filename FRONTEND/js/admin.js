@@ -653,15 +653,22 @@
         title: 'Login Berhasil!',
         html: `Selamat datang kembali di <b>Portal Admin ACF Eduhub</b>, <strong style="color: #7D2280;">${escapeHTML(adminName)}</strong>!<br><span style="font-size: 0.88rem; color: #64748B;">Sesi admin Anda telah aktif.</span>`,
         icon: 'success',
-        timer: 1800,
+        timer: 1600,
         timerProgressBar: true,
-        showConfirmButton: true,
-        confirmButtonText: 'Masuk ke Dashboard',
+        showConfirmButton: false,
+        showCancelButton: false,
+        showDenyButton: false,
+        allowOutsideClick: true,
         customClass: {
-          popup: 'acf-swal-popup',
-          confirmButton: 'btn-swal-confirm'
+          popup: 'acf-swal-popup acf-swal-no-btn'
         },
-        buttonsStyling: false
+        buttonsStyling: false,
+        didOpen: (popup) => {
+          const actions = popup.querySelector('.swal2-actions');
+          if (actions) actions.style.display = 'none';
+          const confirmBtn = popup.querySelector('.swal2-confirm');
+          if (confirmBtn) confirmBtn.style.display = 'none';
+        }
       }).then(() => {
         showDashboard();
       });
@@ -4226,7 +4233,7 @@
           dataFlipbooks = res.map(normalizeFlipbookItem);
           try {
             localStorage.setItem('acf_flipbooks_data', JSON.stringify(dataFlipbooks));
-          } catch (e) {}
+          } catch (e) { }
         } else {
           dataFlipbooks = [];
         }
@@ -4247,7 +4254,7 @@
             dataFlipbooks = list.map(normalizeFlipbookItem);
           }
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     if (!Array.isArray(dataFlipbooks) || dataFlipbooks.length === 0) {
@@ -4278,7 +4285,7 @@
           if (canonical && canonical !== item.target_page) {
             localStorage.setItem(`acf_active_flipbook_${canonical}`, JSON.stringify(item));
           }
-        } catch (e) {}
+        } catch (e) { }
       }
     });
 
@@ -4616,7 +4623,7 @@
       if (file) {
         try {
           localBlobUrl = URL.createObjectURL(file);
-        } catch (_) {}
+        } catch (_) { }
 
         if (progressBar) progressBar.style.display = 'block';
         if (progressFill) progressFill.style.width = '30%';
@@ -4739,7 +4746,7 @@
         try {
           const channel = new BroadcastChannel('acf_flipbook_channel');
           channel.postMessage({ type: 'flipbook_updated', data: cachedItem });
-        } catch (_) {}
+        } catch (_) { }
         window.dispatchEvent(new CustomEvent('acf_flipbook_updated', { detail: cachedItem }));
       } catch (eCache) {
         console.warn('Cache local flipbook warning:', eCache);
@@ -4788,13 +4795,13 @@
       }
       try {
         localStorage.setItem('acf_flipbooks_data', JSON.stringify(dataFlipbooks));
-      } catch (e) {}
+      } catch (e) { }
 
       // Broadcast real-time ke semua tab frontend
       try {
         const channel = new BroadcastChannel('acf_flipbook_channel');
         channel.postMessage({ type: 'flipbook_updated', data: item });
-      } catch (_) {}
+      } catch (_) { }
       window.dispatchEvent(new CustomEvent('acf_flipbook_updated', { detail: item }));
 
       renderTableFlipbooks();
@@ -4825,13 +4832,13 @@
       }
       try {
         localStorage.setItem('acf_flipbooks_data', JSON.stringify(dataFlipbooks));
-      } catch (e) {}
+      } catch (e) { }
 
       // Broadcast real-time ke semua tab frontend
       try {
         const channel = new BroadcastChannel('acf_flipbook_channel');
         channel.postMessage({ type: 'flipbook_updated', data: { id, target_page: item.target_page, status: 'nonaktif' } });
-      } catch (_) {}
+      } catch (_) { }
       window.dispatchEvent(new CustomEvent('acf_flipbook_updated', { detail: { id, target_page: item.target_page, status: 'nonaktif' } }));
 
       renderTableFlipbooks();
@@ -4985,7 +4992,7 @@
     ].filter(p => p >= 1 && p <= totalPages && !adminRenderedPages.has(p));
 
     if (nearby.length > 0) {
-      Promise.all(nearby.map(p => renderAdminSinglePage(p, scale))).catch(() => {});
+      Promise.all(nearby.map(p => renderAdminSinglePage(p, scale))).catch(() => { });
     }
   }
 
@@ -5091,7 +5098,7 @@
           if (latest && (latest.file_url || latest.fileUrl)) {
             fileUrl = latest.file_url || latest.fileUrl;
           }
-        } catch (e) {}
+        } catch (e) { }
       }
       if (!fileUrl) {
         fileUrl = '../assets/tentang/Profil Lembaga - ACF Eduhub.pdf';
@@ -5192,7 +5199,7 @@
               const cur = adminFlipbookInstance.getCurrentPageIndex();
               updateAdminCoverCentering(cur, totalPages);
               ensureAdminNearbyPages(cur, totalPages);
-            } catch (err) {}
+            } catch (err) { }
           }
         });
 
@@ -5206,7 +5213,7 @@
           renderAdminSinglePage(5, scale)
         ]).then(() => {
           renderAdminRemainingPagesInBackground(totalPages);
-        }).catch(() => {});
+        }).catch(() => { });
       } else {
         renderAdminRemainingPagesInBackground(totalPages);
       }
@@ -5527,7 +5534,7 @@
           // Otomatis deteksi info halaman & judul dari file PDF
           if (typeof window.pdfjsLib !== 'undefined') {
             const fr = new FileReader();
-            fr.onload = async function() {
+            fr.onload = async function () {
               try {
                 const typedarray = new Uint8Array(this.result);
                 const pdf = await window.pdfjsLib.getDocument(typedarray).promise;
@@ -5539,7 +5546,7 @@
                   const cleanName = file.name.replace(/\.pdf$/i, '').replace(/[_-]+/g, ' ');
                   flipbookFormJudul.value = cleanName;
                 }
-              } catch (e) {}
+              } catch (e) { }
             };
             fr.readAsArrayBuffer(file);
           }
@@ -5565,7 +5572,7 @@
           // Otomatis deteksi info halaman & judul dari file PDF
           if (typeof window.pdfjsLib !== 'undefined') {
             const fr = new FileReader();
-            fr.onload = async function() {
+            fr.onload = async function () {
               try {
                 const typedarray = new Uint8Array(this.result);
                 const pdf = await window.pdfjsLib.getDocument(typedarray).promise;
@@ -5577,7 +5584,7 @@
                   const cleanName = file.name.replace(/\.pdf$/i, '').replace(/[_-]+/g, ' ');
                   flipbookFormJudul.value = cleanName;
                 }
-              } catch (e) {}
+              } catch (e) { }
             };
             fr.readAsArrayBuffer(file);
           }
@@ -5609,7 +5616,7 @@
           const cur = adminFlipbookInstance.getCurrentPageIndex();
           const total = adminFlipbookInstance.getPageCount() || 31;
           updateAdminCoverCentering(cur, total);
-        } catch (e) {}
+        } catch (e) { }
       }
     });
 

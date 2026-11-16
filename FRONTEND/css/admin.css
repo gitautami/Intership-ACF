@@ -5027,6 +5027,13 @@ body.modal-open {
   gap: 12px !important;
 }
 
+/* Sembunyikan tombol actions khusus popup notifikasi login sukses */
+.acf-swal-no-btn .swal2-actions,
+.acf-swal-no-btn .swal2-confirm,
+.acf-swal-no-btn .swal2-cancel {
+  display: none !important;
+}
+
 /* Tombol Confirm Utama: Gradient Ungu Logo ACF */
 .acf-swal-popup .swal2-confirm.btn-swal-confirm {
   background: linear-gradient(135deg, #7D2280 0%, #5B135E 100%) !important;

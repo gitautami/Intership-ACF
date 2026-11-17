@@ -429,7 +429,7 @@
       categoryDesc: 'Penyaluran bantuan kemanusiaan dan kebutuhan dasar bagi anak-anak di wilayah krisis serta konflik global.',
       divisi: 'ACF Educare (Donasi Pendidikan)',
       title: 'Bantuan Kemanusiaan Internasional',
-      cover: '../assets/layanan-program/IMG_6442.jpg',
+      cover: '../assets/layanan-program/photo_2026-11-17_16-09-25.jpg',
       quote: 'Penyaluran bantuan dasar bagi anak-anak di wilayah konflik, dihimpun dari keluarga besar ACF Eduhub dan donatur publik.',
       buktiKapasitas: 'Tahap 1 (1 September 2026) — makanan hangat untuk 260 anak di 2 shelter pengungsian Gaza, bekerja sama dengan Baitul Mal Muamalat.',
       kebutuhanDukungan: 'Dana penuh',

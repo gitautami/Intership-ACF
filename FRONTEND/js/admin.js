@@ -4872,9 +4872,8 @@
       screenH = temp;
     }
 
-    const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    const isMobile = screenW <= 768 || (screenH <= 550 && screenW <= 1024) || (hasTouch && screenW <= 1024);
     const isLandscape = screenW > screenH;
+    const isMobile = screenW <= 768;
 
     const validW = Math.max(100, Number(pdfPageW) || 595);
     const validH = Math.max(100, Number(pdfPageH) || 842);
@@ -4885,31 +4884,45 @@
     if (isMobile) {
       if (isLandscape) {
         availH = Math.max(180, screenH - 46);
-        availW = Math.max(260, screenW - 36);
+        availW = Math.max(220, screenW - 36);
       } else {
         availH = Math.max(240, screenH - 96);
-        availW = Math.max(240, screenW - 20);
+        availW = Math.max(220, screenW - 20);
       }
+
+      let maxWByHeight = Math.floor(availH / pageRatio);
+      let maxWByWidth = Math.floor(availW); // 1 halaman tunggal di mobile
+      let baseWidth = Math.min(maxWByWidth, maxWByHeight);
+
+      const minW = isLandscape ? 140 : 160;
+      const maxW = 600;
+      baseWidth = Math.max(minW, Math.min(maxW, baseWidth));
+
+      if (baseWidth * pageRatio > availH) {
+        baseWidth = Math.floor(availH / pageRatio);
+      }
+      const baseHeight = Math.round(baseWidth * pageRatio);
+
+      return { baseWidth, baseHeight, pageRatio, isMobile: true, isSinglePage: true, isLandscape, isForcedLandscape };
     } else {
       availH = Math.max(300, screenH - 134);
       availW = Math.max(300, screenW - 140);
+
+      let maxWByHeight = Math.floor(availH / pageRatio);
+      let maxWByWidth = Math.floor(availW / 2); // 2 halaman berdampingan di desktop
+      let baseWidth = Math.min(maxWByWidth, maxWByHeight);
+
+      const minW = 180;
+      const maxW = 750;
+      baseWidth = Math.max(minW, Math.min(maxW, baseWidth));
+
+      if (baseWidth * pageRatio > availH) {
+        baseWidth = Math.floor(availH / pageRatio);
+      }
+      const baseHeight = Math.round(baseWidth * pageRatio);
+
+      return { baseWidth, baseHeight, pageRatio, isMobile: false, isSinglePage: false, isLandscape, isForcedLandscape };
     }
-
-    let maxWByHeight = Math.floor(availH / pageRatio);
-    let maxWByWidth = Math.floor(availW / 2);
-    let baseWidth = Math.min(maxWByWidth, maxWByHeight);
-
-    const minW = isMobile ? (isLandscape ? 120 : 85) : 180;
-    const maxW = isMobile ? 800 : 750;
-
-    baseWidth = Math.max(minW, Math.min(maxW, baseWidth));
-
-    if (baseWidth * pageRatio > availH) {
-      baseWidth = Math.floor(availH / pageRatio);
-    }
-    const baseHeight = Math.round(baseWidth * pageRatio);
-
-    return { baseWidth, baseHeight, pageRatio, isMobile, isLandscape, isForcedLandscape };
   }
 
   function getAdminOptimalRenderScale(baseWidth = null, pdfUnscaledW = null) {
@@ -5123,7 +5136,7 @@
         adminPdfPageHeight = 842;
       }
 
-      const { baseWidth, baseHeight, isMobile, isLandscape } = calculateAdminBookDimensions(adminPdfPageWidth, adminPdfPageHeight);
+      const { baseWidth, baseHeight, isMobile, isSinglePage, isLandscape } = calculateAdminBookDimensions(adminPdfPageWidth, adminPdfPageHeight);
       currentAdminBaseWidth = baseWidth;
       currentAdminBaseHeight = baseHeight;
 
@@ -5166,9 +5179,10 @@
       }
 
       if (typeof window.St !== 'undefined' && typeof window.St.PageFlip !== 'undefined') {
-        adminFlipbookBook.style.width = (baseWidth * 2) + 'px';
+        const targetAdminWidth = isSinglePage ? baseWidth : (baseWidth * 2);
+        adminFlipbookBook.style.width = targetAdminWidth + 'px';
         adminFlipbookBook.style.height = baseHeight + 'px';
-        adminFlipbookBook.style.maxWidth = (baseWidth * 2) + 'px';
+        adminFlipbookBook.style.maxWidth = targetAdminWidth + 'px';
         adminFlipbookBook.style.maxHeight = baseHeight + 'px';
         adminFlipbookBook.style.position = 'relative';
 
@@ -5177,14 +5191,14 @@
           height: baseHeight,
           size: 'fixed',
           minWidth: baseWidth,
-          maxWidth: baseWidth * 2,
+          maxWidth: targetAdminWidth,
           minHeight: baseHeight,
           maxHeight: baseHeight,
           maxShadowOpacity: 0.6,
-          showCover: true,
+          showCover: !isSinglePage,
           mobileScrollSupport: false,
-          usePortrait: false,
-          flippingTime: 650,
+          usePortrait: isSinglePage,
+          flippingTime: isSinglePage ? 500 : 650,
           drawShadow: true,
           autoSize: false
         });
@@ -5237,6 +5251,12 @@
   function updateAdminCoverCentering(pageIndex, totalPages) {
     if (!adminFlipbookBook) return;
 
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      adminFlipbookBook.style.transform = 'none';
+      return;
+    }
+
     const total = totalPages || 31;
     if (pageIndex === 0) {
       // 1 halaman cover di tengah layar
@@ -5258,14 +5278,24 @@
     updateAdminCoverCentering(currentPageIndex, total);
 
     if (adminFlipbookPageBadge) {
-      if (currentPageIndex === 0) {
-        adminFlipbookPageBadge.textContent = isMobile ? `Cover • 1 / ${total}` : `Cover Depan • Hal 1 dari ${total}`;
-      } else if (currentPageIndex >= total - 1 && total > 1) {
-        adminFlipbookPageBadge.textContent = isMobile ? `Belakang • ${total}` : `Cover Belakang • Hal ${total}`;
+      if (isMobile) {
+        if (currentPageIndex === 0) {
+          adminFlipbookPageBadge.textContent = `Cover • Hal 1 / ${total}`;
+        } else if (currentPageIndex >= total - 1 && total > 1) {
+          adminFlipbookPageBadge.textContent = `Belakang • Hal ${total}`;
+        } else {
+          adminFlipbookPageBadge.textContent = `Hal ${humanPage} / ${total}`;
+        }
       } else {
-        const leftPage = currentPageIndex % 2 === 1 ? currentPageIndex + 1 : currentPageIndex;
-        const rightPage = Math.min(leftPage + 1, total);
-        adminFlipbookPageBadge.textContent = isMobile ? `Hal ${leftPage}-${rightPage} / ${total}` : `Halaman ${leftPage}-${rightPage} dari ${total}`;
+        if (currentPageIndex === 0) {
+          adminFlipbookPageBadge.textContent = `Cover Depan • Hal 1 dari ${total}`;
+        } else if (currentPageIndex >= total - 1 && total > 1) {
+          adminFlipbookPageBadge.textContent = `Cover Belakang • Hal ${total}`;
+        } else {
+          const leftPage = currentPageIndex % 2 === 1 ? currentPageIndex + 1 : currentPageIndex;
+          const rightPage = Math.min(leftPage + 1, total);
+          adminFlipbookPageBadge.textContent = `Halaman ${leftPage}-${rightPage} dari ${total}`;
+        }
       }
     }
     if (adminFlipbookRange) {

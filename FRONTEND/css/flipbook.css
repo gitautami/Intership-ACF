@@ -788,6 +788,12 @@
     box-sizing: border-box;
   }
 
+  .page-sheet.--left,
+  .page-sheet.--right {
+    border-left: none !important;
+    border-right: none !important;
+  }
+
   .page-sheet-num {
     bottom: 8px;
     font-size: 0.68rem;

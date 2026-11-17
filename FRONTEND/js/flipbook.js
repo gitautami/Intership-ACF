@@ -19,6 +19,7 @@
   let activePdfPageHeight = 842;
   let currentBaseWidth = 0;
   let currentBaseHeight = 0;
+  let currentIsSinglePage = false;
   let currentRenderSession = 0;
   const renderedPages = new Set();
   const renderingPromises = new Map();
@@ -241,7 +242,7 @@
     if (!document.querySelector('link[href*="flipbook.css"]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = '../css/flipbook.css?v=20261116_mobile_fix_v15';
+      link.href = '../css/flipbook.css?v=20261117_mobile_single_v16';
       document.head.appendChild(link);
     }
 
@@ -279,6 +280,8 @@
   /**
    * Hitung dimensi optimal Flipbook secara dinamis berdasarkan aspect ratio asli dokumen PDF
    * Menjamin 100% halaman tidak terpotong (tidak terpotong atas/bawah/samping) dan selalu muat di layar
+   * - Mobile: 1 halaman tunggal (single-page mode) baik cover maupun halaman berikutnya
+   * - Desktop/Web: 2 halaman berdampingan (two-page spread) seperti semula
    */
   function calculateOptimalBookDimensions(pdfPageW = 595, pdfPageH = 842) {
     const modal = document.getElementById('flipbookModal');
@@ -294,9 +297,9 @@
       screenH = temp;
     }
 
-    const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    const isMobile = screenW <= 768 || (screenH <= 550 && screenW <= 1024) || (hasTouch && screenW <= 1024);
     const isLandscape = screenW > screenH;
+    // Tampilan Mobile: Layar ponsel / smartphone (lebar layar <= 768px)
+    const isMobile = screenW <= 768;
 
     // Hitung aspect ratio dokumen asli (Tinggi / Lebar per lembar)
     const validW = Math.max(100, Number(pdfPageW) || 595);
@@ -306,60 +309,74 @@
     let availW, availH;
 
     if (isMobile) {
+      // MODE MOBILE: 1 Halaman Tunggal (Single Page View) baik cover maupun seluruh halaman berikutnya
       if (isLandscape) {
-        // Mode Landscape HP: Navigasi minimalis, maksimalkan tinggi dan lebar
-        // Safe margin: Top/Bottom header & mini controls bar = ~46px, Left/Right = ~36px
         availH = Math.max(180, screenH - 46);
-        availW = Math.max(260, screenW - 36);
+        availW = Math.max(220, screenW - 36);
       } else {
-        // Mode Portrait HP: Dua halaman berdampingan harus muat dalam layar sempit
-        // Safe margin: Header modal + Bottom controls = ~100px, Side margin = ~20px
-        availH = Math.max(240, screenH - 100);
-        availW = Math.max(240, screenW - 20);
+        availH = Math.max(240, screenH - 96);
+        availW = Math.max(220, screenW - 20);
       }
+
+      // Pada mobile, 1 halaman menggunakan seluruh lebar yang tersedia (TIDAK DIBAGI 2)
+      let maxWByHeight = Math.floor(availH / pageRatio);
+      let maxWByWidth = Math.floor(availW); // 1 lembar tunggal
+      let baseWidth = Math.min(maxWByWidth, maxWByHeight);
+
+      const minW = isLandscape ? 140 : 160;
+      const maxW = 600;
+      baseWidth = Math.max(minW, Math.min(maxW, baseWidth));
+
+      if (baseWidth * pageRatio > availH) {
+        baseWidth = Math.floor(availH / pageRatio);
+      }
+      const baseHeight = Math.round(baseWidth * pageRatio);
+
+      return {
+        baseWidth,
+        baseHeight,
+        pageRatio,
+        isMobile: true,
+        isSinglePage: true,
+        isLandscape,
+        isForcedLandscape
+      };
     } else {
-      // Desktop / Laptop:
-      // Safe margin: Header modal (~64px) + Bottom bar (~54px) + padding = ~134px
-      // Side buttons (Prev/Next floating buttons ~50px each side + padding) = ~140px
+      // MODE DESKTOP/WEB: 2 Halaman Berdampingan (Two-Page Spread seperti semula)
       availH = Math.max(300, screenH - 134);
       availW = Math.max(300, screenW - 140);
+
+      // Buku terdiri dari 2 lembar berdampingan (Total Lebar = 2 * baseWidth)
+      let maxWByHeight = Math.floor(availH / pageRatio);
+      let maxWByWidth = Math.floor(availW / 2); // 2 lembar berdampingan
+      let baseWidth = Math.min(maxWByWidth, maxWByHeight);
+
+      const minW = 180;
+      const maxW = 750;
+      baseWidth = Math.max(minW, Math.min(maxW, baseWidth));
+
+      if (baseWidth * pageRatio > availH) {
+        baseWidth = Math.floor(availH / pageRatio);
+      }
+      const baseHeight = Math.round(baseWidth * pageRatio);
+
+      return {
+        baseWidth,
+        baseHeight,
+        pageRatio,
+        isMobile: false,
+        isSinglePage: false,
+        isLandscape,
+        isForcedLandscape
+      };
     }
-
-    // Buku terdiri dari 2 lembar berdampingan (Total Lebar = 2 * baseWidth)
-    // Syarat presisi anti-terpotong:
-    // 1) 2 * baseWidth <= availW  ==> baseWidth <= availW / 2
-    // 2) baseHeight <= availH     ==> baseWidth * pageRatio <= availH ==> baseWidth <= availH / pageRatio
-    let maxWByHeight = Math.floor(availH / pageRatio);
-    let maxWByWidth = Math.floor(availW / 2);
-    let baseWidth = Math.min(maxWByWidth, maxWByHeight);
-
-    // Batasan minimum yang aman
-    const minW = isMobile ? (isLandscape ? 120 : 85) : 180;
-    const maxW = isMobile ? 800 : 750;
-
-    baseWidth = Math.max(minW, Math.min(maxW, baseWidth));
-
-    // KUNCI UTAMA ANTI-TERPOTONG: Jika minW membuat baseHeight > availH, sesuaikan agar tetap muat 100%
-    if (baseWidth * pageRatio > availH) {
-      baseWidth = Math.floor(availH / pageRatio);
-    }
-    const baseHeight = Math.round(baseWidth * pageRatio);
-
-    return {
-      baseWidth,
-      baseHeight,
-      pageRatio,
-      isMobile,
-      isLandscape,
-      isForcedLandscape
-    };
   }
 
   /**
    * Helper: Dapatkan skala render optimal beresolusi tinggi (High-DPI / Retina) agar teks tajam & jelas dibaca
    */
   function getOptimalRenderScale(baseWidth = null, pdfUnscaledW = null) {
-    const w = baseWidth || currentBaseWidth || (window.innerWidth <= 768 ? 260 : 500);
+    const w = baseWidth || currentBaseWidth || (window.innerWidth <= 768 ? 360 : 500);
     const naturalW = Math.max(100, Number(pdfUnscaledW || activePdfPageWidth) || 595);
     const dpr = Math.max(window.devicePixelRatio || 1, 1.5);
     const targetPixelWidth = Math.max(w * dpr, 1200);
@@ -1595,35 +1612,65 @@
    * Pastikan halaman yang sedang dibuka user langsung dirender PARALEL dengan prioritas tertinggi
    */
   async function ensureNearbyPages(pageIndex, forceRerender = false) {
+    if (!pdfDocInstance) return;
+
     const scale = getOptimalRenderScale();
-    let leftPage, rightPage;
-    if (pageIndex === 0) {
-      leftPage = 1;
-      rightPage = 1;
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+      // Pada mobile: 1 halaman tunggal yang sedang aktif
+      const activePage = Math.max(1, Math.min(totalDocPages, pageIndex + 1));
+
+      if (forceRerender) {
+        renderedPages.delete(activePage);
+      }
+
+      // 1. PRIORITAS UTAMA: Render 1 halaman aktif mobile
+      if (!renderedPages.has(activePage)) {
+        await renderSinglePdfPage(activePage, scale, currentRenderSession);
+      }
+
+      // 2. PRIORITAS KEDUA: Siapkan 1 halaman sebelum & 2 halaman sesudahnya di background
+      const nearby = [
+        activePage - 1,
+        activePage + 1,
+        activePage + 2
+      ].filter(p => p >= 1 && p <= totalDocPages && !renderedPages.has(p));
+
+      if (nearby.length > 0) {
+        Promise.all(nearby.map(p => renderSinglePdfPage(p, scale, currentRenderSession))).catch(() => {});
+      }
     } else {
-      leftPage = pageIndex % 2 === 1 ? pageIndex + 1 : pageIndex;
-      rightPage = Math.min(leftPage + 1, totalDocPages);
-    }
+      // Pada desktop: 2 halaman berdampingan (spread)
+      let leftPage, rightPage;
+      if (pageIndex === 0) {
+        leftPage = 1;
+        rightPage = 1;
+      } else {
+        leftPage = pageIndex % 2 === 1 ? pageIndex + 1 : pageIndex;
+        rightPage = Math.min(leftPage + 1, totalDocPages);
+      }
 
-    if (forceRerender) {
-      if (leftPage) renderedPages.delete(leftPage);
-      if (rightPage) renderedPages.delete(rightPage);
-    }
+      if (forceRerender) {
+        if (leftPage) renderedPages.delete(leftPage);
+        if (rightPage) renderedPages.delete(rightPage);
+      }
 
-    // 1. PRIORITAS UTAMA: Render 2 halaman yang sedang dilihat user SECARA PARALEL!
-    const currentSpread = [leftPage, rightPage].filter(p => p >= 1 && p <= totalDocPages && !renderedPages.has(p));
-    if (currentSpread.length > 0) {
-      await Promise.all(currentSpread.map(p => renderSinglePdfPage(p, scale, currentRenderSession)));
-    }
+      // 1. PRIORITAS UTAMA: Render 2 halaman yang sedang dilihat user SECARA PARALEL!
+      const currentSpread = [leftPage, rightPage].filter(p => p >= 1 && p <= totalDocPages && !renderedPages.has(p));
+      if (currentSpread.length > 0) {
+        await Promise.all(currentSpread.map(p => renderSinglePdfPage(p, scale, currentRenderSession)));
+      }
 
-    // 2. PRIORITAS KEDUA: Prefetch lembaran berikutnya dan sebelumnya secara paralel tanpa menunggu
-    const nearby = [
-      leftPage - 2, leftPage - 1,
-      rightPage + 1, rightPage + 2, rightPage + 3, rightPage + 4
-    ].filter(p => p >= 1 && p <= totalDocPages && !renderedPages.has(p));
+      // 2. PRIORITAS KEDUA: Prefetch lembaran berikutnya dan sebelumnya secara paralel tanpa menunggu
+      const nearby = [
+        leftPage - 2, leftPage - 1,
+        rightPage + 1, rightPage + 2, rightPage + 3, rightPage + 4
+      ].filter(p => p >= 1 && p <= totalDocPages && !renderedPages.has(p));
 
-    if (nearby.length > 0) {
-      Promise.all(nearby.map(p => renderSinglePdfPage(p, scale, currentRenderSession))).catch(() => {});
+      if (nearby.length > 0) {
+        Promise.all(nearby.map(p => renderSinglePdfPage(p, scale, currentRenderSession))).catch(() => {});
+      }
     }
   }
 
@@ -1659,16 +1706,21 @@
     const dims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
     const bookW = width || dims.baseWidth;
     const bookH = height || dims.baseHeight;
+    const isSinglePage = dims.isSinglePage;
     currentBaseWidth = bookW;
     currentBaseHeight = bookH;
+    currentIsSinglePage = isSinglePage;
 
     const safeStartPage = Math.max(0, Math.min(startPage || 0, (totalDocPages || 1) - 1));
     window.__acfLastKnownPageIndex = safeStartPage;
 
-    // KUNCI PRESISI UKURAN: Kunci dimensi fisik container agar buku pas presisi dan tidak pernah overflow viewport
-    container.style.width = (bookW * 2) + 'px';
+    // KUNCI PRESISI UKURAN:
+    // Pada mobile: 1 halaman tunggal (lebar = bookW)
+    // Pada desktop/web: 2 halaman berdampingan (lebar = bookW * 2)
+    const targetW = isSinglePage ? bookW : (bookW * 2);
+    container.style.width = targetW + 'px';
     container.style.height = bookH + 'px';
-    container.style.maxWidth = (bookW * 2) + 'px';
+    container.style.maxWidth = targetW + 'px';
     container.style.maxHeight = bookH + 'px';
     container.style.position = 'relative';
 
@@ -1678,14 +1730,14 @@
       height: bookH,
       size: 'fixed',
       minWidth: bookW,
-      maxWidth: bookW * 2,
+      maxWidth: targetW,
       minHeight: bookH,
       maxHeight: bookH,
       maxShadowOpacity: 0.6,
-      showCover: true,
+      showCover: !isSinglePage,
       mobileScrollSupport: false,
-      usePortrait: false,
-      flippingTime: 650,
+      usePortrait: isSinglePage,
+      flippingTime: isSinglePage ? 500 : 650,
       drawShadow: true,
       autoSize: false
     });
@@ -1833,6 +1885,13 @@
     const container = document.getElementById('flipbookBook');
     if (!container) return;
 
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      // Pada tampilan mobile (1 halaman tunggal), posisi buku selalu tepat di tengah tanpa offset
+      container.style.transform = 'none';
+      return;
+    }
+
     const total = totalDocPages || 31;
     if (pageIndex === 0) {
       // 1 halaman cover depan saja di tengah
@@ -1862,14 +1921,26 @@
     const humanPage = currentPageIndex + 1;
 
     if (pageBadge) {
-      if (currentPageIndex === 0) {
-        pageBadge.textContent = isMobile ? `Cover • 1 / ${total}` : `Cover Depan • Hal 1 dari ${total}`;
-      } else if (currentPageIndex >= total - 1 && total > 1) {
-        pageBadge.textContent = isMobile ? `Belakang • ${total}` : `Cover Belakang • Hal ${total}`;
+      if (isMobile) {
+        // TAMPILAN MOBILE: 1 Halaman Tunggal
+        if (currentPageIndex === 0) {
+          pageBadge.textContent = `Cover • Hal 1 / ${total}`;
+        } else if (currentPageIndex >= total - 1 && total > 1) {
+          pageBadge.textContent = `Belakang • Hal ${total}`;
+        } else {
+          pageBadge.textContent = `Hal ${humanPage} / ${total}`;
+        }
       } else {
-        const leftPage = currentPageIndex % 2 === 1 ? currentPageIndex + 1 : currentPageIndex;
-        const rightPage = Math.min(leftPage + 1, total);
-        pageBadge.textContent = isMobile ? `Hal ${leftPage}-${rightPage} / ${total}` : `Halaman ${leftPage}-${rightPage} dari ${total}`;
+        // TAMPILAN DESKTOP/WEB: 2 Halaman Berdampingan
+        if (currentPageIndex === 0) {
+          pageBadge.textContent = `Cover Depan • Hal 1 dari ${total}`;
+        } else if (currentPageIndex >= total - 1 && total > 1) {
+          pageBadge.textContent = `Cover Belakang • Hal ${total}`;
+        } else {
+          const leftPage = currentPageIndex % 2 === 1 ? currentPageIndex + 1 : currentPageIndex;
+          const rightPage = Math.min(leftPage + 1, total);
+          pageBadge.textContent = `Halaman ${leftPage}-${rightPage} dari ${total}`;
+        }
       }
     }
 
@@ -1978,8 +2049,8 @@
 
       const newDims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
 
-      // Jika ukuran layar berubah signifikan (> 10px) atau flipbook belum terinisialisasi
-      if (!flipBookInstance || Math.abs(newDims.baseWidth - currentBaseWidth) > 10 || Math.abs(newDims.baseHeight - currentBaseHeight) > 10) {
+      // Jika ukuran layar berubah signifikan (> 8px) atau berpindah mode single-page (mobile vs desktop)
+      if (!flipBookInstance || newDims.isSinglePage !== currentIsSinglePage || Math.abs(newDims.baseWidth - currentBaseWidth) > 8 || Math.abs(newDims.baseHeight - currentBaseHeight) > 8) {
         reFitFlipbook(curPage);
       } else {
         updateCoverCentering(curPage);
@@ -1999,6 +2070,7 @@
     const dims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
     currentBaseWidth = dims.baseWidth;
     currentBaseHeight = dims.baseHeight;
+    currentIsSinglePage = dims.isSinglePage;
 
     const safeTarget = Math.max(0, Math.min(targetPageIndex, (totalDocPages || 1) - 1));
     window.__acfLastKnownPageIndex = safeTarget;

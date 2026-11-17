@@ -3704,6 +3704,36 @@
     }
   }
 
+  // Auto-adjust program card image wrapper and img to match genuine aspect ratio
+  function adjustProgramImgRatio(img) {
+    if (!img) return;
+    const wrap = img.closest ? img.closest('.program-card-img-wrap') : img.parentElement;
+    if (!wrap) return;
+
+    const nw = img.naturalWidth;
+    const nh = img.naturalHeight;
+    if (nw && nh && nh > 0) {
+      const ratio = nw / nh;
+      wrap.style.aspectRatio = `${nw} / ${nh}`;
+      img.style.aspectRatio = `${nw} / ${nh}`;
+      img.style.objectFit = 'cover';
+      img.style.width = '100%';
+      img.style.height = '100%';
+
+      if (ratio < 0.88) {
+        wrap.classList.add('is-portrait');
+        wrap.classList.remove('is-landscape', 'is-square');
+      } else if (ratio > 1.15) {
+        wrap.classList.add('is-landscape');
+        wrap.classList.remove('is-portrait', 'is-square');
+      } else {
+        wrap.classList.add('is-square');
+        wrap.classList.remove('is-portrait', 'is-landscape');
+      }
+    }
+  }
+  window.adjustProgramImgRatio = adjustProgramImgRatio;
+
   // Generate Exact Card HTML for Live Preview & Public Layout
   function renderProgramCardHTML(prog) {
     const title = escapeHTML(prog.title || 'Judul Program Layanan');
@@ -3719,7 +3749,7 @@
     return `
       <article class="program-detail-card visible" style="margin: 0; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
         <div class="program-card-img-wrap">
-          <img src="${cover}" alt="${title}" class="program-card-img" onerror="this.src='../assets/unit-pendidikan/Sekolah Juara.jpg'">
+          <img src="${cover}" alt="${title}" class="program-card-img" onload="window.adjustProgramImgRatio && window.adjustProgramImgRatio(this)" onerror="this.src='../assets/unit-pendidikan/Sekolah Juara.jpg'">
         </div>
         <div class="program-card-content">
           <div class="program-card-header-meta">
@@ -3775,6 +3805,14 @@
     };
 
     programLivePreviewContainer.innerHTML = renderProgramCardHTML(progData);
+    const liveImg = programLivePreviewContainer.querySelector('.program-card-img');
+    if (liveImg) {
+      if (liveImg.complete && liveImg.naturalWidth) {
+        adjustProgramImgRatio(liveImg);
+      } else {
+        liveImg.addEventListener('load', () => adjustProgramImgRatio(liveImg));
+      }
+    }
   }
 
   // Modal Open/Close
@@ -3796,7 +3834,14 @@
     if (programMetric) programMetric.value = '';
     if (programStatus) programStatus.value = 'Terbit';
     if (programCoverUrlInput) programCoverUrlInput.value = '../assets/unit-pendidikan/Sekolah Juara.jpg';
-    if (programCoverPreviewImg) programCoverPreviewImg.src = '../assets/unit-pendidikan/Sekolah Juara.jpg';
+    if (programCoverPreviewImg) {
+      programCoverPreviewImg.src = '../assets/unit-pendidikan/Sekolah Juara.jpg';
+      if (programCoverPreviewWrap) {
+        programCoverPreviewWrap.style.aspectRatio = '';
+        programCoverPreviewWrap.style.width = '140px';
+        programCoverPreviewWrap.style.height = '95px';
+      }
+    }
     if (programActionText) programActionText.value = 'Jadi Mitra Program';
     if (programActionLink) programActionLink.value = 'jadi-mitra-program.html';
 
@@ -3829,7 +3874,21 @@
     if (programMetric) programMetric.value = prog.metric || '';
     if (programStatus) programStatus.value = prog.status || 'Terbit';
     if (programCoverUrlInput) programCoverUrlInput.value = prog.cover || '';
-    if (programCoverPreviewImg) programCoverPreviewImg.src = prog.cover || '../assets/unit-pendidikan/Sekolah Juara.jpg';
+    if (programCoverPreviewImg) {
+      const coverSrc = prog.cover || '../assets/unit-pendidikan/Sekolah Juara.jpg';
+      programCoverPreviewImg.src = coverSrc;
+      const testImg = new Image();
+      testImg.onload = function() {
+        if (programCoverPreviewWrap && testImg.naturalWidth && testImg.naturalHeight) {
+          programCoverPreviewWrap.style.aspectRatio = `${testImg.naturalWidth} / ${testImg.naturalHeight}`;
+          programCoverPreviewWrap.style.width = 'auto';
+          programCoverPreviewWrap.style.maxWidth = '140px';
+          programCoverPreviewWrap.style.maxHeight = '95px';
+          programCoverPreviewWrap.style.height = 'auto';
+        }
+      };
+      testImg.src = coverSrc;
+    }
     if (programActionText) programActionText.value = prog.actionText || 'Jadi Mitra Program';
     if (programActionLink) programActionLink.value = prog.actionLink || 'jadi-mitra-program.html';
 
@@ -4102,6 +4161,14 @@
     if (!prog || !modal || !modalBody) return;
 
     modalBody.innerHTML = renderProgramCardHTML(prog);
+    const prevImg = modalBody.querySelector('.program-card-img');
+    if (prevImg) {
+      if (prevImg.complete && prevImg.naturalWidth) {
+        adjustProgramImgRatio(prevImg);
+      } else {
+        prevImg.addEventListener('load', () => adjustProgramImgRatio(prevImg));
+      }
+    }
     modal.classList.add('show');
     updateBodyScrollLock();
   }
@@ -5516,7 +5583,7 @@
       }
     });
 
-    // Program cover file upload
+    // Program cover file upload & preview auto-adaptation
     if (programCoverFileInput) {
       programCoverFileInput.addEventListener('change', (e) => {
         const file = e.target.files && e.target.files[0];
@@ -5531,11 +5598,58 @@
         reader.onload = function (evt) {
           const base64 = evt.target.result;
           if (programCoverUrlInput) programCoverUrlInput.value = base64;
-          if (programCoverPreviewImg) programCoverPreviewImg.src = base64;
+          if (programCoverPreviewImg) {
+            programCoverPreviewImg.src = base64;
+            const testImg = new Image();
+            testImg.onload = function() {
+              if (programCoverPreviewWrap && testImg.naturalWidth && testImg.naturalHeight) {
+                programCoverPreviewWrap.style.aspectRatio = `${testImg.naturalWidth} / ${testImg.naturalHeight}`;
+                programCoverPreviewWrap.style.width = 'auto';
+                programCoverPreviewWrap.style.maxWidth = '140px';
+                programCoverPreviewWrap.style.maxHeight = '95px';
+                programCoverPreviewWrap.style.height = 'auto';
+              }
+            };
+            testImg.src = base64;
+          }
           updateProgramLivePreview();
           showToast('Foto program berhasil dimuat.', 'info');
         };
         reader.readAsDataURL(file);
+
+        // Upload di latar belakang jika backend server aktif
+        if (window.ACF_API && window.ACF_API.articles && window.ACF_API.articles.uploadImage) {
+          window.ACF_API.articles.uploadImage(file).then(res => {
+            if (res && res.url) {
+              if (programCoverUrlInput) programCoverUrlInput.value = res.url;
+              if (programCoverPreviewImg) programCoverPreviewImg.src = res.url;
+              updateProgramLivePreview();
+            }
+          }).catch(err => {
+            console.warn('Upload image offline / fallback lokal:', err);
+          });
+        }
+      });
+    }
+
+    if (programCoverUrlInput) {
+      programCoverUrlInput.addEventListener('input', () => {
+        const val = programCoverUrlInput.value.trim();
+        const src = val || '../assets/unit-pendidikan/Sekolah Juara.jpg';
+        if (programCoverPreviewImg) {
+          programCoverPreviewImg.src = src;
+          const testImg = new Image();
+          testImg.onload = function() {
+            if (programCoverPreviewWrap && testImg.naturalWidth && testImg.naturalHeight) {
+              programCoverPreviewWrap.style.aspectRatio = `${testImg.naturalWidth} / ${testImg.naturalHeight}`;
+              programCoverPreviewWrap.style.width = 'auto';
+              programCoverPreviewWrap.style.maxWidth = '140px';
+              programCoverPreviewWrap.style.maxHeight = '95px';
+              programCoverPreviewWrap.style.height = 'auto';
+            }
+          };
+          testImg.src = src;
+        }
       });
     }
 
@@ -5545,6 +5659,11 @@
         const defaultCover = '../assets/unit-pendidikan/Sekolah Juara.jpg';
         if (programCoverUrlInput) programCoverUrlInput.value = defaultCover;
         if (programCoverPreviewImg) programCoverPreviewImg.src = defaultCover;
+        if (programCoverPreviewWrap) {
+          programCoverPreviewWrap.style.aspectRatio = '';
+          programCoverPreviewWrap.style.width = '140px';
+          programCoverPreviewWrap.style.height = '95px';
+        }
         if (programCoverFileInput) programCoverFileInput.value = '';
         updateProgramLivePreview();
       });

@@ -3,6 +3,48 @@
  * Terhubung langsung dengan Portal Admin (localStorage: acf_programs_data)
  */
 
+/**
+ * Auto-adjust program card image wrapper and img to match the genuine aspect ratio of the uploaded photo.
+ */
+function adjustProgramImgRatio(img) {
+  if (!img) return;
+  const wrap = img.closest ? img.closest('.program-card-img-wrap') : img.parentElement;
+  if (!wrap) return;
+
+  const nw = img.naturalWidth;
+  const nh = img.naturalHeight;
+  if (nw && nh && nh > 0) {
+    const ratio = nw / nh;
+    wrap.style.aspectRatio = `${nw} / ${nh}`;
+    img.style.aspectRatio = `${nw} / ${nh}`;
+    img.style.objectFit = 'cover';
+    img.style.width = '100%';
+    img.style.height = '100%';
+
+    if (ratio < 0.88) {
+      wrap.classList.add('is-portrait');
+      wrap.classList.remove('is-landscape', 'is-square');
+    } else if (ratio > 1.15) {
+      wrap.classList.add('is-landscape');
+      wrap.classList.remove('is-portrait', 'is-square');
+    } else {
+      wrap.classList.add('is-square');
+      wrap.classList.remove('is-portrait', 'is-landscape');
+    }
+  }
+}
+window.adjustProgramImgRatio = adjustProgramImgRatio;
+
+window.addEventListener('load', () => {
+  document.querySelectorAll('.program-card-img').forEach(img => {
+    if (img.complete && img.naturalWidth) {
+      adjustProgramImgRatio(img);
+    } else {
+      img.addEventListener('load', () => adjustProgramImgRatio(img));
+    }
+  });
+});
+
 const DEFAULT_PROGRAMS = [
   {
     id: 'PRG-01',
@@ -313,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <!-- Program Card: ${prg.title} -->
                 <div class="program-detail-card reveal visible" id="program-${prg.id || idx}">
                   <div class="program-card-img-wrap">
-                    <img src="${prg.cover || '../assets/unit-pendidikan/Sekolah Juara.jpg'}" alt="${prg.title}" class="program-card-img" loading="lazy" onerror="this.onerror=null; this.src='../assets/logo-acf/LOGO_ACF-removebg-preview.png';">
+                    <img src="${prg.cover || '../assets/unit-pendidikan/Sekolah Juara.jpg'}" alt="${prg.title}" class="program-card-img" loading="lazy" onload="window.adjustProgramImgRatio && window.adjustProgramImgRatio(this)" onerror="this.onerror=null; this.src='../assets/logo-acf/LOGO_ACF-removebg-preview.png';">
                   </div>
                   <div class="program-card-content">
                     <div>
@@ -348,6 +390,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     programContainer.innerHTML = html;
+
+    // Menyesuaikan rasio dan dimensi kotak gambar program secara otomatis
+    programContainer.querySelectorAll('.program-card-img').forEach(img => {
+      if (img.complete && img.naturalWidth) {
+        adjustProgramImgRatio(img);
+      } else {
+        img.addEventListener('load', () => adjustProgramImgRatio(img));
+      }
+    });
 
     // Update banner teks metrik jika ada
     if (bannerDesc) {

@@ -73,6 +73,81 @@
   }
 
   /**
+   * Helper: Hancurkan instance StPageFlip secara aman tanpa menghapus elemen DOM container (#flipbookBook)
+   * StPageFlip default memanggil this.block.remove() yang mencabut container dari DOM.
+   */
+  function safelyDestroyFlipBook() {
+    if (!flipBookInstance) return;
+    try {
+      if (flipBookInstance.block) {
+        flipBookInstance.block = { remove: () => {} };
+      }
+      flipBookInstance.destroy();
+    } catch (e) {
+      console.warn('Flipbook safe destroy warning:', e);
+    }
+    flipBookInstance = null;
+  }
+
+  /**
+   * Helper: Dapatkan elemen container #flipbookBook yang valid dan terpasang di dalam #flipbookViewport
+   */
+  function getBookContainer() {
+    const viewport = document.getElementById('flipbookViewport');
+    let container = document.getElementById('flipbookBook');
+    if (!viewport) return container;
+    if (!container || !viewport.contains(container)) {
+      if (container) {
+        try { container.remove(); } catch (_) {}
+      }
+      container = document.createElement('div');
+      container.id = 'flipbookBook';
+      container.className = 'flipbook-container';
+      viewport.appendChild(container);
+    }
+    return container;
+  }
+
+  /**
+   * Helper: Patch prototype StPageFlip HTMLPage agar ketika lembaran di-clone untuk animasi soft flip,
+   * pixel buffer dari canvas asli disalin ke canvas clone sehingga lembaran tidak pernah kosong/putih.
+   */
+  function installStPageFlipClonePatch(instance) {
+    if (!instance) return;
+    try {
+      const pageCol = instance.getPageCollection && instance.getPageCollection();
+      const pages = pageCol && pageCol.getPages && pageCol.getPages();
+      if (pages && pages[0]) {
+        const proto = Object.getPrototypeOf(pages[0]);
+        if (proto && !proto.__acfClonePatched) {
+          proto.__acfClonePatched = true;
+          const origNewTemp = proto.newTemporaryCopy;
+          proto.newTemporaryCopy = function() {
+            const res = origNewTemp.call(this);
+            try {
+              if (this.copiedElement && this.element) {
+                const origC = this.element.querySelector('canvas');
+                const cloneC = this.copiedElement.querySelector('canvas');
+                if (origC && cloneC && origC.width > 0 && origC.height > 0) {
+                  cloneC.width = origC.width;
+                  cloneC.height = origC.height;
+                  const ctx = cloneC.getContext('2d');
+                  if (ctx) {
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(origC, 0, 0);
+                  }
+                }
+              }
+            } catch (_) {}
+            return res;
+          };
+        }
+      }
+    } catch (_) {}
+  }
+
+  /**
    * Helper: Normalisasi data dokumen flipbook agar seragam baik dari database maupun API
    */
   function normalizeFlipbookDoc(doc) {
@@ -242,7 +317,7 @@
     if (!document.querySelector('link[href*="flipbook.css"]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = '../css/flipbook.css?v=20261117_mobile_single_v16';
+      link.href = '../css/flipbook.css?v=20261117_mobile_single_v17';
       document.head.appendChild(link);
     }
 
@@ -388,9 +463,12 @@
    * Helper: Siapkan semua lembaran (sheet) & canvas langsung dari dokumen PDF asli
    */
   function createSheetElements(bookContainer, force = false) {
+    bookContainer = bookContainer || getBookContainer();
     if (!bookContainer || totalDocPages <= 0) return;
     if (!force && bookContainer.querySelector('.page-sheet')) return;
     bookContainer.innerHTML = '';
+    renderedPages.clear();
+    renderingPromises.clear();
 
     for (let pageNum = 1; pageNum <= totalDocPages; pageNum++) {
       const sheet = document.createElement('div');
@@ -474,7 +552,7 @@
             activePdfPageHeight = vp1.height || 842;
           } catch (eDim) {}
 
-          const bookContainer = document.getElementById('flipbookBook');
+          const bookContainer = getBookContainer();
           if (bookContainer) {
             createSheetElements(bookContainer);
             const dims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
@@ -1070,15 +1148,12 @@
         if (PDF_FILE_PATH !== targetUrl) {
           PDF_FILE_PATH = targetUrl;
           if (currentLoadedPdfPath !== PDF_FILE_PATH) {
-            if (flipBookInstance) {
-              try { flipBookInstance.destroy(); } catch (e) {}
-              flipBookInstance = null;
-            }
+            safelyDestroyFlipBook();
             pdfDocInstance = null;
             currentLoadedPdfPath = null;
             renderedPages.clear();
             renderingPromises.clear();
-            const bookContainer = document.getElementById('flipbookBook');
+            const bookContainer = getBookContainer();
             if (bookContainer) bookContainer.innerHTML = '';
           }
         }
@@ -1289,15 +1364,12 @@
         const targetUrl = activeFlipbookDoc.file_url || activeFlipbookDoc.fileUrl;
         if (targetUrl && targetUrl !== PDF_FILE_PATH) {
           PDF_FILE_PATH = targetUrl;
-          if (flipBookInstance) {
-            try { flipBookInstance.destroy(); } catch (e) {}
-            flipBookInstance = null;
-          }
+          safelyDestroyFlipBook();
           pdfDocInstance = null;
           currentLoadedPdfPath = null;
           renderedPages.clear();
           renderingPromises.clear();
-          const bookContainer = document.getElementById('flipbookBook');
+          const bookContainer = getBookContainer();
           if (bookContainer) bookContainer.innerHTML = '';
         }
       }
@@ -1363,15 +1435,12 @@
       await ensureDependenciesLoaded();
 
       if (currentLoadedPdfPath !== PDF_FILE_PATH) {
-        if (flipBookInstance) {
-          try { flipBookInstance.destroy(); } catch (e) {}
-          flipBookInstance = null;
-        }
+        safelyDestroyFlipBook();
         pdfDocInstance = null;
         currentLoadedPdfPath = null;
         renderedPages.clear();
         renderingPromises.clear();
-        const bookContainer = document.getElementById('flipbookBook');
+        const bookContainer = getBookContainer();
         if (bookContainer) bookContainer.innerHTML = '';
       }
 
@@ -1441,7 +1510,7 @@
 
     await ensureDependenciesLoaded();
 
-    const bookContainer = document.getElementById('flipbookBook');
+    const bookContainer = getBookContainer();
     if (!bookContainer) {
       isRendering = false;
       return;
@@ -1459,10 +1528,7 @@
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
       if (!pdfDocInstance || currentLoadedPdfPath !== PDF_FILE_PATH) {
-        if (flipBookInstance) {
-          try { flipBookInstance.destroy(); } catch (e) {}
-          flipBookInstance = null;
-        }
+        safelyDestroyFlipBook();
         renderedPages.clear();
         renderingPromises.clear();
         bookContainer.innerHTML = '';
@@ -1551,7 +1617,14 @@
     if (!pdfDocInstance) return;
     const session = sessionId !== null ? sessionId : currentRenderSession;
     if (session !== currentRenderSession) return;
-    if (renderedPages.has(pageNum)) return;
+
+    // Pastikan setidaknya satu canvas dengan ID ini ada di DOM
+    const canvas = document.getElementById(`flip_canvas_${pageNum}`);
+    if (!canvas) return;
+
+    // Jika sudah dirender dan ukuran canvas di DOM memang valid (> 0 piksel), hindari re-render berlebih
+    if (renderedPages.has(pageNum) && canvas.width > 0 && canvas.height > 0) return;
+
     if (renderingPromises.has(pageNum)) {
       return renderingPromises.get(pageNum);
     }
@@ -1563,12 +1636,14 @@
         const page = await pdfDocInstance.getPage(pageNum);
         if (session !== currentRenderSession) return;
         const viewport = page.getViewport({ scale: actualScale });
-        const canvas = document.getElementById(`flip_canvas_${pageNum}`);
-        if (!canvas) return;
 
-        const context = canvas.getContext('2d');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+        const canvases = document.querySelectorAll(`canvas[id="flip_canvas_${pageNum}"]`);
+        if (canvases.length === 0) return;
+
+        const primaryCanvas = canvases[0];
+        const context = primaryCanvas.getContext('2d');
+        primaryCanvas.width = viewport.width;
+        primaryCanvas.height = viewport.height;
         context.imageSmoothingEnabled = true;
         context.imageSmoothingQuality = 'high';
 
@@ -1579,7 +1654,21 @@
 
         if (session !== currentRenderSession) return;
         renderedPages.add(pageNum);
-        const sheet = canvas.closest('.page-sheet');
+
+        // Salin pixel buffer ke canvas duplikat / clone lainnya jika ada (misal temporary animation copy)
+        for (let i = 1; i < canvases.length; i++) {
+          const c = canvases[i];
+          c.width = viewport.width;
+          c.height = viewport.height;
+          const ctx = c.getContext('2d');
+          if (ctx) {
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(primaryCanvas, 0, 0);
+          }
+        }
+
+        const sheet = primaryCanvas.closest('.page-sheet');
         if (sheet) sheet.classList.add('rendered');
       } catch (err) {
         console.warn(`Gagal render lembar ${pageNum}:`, err);
@@ -1680,19 +1769,15 @@
    * Memastikan tidak pernah ada 2 instance atau wrapper .stf__* yang menumpuk.
    */
   function initStPageFlip(container, width, height, startPage = 0) {
+    container = container || getBookContainer();
     if (!container) return;
     if (typeof window.St === 'undefined' || typeof window.St.PageFlip === 'undefined') {
       console.warn('St.PageFlip tidak ditemukan, mengaktifkan mode navigasi standar.');
       return;
     }
 
-    // 1. Singleton Guard: Hancurkan instance StPageFlip lama secara tuntas
-    if (flipBookInstance) {
-      try {
-        flipBookInstance.destroy();
-      } catch (e) {}
-      flipBookInstance = null;
-    }
+    // 1. Singleton Guard: Hancurkan instance StPageFlip lama secara aman tanpa menghapus container dari DOM
+    safelyDestroyFlipBook();
 
     // 2. SELALU BERSIHKAN jika container sudah pernah di-wrap oleh StPageFlip (.stf__block / .stf__wrapper)
     const hasOldWrappers = container.querySelector('.stf__wrapper, .stf__block, .stf__parent');
@@ -1737,13 +1822,16 @@
       showCover: !isSinglePage,
       mobileScrollSupport: false,
       usePortrait: isSinglePage,
-      flippingTime: isSinglePage ? 500 : 650,
+      flippingTime: isSinglePage ? 450 : 650,
       drawShadow: true,
       autoSize: false
     });
 
     const sheets = container.querySelectorAll('.page-sheet');
     flipBookInstance.loadFromHTML(sheets);
+
+    // Pasang patch canvas cloning agar animasi pembalikan halaman tidak kosong/putih
+    installStPageFlipClonePatch(flipBookInstance);
 
     // Hubungkan kontrol navigasi
     initFlipControls();
@@ -2064,7 +2152,7 @@
    */
   function reFitFlipbook(targetPageIndex = 0) {
     if (!pdfDocInstance || isRendering) return;
-    const bookContainer = document.getElementById('flipbookBook');
+    const bookContainer = getBookContainer();
     if (!bookContainer) return;
 
     const dims = calculateOptimalBookDimensions(activePdfPageWidth, activePdfPageHeight);
@@ -2075,11 +2163,8 @@
     const safeTarget = Math.max(0, Math.min(targetPageIndex, (totalDocPages || 1) - 1));
     window.__acfLastKnownPageIndex = safeTarget;
 
-    // Bersihkan instance lama dan kontainer secara tuntas
-    if (flipBookInstance) {
-      try { flipBookInstance.destroy(); } catch (e) {}
-      flipBookInstance = null;
-    }
+    // Bersihkan instance lama dengan aman tanpa menghapus kontainer dari DOM
+    safelyDestroyFlipBook();
     bookContainer.innerHTML = '';
     createSheetElements(bookContainer, true);
 

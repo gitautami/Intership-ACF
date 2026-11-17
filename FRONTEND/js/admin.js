@@ -4934,9 +4934,76 @@
     return Math.max(2.0, Math.min(3.2, computedScale));
   }
 
+  function safelyDestroyAdminFlipBook() {
+    if (!adminFlipbookInstance) return;
+    try {
+      if (adminFlipbookInstance.block) {
+        adminFlipbookInstance.block = { remove: () => {} };
+      }
+      adminFlipbookInstance.destroy();
+    } catch (e) {
+      console.warn('Admin flipbook safe destroy warning:', e);
+    }
+    adminFlipbookInstance = null;
+  }
+
+  function getAdminBookContainer() {
+    const viewport = document.getElementById('adminFlipbookViewport');
+    let container = document.getElementById('adminFlipbookBook');
+    if (!viewport) return container;
+    if (!container || !viewport.contains(container)) {
+      if (container) {
+        try { container.remove(); } catch (_) {}
+      }
+      container = document.createElement('div');
+      container.id = 'adminFlipbookBook';
+      container.className = 'flipbook-container';
+      viewport.appendChild(container);
+    }
+    return container;
+  }
+
+  function installAdminStPageFlipClonePatch(instance) {
+    if (!instance) return;
+    try {
+      const pageCol = instance.getPageCollection && instance.getPageCollection();
+      const pages = pageCol && pageCol.getPages && pageCol.getPages();
+      if (pages && pages[0]) {
+        const proto = Object.getPrototypeOf(pages[0]);
+        if (proto && !proto.__acfAdminClonePatched) {
+          proto.__acfAdminClonePatched = true;
+          const origNewTemp = proto.newTemporaryCopy;
+          proto.newTemporaryCopy = function() {
+            const res = origNewTemp.call(this);
+            try {
+              if (this.copiedElement && this.element) {
+                const origC = this.element.querySelector('canvas');
+                const cloneC = this.copiedElement.querySelector('canvas');
+                if (origC && cloneC && origC.width > 0 && origC.height > 0) {
+                  cloneC.width = origC.width;
+                  cloneC.height = origC.height;
+                  const ctx = cloneC.getContext('2d');
+                  if (ctx) {
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(origC, 0, 0);
+                  }
+                }
+              }
+            } catch (_) {}
+            return res;
+          };
+        }
+      }
+    } catch (_) {}
+  }
+
   async function renderAdminSinglePage(pageNum, scale = null) {
     if (!adminPdfDocInstance) return;
-    if (adminRenderedPages.has(pageNum)) return;
+    const canvas = document.getElementById(`admin_flip_canvas_${pageNum}`);
+    if (!canvas) return;
+
+    if (adminRenderedPages.has(pageNum) && canvas.width > 0 && canvas.height > 0) return;
     if (adminRenderingPromises.has(pageNum)) {
       return adminRenderingPromises.get(pageNum);
     }
@@ -4947,18 +5014,33 @@
       try {
         const page = await adminPdfDocInstance.getPage(pageNum);
         const viewport = page.getViewport({ scale: actualScale });
-        const canvas = document.getElementById(`admin_flip_canvas_${pageNum}`);
-        if (!canvas) return;
 
-        const context = canvas.getContext('2d');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+        const canvases = document.querySelectorAll(`canvas[id="admin_flip_canvas_${pageNum}"]`);
+        if (canvases.length === 0) return;
+
+        const primaryCanvas = canvases[0];
+        const context = primaryCanvas.getContext('2d');
+        primaryCanvas.width = viewport.width;
+        primaryCanvas.height = viewport.height;
         context.imageSmoothingEnabled = true;
         context.imageSmoothingQuality = 'high';
         await page.render({ canvasContext: context, viewport }).promise;
 
         adminRenderedPages.add(pageNum);
-        const sheet = canvas.closest('.page-sheet');
+
+        for (let i = 1; i < canvases.length; i++) {
+          const c = canvases[i];
+          c.width = viewport.width;
+          c.height = viewport.height;
+          const ctx = c.getContext('2d');
+          if (ctx) {
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(primaryCanvas, 0, 0);
+          }
+        }
+
+        const sheet = primaryCanvas.closest('.page-sheet');
         if (sheet) sheet.classList.add('rendered');
       } catch (err) {
         console.warn(`Admin preview render page ${pageNum} error:`, err);
@@ -5080,11 +5162,9 @@
     adminRenderedPages.clear();
     adminRenderingPromises.clear();
 
-    if (adminFlipbookInstance) {
-      try { adminFlipbookInstance.destroy(); } catch (e) { }
-      adminFlipbookInstance = null;
-    }
+    safelyDestroyAdminFlipBook();
     adminPdfDocInstance = null;
+    const adminFlipbookBook = getAdminBookContainer();
     if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
 
     if (typeof window.pdfjsLib === 'undefined') {
@@ -5206,6 +5286,8 @@
         const sheets = adminFlipbookBook.querySelectorAll('.page-sheet');
         adminFlipbookInstance.loadFromHTML(sheets);
 
+        installAdminStPageFlipClonePatch(adminFlipbookInstance);
+
         adminFlipbookInstance.on('flip', (e) => {
           updateAdminNavButtonsState(e.data, totalPages);
           ensureAdminNearbyPages(e.data, totalPages);
@@ -5318,11 +5400,9 @@
     const adminLandscapeBtn = document.getElementById('adminBtnFlipbookLandscape');
     if (adminLandscapeBtn) adminLandscapeBtn.classList.remove('active');
     document.body.style.overflow = '';
-    if (adminFlipbookInstance) {
-      try { adminFlipbookInstance.destroy(); } catch (e) { }
-      adminFlipbookInstance = null;
-    }
-    if (adminFlipbookBook) adminFlipbookBook.innerHTML = '';
+    safelyDestroyAdminFlipBook();
+    const adminBook = getAdminBookContainer();
+    if (adminBook) adminBook.innerHTML = '';
   }
 
   // Global helper bindings for flipbook

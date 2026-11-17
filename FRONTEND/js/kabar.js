@@ -185,6 +185,19 @@ document.addEventListener('DOMContentLoaded', () => {
       status: 'Terbit'
     },
     {
+      id: 'ART-3512',
+      title: 'Analisis Literasi dan Numerasi dalam Asesmen Kompetensi Minimum (AKM): Studi SD Juara Seluruh Indonesia',
+      category: 'kabar-sekolah-juara',
+      categoryLabel: 'Artikel Sekolah Juara',
+      author: 'cerianak',
+      date: 'Jul 11, 2025',
+      comments: '0 comments',
+      cover: 'https://acf.or.id/wp-content/uploads/2025/07/Foto-Artikel-Juli-2025-01.jpg',
+      excerpt: 'Asesmen Kompetensi Minimum (AKM) merupakan tes kompetensi untuk mengukur pembelajaran kognitif siswa dengan dua kompetensi dasar yang diukur, yaitu literasi dan numerasi. Penelitian ini bertujuan untuk menganalisis kemampuan literasi dan numerasi di SD Juara Se-Indonesia...',
+      content: `<p>Asesmen Kompetensi Minimum (AKM) merupakan tes kompetensi untuk mengukur pembelajaran kognitif siswa dengan dua kompetensi dasar yang diukur, yaitu literasi dan numerasi. Penelitian ini bertujuan untuk menganalisis kemampuan literasi dan numerasi di SD Juara Se-Indonesia, serta mengidentifikasi faktor pendukung dan penghambat yang meningkatkan atau menurunkan literasi dan numerasi. Pendekatan penelitian ini adalah kualitatif dengan jenis penelitian komparatif-deskriptif. Sedangkan, untuk jenis data dalam penelitian ini menggunakan kualitatif dan kuantitatif. Data kuantatif bersumber dari data primer dari hasil wawancara mendalam dan data kuantitatif berasal dari data sekunder, seperti rapor pendidikan yang diterbitkan oleh Kemendikbud. Subjek penelitian data sekunder adalah 10 Sekolah Dasar Juara yang tersebar di seluruh Indonesia. Hasil penelitian menunjukkan bahwa rata-rata nilai dari tingkat literasi dan numerasi dari 10 sekolah Juara termasuk ke dalam kategori baik. Hal tersebut dikarenakan SD Juara Se-Indonesia memiliki lebih dari 70% murid yang mencapai kompetensi minimum literasi dan numerasi. Pada tahun 2024, tingkat literasinya mencapai 82.82% dan tingkat numerasi sebesar 74.85%. Setiap sekolah memiliki metode belajarnya masing-masing untuk meningkatkan literasi dan numerasi, seperti SDJ Jakarta Utara yang pengajaran yang menyenangkan dan kreativitas yang bervariasi. Namun, masih terdapat siswa yang memiliki minat belajar yang rendah, seperti yang terjadi di SD Juara Jayapura.<br><br>Bagaimana lengkapnya temuan dari studi ini, klik tombol di bawah untuk membaca</p>`,
+      status: 'Terbit'
+    },
+    {
       id: 'ART-SJ08',
       title: 'Penyuluhan Pencegahan dan Pemberantasan Penyalahgunaan Narkoba: Membangun Generasi Cerdas, Sehat, dan Berprestasi',
       category: 'kabar-sekolah-juara',
@@ -1240,12 +1253,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     articleModal.classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    // Periksa apakah artikel ini adalah artikel riset AKM untuk menyisipkan tombol flipbook "Baca di Sini"
+    if (typeof window.checkAndInjectModalFlipbook === 'function') {
+      window.checkAndInjectModalFlipbook();
+    }
   }
 
   function closeArticleDetail() {
     if (articleModal) {
       articleModal.classList.remove('active');
       document.body.style.overflow = '';
+
+      // Bersihkan tombol flipbook modal saat artikel ditutup
+      const modalBtn = document.getElementById('wrapProfilLembagaBtnModal');
+      if (modalBtn) {
+        modalBtn.style.display = 'none';
+        modalBtn.remove();
+      }
     }
   }
 

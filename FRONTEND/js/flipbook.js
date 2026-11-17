@@ -849,17 +849,132 @@
         const observer = new MutationObserver(() => {
           if (artModal.classList.contains('active')) {
             injectModalArticleFlipbook(doc);
+          } else {
+            const modalBtnWrap = document.getElementById('wrapProfilLembagaBtnModal');
+            if (modalBtnWrap) {
+              modalBtnWrap.style.display = 'none';
+              modalBtnWrap.remove();
+            }
           }
         });
         observer.observe(artModal, { attributes: true, attributeFilter: ['class', 'style'] });
+
+        // Observe juga jika judul artikel modal diperbarui
+        const titleEl = document.getElementById('modalArticleTitle');
+        if (titleEl) {
+          const titleObs = new MutationObserver(() => {
+            if (artModal.classList.contains('active')) {
+              injectModalArticleFlipbook(doc);
+            }
+          });
+          titleObs.observe(titleEl, { childList: true, characterData: true, subtree: true });
+        }
       }
     }
 
+    /**
+     * Helper untuk mengecek apakah artikel yang sedang dibuka di modal kabar.html
+     * adalah artikel khusus "Analisis Literasi dan Numerasi dalam Asesmen Kompetensi Minimum (AKM): Studi SD Juara Seluruh Indonesia"
+     */
+    function isTargetArticleForFlipbook() {
+      const artModal = document.getElementById('kabarDetailModal');
+      if (!artModal || !artModal.classList.contains('active')) return false;
+
+      const titleEl = document.getElementById('modalArticleTitle');
+      const title = (titleEl ? titleEl.textContent : '').trim().toLowerCase();
+
+      const activeArt = window.currentActiveArticle || null;
+      const activeTitle = (activeArt && activeArt.title ? activeArt.title : '').trim().toLowerCase();
+      const activeId = activeArt && activeArt.id ? String(activeArt.id).trim().toUpperCase() : '';
+
+      // ID artikel spesifik di database
+      if (activeId === 'ART-3512') return true;
+
+      // Pencocokan judul artikel secara spesifik
+      const matchesTarget = (t) => {
+        if (!t) return false;
+        const hasLiterasi = t.includes('literasi');
+        const hasNumerasi = t.includes('numerasi');
+        const hasAkm = t.includes('asesmen kompetensi minimum') || t.includes('akm');
+        const hasSdJuara = t.includes('sd juara') || t.includes('studi');
+        if (hasLiterasi && hasNumerasi && (hasAkm || hasSdJuara)) return true;
+        if (t.includes('analisis literasi dan numerasi')) return true;
+        if (t.includes('analisis kemampuan literasi')) return true;
+        return false;
+      };
+
+      if (matchesTarget(title) || matchesTarget(activeTitle)) return true;
+
+      // Cek isi konten artikel jika mengandung link atau teks riset AKM terkait
+      const contentEl = document.getElementById('modalArticleContent');
+      if (contentEl) {
+        const html = contentEl.innerHTML.toLowerCase();
+        if (html.includes('analisis_kemampuan_literasi') || 
+           (html.includes('asesmen kompetensi minimum') && html.includes('sd juara se-indonesia'))) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     function injectModalArticleFlipbook(activeDoc) {
-      if (!activeDoc) return;
+      const artModal = document.getElementById('kabarDetailModal');
+      const existingModalBtn = document.getElementById('wrapProfilLembagaBtnModal');
+      const insideBtnWrap = document.querySelector('#kabarDetailModal #wrapProfilLembagaBtn');
+
+      // Validasi ketat: HANYA tampilkan pada artikel "Analisis Literasi dan Numerasi dalam Asesmen Kompetensi Minimum (AKM): Studi SD Juara Seluruh Indonesia"
+      // Pada SEMUA artikel lain di kabar.html, tombol "Baca di Sini" WAJIB dihapus/disembunyikan
+      if (!artModal || !artModal.classList.contains('active') || !isTargetArticleForFlipbook()) {
+        if (existingModalBtn) {
+          existingModalBtn.style.display = 'none';
+          existingModalBtn.remove();
+        }
+        if (insideBtnWrap) {
+          insideBtnWrap.style.display = 'none';
+        }
+        return;
+      }
+
+      // Pastikan tombol non-modal jika ada di dalam modal disembunyikan agar tidak dobel
+      if (insideBtnWrap) {
+        insideBtnWrap.style.display = 'none';
+      }
+
       const modalShare = document.querySelector('.kabar-detail-content-wrap .kabar-share-section, .kabar-share-section');
       const modalContent = document.getElementById('modalArticleContent');
       if (!modalShare && !modalContent) return;
+
+      // Sembunyikan heading/link teks mentah bawaan artikel jika bertuliskan "Baca di Sini"
+      if (modalContent) {
+        modalContent.querySelectorAll('h2, a').forEach(el => {
+          const txt = (el.textContent || '').trim().toLowerCase();
+          if (txt === 'baca di sini' || txt.includes('baca di sini')) {
+            if (el.tagName === 'H2') el.style.display = 'none';
+            else if (el.tagName === 'A') {
+              const p = el.closest('h2') || el.parentElement;
+              if (p && p !== modalContent) p.style.display = 'none';
+              else el.style.display = 'none';
+            }
+          }
+        });
+      }
+
+      // Tentukan data dokumen PDF khusus untuk studi AKM ini
+      let targetDoc = activeDoc;
+      if (!targetDoc || !targetDoc.file_url || !targetDoc.file_url.includes('Analisis')) {
+        targetDoc = {
+          id: (activeDoc && activeDoc.id) || 'akm-literasi',
+          title: (activeDoc && activeDoc.title && activeDoc.title.includes('Literasi')) ? activeDoc.title : 'Analisis Literasi dan Numerasi dalam Asesmen Kompetensi Minimum (AKM)',
+          description: 'Studi SD Juara Seluruh Indonesia — Dokumen Resmi Yayasan ACF Eduhub',
+          file_name: 'Analisis_Kemampuan_Literasi_dan_Numerasi.pdf',
+          file_url: '../assets/uploads/flipbook/flip_20261111_143004_Analisis_Kemampuan_Literasi_da.pdf',
+          total_pages: 24,
+          button_label: 'Baca di Sini'
+        };
+      }
+
+      const targetBtnLabel = (targetDoc && (targetDoc.button_label || targetDoc.label_tombol)) || 'Baca di Sini';
 
       let modalBtnWrap = document.getElementById('wrapProfilLembagaBtnModal');
       if (!modalBtnWrap) {
@@ -876,7 +991,7 @@
                 <line x1="12" y1="10" x2="16" y2="10"></line>
               </svg>
             </span>
-            <span class="btn-profil-text">${escapeHTML(buttonText)}</span>
+            <span class="btn-profil-text">${escapeHTML(targetBtnLabel)}</span>
             <span class="btn-profil-icon-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -886,19 +1001,32 @@
         `;
         modalBtnWrap.querySelector('a').addEventListener('click', (e) => {
           e.preventDefault();
-          openFlipbookModal(activeDoc);
+          openFlipbookModal(targetDoc);
         });
+      } else {
+        const textEl = modalBtnWrap.querySelector('.btn-profil-text');
+        if (textEl) textEl.textContent = targetBtnLabel;
       }
 
+      modalBtnWrap.style.display = 'flex';
       applyBtnAlignment(modalBtnWrap);
       modalBtnWrap.style.margin = '20px 0 16px 0';
 
       if (modalShare && modalShare.parentNode) {
-        modalShare.parentNode.insertBefore(modalBtnWrap, modalShare);
+        if (modalShare.previousElementSibling !== modalBtnWrap) {
+          modalShare.parentNode.insertBefore(modalBtnWrap, modalShare);
+        }
       } else if (modalContent && modalContent.parentNode) {
-        modalContent.parentNode.insertBefore(modalBtnWrap, modalContent.nextSibling);
+        if (modalContent.nextElementSibling !== modalBtnWrap) {
+          modalContent.parentNode.insertBefore(modalBtnWrap, modalContent.nextSibling);
+        }
       }
     }
+
+    // Expose fungsi ke window agar dapat dipanggil instan oleh kabar.js
+    window.checkAndInjectModalFlipbook = function() {
+      injectModalArticleFlipbook(activeFlipbookDoc || doc);
+    };
 
     // Helper untuk menyembunyikan wrapper placement jika tombol ditempatkan langsung di dalam elemen halaman
     function hideUnusedPlacementWrapper() {
@@ -996,6 +1124,13 @@
 
     // 6. ARTIKEL / KONTEN / BERITA (contoh: "bawah artikel", "isi berita", "dalam artikel")
     if (lower.includes('artikel') || lower.includes('berita') || lower.includes('isi') || lower.includes('paragraf') || lower.includes('konten') || lower.includes('baca')) {
+      if (currentPage === 'kabar.html') {
+        // Pada kabar.html, tombol di dalam modal artikel dikelola secara dinamis dan eksklusif
+        // oleh injectModalArticleFlipbook (hanya muncul khusus pada artikel Analisis Literasi dan Numerasi).
+        btnWrap.style.display = 'none';
+        hideUnusedPlacementWrapper();
+        return;
+      }
       const artEl = document.querySelector('#modalArticleContent, .kabar-detail-prose, .kabar-articles-grid, article, .content-container');
       if (artEl && artEl.parentNode) {
         applyBtnAlignment(btnWrap);

@@ -283,6 +283,31 @@
     .faq-item-content a:hover {
       color: #5B21B6;
     }
+    .faq-step-list {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-step-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.65;
+    }
+    .faq-step-num {
+      color: #7D2280;
+      font-weight: 800;
+      font-size: 1.02rem;
+      min-width: 20px;
+      flex-shrink: 0;
+      line-height: 1.65;
+    }
+    .faq-step-text {
+      flex: 1;
+    }
 
     /* FAQ CTA SUPPORT BOX */
     .faq-cta-box {
@@ -592,8 +617,8 @@
           <button type="button" class="faq-pill-btn active" data-filter="all">Semua Pertanyaan</button>
           <button type="button" class="faq-pill-btn" data-filter="umum">Tentang ACF Eduhub</button>
           <button type="button" class="faq-pill-btn" data-filter="unit">Unit Pendidikan</button>
+          <button type="button" class="faq-pill-btn" data-filter="mitra">Program Layanan & Kemitraan</button>
           <button type="button" class="faq-pill-btn" data-filter="donasi">Salurkan Donasi</button>
-          <button type="button" class="faq-pill-btn" data-filter="mitra">Kemitraan & Relawan</button>
         </div>
 
         <!-- No Results Notice -->
@@ -752,7 +777,112 @@
           </div>
         </div>
 
-        <!-- CATEGORY 3: DONASI & AKUNTABILITAS -->
+        <!-- CATEGORY 3: PROGRAM LAYANAN & KEMITRAAN -->
+        <div class="faq-category-block" data-category="mitra">
+          <div class="faq-category-header">
+            <div class="faq-category-icon">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <h2 class="faq-category-title">Program Layanan & Kemitraan</h2>
+          </div>
+
+          <div class="faq-item-card">
+            <button type="button" class="faq-item-trigger">
+              <span>Apa itu Program Layanan?</span>
+              <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </button>
+            <div class="faq-item-content">
+              <div class="faq-item-content-inner">
+                Program Layanan adalah katalog program pendidikan dan sosial yang kami jalankan dan terbuka untuk didukung oleh mitra maupun donatur.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item-card">
+            <button type="button" class="faq-item-trigger">
+              <span>Program apa saja yang ada di Program Layanan?</span>
+              <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </button>
+            <div class="faq-item-content">
+              <div class="faq-item-content-inner">
+                Saat ini tersedia:
+                <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+                  <li><strong>Program Beasiswa & Keberlanjutan Sekolah Juara</strong></li>
+                  <li><strong>Kesejahteraan Guru & Operasional Sekolah Daya Setara</strong></li>
+                  <li><strong>Layanan Pascabencana</strong></li>
+                  <li><strong>Kesejahteraan Ekosistem Sekolah</strong></li>
+                  <li><strong>Bantuan Kemanusiaan Internasional</strong></li>
+                  <li><strong>Education Outlook — Forum Tahunan Pendidikan</strong></li>
+                  <li><strong>Konsultasi & Penyelenggaraan Acara Pendidikan</strong></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item-card">
+            <button type="button" class="faq-item-trigger">
+              <span>Siapa yang bisa menjadi mitra ACF Eduhub?</span>
+              <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </button>
+            <div class="faq-item-content">
+              <div class="faq-item-content-inner">
+                Perusahaan (CSR), lembaga pemerintah dan dinas, NGO atau lembaga filantropi, serta individu yang ingin berkontribusi pada program pendidikan.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item-card">
+            <button type="button" class="faq-item-trigger">
+              <span>Bentuk dukungan apa yang bisa diberikan mitra?</span>
+              <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </button>
+            <div class="faq-item-content">
+              <div class="faq-item-content-inner">
+                Dukungan dana (penuh atau sebagian untuk program tertentu), dukungan in-kind seperti barang, tempat, atau media, dan dukungan keahlian teknis.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item-card">
+            <button type="button" class="faq-item-trigger">
+              <span>Bagaimana cara mulai bermitra?</span>
+              <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </button>
+            <div class="faq-item-content">
+              <div class="faq-item-content-inner">
+                Prosesnya sederhana dan dimulai dari percakapan:
+                <ol class="faq-step-list">
+                  <li>
+                    <span class="faq-step-num">1.</span>
+                    <span class="faq-step-text">Hubungi kami lewat <a href="https://wa.me/6285196380634" target="_blank" rel="noopener noreferrer">WhatsApp</a> dan sampaikan lembaga Anda, program yang diminati, dan bentuk dukungan yang dibayangkan.</span>
+                  </li>
+                  <li>
+                    <span class="faq-step-num">2.</span>
+                    <span class="faq-step-text">Diskusi awal: kami memahami tujuan dan kebutuhan Anda, lalu memilih program dari Program Layanan atau merancangnya bersama.</span>
+                  </li>
+                  <li>
+                    <span class="faq-step-num">3.</span>
+                    <span class="faq-step-text">Kami menyusun proposal berisi rincian program, lokasi, anggaran, target, dan hasil yang diharapkan.</span>
+                  </li>
+                  <li>
+                    <span class="faq-step-num">4.</span>
+                    <span class="faq-step-text">Kesepakatan kerja sama dituangkan dalam MoU atau perjanjian kerja sama.</span>
+                  </li>
+                  <li>
+                    <span class="faq-step-num">5.</span>
+                    <span class="faq-step-text">Pelaksanaan program dan penyaluran dukungan.</span>
+                  </li>
+                  <li>
+                    <span class="faq-step-num">6.</span>
+                    <span class="faq-step-text">Pelaporan dan dokumentasi kepada mitra, dilanjutkan evaluasi dan pembahasan kerja sama berikutnya.</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORY 4: DONASI & AKUNTABILITAS -->
         <div class="faq-category-block" data-category="donasi">
           <div class="faq-category-header">
             <div class="faq-category-icon">
@@ -798,40 +928,6 @@
             <div class="faq-item-content">
               <div class="faq-item-content-inner">
                 Setiap rupiah donasi dicatat secara akuntabel, diaudit berkala oleh Kantor Akuntan Publik (KAP) independen, dan disalurkan tepat sasaran sesuai akad penerima manfaat (beasiswa murid, operasional sekolah, fasilitas belajar, dan tanggap darurat bencana).
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CATEGORY 4: KEMITRAAN & RELAWAN -->
-        <div class="faq-category-block" data-category="mitra">
-          <div class="faq-category-header">
-            <div class="faq-category-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            </div>
-            <h2 class="faq-category-title">Kemitraan, CSR, & Relawan</h2>
-          </div>
-
-          <div class="faq-item-card">
-            <button type="button" class="faq-item-trigger">
-              <span>Bagaimana perusahaan atau lembaga dapat bermitra dengan ACF Eduhub?</span>
-              <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
-            </button>
-            <div class="faq-item-content">
-              <div class="faq-item-content-inner">
-                Perusahaan, BUMN, maupun lembaga filantropi dapat berkolaborasi melalui program CSR, program orang tua asuh, hibah sarana belajar, atau pelatihan vokasi. Silakan mengisi formulir proposal di halaman <a href="form-mitra.html">Formulir Kemitraan</a> atau hubungi tim kerjasama kami.
-              </div>
-            </div>
-          </div>
-
-          <div class="faq-item-card">
-            <button type="button" class="faq-item-trigger">
-              <span>Bagaimana cara mendaftar sebagai relawan (volunteer)?</span>
-              <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
-            </button>
-            <div class="faq-item-content">
-              <div class="faq-item-content-inner">
-                Kami secara terbuka mengajak pemuda, profesional, dan akademisi untuk bergabung sebagai <strong>Sahabat Eduhub</strong> (relawan pengajar, fasilitator kelas inspirasi, maupun dokumentasi dampak). Anda dapat mendaftarkan diri secara daring melalui halaman <a href="form-relawan.html">Formulir Relawan</a>.
               </div>
             </div>
           </div>

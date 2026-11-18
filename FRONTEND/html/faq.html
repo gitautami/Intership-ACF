@@ -283,6 +283,20 @@
     .faq-item-content a:hover {
       color: #5B21B6;
     }
+    .faq-item-content ul {
+      list-style: disc !important;
+      padding-left: 22px !important;
+      margin: 12px 0 0 0 !important;
+    }
+    .faq-item-content ul li {
+      margin-bottom: 6px;
+      line-height: 1.7;
+      color: #334155;
+    }
+    .faq-item-content ul li::marker {
+      color: #0F172A;
+      font-size: 1.05em;
+    }
     .faq-step-list {
       list-style: none;
       padding: 0;
@@ -618,7 +632,7 @@
           <button type="button" class="faq-pill-btn" data-filter="umum">Tentang ACF Eduhub</button>
           <button type="button" class="faq-pill-btn" data-filter="unit">Unit Pendidikan</button>
           <button type="button" class="faq-pill-btn" data-filter="mitra">Program Layanan & Kemitraan</button>
-          <button type="button" class="faq-pill-btn" data-filter="donasi">Salurkan Donasi</button>
+          <button type="button" class="faq-pill-btn" data-filter="donasi">Donasi</button>
         </div>
 
         <!-- No Results Notice -->
@@ -894,52 +908,57 @@
           </div>
         </div>
 
-        <!-- CATEGORY 4: DONASI & AKUNTABILITAS -->
+        <!-- CATEGORY 4: DONASI -->
         <div class="faq-category-block" data-category="donasi">
           <div class="faq-category-header">
             <div class="faq-category-icon">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
             </div>
-            <h2 class="faq-category-title">Salurkan Donasi & Transparansi</h2>
+            <h2 class="faq-category-title">Donasi</h2>
           </div>
 
           <div class="faq-item-card">
             <button type="button" class="faq-item-trigger">
-              <span>Metode pembayaran apa saja yang disediakan untuk berdonasi?</span>
+              <span>Bagaimana cara berdonasi?</span>
               <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
             </button>
             <div class="faq-item-content">
               <div class="faq-item-content-inner">
-                Kami menyediakan beberapa metode donasi yang mudah dan terverifikasi di halaman <a href="donasi.html">Salurkan Donasi</a>:
-                <ul style="margin: 8px 0 0 18px; line-height: 1.8;">
-                  <li><strong>Transfer Bank BSI:</strong> Rekening <code>7800900446</code> a.n. <em>YYS ACF EDUHUB</em>.</li>
-                  <li><strong>QRIS Nasional:</strong> Bebas biaya transfer antar aplikasi e-wallet (GoPay, OVO, Dana, ShopeePay) dan Mobile Banking.</li>
-                  <li><strong>Platform Crowdfunding Resmi:</strong> Melalui Sharing Happiness dan Amal Sholeh.</li>
+                Saat ini donasi dapat disalurkan lewat:
+                <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+                  <li><strong>QRIS</strong></li>
+                  <li><strong>Transfer ke rekening bank (saat ini tersedia BSI)</strong></li>
+                  <li><strong>Kitabisa.org</strong></li>
+                  <li><strong>SharingHappiness.org</strong></li>
+                  <li><strong>AmalSholeh.org</strong></li>
                 </ul>
+                <div style="margin-top: 12px;">
+                  Detail nomor rekening, scan QRIS, dan link platform donasi resmi dapat diakses di halaman <a href="donasi.html">Donasi</a>.
+                </div>
               </div>
             </div>
           </div>
 
           <div class="faq-item-card">
             <button type="button" class="faq-item-trigger">
-              <span>Bagaimana cara mengonfirmasi bukti transfer donasi?</span>
+              <span>Ke mana donasi saya disalurkan?</span>
               <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
             </button>
             <div class="faq-item-content">
               <div class="faq-item-content-inner">
-                Setelah melakukan transfer via QRIS atau Bank BSI, Anda dapat menekan tombol hijau <strong>"Konfirmasi Donasi via WhatsApp"</strong> di halaman Salurkan Donasi atau langsung mengirimkan bukti ke nomor WhatsApp resmi kami di <a href="https://wa.me/6285196380634" target="_blank" rel="noopener noreferrer">+62 851-9638-0634</a>.
+                Sesuai program yang Anda pilih, misalnya beasiswa siswa, kesejahteraan guru, bantuan bagi korban bencana, atau bantuan kemanusiaan.
               </div>
             </div>
           </div>
 
           <div class="faq-item-card">
             <button type="button" class="faq-item-trigger">
-              <span>Bagaimana transparansi dan akuntabilitas dana donasi ACF Eduhub?</span>
+              <span>Bagaimana saya tahu donasi sudah disalurkan?</span>
               <span class="faq-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
             </button>
             <div class="faq-item-content">
               <div class="faq-item-content-inner">
-                Setiap rupiah donasi dicatat secara akuntabel, diaudit berkala oleh Kantor Akuntan Publik (KAP) independen, dan disalurkan tepat sasaran sesuai akad penerima manfaat (beasiswa murid, operasional sekolah, fasilitas belajar, dan tanggap darurat bencana).
+                Laporan penyaluran disampaikan secara berkala. Sebagian dikirim langsung kepada donatur, sebagian lagi diperbarui di halaman campaign pada platform donasi digital yang digunakan. Selain itu, laporan keuangan kami diaudit dan memperoleh opini Wajar Tanpa Pengecualian (WTP) sejak 2024.
               </div>
             </div>
           </div>

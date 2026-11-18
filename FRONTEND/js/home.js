@@ -420,17 +420,19 @@ function initHomeKabar() {
       articleEl.innerHTML = `
         <a href="${articleUrl}" class="home-kabar-img-link" aria-label="Baca ${escapeHTML(art.title || '')}">
           <div class="home-kabar-img-wrap">
-            <span class="home-kabar-tag ${escapeHTML(catClass)}">${escapeHTML(catLabel)}</span>
             <img src="${escapeHTML(coverSrc)}" alt="${escapeHTML(art.title || 'Kabar ACF')}" class="home-kabar-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80'">
           </div>
         </a>
         <div class="home-kabar-body">
-          <h3 class="home-kabar-title">
-            <a href="${articleUrl}" ${art.title_color ? `style="color: ${escapeHTML(art.title_color)};"` : ''}>${escapeHTML(art.title || '')}</a>
-          </h3>
-          <p class="home-kabar-excerpt">
-            ${escapeHTML(art.excerpt || '')}
-          </p>
+          <div class="home-kabar-main-content">
+            <span class="home-kabar-tag ${escapeHTML(catClass)}">${escapeHTML(catLabel)}</span>
+            <h3 class="home-kabar-title">
+              <a href="${articleUrl}" ${art.title_color ? `style="color: ${escapeHTML(art.title_color)};"` : ''}>${escapeHTML(art.title || '')}</a>
+            </h3>
+            <p class="home-kabar-excerpt">
+              ${escapeHTML(art.excerpt || '')}
+            </p>
+          </div>
           <div class="home-kabar-footer">
             <a href="${articleUrl}" class="home-kabar-readmore">
               <span>Baca Selengkapnya</span>

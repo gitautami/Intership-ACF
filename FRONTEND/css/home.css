@@ -2415,20 +2415,24 @@
   transform: scale(1.07);
 }
 
+.home-kabar-main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
 .home-kabar-tag {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 5px 12px;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 4px 12px;
   border-radius: var(--radius-pill);
   font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .home-kabar-tag.artikel,

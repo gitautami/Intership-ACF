@@ -45,21 +45,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const sectionReveals = section.querySelectorAll('.reveal');
     let activeAnimationFrames = [];
 
-    const animateNumber = (el, target, duration = 1250) => {
+    const animateNumber = (el, target, decimals = 0, duration = 1250) => {
       const startTime = performance.now();
       const step = (now) => {
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const ease = 1 - Math.pow(1 - progress, 3);
-        const currentVal = Math.round(ease * target);
 
-        el.textContent = currentVal.toLocaleString('id-ID');
+        if (decimals > 0) {
+          const currentVal = (ease * target).toFixed(decimals);
+          el.textContent = currentVal;
+        } else {
+          const currentVal = Math.round(ease * target);
+          el.textContent = currentVal.toLocaleString('id-ID');
+        }
 
         if (progress < 1) {
           const rafId = requestAnimationFrame(step);
           activeAnimationFrames.push(rafId);
         } else {
-          el.textContent = target.toLocaleString('id-ID');
+          if (decimals > 0) {
+            el.textContent = target.toFixed(decimals);
+          } else {
+            el.textContent = target.toLocaleString('id-ID');
+          }
         }
       };
       const rafId = requestAnimationFrame(step);
@@ -71,7 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
       activeAnimationFrames = [];
 
       statNumbers.forEach(el => {
-        el.textContent = '0';
+        const raw = el.dataset.count;
+        const isDecimal = raw && raw.includes('.');
+        el.textContent = isDecimal ? '0.00' : '0';
       });
 
       if (container) container.classList.remove('is-active');
@@ -89,9 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       statNumbers.forEach(el => {
-        const target = parseInt(el.dataset.count, 10);
+        const raw = el.dataset.count;
+        const isDecimal = raw && raw.includes('.');
+        const decimals = isDecimal ? (raw.split('.')[1] || '').length : 0;
+        const target = parseFloat(raw);
         if (!isNaN(target)) {
-          animateNumber(el, target, 1250);
+          animateNumber(el, target, decimals, 1250);
         }
       });
     };
@@ -126,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (ceritaDampakSection) {
     setupStatsCounter({
       section: ceritaDampakSection,
-      containerSelector: '.compact-stats-strip',
-      itemSelector: '.compact-stat-item',
-      threshold: 0.2
+      containerSelector: '.compact-stats-box, .compact-stats-strip, .dampak-grid',
+      itemSelector: '.dampak-card, .compact-stat-item',
+      threshold: 0.12
     });
   }
 
@@ -136,9 +150,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!('IntersectionObserver' in window)) {
     const fallbackNumbers = document.querySelectorAll('.stat-number[data-count]');
     fallbackNumbers.forEach(el => {
-      const target = parseInt(el.dataset.count, 10);
-      if (!isNaN(target)) el.textContent = target.toLocaleString('id-ID');
+      const raw = el.dataset.count;
+      const isDecimal = raw && raw.includes('.');
+      const decimals = isDecimal ? (raw.split('.')[1] || '').length : 0;
+      const target = parseFloat(raw);
+      if (!isNaN(target)) {
+        el.textContent = decimals > 0 ? target.toFixed(decimals) : target.toLocaleString('id-ID');
+      }
     });
-    document.querySelectorAll('.home-stat-card, .compact-stat-item').forEach(c => c.classList.add('pop-in'));
+    document.querySelectorAll('.home-stat-card, .compact-stat-item, .dampak-card').forEach(c => c.classList.add('pop-in'));
   }
 });

@@ -267,6 +267,76 @@ body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select {
 }
 
 /* ==========================================================================
+   3. SOLUSI
+   ========================================================================== */
+.spmb-solution-section {
+  padding: 65px 0 70px;
+  background: #FAF5FC;
+  border-bottom: 1px solid #F1E5F3;
+}
+
+.spmb-solution-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.spmb-solution-header {
+  padding-left: 16px;
+  border-left: 4px solid #7D2280;
+  margin-bottom: 22px;
+}
+
+.spmb-solution-title {
+  font-size: clamp(1.4rem, 2.5vw, 1.95rem);
+  font-weight: 800;
+  color: #1E293B;
+  line-height: 1.35;
+  margin: 0 0 16px 0;
+}
+
+.spmb-solution-desc {
+  font-size: clamp(1rem, 1.25vw, 1.08rem);
+  line-height: 1.8;
+  color: #334155;
+  font-weight: 400;
+  margin: 0;
+}
+
+.spmb-solution-stats-block {
+  margin-top: 20px;
+}
+
+.spmb-solution-stats-list {
+  list-style-type: disc;
+  padding-left: 36px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spmb-solution-stats-list li {
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.6;
+  color: #475569;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .spmb-solution-section {
+    padding: 45px 0 50px;
+  }
+
+  .spmb-solution-header {
+    padding-left: 12px;
+  }
+
+  .spmb-solution-stats-list {
+    padding-left: 24px;
+  }
+}
+
+/* ==========================================================================
    2. KEUNGGULAN & KURIKULUM LANGIT
    ========================================================================== */
 .spmb-pillars-section {

@@ -189,6 +189,84 @@ body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select {
 }
 
 /* ==========================================================================
+   2. KEKHAWATIRAN AYAH BUNDA (Poin-Poin Bersih)
+   ========================================================================== */
+.spmb-concerns-section {
+  padding: 65px 0 70px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #F1E5F3;
+}
+
+.spmb-concerns-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.spmb-concerns-title {
+  font-size: clamp(1.4rem, 2.5vw, 1.95rem);
+  font-weight: 800;
+  color: #1E293B;
+  line-height: 1.35;
+  margin: 0 0 24px 0;
+  padding-left: 16px;
+  border-left: 4px solid #F5A623;
+}
+
+.spmb-concerns-bullets {
+  list-style-type: disc;
+  padding-left: 36px;
+  margin: 0 0 28px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.spmb-concerns-bullets li {
+  font-size: clamp(1rem, 1.25vw, 1.08rem);
+  line-height: 1.7;
+  color: #334155;
+  font-weight: 500;
+}
+
+.spmb-concerns-closing {
+  padding: 16px 22px;
+  background: #FAF5FC;
+  border-left: 4px solid #7D2280;
+  border-radius: 4px 12px 12px 4px;
+}
+
+.spmb-concerns-closing p {
+  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+  line-height: 1.75;
+  color: #371B3E;
+  margin: 0;
+}
+
+.spmb-concerns-closing strong {
+  color: #7D2280;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .spmb-concerns-section {
+    padding: 45px 0 50px;
+  }
+
+  .spmb-concerns-bullets {
+    padding-left: 24px;
+    gap: 12px;
+  }
+
+  .spmb-concerns-title {
+    padding-left: 12px;
+  }
+
+  .spmb-concerns-closing {
+    padding: 14px 16px;
+  }
+}
+
+/* ==========================================================================
    2. KEUNGGULAN & KURIKULUM LANGIT
    ========================================================================== */
 .spmb-pillars-section {

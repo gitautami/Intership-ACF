@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SPMB Sekolah Juara 2027/2028 — Cerdas Saja Belum Cukup. Bekali Buah Hati dengan Adab dan Cinta Al-Qur'an. Dikelola oleh ACF Eduhub dengan Kurikulum Langit.">
+  <title>SPMB Sekolah Juara 2027/2028 — ACF Eduhub</title>
+  
+  <!-- Favicon / Tab Icon & Mobile App Icon -->
+  <link rel="icon" type="image/png" href="../assets/logo-acf/icon tab.png">
+  <link rel="shortcut icon" type="image/png" href="../assets/logo-acf/icon tab.png">
+  <link rel="apple-touch-icon" href="../assets/logo-acf/icon tab.png">
+
+  <!-- Google Fonts (Poppins) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="../css/styles.css?v=5">
+  <link rel="stylesheet" href="../css/navbar.css?v=33">
+  <link rel="stylesheet" href="../css/home.css">
+  <link rel="stylesheet" href="../css/unit.css?v=22">
+  <link rel="stylesheet" href="../css/spmb.css?v=1">
+</head>
+<body>
+
+  <!-- ========== TOP NAVIGATION BAR ========== -->
+  <header>
+    <nav class="main-navbar" id="mainNavbar" aria-label="Navigasi Utama">
+      <div class="nav-container">
+        
+        <!-- Brand Logo -->
+        <a href="index.html" class="brand-link" aria-label="Beranda ACF Eduhub">
+          <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="brand-logo-img">
+        </a>
+
+        <!-- Desktop Navigation Items -->
+        <ul class="desktop-nav-menu" role="menubar">
+          
+          <!-- 1. Beranda -->
+          <li class="nav-item" role="none">
+            <a href="index.html" class="nav-link" role="menuitem">Beranda</a>
+          </li>
+
+          <!-- 2. Program Layanan -->
+          <li class="nav-item" role="none">
+            <a href="program-layanan.html" class="nav-link" role="menuitem">Program Layanan</a>
+          </li>
+
+          <!-- 3. Unit Pendidikan ▾ (Active) -->
+          <li class="nav-item" role="none">
+            <a href="unit-pendidikan.html" class="nav-link active" role="menuitem">
+              Unit Pendidikan
+              <svg class="nav-arrow" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5"/></svg>
+            </a>
+            <div class="nav-dropdown">
+              <div class="dropdown-grid">
+                <a href="sekolah-juara.html" class="dropdown-item-card" style="background: rgba(125, 34, 128, 0.06);">
+                  <div>
+                    <span class="item-title" style="color: var(--primary-red);">Sekolah Juara</span>
+                    <span class="item-sub">Pendidikan formal berprestasi</span>
+                  </div>
+                </a>
+                <a href="sekolah-daya-setara.html" class="dropdown-item-card">
+                  <div>
+                    <span class="item-title">Sekolah Daya Setara</span>
+                    <span class="item-sub">Pendidikan non-formal & vokasi</span>
+                  </div>
+                </a>
+                <a href="https://www.guruverse.id/" target="_blank" rel="noopener noreferrer" class="dropdown-item-card">
+                  <div>
+                    <span class="item-title">Guruverse.ID</span>
+                    <span class="item-sub">Platform digital pelatihan guru</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <!-- 4. Tentang Kami ▾ -->
+          <li class="nav-item" role="none">
+            <button class="nav-link" aria-haspopup="true" aria-expanded="false">
+              Tentang Kami
+              <svg class="nav-arrow" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5"/></svg>
+            </button>
+            <div class="nav-dropdown">
+              <div class="dropdown-grid">
+                <a href="kisah-kami.html" class="dropdown-item-card">
+                  <div>
+                    <span class="item-title">Cerita Kami</span>
+                    <span class="item-sub">Legalitas, milestone, dampak, penghargaan</span>
+                  </div>
+                </a>
+                <a href="visi-misi.html" class="dropdown-item-card">
+                  <div>
+                    <span class="item-title">Visi Misi</span>
+                    <span class="item-sub">Visi, misi, value, Model Kami</span>
+                  </div>
+                </a>
+                <a href="mitra.html" class="dropdown-item-card">
+                  <div>
+                    <span class="item-title">Mitra</span>
+                    <span class="item-sub">Logo showcase kemitraan</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <!-- 5. Kerjasama ▾ -->
+          <li class="nav-item" role="none">
+            <a href="kerjasama.html" class="nav-link" role="menuitem">
+              Kerjasama
+              <svg class="nav-arrow" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5"/></svg>
+            </a>
+            <div class="nav-dropdown">
+              <div class="dropdown-grid">
+                <a href="jadi-mitra-program.html" class="dropdown-item-card">
+                  <div>
+                    <span class="item-title">Jadi Mitra Program</span>
+                    <span class="item-sub">Kolaborasi CSR & pendanaan</span>
+                  </div>
+                </a>
+                <a href="jadi-relawan.html" class="dropdown-item-card">
+                  <div>
+                    <span class="item-title">Jadi Relawan</span>
+                    <span class="item-sub">Sahabat Eduhub & volunteer</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <!-- 7. Kabar -->
+          <li class="nav-item" role="none">
+            <a href="kabar.html" class="nav-link" role="menuitem">Kabar</a>
+          </li>
+
+        </ul>
+
+        <!-- Right Side CTA Actions -->
+        <div class="nav-actions">
+          <a href="donasi.html" class="btn-donasi" aria-label="Salurkan Donasi">
+            <span>Salurkan Donasi</span>
+          </a>
+
+          <!-- Bilingual Switcher (ID | EN) -->
+          <div class="lang-pill-switch" role="group" aria-label="Pilihan Bahasa">
+            <button type="button" class="lang-pill-btn active" data-lang="id" aria-pressed="true" title="Bahasa Indonesia">ID</button>
+            <button type="button" class="lang-pill-btn" data-lang="en" aria-pressed="false" title="English">EN</button>
+          </div>
+
+          <button class="btn-sidebar-trigger btn-open-sidebar" aria-label="Buka Menu Kesamping">
+            <svg class="hamburger-icon" viewBox="0 0 24 24">
+              <line x1="4" y1="6" x2="20" y2="6"/>
+              <line x1="4" y1="12" x2="20" y2="12"/>
+              <line x1="4" y1="18" x2="20" y2="18"/>
+            </svg>
+            <span>Menu</span>
+          </button>
+        </div>
+
+      </div>
+    </nav>
+  </header>
+
+  <!-- ========== SIDEBAR OVERLAY ========== -->
+  <div class="sidebar-nav-overlay" id="sidebarNavOverlay"></div>
+
+  <!-- ========== SIDEBAR NAVBAR ========== -->
+  <aside class="sidebar-nav-drawer" id="sidebarNavDrawer" aria-label="Menu Kesamping">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="sidebar-logo-img">
+      </div>
+
+    <!-- Pilihan Bahasa Mobile -->
+    <div class="sidebar-lang-row">
+      <div class="sidebar-lang-label">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        <span>Bahasa / Language</span>
+      </div>
+      <div class="lang-pill-switch" role="group" aria-label="Pilihan Bahasa Mobile">
+        <button type="button" class="lang-pill-btn active" data-lang="id" aria-pressed="true" title="Bahasa Indonesia">ID</button>
+        <button type="button" class="lang-pill-btn" data-lang="en" aria-pressed="false" title="English">EN</button>
+      </div>
+    </div>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Tutup Menu">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="sidebar-search-box">
+      <div class="sidebar-search-wrapper">
+        <svg class="sidebar-search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="sidebarSearchInput" class="sidebar-search-input" placeholder="Cari menu & program...">
+      </div>
+    </div>
+
+    <div class="sidebar-body">
+      <div class="side-nav-item">
+        <a href="index.html" class="side-nav-link">
+          <div class="side-link-left">
+            <svg class="side-nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2zM9 22V12h6v10"/></svg>
+            <span>Beranda</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 2. Program Layanan -->
+      <div class="side-nav-item">
+        <a href="program-layanan.html" class="side-nav-link">
+          <div class="side-link-left">
+            <svg class="side-nav-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
+            <span>Program Layanan</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="side-nav-item has-submenu open">
+        <div class="side-nav-row">
+          <a href="unit-pendidikan.html" class="side-nav-link active">
+            <div class="side-link-left">
+              <svg class="side-nav-icon" viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M6 21V11M10 21V11M14 21V11M18 21V11M3 7l9-4 9 4"/></svg>
+              <span>Unit Pendidikan</span>
+            </div>
+          </a>
+          <button type="button" class="side-submenu-toggle" aria-label="Buka Submenu Unit Pendidikan">
+            <svg class="side-link-chevron" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div class="side-submenu">
+          <a href="unit-pendidikan.html" class="side-submenu-link highlight-sublink">Halaman Unit Pendidikan &rarr;</a>
+          <a href="sekolah-juara.html" class="side-submenu-link active" style="color: var(--primary-red); font-weight: 700;">Sekolah Juara</a>
+          <a href="sekolah-daya-setara.html" class="side-submenu-link">Sekolah Daya Setara</a>
+          <a href="https://www.guruverse.id/" target="_blank" rel="noopener noreferrer" class="side-submenu-link">Guruverse.ID ↗</a>
+        </div>
+      </div>
+
+      <div class="side-nav-item has-submenu">
+        <button class="side-nav-link">
+          <div class="side-link-left">
+            <svg class="side-nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span>Tentang Kami</span>
+          </div>
+          <svg class="side-link-chevron" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="side-submenu">
+          <a href="kisah-kami.html" class="side-submenu-link">Cerita Kami</a>
+          <a href="visi-misi.html" class="side-submenu-link">Visi Misi</a>
+          <a href="mitra.html" class="side-submenu-link">Mitra</a>
+        </div>
+      </div>
+
+      <div class="side-nav-item has-submenu">
+        <div class="side-nav-row">
+          <a href="kerjasama.html" class="side-nav-link">
+            <div class="side-link-left">
+              <svg class="side-nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>
+              <span>Kerjasama</span>
+            </div>
+          </a>
+          <button type="button" class="side-submenu-toggle" aria-label="Buka Submenu Kerjasama">
+            <svg class="side-link-chevron" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div class="side-submenu">
+          <a href="kerjasama.html" class="side-submenu-link highlight-sublink">Halaman Kerjasama &rarr;</a>
+          <a href="jadi-mitra-program.html" class="side-submenu-link">Jadi Mitra Program</a>
+          <a href="jadi-relawan.html" class="side-submenu-link">Jadi Relawan</a>
+        </div>
+      </div>
+
+      <div class="side-nav-item">
+        <a href="kabar.html" class="side-nav-link">
+          <div class="side-link-left">
+            <svg class="side-nav-icon" viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            <span>Kabar</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="sidebar-donasi-box">
+        <div class="sidebar-donasi-title">Program Crowdfunding</div>
+        <p class="sidebar-donasi-desc">Dukung beasiswa dan fasilitas belajar anak-anak prasejahtera di Indonesia.</p>
+        <a href="donasi.html" class="btn-sidebar-donasi">
+          <span>Salurkan Donasi</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-social-row">
+        <a href="https://www.instagram.com/acf.eduhub?stkn=NjA0a2p5eWd4a2N5" target="_blank" rel="noopener noreferrer" class="sidebar-social-link" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg></a>
+        <a href="https://web.facebook.com/acf.eduhub?_rdc=1&_rdr#" target="_blank" rel="noopener noreferrer" class="sidebar-social-link" title="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+        <a href="https://www.linkedin.com/company/acf-eduhub" target="_blank" rel="noopener noreferrer" class="sidebar-social-link" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+        <a href="https://www.youtube.com/@JUARATV" target="_blank" rel="noopener noreferrer" class="sidebar-social-link" title="YouTube"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.43z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg></a>
+      </div>
+      <span>Informasi Kontak tersedia di footer halaman.</span>
+    </div>
+  </aside>
+
+  <!-- ========== MAIN PAGE CONTENT ========== -->
+  <main>
+    
+    <!-- ==========================================================================
+         1. HERO / BANNER SPMB (Sesuai Ketentuan Gambar Referensi)
+         ========================================================================== -->
+    <section class="spmb-hero-section" aria-label="Hero Banner SPMB Sekolah Juara">
+      <div class="container">
+        <div class="spmb-hero-container">
+          
+          <!-- Label kecil -->
+          <div class="spmb-hero-badge">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span>SPMB Sekolah Juara 2027/2028</span>
+          </div>
+
+          <!-- Judul -->
+          <h1 class="spmb-hero-title">
+            Cerdas Saja Belum Cukup. Bekali Buah Hati dengan Adab dan Cinta Al-Qur'an.
+          </h1>
+
+          <!-- Subjudul -->
+          <p class="spmb-hero-subtitle">
+            SD Juara — pendidikan formal berkarakter dengan Kurikulum Langit, dikelola oleh ACF Eduhub. Potongan Rp1.000.000 untuk kuota terbatas.
+          </p>
+
+          <!-- Tagline resmi Sekolah Juara di bawah subjudul -->
+          <div class="spmb-hero-tagline">
+            "Menanam Adab, Menumbuhkan Cinta Al-Qur'an, Melahirkan Juara"
+          </div>
+
+          <!-- Tombol Daftar Lewat WhatsApp -->
+          <div class="spmb-hero-actions">
+            <a href="#daftar-sekolah" class="spmb-btn-wa-hero" title="Pilih Cabang SD Juara dan Daftar Lewat WhatsApp">
+              <svg class="wa-icon" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+              <span>Daftar Lewat WhatsApp ↓</span>
+              <svg class="arrow-icon" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            </a>
+          </div>
+
+          <!-- Promo Highlight Box -->
+          <div class="spmb-promo-pill">
+            <span class="spmb-promo-tag">PROMO TERBATAS</span>
+            <span>Potongan Biaya Masuk <strong>Rp1.000.000</strong> khusus pendaftaran kuota terbatas tahun ajaran 2027/2028!</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         2. KEUNGGULAN PENDIDIKAN SD JUARA
+         ========================================================================== -->
+    <section class="spmb-pillars-section" aria-label="Keunggulan Sekolah Juara">
+      <div class="container">
+        
+        <div class="spmb-section-header">
+          <span class="spmb-badge-label">MENGAPA MEMILIH SD JUARA?</span>
+          <h2 class="spmb-section-title">Pendidikan Holistik untuk Masa Depan Gemilang</h2>
+          <p class="spmb-section-desc">
+            Sekolah Juara membina generasi yang tidak hanya unggul dalam prestasi akademik, namun kokoh dalam aqidah, berakhlak mulia dengan Kurikulum Langit, dan mencintai Al-Qur'an.
+          </p>
+        </div>
+
+        <div class="spmb-features-grid">
+          
+          <!-- Feature 1 -->
+          <div class="spmb-feature-card">
+            <div class="spmb-feature-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <h3 class="spmb-feature-title">Kurikulum Langit</h3>
+            <p class="spmb-feature-desc">Internalisasi 7 Habits Juara &amp; 12 Adab Juara membentuk kepribadian santun, mandiri, dan bertanggung jawab.</p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="spmb-feature-card">
+            <div class="spmb-feature-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
+            <h3 class="spmb-feature-title">Cinta Al-Qur'an</h3>
+            <p class="spmb-feature-desc">Metode pembelajaran tahsin dan tahfidz terpadu yang membiasakan anak akrab dan gemar membaca Al-Qur'an setiap hari.</p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="spmb-feature-card">
+            <div class="spmb-feature-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3 class="spmb-feature-title">Zero Bullying</h3>
+            <p class="spmb-feature-desc">Ekosistem ramah anak yang aman, kondusif, penuh kasih sayang dan saling menghormati antarsesama siswa dan pendidik.</p>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="spmb-feature-card">
+            <div class="spmb-feature-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+            </div>
+            <h3 class="spmb-feature-title">Pendidik Berdedikasi</h3>
+            <p class="spmb-feature-desc">Guru-guru profesional yang mendidik dengan hati, tersertifikasi, dan aktif memperbarui kompetensi pengajaran.</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         3. ALUR PENDAFTARAN SPMB
+         ========================================================================== -->
+    <section class="spmb-steps-section" aria-label="Alur Pendaftaran">
+      <div class="container">
+        
+        <div class="spmb-section-header">
+          <span class="spmb-badge-label">PROSES MUDAH &amp; TRANSPARAN</span>
+          <h2 class="spmb-section-title">4 Langkah Pendaftaran SPMB</h2>
+          <p class="spmb-section-desc">
+            Pendaftaran peserta didik baru kini semakin praktis. Anda dapat langsung berkonsultasi dan memulai proses melalui WhatsApp.
+          </p>
+        </div>
+
+        <div class="spmb-steps-grid">
+          
+          <!-- Step 1 -->
+          <div class="spmb-step-card">
+            <div class="spmb-step-num">1</div>
+            <h3 class="spmb-step-title">Pilih Cabang Sekolah</h3>
+            <p class="spmb-step-desc">Pilih unit SD Juara terdekat dari domisili Anda di daftar cabang bawah ini, lalu klik tombol WhatsApp.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="spmb-step-card">
+            <div class="spmb-step-num">2</div>
+            <h3 class="spmb-step-title">Pengisian Formulir</h3>
+            <p class="spmb-step-desc">Admin SPMB cabang akan mengirimkan panduan dan tautan formulir pendaftaran serta verifikasi dokumen awal.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="spmb-step-card">
+            <div class="spmb-step-num">3</div>
+            <h3 class="spmb-step-title">Observasi &amp; Wawancara</h3>
+            <p class="spmb-step-desc">Observasi kesiapan belajar anak yang menyenangkan serta silaturahmi dan wawancara edukatif bersama orang tua.</p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="spmb-step-card">
+            <div class="spmb-step-num">4</div>
+            <h3 class="spmb-step-title">Daftar Ulang &amp; Promo</h3>
+            <p class="spmb-step-desc">Pengumuman kelulusan dan penyelesaian daftar ulang dengan klaim potongan biaya masuk Rp1.000.000 (kuota terbatas).</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         4. DAFTAR 10 CABANG SD JUARA & TOMBOL DAFTAR WHATSAPP
+         ========================================================================== -->
+    <section class="spmb-schools-section" id="daftar-sekolah" aria-label="Pilihan Cabang SD Juara">
+      <div class="container">
+        
+        <div class="spmb-section-header">
+          <span class="spmb-badge-label">LOKASI &amp; PENDAFTARAN</span>
+          <h2 class="spmb-section-title">Pilih Lokasi SD Juara &amp; Daftar Sekarang</h2>
+          <p class="spmb-section-desc">
+            Silakan pilih lokasi SD Juara terdekat. Klik <strong>Daftar via WhatsApp</strong> untuk terhubung langsung dengan panitia SPMB resmi di cabang masing-masing.
+          </p>
+        </div>
+
+        <div class="spmb-schools-grid">
+          
+          <!-- 1. SD Juara Batam -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-19.jpg" alt="SD Juara Batam" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>Batam, Kepulauan Riau</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Batam</h3>
+              <a href="https://www.google.com/maps/place/SD+Juara+Batam/@1.0343045,104.0893367,17z" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Batam Centre, Kota Batam</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/6285371009619?text=Halo%20Admin%20SD%20Juara%20Batam,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Batam">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="http://bit.ly/SPMB2728-SDJBATAM" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir</span>
+                  </a>
+                  <button type="button" class="spmb-btn-sub" data-brosur-file="../assets/brosur/Brosur SPMB SD Juara Batam 2027-2028.pdf" data-brosur-name="Brosur SPMB SD Juara Batam 2027-2028.pdf">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>Brosur</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. SD Juara Cilegon -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-20.jpg" alt="SD Juara Cilegon" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>Cilegon, Banten</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Cilegon</h3>
+              <a href="https://maps.app.goo.gl/yC78j74Wk9f9oY3M7" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Grogol, Kota Cilegon</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/6285138772221?text=Halo%20Admin%20SD%20Juara%20Cilegon,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Cilegon">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="https://bit.ly/SPMB2728SDJUARACILEGON" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir</span>
+                  </a>
+                  <button type="button" class="spmb-btn-sub" data-brosur-file="../assets/brosur/Brosur SPMB SD Juara Cilegon.pdf" data-brosur-name="Brosur SPMB SD Juara Cilegon.pdf">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>Brosur</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. SD Juara Jakarta Barat -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-21.jpg" alt="SD Juara Jakarta Barat" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>DKI Jakarta</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Jakarta Barat</h3>
+              <a href="https://maps.app.goo.gl/9yB73zLsmKxZ7w7b7" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Kembangan, Jakarta Barat</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/6281320002092?text=Halo%20Admin%20SD%20Juara%20Jakarta%20Barat,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Jakarta Barat">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="https://forms.gle/7WoWewcTqsPCZ4Aq7" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub" style="flex:1;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir Pendaftaran</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. SD Juara Jakarta Timur -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-22.jpg" alt="SD Juara Jakarta Timur" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>DKI Jakarta</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Jakarta Timur</h3>
+              <a href="https://maps.app.goo.gl/6a6aDfv4wR9b1U719" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Cakung, Jakarta Timur</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/6289616938923?text=Halo%20Admin%20SD%20Juara%20Jakarta%20Timur,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Jakarta Timur">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="https://bit.ly/PPDBSDJuaraJakartaTimur20272028" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub" style="flex:1;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir Pendaftaran</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. SD Juara Jakarta Utara -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-23.jpg" alt="SD Juara Jakarta Utara" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>DKI Jakarta</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Jakarta Utara</h3>
+              <a href="https://maps.app.goo.gl/qL8N75M7bA3YwP7y8" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Pademangan, Jakarta Utara</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/6285773177699?text=Halo%20Admin%20SD%20Juara%20Jakarta%20Utara,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Jakarta Utara">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="https://bit.ly/SPMBINDENSDITJAKUT2728" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub" style="flex:1;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir Pendaftaran</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. SD Juara Persa Medan -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-25.jpg" alt="SD Juara Persa Medan" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>Medan, Sumatera Utara</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Persa Medan</h3>
+              <a href="https://maps.app.goo.gl/g1eZ9s2J7cR5K3k79" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Medan Selayang, Kota Medan</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/628126442651?text=Halo%20Admin%20SD%20Juara%20Persa%20Medan,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Persa Medan">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="https://linktr.ee/sdspersa" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub" style="flex:1;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir Pendaftaran</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. SD Juara Jayapura -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-25.jpg" alt="SD Juara AL Hikmah Jayapura" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>Jayapura, Papua</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Jayapura</h3>
+              <a href="https://maps.app.goo.gl/j4Yx1xM3d9T8wX6a7" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Abepura, Kota Jayapura</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/6281240375997?text=Halo%20Admin%20SD%20Juara%20Jayapura,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Jayapura">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="https://bit.ly/SPMBSDJUARAJayapura" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub" style="flex:1;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir Pendaftaran</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. SD Juara Semarang -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-26.jpg" alt="SD Juara Semarang" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>Semarang, Jawa Tengah</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Semarang</h3>
+              <a href="https://maps.app.goo.gl/m2k6d1w9fR5m7Z3y7" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Banyumanik, Kota Semarang</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/6282228575770?text=Halo%20Admin%20SD%20Juara%20Semarang,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Semarang">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="https://bit.ly/ForPeminatPPDB20272028" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub" style="flex:1;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir Pendaftaran</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9. SD Juara Surabaya -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-26.jpg" alt="SD Juara Surabaya" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>Surabaya, Jawa Timur</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Surabaya</h3>
+              <a href="https://maps.app.goo.gl/3w9fR5m7Z3y7m2k6d" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Wonokromo, Kota Surabaya</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/6285648007487?text=Halo%20Admin%20SD%20Juara%20Surabaya,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Surabaya">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="https://s.id/spmb-sdjuarasurabaya27-28" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir</span>
+                  </a>
+                  <button type="button" class="spmb-btn-sub" data-brosur-file="../assets/brosur/Brosur SPMB SD Juara Surabaya 2027-2028 -.pdf" data-brosur-name="Brosur SPMB SD Juara Surabaya 2027-2028 -.pdf">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>Brosur</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 10. SD Juara AL Hakim Tangerang -->
+          <div class="spmb-card">
+            <div class="spmb-card-img-wrap">
+              <img src="../assets/unit-pendidikan/Asset Website ACF-27.jpg" alt="SD Juara AL Hakim Tangerang" class="spmb-card-img" loading="lazy">
+              <span class="spmb-card-city-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span>Tangerang, Banten</span>
+              </span>
+            </div>
+            <div class="spmb-card-body">
+              <h3 class="spmb-card-title">SD Juara Tangerang</h3>
+              <a href="https://maps.app.goo.gl/L2k6d1w9fR5m7Z3y7" target="_blank" rel="noopener noreferrer" class="spmb-card-loc">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Ciledug, Kota Tangerang</span>
+              </a>
+              <div class="spmb-card-actions">
+                <a href="https://wa.me/6281385154455?text=Halo%20Admin%20SD%20Juara%20Tangerang,%20saya%20ingin%20mendaftar%20SPMB%20SD%20Juara%202027/2028%20dan%20klaim%20potongan%20Rp1.000.000." target="_blank" rel="noopener noreferrer" class="spmb-btn-wa-card" title="Chat WhatsApp SD Juara Tangerang">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+                  <span>Daftar via WhatsApp</span>
+                </a>
+                <div class="spmb-btn-secondary-row">
+                  <a href="https://bit.ly/DaftarIndenAlhakim2728" target="_blank" rel="noopener noreferrer" class="spmb-btn-sub" style="flex:1;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span>Formulir Pendaftaran</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         5. HELPDESK SPMB PUSAT
+         ========================================================================== -->
+    <section class="spmb-helpdesk-section" aria-label="Helpdesk WhatsApp SPMB Pusat">
+      <div class="container">
+        <div class="spmb-helpdesk-card">
+          <div class="spmb-helpdesk-content">
+            <h3>Butuh Bantuan atau Informasi Lebih Lanjut?</h3>
+            <p>
+              Tim Customer Care &amp; SPMB ACF Eduhub siap membantu Anda memilih cabang SD Juara terbaik, menjawab pertanyaan seputar Kurikulum Langit, beasiswa, hingga administrasi pendaftaran.
+            </p>
+          </div>
+          <a href="https://wa.me/6285179797661?text=Halo%20Admin%20Pusat%20ACF%20Eduhub,%20saya%20ingin%20konsultasi%20mengenai%20SPMB%20Sekolah%20SD%20Juara%202027/2028." target="_blank" rel="noopener noreferrer" class="spmb-helpdesk-btn" title="Hubungi Helpdesk WhatsApp Pusat">
+            <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.83a8.19 8.19 0 01-5.82 2.41c-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.5 11.66c-.25-.13-1.47-.73-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.65.81-.8 1-.15.19-.3.21-.55.08-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.42.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.13.17 1.73 2.64 4.19 3.7 2.46 1.07 2.46.71 2.9.67.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>
+            <span>Hubungi Helpdesk Pusat</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         6. FAQ SEPUTAR SPMB SD JUARA
+         ========================================================================== -->
+    <section class="spmb-faq-section" aria-label="FAQ SPMB Sekolah Juara">
+      <div class="container">
+        
+        <div class="spmb-section-header">
+          <span class="spmb-badge-label">TANYA JAWAB</span>
+          <h2 class="spmb-section-title">Pertanyaan Umum (FAQ) SPMB</h2>
+          <p class="spmb-section-desc">Jawaban atas pertanyaan yang sering diajukan oleh calon orang tua murid seputar pendaftaran Sekolah SD Juara.</p>
+        </div>
+
+        <div class="spmb-faq-wrap">
+          
+          <!-- FAQ 1 -->
+          <div class="spmb-faq-item active">
+            <button class="spmb-faq-question" type="button" aria-expanded="true">
+              <span>Berapa usia minimal calon peserta didik untuk masuk kelas 1 SD Juara?</span>
+              <svg class="spmb-faq-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="spmb-faq-answer">
+              Sesuai dengan ketentuan dinas pendidikan, usia calon peserta didik minimal adalah 6 tahun pada bulan Juli tahun ajaran berjalan. Untuk anak berusia di bawah 6 tahun (minimal 5 tahun 6 bulan), disyaratkan melampirkan surat rekomendasi psikolog atau dewan pendidik.
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="spmb-faq-item">
+            <button class="spmb-faq-question" type="button" aria-expanded="false">
+              <span>Apakah ada tes akademik calistung untuk masuk SD Juara?</span>
+              <svg class="spmb-faq-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="spmb-faq-answer">
+              SD Juara <strong>tidak menerapkan tes akademik yang memberatkan calon siswa</strong>. Proses seleksi dilakukan melalui metode observasi perkembangan anak yang ramah dan menyenangkan untuk memetakan kesiapan motorik, kemandirian, dan emosional anak, disertai wawancara keselarasan visi orang tua.
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="spmb-faq-item">
+            <button class="spmb-faq-question" type="button" aria-expanded="false">
+              <span>Bagaimana mekanisme mendapatkan potongan biaya masuk Rp1.000.000?</span>
+              <svg class="spmb-faq-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="spmb-faq-answer">
+              Potongan biaya masuk sebesar Rp1.000.000 berlaku khusus bagi pendaftar gelombang awal (Early Bird) selama kuota promo pada cabang yang dituju masih tersedia. Potongan akan langsung diaplikasikan saat proses registrasi ulang.
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="spmb-faq-item">
+            <button class="spmb-faq-question" type="button" aria-expanded="false">
+              <span>Apa itu Kurikulum Langit yang menjadi ciri khas SD Juara?</span>
+              <svg class="spmb-faq-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="spmb-faq-answer">
+              Kurikulum Langit adalah kurikulum pembiasaan adab dan karakter khas ACF Eduhub yang memadukan 7 Habits Juara (kebiasaan efektif Islami), 12 Adab Juara (akhlak terhadap sesama dan Sang Pencipta), serta keteladanan Lukman Berilmu yang dipraktikkan secara konsisten baik di sekolah maupun di rumah melalui buku penghubung KOMPAK.
+            </div>
+          </div>
+
+          <!-- FAQ 5 -->
+          <div class="spmb-faq-item">
+            <button class="spmb-faq-question" type="button" aria-expanded="false">
+              <span>Apakah SD Juara menerima siswa pindahan (mutasi)?</span>
+              <svg class="spmb-faq-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="spmb-faq-answer">
+              Penerimaan siswa mutasi/pindahan bergantung pada ketersediaan bangku kosong pada kelas yang dituju di masing-masing cabang SD Juara. Anda dapat langsung menanyakan kuota mutasi ke admin WhatsApp cabang terkait.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <!-- Kolom 1: Profil Singkat -->
+        <div class="footer-brand-col">
+          <div class="footer-brand">
+            <img src="../assets/logo-acf/LOGO_ACF-removebg-preview.png" alt="ACF Eduhub Logo" class="footer-logo">
+          </div>
+          <p class="footer-tagline">
+            Membangun generasi cerdas beradab dan berdaya saing global melalui inovasi pendidikan berbasis misi sosial di seluruh penjuru Indonesia.
+          </p>
+        </div>
+
+        <!-- Kolom 2: Navigasi Cepat -->
+        <div class="footer-nav-col">
+          <div class="footer-col-title">NAVIGASI</div>
+          <div class="footer-direct-nav-grid">
+            <a href="index.html" class="footer-direct-nav-link">BERANDA</a>
+            <a href="program-layanan.html" class="footer-direct-nav-link">PROGRAM LAYANAN</a>
+            <a href="sekolah-juara.html" class="footer-direct-nav-link">SEKOLAH JUARA</a>
+            <a href="unit-pendidikan.html" class="footer-direct-nav-link">UNIT PENDIDIKAN</a>
+            <a href="kerjasama.html" class="footer-direct-nav-link">KERJASAMA</a>
+            <a href="donasi.html" class="footer-direct-nav-link">DONASI</a>
+            <a href="faq.html" class="footer-direct-nav-link">FAQ</a>
+          </div>
+        </div>
+
+        <!-- Kolom 3: Kontak -->
+        <div class="footer-contact-col">
+          <div class="footer-contact-box">
+            <div class="footer-contact-group">
+              <div class="footer-contact-label">TELEPON / WHATSAPP</div>
+              <a href="https://wa.me/6285179797661" target="_blank" rel="noopener noreferrer" class="footer-contact-value" title="Hubungi Telepon Kami">
+                +62 851-7979-7661
+              </a>
+            </div>
+
+            <div class="footer-contact-group">
+              <div class="footer-contact-label">EMAIL</div>
+              <a href="mailto:welcome@acf.or.id" class="footer-contact-value" title="Kirim Email ke ACF Eduhub">
+                welcome@acf.or.id
+              </a>
+            </div>
+
+            <div class="footer-contact-group">
+              <div class="footer-contact-label">IKUTI KAMI</div>
+              <div class="footer-social-boxes">
+                <a href="https://www.instagram.com/acf.eduhub?stkn=NjA0a2p5eWd4a2N5" target="_blank" rel="noopener noreferrer" class="social-box instagram" title="Kunjungi Instagram ACF Eduhub" aria-label="Instagram">
+                  <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="#FFFFFF" stroke-width="2"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" fill="none" stroke="#FFFFFF" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.5" fill="#FFFFFF"/></svg>
+                </a>
+                <a href="https://web.facebook.com/acf.eduhub?_rdc=1&_rdr#" target="_blank" rel="noopener noreferrer" class="social-box facebook" title="Kunjungi Facebook ACF Eduhub" aria-label="Facebook">
+                  <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" fill="#FFFFFF"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/company/acf-eduhub" target="_blank" rel="noopener noreferrer" class="social-box linkedin" title="Kunjungi LinkedIn ACF Eduhub" aria-label="LinkedIn">
+                  <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" fill="#FFFFFF"/><circle cx="4" cy="4" r="2" fill="#FFFFFF"/></svg>
+                </a>
+                <a href="https://www.youtube.com/@JUARATV" target="_blank" rel="noopener noreferrer" class="social-box youtube" title="Kunjungi YouTube JUARA TV" aria-label="YouTube">
+                  <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.43z" fill="#FFFFFF"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="#FF0000"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px; font-size: 0.8rem; color: #94A3B8; flex-wrap: wrap; gap: 12px;">
+        <span>&copy; 2026 ACF Eduhub. All rights reserved.</span>
+        <span>Yayasan Pendidikan Berbasis Misi Sosial</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript Modules -->
+  <script src="../js/main.js"></script>
+  <script src="../js/navbar.js?v=11"></script>
+  <script src="../js/flipbook.js?v=20261117_baca_di_sini_v1"></script>
+  <script>
+    // Interaktivitas Accordion FAQ SPMB
+    document.addEventListener('DOMContentLoaded', function () {
+      const faqQuestions = document.querySelectorAll('.spmb-faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', function () {
+          const item = this.parentElement;
+          const isActive = item.classList.contains('active');
+          
+          // Tutup item lain
+          document.querySelectorAll('.spmb-faq-item').forEach(i => {
+            i.classList.remove('active');
+            const q = i.querySelector('.spmb-faq-question');
+            if (q) q.setAttribute('aria-expanded', 'false');
+          });
+
+          // Toggle klik saat ini
+          if (!isActive) {
+            item.classList.add('active');
+            this.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

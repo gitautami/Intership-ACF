@@ -273,12 +273,12 @@
       background: #FFFFFF;
       border: 1.5px solid #EAE2EF;
       border-radius: 18px;
-      padding: 24px 18px 20px;
+      padding: 22px 18px 18px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 140px;
+      min-height: 155px;
       box-shadow: 0 4px 16px rgba(125, 34, 128, 0.04);
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
@@ -292,15 +292,16 @@
 
     .mitra-grid-card-img-wrap {
       width: 100%;
-      height: 65px;
+      height: 85px;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 2px 4px;
     }
 
     .mitra-grid-card-img {
-      max-width: 100%;
-      max-height: 100%;
+      max-width: 90%;
+      max-height: 62px;
       width: auto;
       height: auto;
       object-fit: contain;
@@ -308,13 +309,25 @@
       transition: all 0.3s ease;
     }
 
+    /* Penyesuaian optis agar logo bulat, kotak, dan emblem tampil proporsional seimbang */
+    .mitra-grid-card-img.logo-emblem {
+      max-height: 84px;
+      max-width: 84%;
+      transform: scale(1.18);
+    }
+
     .mitra-grid-card:hover .mitra-grid-card-img {
       filter: grayscale(0%);
       transform: scale(1.06);
     }
 
+    .mitra-grid-card:hover .mitra-grid-card-img.logo-emblem {
+      filter: grayscale(0%);
+      transform: scale(1.26);
+    }
+
     .mitra-grid-card-name {
-      margin-top: 12px;
+      margin-top: 14px;
       font-size: 0.82rem;
       font-weight: 600;
       color: #475569;
@@ -342,15 +355,22 @@
         gap: 12px;
       }
       .mitra-grid-card {
-        min-height: 120px;
+        min-height: 135px;
         padding: 16px 12px;
       }
       .mitra-grid-card-img-wrap {
-        height: 50px;
+        height: 70px;
+      }
+      .mitra-grid-card-img {
+        max-height: 52px;
+      }
+      .mitra-grid-card-img.logo-emblem {
+        max-height: 68px;
+        transform: scale(1.14);
       }
       .mitra-grid-card-name {
         font-size: 0.75rem;
-        margin-top: 8px;
+        margin-top: 10px;
       }
     }
 
@@ -831,7 +851,7 @@
           <!-- 8. DKM Al-Haqqul Mubiin (AHM) -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-DKM-Al-Haqqul-Mubiin.png" alt="Logo DKM Al-Haqqul Mubiin (AHM)" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-DKM-Al-Haqqul-Mubiin.png" alt="Logo DKM Al-Haqqul Mubiin (AHM)" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">DKM Al-Haqqul Mubiin (AHM)</div>
           </div>
@@ -863,7 +883,7 @@
           <!-- 12. BMKS -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-BMKS.png" alt="Logo BMKS" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-BMKS.png" alt="Logo BMKS" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">BMKS</div>
           </div>
@@ -887,7 +907,7 @@
           <!-- 15. RASBI -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-RASBI.png" alt="Logo RASBI" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-RASBI.png" alt="Logo RASBI" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">RASBI</div>
           </div>
@@ -895,7 +915,7 @@
           <!-- 16. Kebaikan Indonesia -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-Kebaikan-Indonesia-300x300.png" alt="Logo Kebaikan Indonesia" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-Kebaikan-Indonesia-300x300.png" alt="Logo Kebaikan Indonesia" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">Kebaikan Indonesia</div>
           </div>
@@ -927,7 +947,7 @@
           <!-- 20. Relawan Nusantara -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-Relawan-Nusantara.png" alt="Logo Relawan Nusantara" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-Relawan-Nusantara.png" alt="Logo Relawan Nusantara" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">Relawan Nusantara</div>
           </div>
@@ -975,7 +995,7 @@
           <!-- 26. Pemkab Bandung -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-Pemkab-Bandung.png" alt="Logo Pemkab Bandung" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-Pemkab-Bandung.png" alt="Logo Pemkab Bandung" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">Pemkab Bandung</div>
           </div>
@@ -1007,7 +1027,7 @@
           <!-- 30. Fajar Hidayah -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-Fajar-Hidayah-300x206.png" alt="Logo Fajar Hidayah" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-Fajar-Hidayah-300x206.png" alt="Logo Fajar Hidayah" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">Fajar Hidayah</div>
           </div>
@@ -1023,7 +1043,7 @@
           <!-- 32. SDIT Lukmanul Hakim -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/sekolah islam terpadu lukmanul hakim bandung.jpg" alt="Logo SDIT Lukmanul Hakim" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/sekolah islam terpadu lukmanul hakim bandung.jpg" alt="Logo SDIT Lukmanul Hakim" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">SDIT Lukmanul Hakim</div>
           </div>
@@ -1039,7 +1059,7 @@
           <!-- 34. SMK Negeri 3 Karawang -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-SMK-N-2-Karawang-300x300.png" alt="Logo SMK Negeri 3 Karawang" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-SMK-N-2-Karawang-300x300.png" alt="Logo SMK Negeri 3 Karawang" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">SMK Negeri 3 Karawang</div>
           </div>
@@ -1047,7 +1067,7 @@
           <!-- 35. SMP-SMA Islam Nurul Fikri -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-NFBSL.png" alt="Logo SMP-SMA Islam Nurul Fikri" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-NFBSL.png" alt="Logo SMP-SMA Islam Nurul Fikri" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">SMP-SMA Islam Nurul Fikri</div>
           </div>
@@ -1055,7 +1075,7 @@
           <!-- 36. SMPIT Baitul Anshor -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/smp islam terpadu baitul anshor.jpg" alt="Logo SMPIT Baitul Anshor" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/smp islam terpadu baitul anshor.jpg" alt="Logo SMPIT Baitul Anshor" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">SMPIT Baitul Anshor</div>
           </div>
@@ -1063,7 +1083,7 @@
           <!-- 37. Yayasan Nurul Aulia -->
           <div class="mitra-grid-card">
             <div class="mitra-grid-card-img-wrap">
-              <img src="../assets/logo-mitra/Logo-Yayasan-Nurul-Aulia-Citeureup-Cimahi-Utara.png" alt="Logo Yayasan Nurul Aulia" class="mitra-grid-card-img" loading="lazy">
+              <img src="../assets/logo-mitra/Logo-Yayasan-Nurul-Aulia-Citeureup-Cimahi-Utara.png" alt="Logo Yayasan Nurul Aulia" class="mitra-grid-card-img logo-emblem" loading="lazy">
             </div>
             <div class="mitra-grid-card-name">Yayasan Nurul Aulia</div>
           </div>

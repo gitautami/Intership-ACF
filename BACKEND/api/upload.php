@@ -51,14 +51,103 @@ if (!is_dir($uploadDir)) {
 $newFileName = 'img_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $fileExt;
 $targetPath = $uploadDir . $newFileName;
 
-if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-    $relativePath = '../assets/uploads/' . $newFileName;
-    jsonSuccess([
-        'url'      => $relativePath,
-        'filename' => $newFileName,
-        'size'     => $file['size'],
-        'mime'     => $mimeType
-    ], 'Gambar berhasil diunggah.', 201);
-} else {
-    jsonError('Gagal memindahkan file yang diunggah ke folder tujuan.', 500);
+$processedSuccessfully = false;
+$finalSize = $file['size'];
+
+// Sisi Server Safety Fallback: Normalisasi resolusi & EXIF menggunakan GD jika tersedia
+if (extension_loaded('gd') && in_array($fileExt, ['jpg', 'jpeg', 'png', 'webp'])) {
+    try {
+        $imageInfo = @getimagesize($file['tmp_name']);
+        if ($imageInfo) {
+            $origW = $imageInfo[0];
+            $origH = $imageInfo[1];
+            $srcImg = null;
+
+            switch ($imageInfo[2]) {
+                case IMAGETYPE_JPEG:
+                    $srcImg = @imagecreatefromjpeg($file['tmp_name']);
+                    // Perbaiki rotasi orientasi EXIF untuk foto kamera HP
+                    if ($srcImg && function_exists('exif_read_data')) {
+                        $exif = @exif_read_data($file['tmp_name']);
+                        if (!empty($exif['Orientation'])) {
+                            switch ($exif['Orientation']) {
+                                case 3: $srcImg = imagerotate($srcImg, 180, 0); break;
+                                case 6: $srcImg = imagerotate($srcImg, -90, 0); break;
+                                case 8: $srcImg = imagerotate($srcImg, 90, 0); break;
+                            }
+                            $origW = imagesx($srcImg);
+                            $origH = imagesy($srcImg);
+                        }
+                    }
+                    break;
+                case IMAGETYPE_PNG:
+                    $srcImg = @imagecreatefrompng($file['tmp_name']);
+                    break;
+                case IMAGETYPE_WEBP:
+                    if (function_exists('imagecreatefromwebp')) {
+                        $srcImg = @imagecreatefromwebp($file['tmp_name']);
+                    }
+                    break;
+            }
+
+            if ($srcImg) {
+                // Batasi dimensi maksimal agar server tidak menyimpan foto raksasa > 1600px
+                $maxDim = 1600;
+                $newW = $origW;
+                $newH = $origH;
+
+                if ($origW > $maxDim || $origH > $maxDim) {
+                    $ratio = min($maxDim / $origW, $maxDim / $origH);
+                    $newW = (int)round($origW * $ratio);
+                    $newH = (int)round($origH * $ratio);
+                }
+
+                $dstImg = imagecreatetruecolor($newW, $newH);
+
+                // Pertahankan transparansi untuk PNG & WebP
+                if ($imageInfo[2] === IMAGETYPE_PNG || $imageInfo[2] === IMAGETYPE_WEBP) {
+                    imagealphablending($dstImg, false);
+                    imagesavealpha($dstImg, true);
+                    $transparent = imagecolorallocatealpha($dstImg, 255, 255, 255, 127);
+                    imagefilledrectangle($dstImg, 0, 0, $newW, $newH, $transparent);
+                }
+
+                imagecopyresampled($dstImg, $srcImg, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+
+                // Simpan hasil kompresi
+                if ($fileExt === 'png') {
+                    imagepng($dstImg, $targetPath, 8);
+                } elseif ($fileExt === 'webp' && function_exists('imagewebp')) {
+                    imagewebp($dstImg, $targetPath, 85);
+                } else {
+                    imagejpeg($dstImg, $targetPath, 84);
+                }
+
+                imagedestroy($dstImg);
+                imagedestroy($srcImg);
+
+                if (file_exists($targetPath)) {
+                    $processedSuccessfully = true;
+                    $finalSize = filesize($targetPath);
+                }
+            }
+        }
+    } catch (\Throwable $e) {
+        $processedSuccessfully = false;
+    }
 }
+
+// Fallback standar jika GD tidak aktif atau file non-raster (misal SVG)
+if (!$processedSuccessfully) {
+    if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+        jsonError('Gagal memindahkan file yang diunggah ke folder tujuan.', 500);
+    }
+}
+
+$relativePath = '../assets/uploads/' . $newFileName;
+jsonSuccess([
+    'url'      => $relativePath,
+    'filename' => $newFileName,
+    'size'     => $finalSize,
+    'mime'     => $mimeType
+], 'Gambar berhasil diproses dan diunggah.', 201);

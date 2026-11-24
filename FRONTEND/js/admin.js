@@ -2483,34 +2483,59 @@
       return;
     }
 
-    // 1. Tampilkan pratinjau lokal SECARA INSTAN agar tidak ada jeda
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64Url = e.target.result;
-      if (articleCover) articleCover.value = base64Url;
+    let processedFile = file;
+    let previewDataUrl = '';
+
+    // 1. Normalisasi & Standarisasi Ukuran Otomatis (1200x675 px - Rasio 16:9 HD)
+    if (window.ACF_ImageNormalizer) {
+      try {
+        showToast('Menstandarkan dimensi & mengompres foto sampul...', 'info');
+        const norm = await window.ACF_ImageNormalizer.normalizeCover(file);
+        processedFile = norm.file;
+        previewDataUrl = norm.dataUrl;
+
+        let toastMsg = `Foto sampul disesuaikan ke ${norm.infoText}`;
+        if (norm.savingsPercent > 0) {
+          toastMsg += ` (Hemat ${norm.savingsPercent}%)`;
+        }
+        showToast(toastMsg, 'success');
+      } catch (normErr) {
+        console.warn('Normalisasi foto gagal, menggunakan file asli:', normErr);
+      }
+    }
+
+    // 2. Tampilkan pratinjau yang telah dinormalisasi
+    if (previewDataUrl) {
+      if (articleCover) articleCover.value = previewDataUrl;
       resetCoverPlaceholder();
-      updateCoverPreview(base64Url);
+      updateCoverPreview(previewDataUrl);
       triggerAutosave();
-    };
-    reader.readAsDataURL(file);
+    } else {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64Url = e.target.result;
+        if (articleCover) articleCover.value = base64Url;
+        resetCoverPlaceholder();
+        updateCoverPreview(base64Url);
+        triggerAutosave();
+      };
+      reader.readAsDataURL(processedFile);
+    }
 
-    showToast('Mengunggah foto sampul ke server...', 'info');
-
-    // 2. Unggah ke Backend Server secara asinkron di latar belakang
+    // 3. Unggah file yang sudah pas ukurannya ke Backend Server di latar belakang
     if (window.ACF_API && window.ACF_API.articles) {
       try {
-        const uploadRes = await window.ACF_API.articles.uploadImage(file);
+        const uploadRes = await window.ACF_API.articles.uploadImage(processedFile);
         if (uploadRes && uploadRes.url) {
           if (articleCover) articleCover.value = uploadRes.url;
           resetCoverPlaceholder();
           updateCoverPreview(uploadRes.url);
           triggerAutosave();
-          showToast('Foto sampul berhasil tersimpan di server!', 'success');
+          showToast('Foto sampul tersimpan di server!', 'success');
           return;
         }
       } catch (uploadErr) {
         console.warn('Upload backend gagal, pratinjau lokal tetap aktif:', uploadErr);
-        showToast('Foto sampul lokal dimuat.', 'info');
       }
     }
   }
@@ -2606,30 +2631,48 @@
       return;
     }
 
-    // 1. Tampilkan langsung secara instan
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const localDataUrl = e.target.result;
-      const insertedFigure = insertInlineImageToEditor(localDataUrl, align, caption);
+    let processedFile = file;
+    let localDataUrl = '';
 
-      // 2. Di latar belakang, unggah ke server backend
-      if (window.ACF_API && window.ACF_API.articles) {
-        try {
-          const uploadRes = await window.ACF_API.articles.uploadImage(file);
-          if (uploadRes && uploadRes.url && insertedFigure) {
-            const targetImg = insertedFigure.querySelector('img');
-            if (targetImg) {
-              targetImg.src = uploadRes.url;
-              triggerAutosave();
-            }
-          }
-        } catch (err) {
-          console.warn('Upload inline backend gagal, foto lokal tetap aktif:', err);
-        }
+    // Normalisasi Foto Naskah (Maks. Lebar 1080px, proporsional, kompresi cerdas)
+    if (window.ACF_ImageNormalizer) {
+      try {
+        const norm = await window.ACF_ImageNormalizer.normalizeInline(file);
+        processedFile = norm.file;
+        localDataUrl = norm.dataUrl;
+      } catch (normErr) {
+        console.warn('Normalisasi inline image gagal, menggunakan file asli:', normErr);
       }
-    };
-    reader.readAsDataURL(file);
-    showToast('Foto berhasil disisipkan ke naskah!', 'success');
+    }
+
+    if (!localDataUrl) {
+      localDataUrl = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(processedFile);
+      });
+    }
+
+    // 1. Sisipkan ke editor visual
+    const insertedFigure = insertInlineImageToEditor(localDataUrl, align, caption);
+
+    // 2. Di latar belakang, unggah ke server backend
+    if (window.ACF_API && window.ACF_API.articles) {
+      try {
+        const uploadRes = await window.ACF_API.articles.uploadImage(processedFile);
+        if (uploadRes && uploadRes.url && insertedFigure) {
+          const targetImg = insertedFigure.querySelector('img');
+          if (targetImg) {
+            targetImg.src = uploadRes.url;
+            triggerAutosave();
+          }
+        }
+      } catch (err) {
+        console.warn('Upload inline backend gagal, foto lokal tetap aktif:', err);
+      }
+    }
+
+    showToast('Foto proporsional berhasil disisipkan ke naskah!', 'success');
   }
 
   // --- Helper: Decode HTML Entities in text from WordPress ---
@@ -5583,9 +5626,9 @@
       }
     });
 
-    // Program cover file upload & preview auto-adaptation
+    // Program cover file upload & preview auto-adaptation (Normalized to 800x500 16:10)
     if (programCoverFileInput) {
-      programCoverFileInput.addEventListener('change', (e) => {
+      programCoverFileInput.addEventListener('change', async (e) => {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
 
@@ -5594,32 +5637,48 @@
           return;
         }
 
-        const reader = new FileReader();
-        reader.onload = function (evt) {
-          const base64 = evt.target.result;
-          if (programCoverUrlInput) programCoverUrlInput.value = base64;
+        let processedFile = file;
+        let previewDataUrl = '';
+
+        // Normalisasi Foto Program (800x500 px - Rasio 16:10 konsisten)
+        if (window.ACF_ImageNormalizer) {
+          try {
+            showToast('Menstandarkan ukuran foto program...', 'info');
+            const norm = await window.ACF_ImageNormalizer.normalizeProgram(file);
+            processedFile = norm.file;
+            previewDataUrl = norm.dataUrl;
+            showToast(`Foto program disesuaikan ke ${norm.infoText}`, 'success');
+          } catch (normErr) {
+            console.warn('Normalisasi program cover gagal, menggunakan file asli:', normErr);
+          }
+        }
+
+        const applyPreview = (imgSrc) => {
+          if (programCoverUrlInput) programCoverUrlInput.value = imgSrc;
           if (programCoverPreviewImg) {
-            programCoverPreviewImg.src = base64;
-            const testImg = new Image();
-            testImg.onload = function() {
-              if (programCoverPreviewWrap && testImg.naturalWidth && testImg.naturalHeight) {
-                programCoverPreviewWrap.style.aspectRatio = `${testImg.naturalWidth} / ${testImg.naturalHeight}`;
-                programCoverPreviewWrap.style.width = 'auto';
-                programCoverPreviewWrap.style.maxWidth = '140px';
-                programCoverPreviewWrap.style.maxHeight = '95px';
-                programCoverPreviewWrap.style.height = 'auto';
-              }
-            };
-            testImg.src = base64;
+            programCoverPreviewImg.src = imgSrc;
+            if (programCoverPreviewWrap) {
+              programCoverPreviewWrap.style.aspectRatio = '16 / 10';
+              programCoverPreviewWrap.style.width = '140px';
+              programCoverPreviewWrap.style.height = 'auto';
+            }
           }
           updateProgramLivePreview();
-          showToast('Foto program berhasil dimuat.', 'info');
         };
-        reader.readAsDataURL(file);
+
+        if (previewDataUrl) {
+          applyPreview(previewDataUrl);
+        } else {
+          const reader = new FileReader();
+          reader.onload = function (evt) {
+            applyPreview(evt.target.result);
+          };
+          reader.readAsDataURL(processedFile);
+        }
 
         // Upload di latar belakang jika backend server aktif
         if (window.ACF_API && window.ACF_API.articles && window.ACF_API.articles.uploadImage) {
-          window.ACF_API.articles.uploadImage(file).then(res => {
+          window.ACF_API.articles.uploadImage(processedFile).then(res => {
             if (res && res.url) {
               if (programCoverUrlInput) programCoverUrlInput.value = res.url;
               if (programCoverPreviewImg) programCoverPreviewImg.src = res.url;
@@ -7232,25 +7291,44 @@
         replaceInlineImgFileInput.click();
       });
 
-      replaceInlineImgFileInput.addEventListener('change', (e) => {
+      replaceInlineImgFileInput.addEventListener('change', async (e) => {
         if (e.target.files && e.target.files[0] && activeSelectedFigure) {
           const file = e.target.files[0];
           const targetImg = activeSelectedFigure.querySelector('img');
           if (targetImg) {
-            // Pratinjau lokal instan
-            const reader = new FileReader();
-            reader.onload = (revt) => {
-              targetImg.src = revt.target.result;
+            let processedFile = file;
+            let previewSrc = '';
+
+            // Normalisasi Foto Pengganti (Maks. Lebar 1080px proporsional)
+            if (window.ACF_ImageNormalizer) {
+              try {
+                const norm = await window.ACF_ImageNormalizer.normalizeInline(file);
+                processedFile = norm.file;
+                previewSrc = norm.dataUrl;
+              } catch (normErr) {
+                console.warn('Normalisasi foto pengganti gagal:', normErr);
+              }
+            }
+
+            if (previewSrc) {
+              targetImg.src = previewSrc;
               triggerAutosave();
               selectInlineFigure(activeSelectedFigure);
-            };
-            reader.readAsDataURL(file);
+            } else {
+              const reader = new FileReader();
+              reader.onload = (revt) => {
+                targetImg.src = revt.target.result;
+                triggerAutosave();
+                selectInlineFigure(activeSelectedFigure);
+              };
+              reader.readAsDataURL(processedFile);
+            }
 
             showToast('Mengganti foto...', 'info');
 
             // Upload latar belakang
             if (window.ACF_API && window.ACF_API.articles) {
-              window.ACF_API.articles.uploadImage(file).then(res => {
+              window.ACF_API.articles.uploadImage(processedFile).then(res => {
                 if (res && res.url && targetImg) {
                   targetImg.src = res.url;
                   triggerAutosave();

@@ -15,7 +15,20 @@
 }
 
 /* Base Font Consistency */
-body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select {
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+a,
+button,
+input,
+textarea,
+select {
   font-family: 'Poppins', sans-serif !important;
 }
 
@@ -25,7 +38,7 @@ body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select {
 .spmb-hero-section {
   position: relative;
   background: linear-gradient(135deg, rgba(125, 34, 128, 0.94) 0%, rgba(90, 20, 92, 0.90) 50%, rgba(45, 10, 50, 0.95) 100%),
-              url('../assets/unit-pendidikan/Sekolah Juara.jpg') center/cover no-repeat;
+    url('../assets/unit-pendidikan/Sekolah Juara.jpg') center/cover no-repeat;
   color: #FFFFFF;
   padding: 110px 0 95px;
   overflow: hidden;
@@ -333,6 +346,112 @@ body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select {
 
   .spmb-solution-stats-list {
     padding-left: 24px;
+  }
+}
+
+/* ==========================================================================
+   4. FITUR: APA YANG ANAK DAPATKAN DI SEKOLAH JUARA?
+   ========================================================================== */
+.spmb-fitur-section {
+  padding: 65px 0 70px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #F1E5F3;
+}
+
+.spmb-fitur-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.spmb-fitur-header {
+  margin-bottom: 28px;
+}
+
+.spmb-fitur-title {
+  font-size: clamp(1.4rem, 2.5vw, 1.95rem);
+  font-weight: 800;
+  color: #1E293B;
+  line-height: 1.35;
+  margin: 0;
+  padding-left: 16px;
+  border-left: 4px solid #F5A623;
+}
+
+.spmb-fitur-content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.spmb-fitur-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.spmb-fitur-subtitle {
+  font-size: clamp(1.08rem, 1.4vw, 1.22rem);
+  font-weight: 700;
+  color: #7D2280;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.spmb-fitur-desc-quote {
+  font-size: clamp(0.98rem, 1.2vw, 1.06rem);
+  line-height: 1.8;
+  color: #334155;
+  margin: 0;
+  padding-left: 16px;
+  border-left: 3px solid #F5A623;
+}
+
+.spmb-fitur-bullets {
+  list-style-type: disc;
+  padding-left: 34px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spmb-fitur-bullets li {
+  font-size: clamp(0.96rem, 1.2vw, 1.05rem);
+  line-height: 1.65;
+  color: #334155;
+  font-weight: 500;
+}
+
+.spmb-fitur-bullets.spmb-fitur-columns {
+  display: block;
+  columns: 2;
+  column-gap: 36px;
+}
+
+.spmb-fitur-bullets.spmb-fitur-columns li {
+  margin-bottom: 10px;
+  break-inside: avoid;
+}
+
+@media (max-width: 640px) {
+  .spmb-fitur-section {
+    padding: 45px 0 50px;
+  }
+
+  .spmb-fitur-title {
+    padding-left: 12px;
+  }
+
+  .spmb-fitur-desc-quote {
+    padding-left: 12px;
+  }
+
+  .spmb-fitur-bullets {
+    padding-left: 24px;
+    gap: 8px;
+  }
+
+  .spmb-fitur-bullets.spmb-fitur-columns {
+    columns: 1;
   }
 }
 
@@ -815,6 +934,7 @@ body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select {
    RESPONSIVE
    ========================================================================== */
 @media (max-width: 1024px) {
+
   .spmb-features-grid,
   .spmb-steps-grid {
     grid-template-columns: repeat(2, 1fr);

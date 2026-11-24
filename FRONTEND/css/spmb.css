@@ -456,6 +456,74 @@ select {
 }
 
 /* ==========================================================================
+   5. DISKON (POTONGAN BIAYA PENDAFTAR AWAL - ULTRA ATTRACTIVE VOUCHER TICKET)
+   ========================================================================== */
+.spmb-diskon-section {
+  padding: 38px 0 42px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #F1E5F3;
+}
+
+.spmb-diskon-ticket {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+  background: #7D2280;
+  border-radius: 20px;
+  padding: 24px 30px;
+  text-align: center;
+  color: #FFFFFF;
+  box-shadow: 0 10px 28px rgba(125, 34, 128, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spmb-diskon-title {
+  font-size: clamp(1.22rem, 2.2vw, 1.55rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.35;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.spmb-diskon-highlight {
+  color: #F5A623;
+  display: inline-block;
+}
+
+.spmb-diskon-desc {
+  font-size: clamp(0.9rem, 1.1vw, 0.96rem);
+  line-height: 1.65;
+  color: #FFFFFF;
+  font-weight: 400;
+  margin: 0;
+  max-width: 580px;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .spmb-diskon-section {
+    padding: 24px 0 28px;
+  }
+
+  .spmb-diskon-ticket {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .spmb-diskon-title {
+    font-size: 1.15rem;
+  }
+
+  .spmb-diskon-desc {
+    font-size: 0.86rem;
+  }
+}
+
+/* ==========================================================================
    2. KEUNGGULAN & KURIKULUM LANGIT
    ========================================================================== */
 .spmb-pillars-section {

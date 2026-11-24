@@ -3356,7 +3356,7 @@ body.modal-open {
 .category-item-slug {
   font-size: 0.76rem;
   color: var(--admin-slate-light);
-  font-family: monospace;
+  font-family: var(--font-family);
 }
 
 .category-item-right {
@@ -3967,7 +3967,7 @@ body.modal-open {
 .sheet-tab-name {
   font-size: 0.74rem;
   color: var(--admin-slate-light);
-  font-family: monospace;
+  font-family: var(--font-family);
   background: #FFFFFF;
   padding: 2px 8px;
   border-radius: 4px;
@@ -4383,7 +4383,7 @@ body.modal-open {
   border-radius: 12px;
   padding: 14px 16px;
   box-shadow: 0 1px 6px rgba(32, 33, 36, 0.08);
-  font-family: Arial, Roboto, sans-serif;
+  font-family: var(--font-family);
   margin: 10px 0;
   transition: all 0.2s ease;
   overflow: hidden !important;
@@ -4956,7 +4956,7 @@ body.modal-open {
   background: #EEF2F6;
   padding: 2px 7px;
   border-radius: 4px;
-  font-family: monospace;
+  font-family: var(--font-family);
   font-weight: 600;
   color: var(--admin-navy);
 }

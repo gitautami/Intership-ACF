@@ -583,11 +583,11 @@
 }
 
 .bank-acc-digits {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.05rem;
-  font-weight: 800;
+  font-weight: 700;
   color: #7D2280;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .btn-copy-rekening {

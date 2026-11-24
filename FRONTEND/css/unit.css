@@ -2373,7 +2373,7 @@ a.sj-school-location:hover svg.sj-loc-pin {
 }
 
 .sj-spmb-cta-section {
-  padding: 10px 0 35px;
+  padding: 30px 0;
   background: transparent;
   position: relative;
   z-index: 2;
@@ -2391,6 +2391,8 @@ a.sj-school-location:hover svg.sj-loc-pin {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
   width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
 }
 
 .sj-spmb-banner-bar:hover {
@@ -2444,7 +2446,7 @@ a.sj-school-location:hover svg.sj-loc-pin {
 
 @media (max-width: 768px) {
   .sj-spmb-cta-section {
-    padding: 10px 0 25px;
+    padding: 20px 0;
   }
 
   .sj-spmb-banner-bar {
